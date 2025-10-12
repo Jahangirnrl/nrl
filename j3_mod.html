@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🏡 ROOM_2 Smart Dashboard</title>
+<title>ROOM_2 Smart Dashboard</title>
+<link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/7733/7733361.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
@@ -77,11 +78,11 @@
     font-size: 0.85rem;
   }
 
-  /* --- HEADER AND PROFILE MENU STYLES --- */
+  /* --- HEADER AND PROFILE MENU STYLES (MODIFIED) --- */
   header {
     display: grid;
-    /* 3-column layout: Left Spacer | Centered Content | Right Button */
-    grid-template-columns: 1fr auto 1fr;
+    /* 3-column layout: Left Button | Centered Content | Right Spacer */
+    grid-template-columns: auto 1fr auto;
     align-items: center;
     margin-bottom: 12px;
     padding: 0 5px; 
@@ -91,6 +92,7 @@
     color:#38bdf8; 
     margin:0; 
     font-size:1.6rem; 
+    text-align: center;
   }
   header h1 i {
     margin-right: 8px; /* Spacing for the icon */
@@ -99,13 +101,15 @@
       display: flex;
       flex-direction: column;
       align-items: center; /* Centers items horizontally */
+      justify-content: center;
       grid-column: 2; /* Ensures this content sits in the middle column */
+      width: 100%;
   }
   .profile-menu {
-    grid-column: 3; /* Ensures menu is in the right column */
-    justify-self: end; /* Pushes the menu to the far right */
+    grid-column: 1; /* NEW: Ensures menu is in the left column */
+    justify-self: start; /* Pushes the menu to the far left */
     position: relative;
-    z-index: 10;
+    z-index: 02;
   }
   .profile-btn {
     background: transparent;
@@ -118,14 +122,15 @@
   .dropdown-content {
     display: none;
     position: absolute;
-    top: 100%; 
-    right: 0;
+    /* NEW: Position the dropdown 10px ABOVE the button, aligned to the left */
+    margin-top: 0;
+    left: 0;
     background-color: #1e293b;
-    min-width: 180px;
+    min-width: 220px;
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.4);
     border-radius: 8px;
-    z-index: 1;
-    padding: 10px;
+    z-index: 20;
+    padding: 15px;
     border: 1px solid #334155;
     text-align: left;
   }
@@ -133,28 +138,88 @@
     display: block;
   }
   .dropdown-content p {
-    margin: 0 0 10px 0;
+    margin: 0 0 15px 0;
     color: #94a3b8;
     font-size: 0.85rem;
     word-break: break-word;
   }
-  .logout-btn {
+  .dropdown-btn {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     border: none;
     border-radius: 6px;
-    background: #ef4444;
-    color: #fff;
     font-weight: 600;
     cursor: pointer;
     font-size: 0.85rem;
     transition: background 0.2s;
+    margin-bottom: 10px;
+  }
+  .dropdown-btn:last-child {
+    margin-bottom: 0;
+  }
+  .logout-btn { 
+    background: #ef4444;
+    color: #fff;
   }
   .logout-btn:hover { background: #b91c1c; }
+  .restart-btn {
+    background: #f59e0b;
+    color: #0f172a;
+  }
+  .restart-btn:hover { background: #d97706; }
 
+  /* BEEP Switch Styles */
+  .beep-switch-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(30, 41, 59, 0.7);
+    border-radius: 8px;
+    border: 1px solid #334155;
+  }
+  .beep-switch-label {
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .beep-switch {
+    width: 50px;
+    height: 24px;
+    border-radius: 12px;
+    background: #ef4444;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .beep-switch.on {
+    background: #10b981;
+  }
+  .beep-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  .beep-switch.on::after {
+    transform: translateX(26px);
+  }
 
   /* --- DASHBOARD ELEMENTS --- */
-  .tabs { display:flex; gap:6px; margin-top:6px; }
+  .tabs { 
+    display:flex; 
+    gap:6px; 
+    margin-top:6px; 
+    justify-content: center;
+  }
   .tab-btn { 
     padding:6px 12px; 
     border:none; 
@@ -186,8 +251,29 @@
     margin-top:10px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     transition: background 0.3s;
+    text-align: center;
   }
   .status.online { background:#10b981; } /* Device Online (Green) */
+
+  /* Version Info Styles - MODIFIED FOR COLORFUL DISPLAY */
+  .version-info-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 5px;
+    font-size: 0.7rem;
+  }
+  .dashboard-version {
+    text-align: left;
+    color: #38bdf8; /* Sky blue for dashboard version */
+    font-weight: 600;
+  }
+  .firmware-version {
+    text-align: right;
+    color: #10b981; /* Green for firmware version */
+    font-weight: 600;
+  }
 
   .info-main { 
     display:grid; 
@@ -256,24 +342,18 @@
     margin: 0 auto; 
   }
 
-  /* NEW: Local Automation Switch Styles */
-  .automation-switch-local {
+  .automation-switch { 
     display:flex; 
     align-items:center; 
     gap:10px; 
-    margin-bottom:10px; 
+    margin-bottom:20px; 
     cursor:pointer; 
     font-weight:600; 
     justify-content:center; 
-    font-size:0.95rem;
+    font-size:1rem;
     color:#94a3b8;
-    padding-bottom: 8px;
-    border-bottom: 1px dashed #334155;
   }
-  .automation-switch-local.on span { color: #f1f5f9; }
-
-  /* Removed global .automation-switch style */
-  
+  .automation-switch.on span { color: #f1f5f9; }
   .switch-btn { 
     width:44px; 
     height:22px; 
@@ -317,29 +397,76 @@
     font-size: 1.1rem;
     text-align: center;
   }
-  .offset-group-inline {
-    display:flex; 
-    gap:12px; 
-    align-items:center; 
-    justify-content:flex-start; 
+  
+  /* Update the offset-group-inline styles */
+.offset-group-inline {
+    display: flex; 
+    gap: 12px; 
+    align-items: center; 
+    justify-content: space-between; 
     flex-wrap: wrap;
     font-size: 0.85rem;
-    padding-top: 8px; /* Added padding to separate from new switch */
-  }
-  .offset-group-inline input { 
-    width:50px; 
-    text-align:center; 
-    border-radius:6px; 
-    border:1px solid #475569; 
-    background:#1e293b; 
-    color:#fff; 
-    padding:4px; 
-    margin-left:4px; 
-    font-size: 0.9rem;
-  }
-  .offset-group-inline label {
+}
+.offset-group-inline label {
     display: flex;
     align-items: center;
+    flex: 1;
+    min-width: 120px;
+    justify-content: space-between;
+}
+.offset-group-inline input { 
+    width: 50px; 
+    text-align: center; 
+    border-radius: 6px; 
+    border: 1px solid #475569; 
+    background: #1e293b; 
+    color: #fff; 
+    padding: 4px; 
+    margin-left: 4px; 
+    font-size: 0.9rem;
+}
+
+  /* Individual Relay Automation Switch */
+  .relay-automation-switch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 10px;
+  }
+  .relay-automation-label {
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+  .relay-automation-switch-btn {
+    width: 36px;
+    height: 18px;
+    border-radius: 9px;
+    background: #ef4444;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+    flex-shrink: 0;
+  }
+  .relay-automation-switch-btn.on {
+    background: #10b981;
+  }
+  .relay-automation-switch-btn::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  .relay-automation-switch-btn.on::after {
+    transform: translateX(18px);
   }
 
   /* Weather Tab Styles - 2x2 Grid Layout */
@@ -458,7 +585,7 @@
   .log-entry-type-device { color: #8b5cf6; } /* Purple for device logs */
   .log-entry-type-rtdb { color: #f97316; } /* Orange for RTDB logs */
   .log-entry-type-weather { color: #06b6d4; } /* Cyan for weather logs */
-
+  
   /* NEW: Automation Schedule Display Style */
   .automation-schedule-display {
     display:flex; 
@@ -467,9 +594,8 @@
     color:#f97316; 
     margin-top:8px; 
     border-top: 1px dotted #334155; 
-    padding-top: 8px;
+    padding-top: 22px;
   }
-
 </style>
 </head>
 <body>
@@ -487,8 +613,23 @@
 
 <div id="dashboardContainer" style="display: none;">
   <header>
-    <div></div> 
-
+    <div class="profile-menu">
+        <button class="profile-btn" id="profileBtn">⋮</button>
+        <div class="dropdown-content" id="profileDropdown">
+            <p>Logged in as:</p>
+            <p id="userEmailDisplay">user@gmail.com</p>
+            
+            <!-- BEEP Switch -->
+            <div class="beep-switch-container">
+                <span class="beep-switch-label">BEEP Device</span>
+                <div class="beep-switch" id="beepSwitch"></div>
+            </div>
+            
+            <button class="dropdown-btn restart-btn" id="restartBtn">ESP32 RESTART</button>
+            <button class="dropdown-btn logout-btn" id="logoutBtn">Logout</button>
+        </div>
+    </div>
+    
     <div class="header-center-content">
       <h1><i class="fa-solid fa-house-chimney"></i> ROOM_2 Dashboard</h1>
       <div class="tabs">
@@ -498,18 +639,15 @@
         <button class="tab-btn" data-tab="weather">Weather</button>
         <button class="tab-btn" data-tab="logs">Logs</button>
       </div>
-      <div id="status" class="status">Offline</div>
-      <div id="versionInfo" style="font-size: 0.7rem; color: #94a3b8; margin-top: 5px;"></div>
+      
+      <div class="version-info-container">
+        <div class="dashboard-version" id="versionInfo"></div>
+        <div id="status" class="status">Offline</div>
+        <div class="firmware-version" id="firmwareInfo">Firmware: --</div>
+      </div>
     </div>
     
-    <div class="profile-menu">
-        <button class="profile-btn" id="profileBtn">⋮</button>
-        <div class="dropdown-content" id="profileDropdown">
-            <p>Logged in as:</p>
-            <p id="userEmailDisplay">user@example.com</p>
-            <button class="logout-btn" id="logoutBtn">Logout</button>
-        </div>
-    </div>
+    <div></div> 
   </header>
 
   <div id="dashboard" class="tab-content active">
@@ -537,67 +675,81 @@
 
   <div id="automation" class="tab-content">
     <div class="automation-content-wrapper">
+      <div class="automation-switch">
+        <span>Automation Schedule</span>
+        <div id="automationSwitch" class="switch-btn"></div>
+      </div>
+
       <div class="automation-relays-container">
         <div class="automation-panel">
           <div>Relay 1 (FAN)</div>
-          <div class="automation-switch-local"> 
-            <span>Enable Schedule</span>
-            <div id="r1_automationSwitch" class="switch-btn"></div>
-          </div>
           <div class="offset-group-inline">
             <label>Sunrise (min): <input type="number" id="r1_sunrise" min="-60" max="60" step="1" value="0"></label>
+            
             <label>Sunset (min): <input type="number" id="r1_sunset" min="-60" max="60" step="1" value="0"></label>
           </div>
           <div class="automation-schedule-display">
             <span>ON: <span id="r1_sunrise_time">--:--</span></span>
+            <!-- Individual Relay Automation Switch -->
+            <div class="relay-automation-switch">
+              <span class="relay-automation-label">Auto</span>
+              <div class="relay-automation-switch-btn" id="r1_auto_switch"></div>
+            </div>
+
             <span>OFF: <span id="r1_sunset_time">--:--</span></span>
           </div>
         </div>
 
         <div class="automation-panel">
           <div>Relay 2 (LIGHT)</div>
-          <div class="automation-switch-local"> 
-            <span>Enable Schedule</span>
-            <div id="r2_automationSwitch" class="switch-btn"></div>
-          </div>
           <div class="offset-group-inline">
             <label>Sunrise (min): <input type="number" id="r2_sunrise" min="-60" max="60" step="1" value="0"></label>
+            
             <label>Sunset (min): <input type="number" id="r2_sunset" min="-60" max="60" step="1" value="0"></label>
           </div>
           <div class="automation-schedule-display">
             <span>ON: <span id="r2_sunrise_time">--:--</span></span>
+            <!-- Individual Relay Automation Switch -->
+            <div class="relay-automation-switch">
+              <span class="relay-automation-label">Auto</span>
+              <div class="relay-automation-switch-btn" id="r2_auto_switch"></div>
+            </div>
             <span>OFF: <span id="r2_sunset_time">--:--</span></span>
           </div>
         </div>
 
         <div class="automation-panel">
           <div>Relay 3 (FAN-2)</div>
-          <div class="automation-switch-local"> 
-            <span>Enable Schedule</span>
-            <div id="r3_automationSwitch" class="switch-btn"></div>
-          </div>
           <div class="offset-group-inline">
             <label>Sunrise (min): <input type="number" id="r3_sunrise" min="-60" max="60" step="1" value="0"></label>
+            
             <label>Sunset (min): <input type="number" id="r3_sunset" min="-60" max="60" step="1" value="0"></label>
           </div>
           <div class="automation-schedule-display">
             <span>ON: <span id="r3_sunrise_time">--:--</span></span>
+            <!-- Individual Relay Automation Switch -->
+            <div class="relay-automation-switch">
+              <span class="relay-automation-label">Auto</span>
+              <div class="relay-automation-switch-btn" id="r3_auto_switch"></div>
+            </div>
             <span>OFF: <span id="r3_sunset_time">--:--</span></span>
           </div>
         </div>
 
         <div class="automation-panel">
           <div>Relay 4 (DIM-L)</div>
-          <div class="automation-switch-local"> 
-            <span>Enable Schedule</span>
-            <div id="r4_automationSwitch" class="switch-btn"></div>
-          </div>
           <div class="offset-group-inline">
             <label>Sunrise (min): <input type="number" id="r4_sunrise" min="-60" max="60" step="1" value="0"></label>
+            
             <label>Sunset (min): <input type="number" id="r4_sunset" min="-60" max="60" step="1" value="0"></label>
           </div>
           <div class="automation-schedule-display">
             <span>ON: <span id="r4_sunrise_time">--:--</span></span>
+            <!-- Individual Relay Automation Switch -->
+            <div class="relay-automation-switch">
+              <span class="relay-automation-label">Auto</span>
+              <div class="relay-automation-switch-btn" id="r4_auto_switch"></div>
+            </div>
             <span>OFF: <span id="r4_sunset_time">--:--</span></span>
           </div>
         </div>
@@ -654,29 +806,27 @@
         </div>
       </div>
       
-      <div style="text-align: center; margin-top: 15px;">
-        <button id="refreshWeather" class="weather-refresh-btn">
-          <i class="fas fa-sync-alt"></i> Refresh Weather
-        </button>
-      </div>
-      
       <div id="weatherSource" class="weather-source"></div>
     </div>
   </div>
 
   <div id="logs" class="tab-content">
+    <div class="automation-content-wrapper" style="margin-bottom: 15px;">
+      <div class="automation-switch" id="rtdbLogsSwitchContainer">
+        <span>Load Logs from RTDB (Realtime Device Logs)</span>
+        <div id="rtdbLogsSwitch" class="switch-btn"></div>
+      </div>
+    </div>
     <div class="log-viewer" id="logViewer">
       <div class="log-entry"><span class="log-entry-time">--:--:--</span><span class="log-entry-type-info">INFO:</span> Client-side log initialized.</div>
     </div>
   </div>
 </div>
 
-
 <script type="module">
 // --- FIREBASE IMPORTS ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-// 'push' has been added to the imports for logging historical weather data
-import { getDatabase, ref, onValue, set, get, push } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -697,7 +847,7 @@ const auth = getAuth(app);
 
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'room2_session_active';
-const DASHBOARD_VERSION = 'v1.4.2'; // Updated version for improved weather
+const DASHBOARD_VERSION = 'v1.4.6'; // Updated version for firmware display
 
 const loginScreen = document.getElementById('loginScreen');
 const dashboardContainer = document.getElementById('dashboardContainer');
@@ -710,13 +860,28 @@ const profileBtn = document.getElementById('profileBtn');
 const profileDropdown = document.getElementById('profileDropdown');
 const userEmailDisplay = document.getElementById('userEmailDisplay');
 const logoutBtn = document.getElementById('logoutBtn');
+const beepSwitch = document.getElementById('beepSwitch');
+const restartBtn = document.getElementById('restartBtn');
 
 const statusEl = document.getElementById('status');
 const versionInfoEl = document.getElementById('versionInfo');
+const firmwareInfoEl = document.getElementById('firmwareInfo');
 const uptimeEl = document.getElementById('uptime');
 const lastDisconnectEl = document.getElementById('lastDisconnect');
 const logViewer = document.getElementById('logViewer');
 const relayBtns = [document.getElementById('r1'),document.getElementById('r2'),document.getElementById('r3'),document.getElementById('r4')];
+
+// Individual Relay Automation Switches
+const relayAutoSwitches = [
+  document.getElementById('r1_auto_switch'),
+  document.getElementById('r2_auto_switch'),
+  document.getElementById('r3_auto_switch'),
+  document.getElementById('r4_auto_switch')
+];
+
+// NEW LOG ELEMENTS
+const rtdbLogsSwitch = document.getElementById('rtdbLogsSwitch');
+const rtdbLogsSwitchContainer = document.getElementById('rtdbLogsSwitchContainer');
 
 // Weather elements
 const temperatureEl = document.getElementById('temperature');
@@ -725,7 +890,6 @@ const rainStatusEl = document.getElementById('rainStatus');
 const windSpeedEl = document.getElementById('windSpeed');
 const weatherLocationEl = document.getElementById('weatherLocation');
 const weatherSourceEl = document.getElementById('weatherSource');
-const refreshWeatherBtn = document.getElementById('refreshWeather');
 
 // Internal State for Connection Management
 let lastHeartbeatTime = null; 
@@ -735,8 +899,8 @@ let initialOnlineLoadComplete = false;
 let reconnectTimer = null;
 
 // Heartbeat Thresholds
-const OFFLINE_TIMEOUT = 59; // Seconds of silence before declaring offline
-const RECONNECT_DEBOUNCE = 20; // Seconds of stable heartbeat before declaring online
+const OFFLINE_TIMEOUT = 59;
+const RECONNECT_DEBOUNCE = 20;
 
 // Client Stats
 let lastDisconnectTimestamp = null; 
@@ -745,9 +909,13 @@ let totalOfflineSeconds = 0;
 let lastStateChangeTime = Date.now(); 
 
 // Weather Configuration
-const WEATHER_UPDATE_INTERVAL = 10 * 60 * 1000; // 10 minutes
+const WEATHER_UPDATE_INTERVAL = 10 * 60 * 1000;
 let lastWeatherUpdate = 0;
 let currentWeatherSource = "Loading...";
+
+// Internal state for RTDB Log
+let rtdbLogsEnabled = false;
+let logListenerUnsubscribe = null;
 
 // --- UTILITIES & DASHBOARD LOGIC ---
 
@@ -763,20 +931,15 @@ const DHAKA_OPTIONS = {
   timeZone: 'Asia/Dhaka' 
 };
 
-/**
- * Formats a timestamp into a reliable Dhaka time string.
- */
 function formatTime(timestamp) {
     if (!timestamp) return '--:--:--';
     const d = new Date(timestamp);
     
-    // Create a formatter specific to Dhaka time
     const formatter = new Intl.DateTimeFormat('en-US', DHAKA_OPTIONS);
     const parts = formatter.formatToParts(d);
 
     let h, m, s, ampm;
     
-    // Extract parts
     parts.forEach(part => {
         if (part.type === 'hour') h = part.value;
         if (part.type === 'minute') m = part.value;
@@ -792,6 +955,10 @@ function formatTime(timestamp) {
 }
 
 function addLogEntry(type, message, source = 'client') {
+    if (rtdbLogsEnabled && source === 'client') {
+        return; 
+    }
+    
     const time = formatTime(Date.now());
     const typeClass = `log-entry-type-${type.toLowerCase()}`;
     const sourceClass = source === 'device' ? 'log-entry-type-device' : 
@@ -809,11 +976,177 @@ function addLogEntry(type, message, source = 'client') {
 }
 
 // Set version on load
-versionInfoEl.textContent = `Dashboard Version: ${DASHBOARD_VERSION}`;
+versionInfoEl.textContent = `Dashboard: ${DASHBOARD_VERSION}`;
 
-// --- WEATHER SERVICE WITH MULTIPLE FALLBACKS ---
+// Listen for Firmware Version from RTDB
+onValue(ref(db, 'HOME/ROOM_2/device/firmwareVersion'), (snapshot) => {
+    const firmwareVersion = snapshot.val();
+    if (firmwareVersion) {
+        firmwareInfoEl.textContent = `Firmware: ${firmwareVersion}`;
+        addLogEntry('INFO', `Firmware version detected: ${firmwareVersion}`, 'device');
+    } else {
+        firmwareInfoEl.textContent = 'Firmware: --';
+    }
+});
 
-// Free weather API that doesn't require API key
+// --- RTDB LOGIC AND TOGGLE ---
+function setupRTDBLogListener() {
+    if (logListenerUnsubscribe) {
+        logListenerUnsubscribe();
+        logListenerUnsubscribe = null;
+    }
+    logViewer.innerHTML = '';
+    
+    if (rtdbLogsEnabled) {
+        rtdbLogsSwitch.classList.add('on');
+        rtdbLogsSwitchContainer.classList.add('on');
+        addLogEntry('INFO', 'Loading logs from RTDB...', 'rtdb');
+        
+        logListenerUnsubscribe = onValue(ref(db, 'HOME/ROOM_2/log'), (snapshot) => {
+            if (!rtdbLogsEnabled) return;
+            
+            const logs = snapshot.val();
+            logViewer.innerHTML = '';
+            
+            if (logs) {
+                const logKeys = Object.keys(logs).sort((a, b) => logs[b].timestamp - logs[a].timestamp);
+                
+                logKeys.slice(0, 50).forEach(key => {
+                    const logEntry = logs[key];
+                    const time = formatTime(logEntry.timestamp);
+                    const typeClass = `log-entry-type-${logEntry.type ? logEntry.type.toLowerCase() : 'info'}`;
+                    const sourceClass = 'log-entry-type-device'; 
+                    
+                    const entry = document.createElement('div');
+                    entry.className = 'log-entry';
+                    entry.innerHTML = `<span class="log-entry-time">${time}</span><span class="${typeClass} ${sourceClass}">${logEntry.type || 'UNKNOWN'}:</span> ${logEntry.message}`;
+                    logViewer.appendChild(entry); 
+                });
+                logViewer.scrollTop = logViewer.scrollHeight; 
+            }
+        });
+    } else {
+        rtdbLogsSwitch.classList.remove('on');
+        rtdbLogsSwitchContainer.classList.remove('on');
+        logViewer.innerHTML = '';
+        addLogEntry('INFO', 'Client-side log re-initialized.');
+    }
+}
+
+// RTDB Logs Switch Event Listener
+rtdbLogsSwitch.addEventListener('click', () => {
+    if (!clientConnected) {
+        addLogEntry('ERROR', 'Cannot change settings: Client disconnected from Firebase.');
+        return;
+    }
+    
+    rtdbLogsEnabled = !rtdbLogsEnabled;
+    const statusText = rtdbLogsEnabled ? 'ENABLED' : 'DISABLED';
+    addLogEntry('INFO', `RTDB Logs: ${statusText}.`, 'rtdb');
+    
+    setupRTDBLogListener();
+});
+
+// --- INDIVIDUAL RELAY AUTOMATION FUNCTIONS ---
+
+// Initialize individual relay automation switches
+relayAutoSwitches.forEach((switchEl, index) => {
+    const relayNum = index + 1;
+    const path = `HOME/ROOM_2/settings/relay${relayNum}/autoEnabled`;
+    
+    // Listen for automation state from RTDB
+    onValue(ref(db, path), (snapshot) => {
+        const autoState = snapshot.val();
+        switchEl.classList.toggle('on', autoState === true);
+    });
+    
+    // Handle switch click
+    switchEl.addEventListener('click', () => {
+        if (!clientConnected) {
+            addLogEntry('ERROR', `Cannot toggle Relay ${relayNum} automation: Client disconnected from Firebase.`);
+            return;
+        }
+        
+        const newAutoState = !switchEl.classList.contains('on');
+        const relayName = relayBtns[index].textContent;
+        
+        set(ref(db, path), newAutoState)
+            .then(() => {
+                const statusText = newAutoState ? 'ENABLED' : 'DISABLED';
+                addLogEntry('INFO', `Relay ${relayNum} (${relayName}) automation ${statusText}.`, 'rtdb');
+            })
+            .catch(error => {
+                addLogEntry('ERROR', `Failed to set Relay ${relayNum} automation state: ${error.message}`);
+            });
+    });
+});
+
+// --- BEEP AND RESTART FUNCTIONS ---
+
+// BEEP Switch Event Listener
+beepSwitch.addEventListener('click', () => {
+    if (!clientConnected) {
+        addLogEntry('ERROR', 'Cannot toggle BEEP: Client disconnected from Firebase.');
+        return;
+    }
+    
+    const newBeepState = !beepSwitch.classList.contains('on');
+    
+    set(ref(db, 'HOME/ROOM_2/settings/beepEnabled'), newBeepState)
+        .then(() => {
+            beepSwitch.classList.toggle('on', newBeepState);
+            const statusText = newBeepState ? 'ENABLED' : 'DISABLED';
+            addLogEntry('INFO', `BEEP ${statusText}.`, 'device');
+            (9020);
+            profileDropdown.classList.remove('show');//-----------------------------------------
+        })
+        .catch(error => {
+            addLogEntry('ERROR', `Failed to set BEEP state: ${error.message}`);
+        });
+});
+
+// RESTART Button Event Listener
+restartBtn.addEventListener('click', () => {
+    if (!clientConnected) {
+        addLogEntry('ERROR', 'Cannot send RESTART command: Client disconnected from Firebase.');
+        return;
+    }
+    
+    if (confirm('Are you sure you want to restart the ESP32 device? This will temporarily disconnect the device.')) {
+        set(ref(db, 'HOME/ROOM_2/device/rest'), true)
+            .then(() => {
+                addLogEntry('INFO', 'RESTART command sent to device.', 'device');
+                profileDropdown.classList.remove('show');
+                
+                // Reset the restart flag after a short delay
+                setTimeout(() => {
+                    set(ref(db, 'HOME/ROOM_2/device/rest'), false)
+                        .catch(error => {
+                            addLogEntry('WARN', `Failed to reset restart flag: ${error.message}`);
+                        });
+                }, 4500);
+            })
+            .catch(error => {
+                addLogEntry('ERROR', `Failed to send RESTART command: ${error.message}`);
+            });
+    }
+});
+
+// Listen for BEEP state from RTDB
+onValue(ref(db, 'HOME/ROOM_2/beepEnabled'), (snapshot) => {
+    const beepState = snapshot.val();
+    beepSwitch.classList.toggle('on', beepState === true);
+});
+
+// Listen for RESTART state from RTDB (in case it's set elsewhere)
+onValue(ref(db, 'HOME/ROOM_2/device/rest'), (snapshot) => {
+    const restartState = snapshot.val();
+    if (restartState === true) {
+        addLogEntry('INFO', 'Device restart flag detected in RTDB.', 'device');
+    }
+});
+
+// --- WEATHER SERVICE ---
 async function fetchWeatherData() {
   const weatherServices = [
     {
@@ -823,26 +1156,13 @@ async function fetchWeatherData() {
         temperature: Math.round(data.current.temperature_2m),
         humidity: data.current.relative_humidity_2m,
         rain: data.current.precipitation > 0,
-        windSpeed: Math.round(data.current.wind_speed_10m * 3.6), // m/s to km/h
+        windSpeed: Math.round(data.current.wind_speed_10m * 3.6),
         location: "Dhaka, Bangladesh",
         source: "Open-Meteo"
-      })
-    },
-    {
-      name: "WeatherAPI Proxy",
-      url: "https://api.allorigins.win/raw?url=https://api.weatherapi.com/v1/current.json?key=cfe87a0d9d1e4f15a87141538230103&q=Dhaka",
-      parser: (data) => ({
-        temperature: Math.round(data.current.temp_c),
-        humidity: data.current.humidity,
-        rain: data.current.precip_mm > 0,
-        windSpeed: Math.round(data.current.wind_kph),
-        location: `${data.location.name}, ${data.location.country}`,
-        source: "WeatherAPI"
       })
     }
   ];
 
-  // Try each service until one works
   for (const service of weatherServices) {
     try {
       addLogEntry('INFO', `Trying weather service: ${service.name}`, 'weather');
@@ -872,35 +1192,29 @@ async function fetchWeatherData() {
     }
   }
   
-  // If all services fail, use demo data
   return generateDemoWeatherData();
 }
 
 function generateDemoWeatherData() {
-  // Generate realistic demo data for Dhaka
   const now = new Date();
   const hour = now.getHours();
   
-  // Temperature varies by time of day
-  let baseTemp = 28; // Base temperature for Dhaka
-  if (hour >= 22 || hour < 6) baseTemp -= 3; // Night is cooler
-  if (hour >= 12 && hour < 16) baseTemp += 4; // Afternoon is warmer
+  let baseTemp = 28;
+  if (hour >= 22 || hour < 6) baseTemp -= 3;
+  if (hour >= 12 && hour < 16) baseTemp += 4;
   
-  const temp = baseTemp + Math.floor(Math.random() * 3) - 1; // ±1 degree variation
+  const temp = baseTemp + Math.floor(Math.random() * 3) - 1;
   
-  // Humidity - higher at night, lower during day
   let baseHumidity = 65;
   if (hour >= 22 || hour < 6) baseHumidity += 15;
   if (hour >= 12 && hour < 16) baseHumidity -= 10;
   
   const humidity = Math.max(40, Math.min(90, baseHumidity + Math.floor(Math.random() * 10) - 5));
   
-  // Rain is more likely during monsoon season (June-September)
   const isMonsoon = now.getMonth() >= 5 && now.getMonth() <= 8;
   const rainChance = isMonsoon ? 0.3 : 0.1;
   const isRaining = Math.random() < rainChance;
   
-  // Wind speed
   const windSpeed = 8 + Math.floor(Math.random() * 15);
   
   return {
@@ -914,7 +1228,6 @@ function generateDemoWeatherData() {
 }
 
 async function loadWeatherData() {
-  // Show loading state
   weatherLocationEl.textContent = 'Loading weather data...';
   temperatureEl.textContent = '--';
   humidityEl.textContent = '--';
@@ -922,14 +1235,12 @@ async function loadWeatherData() {
   windSpeedEl.textContent = '--';
   weatherSourceEl.textContent = '';
   
-  // Remove any existing error message
   const existingError = document.querySelector('.weather-error');
   if (existingError) existingError.remove();
 
   try {
     const weatherData = await fetchWeatherData();
     
-    // Update UI with weather data
     temperatureEl.textContent = weatherData.temperature;
     humidityEl.textContent = weatherData.humidity;
     rainStatusEl.textContent = weatherData.rain ? 'Raining' : 'Not Raining';
@@ -937,29 +1248,19 @@ async function loadWeatherData() {
     weatherLocationEl.textContent = weatherData.location;
     weatherSourceEl.textContent = `Source: ${weatherData.source}`;
     
-    // Update last weather update time
     lastWeatherUpdate = Date.now();
     
-    // Store weather data in Firebase for device access AND for history
     if (clientConnected) {
       try {
-        const dataToStore = {
+        await set(ref(db, 'HOME/ROOM_2/weather'), {
           temperature: weatherData.temperature,
           humidity: weatherData.humidity,
           rain: weatherData.rain,
           windSpeed: weatherData.windSpeed,
           lastUpdate: Date.now(),
           source: weatherData.source
-        };
-
-        // 1. Store as CURRENT state (for device access)
-        await set(ref(db, 'HOME/ROOM_2/weather'), dataToStore);
-        
-        // // 2. Store as HISTORY LOG (to fulfill user request for "every data")
-        // const newLogRef = push(ref(db, 'HOME/ROOM_2/weatherLog'));
-        // await set(newLogRef, dataToStore); 
-        
-        addLogEntry('INFO', 'Weather data stored in RTDB (Current + Log)', 'weather');
+        });
+        addLogEntry('INFO', 'Weather data stored in RTDB', 'weather');
       } catch (error) {
         addLogEntry('WARN', `Failed to store weather data in RTDB: ${error.message}`, 'weather');
       }
@@ -968,13 +1269,11 @@ async function loadWeatherData() {
   } catch (error) {
     console.error('Weather loading error:', error);
     
-    // Show error message
     const errorDiv = document.createElement('div');
     errorDiv.className = 'weather-error';
     errorDiv.textContent = 'Weather service temporarily unavailable. Using demo data.';
     weatherLocationEl.after(errorDiv);
     
-    // Use demo data as final fallback
     const demoData = generateDemoWeatherData();
     temperatureEl.textContent = demoData.temperature;
     humidityEl.textContent = demoData.humidity;
@@ -982,23 +1281,10 @@ async function loadWeatherData() {
     windSpeedEl.textContent = demoData.windSpeed;
     weatherLocationEl.textContent = demoData.location;
     weatherSourceEl.textContent = `Source: ${demoData.source}`;
-    
+
     addLogEntry('ERROR', `All weather services failed: ${error.message}`, 'weather');
   }
 }
-
-// Auto-refresh weather data periodically
-setInterval(() => {
-  if (Date.now() - lastWeatherUpdate > WEATHER_UPDATE_INTERVAL) {
-    loadWeatherData();
-  }
-}, 60000); // Check every minute
-
-// Manual refresh button
-refreshWeatherBtn.addEventListener('click', () => {
-  loadWeatherData();
-  addLogEntry('INFO', 'Manual weather refresh triggered', 'weather');
-});
 
 // --- AUTHENTICATION & SESSION LOGIC ---
 function showLogin() {
@@ -1012,10 +1298,9 @@ function showDashboard(user) {
     loginScreen.style.display = 'none';
     dashboardContainer.style.display = 'block';
     
-    // Store dashboard version in Firebase RTDB
     if (user && db) {
         set(ref(db, 'HOME/ROOM_2/version'), DASHBOARD_VERSION); 
-        addLogEntry('INFO', `Dashboard version ${DASHBOARD_VERSION} logged to RTDB.`);
+        addLogEntry('INFO', `Dashboard version ${DASHBOARD_VERSION} logged to RTDB.`, 'rtdb');
     }
 }
 
@@ -1034,7 +1319,6 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         showDashboard(user);
         addLogEntry('INFO', `User ${user.email} signed in successfully.`);
-        // Load weather data after successful login
         loadWeatherData();
     } else {
         if (localStorage.getItem(SESSION_KEY) === 'true') {
@@ -1077,7 +1361,8 @@ logoutBtn.addEventListener('click', async () => {
     }
 });
 
-document.getElementById('profileBtn').addEventListener('click', () => {
+document.getElementById('profileBtn').addEventListener('click', (event) => {
+    event.stopPropagation();
     profileDropdown.classList.toggle('show');
 });
 window.addEventListener('click', (event) => {
@@ -1092,9 +1377,9 @@ window.addEventListener('click', (event) => {
 function writeOnlineFlag(state){
     if (clientConnected) {
         set(ref(db,'HOME/ROOM_2/online'),!!state);
-        addLogEntry('INFO', `RTDB 'online' flag set to ${!!state}.`);
+        addLogEntry('INFO', `RTDB 'online' flag set to ${!!state}.`, 'rtdb');
     } else {
-        addLogEntry('WARN', `RTDB write prevented: Client disconnected.`);
+        addLogEntry('WARN', `RTDB write prevented: Client disconnected.`, 'rtdb');
     }
 }
 
@@ -1269,14 +1554,8 @@ relayBtns.forEach((btn,i)=>{
     onValue(ref(db,`HOME/ROOM_2/relay${i+1}`),snap=>setRelayState(btn,!!snap.val())); 
 });
 
-// --- AUTOMATION LOGIC (UPDATED FOR 4 SWITCHES) ---
-const automationSwitches = [
-    document.getElementById('r1_automationSwitch'),
-    document.getElementById('r2_automationSwitch'),
-    document.getElementById('r3_automationSwitch'),
-    document.getElementById('r4_automationSwitch')
-];
-
+// --- AUTOMATION LOGIC ---
+const automationSwitch = document.getElementById('automationSwitch');
 const offsetInputs = [
   {sunrise: document.getElementById('r1_sunrise'), sunset: document.getElementById('r1_sunset')},
   {sunrise: document.getElementById('r2_sunrise'), sunset: document.getElementById('r2_sunset')},
@@ -1284,59 +1563,26 @@ const offsetInputs = [
   {sunrise: document.getElementById('r4_sunrise'), sunset: document.getElementById('r4_sunset')}
 ];
 
-// Logic for 4 individual automation switches
-automationSwitches.forEach((switchEl, i) => {
-    const relayIndex = i + 1;
-    const path = `HOME/ROOM_2/settings/relay${relayIndex}/scheduleEnabled`;
-    const parentEl = switchEl.parentNode;
-    const relayName = relayBtns[i].textContent;
-
-    // Listener for database state change
-    onValue(ref(db, path), snap => {
-        const val = snap.val();
-        if(val) switchEl.classList.add('on'); else switchEl.classList.remove('on');
-        parentEl.classList.toggle('on', !!val); 
-    });
-
-    // Event listener for click (toggling state)
-    switchEl.addEventListener('click', () => {
-        if (!clientConnected) {
-            const messageBox = document.createElement('div');
-            messageBox.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:20px;background:#ef4444;color:#fff;border-radius:8px;z-index:1000;box-shadow:0 0 10px rgba(0,0,0,0.5);font-weight:bold;';
-            messageBox.textContent = 'ERROR: Dashboard disconnected. Cannot change settings.';
-            document.body.appendChild(messageBox);
-            setTimeout(() => messageBox.remove(), 3000);
-            return;
-        }
-        const newVal = !switchEl.classList.contains('on');
-        set(ref(db, path), newVal);
-        addLogEntry('INFO', `${relayName} Schedule manually set to ${newVal ? 'ENABLED' : 'DISABLED'}.`); 
-    });
-});
-
-// Function to update the schedule display next to the offset inputs
 function updateAutomationScheduleDisplay(relayIndex, sunriseVal, sunsetVal) {
     const sunriseTimeEl = document.getElementById(`r${relayIndex+1}_sunrise_time`);
     const sunsetTimeEl = document.getElementById(`r${relayIndex+1}_sunset_time`);
     const sunriseRef = ref(db, 'HOME/ROOM_2/sunrise');
     const sunsetRef = ref(db, 'HOME/ROOM_2/sunset');
     
-    // Helper function to calculate time with offset
     const calculateOffsetTime = (baseTime, offset) => {
         if (!baseTime || baseTime === '--:--') return '--:--';
+        const [hourStr, minuteStr] = baseTime.split(':');
+        
         const now = new Date();
         const baseDate = new Date(now.toDateString() + ' ' + baseTime);
         
-        if (isNaN(baseDate)) return '--:--'; // Safety check
+        if (isNaN(baseDate)) return '--:--';
         
-        // Add or subtract offset minutes
         baseDate.setMinutes(baseDate.getMinutes() + offset);
         
-        // Format to H:MM AM/PM
         return baseDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
     };
 
-    // Use onValue with onlyOnce: true to get the latest sunrise/sunset from RTDB
     onValue(sunriseRef, (snap) => {
         const baseSunrise = snap.val();
         sunriseTimeEl.textContent = baseSunrise ? calculateOffsetTime(baseSunrise, sunriseVal) : '--:--';
@@ -1348,32 +1594,46 @@ function updateAutomationScheduleDisplay(relayIndex, sunriseVal, sunsetVal) {
     }, { onlyOnce: true });
 }
 
-// onValue(ref(db,'HOME/ROOM_2/settings/scheduleEnabled'),snap=>{
-//   const val=snap.val();
-//   //if(val) automationSwitch.classList.add('on'); else automationSwitch.classList.remove('on');
-//   //automationSwitch.parentNode.classList.toggle('on', !!val); 
-// });
+onValue(ref(db,'HOME/ROOM_2/settings/scheduleEnabled'),snap=>{
+  const val=snap.val();
+  if(val) automationSwitch.classList.add('on'); else automationSwitch.classList.remove('on');
+  automationSwitch.parentNode.classList.toggle('on', !!val); 
+});
 
-// automationSwitch.addEventListener('click',()=>{
-//   // if (!clientConnected) {
-//   //     const messageBox = document.createElement('div');
-//   //     messageBox.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:20px;background:#ef4444;color:#fff;border-radius:8px;z-index:1000;box-shadow:0 0 10px rgba(0,0,0,0.5);font-weight:bold;';
-//   //     messageBox.textContent = 'ERROR: Dashboard disconnected. Cannot change settings.';
-//   //     document.body.appendChild(messageBox);
-//   //     setTimeout(() => messageBox.remove(), 3000);
-//   //     return;
-//   // }
-//   //const newVal=!automationSwitch.classList.contains('on');
-//   set(ref(db,'HOME/ROOM_2/settings/scheduleEnabled'), newVal);
-// });
+automationSwitch.addEventListener('click',()=>{
+  if (!clientConnected) {
+      const messageBox = document.createElement('div');
+      messageBox.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:20px;background:#ef4444;color:#fff;border-radius:8px;z-index:1000;box-shadow:0 0 10px rgba(0,0,0,0.5);font-weight:bold;';
+      messageBox.textContent = 'ERROR: Dashboard disconnected. Cannot change settings.';
+      document.body.appendChild(messageBox);
+      setTimeout(() => messageBox.remove(), 3000);
+      return;
+  }
+  const newVal=!automationSwitch.classList.contains('on');
+  set(ref(db,'HOME/ROOM_2/settings/scheduleEnabled'), newVal);
+});
 
-//=------------------------------------
 offsetInputs.forEach((obj,i)=>{
   const pathPrefix = `HOME/ROOM_2/settings/relay${i+1}/`;
   const relayName = relayBtns[i].textContent;
+  
+  const sunriseTimeEl = document.getElementById(`r${i+1}_sunrise_time`);
+  const sunsetTimeEl = document.getElementById(`r${i+1}_sunset_time`);
+  
+  let currentSunriseOffset = 0;
+  let currentSunsetOffset = 0;
 
-  onValue(ref(db,pathPrefix + 'sunriseOffset'),snap=>obj.sunrise.value=snap.val()||0);
-  onValue(ref(db,pathPrefix + 'sunsetOffset'),snap=>obj.sunset.value=snap.val()||0);
+  onValue(ref(db,pathPrefix + 'sunriseOffset'),snap=>{
+    currentSunriseOffset = snap.val() || 0;
+    obj.sunrise.value = currentSunriseOffset;
+    updateAutomationScheduleDisplay(i, currentSunriseOffset, currentSunsetOffset);
+  });
+  
+  onValue(ref(db,pathPrefix + 'sunsetOffset'),snap=>{
+    currentSunsetOffset = snap.val() || 0;
+    obj.sunset.value = currentSunsetOffset;
+    updateAutomationScheduleDisplay(i, currentSunriseOffset, currentSunsetOffset);
+  });
   
   const handleOffsetChange = (input, offsetType) => {
       if (!clientConnected) {
@@ -1386,13 +1646,20 @@ offsetInputs.forEach((obj,i)=>{
       }
       const val = Number(input.value);
       set(ref(db,pathPrefix + offsetType + 'Offset'), val);
-      addLogEntry('INFO', `${relayName} ${offsetType} Offset set to ${val} min.`); 
+      addLogEntry('INFO', `${relayName} ${offsetType} Offset set to ${val} min.`, 'rtdb'); 
+      
+      if (offsetType === 'sunrise') {
+          currentSunriseOffset = val;
+      } else {
+          currentSunsetOffset = val;
+      }
+      updateAutomationScheduleDisplay(i, currentSunriseOffset, currentSunsetOffset);
   };
 
   obj.sunrise.addEventListener('change',()=>handleOffsetChange(obj.sunrise, 'sunrise'));
   obj.sunset.addEventListener('change',()=>handleOffsetChange(obj.sunset, 'sunset'));
 });
-//=------------------------------------
+
 // --- STATS LOGIC ---
 function updateStats() {
     const now = Date.now();
@@ -1436,15 +1703,15 @@ tabs.forEach(btn=>{
     btn.classList.add('active');
     document.getElementById(btn.dataset.tab).classList.add('active');
     
-    // Auto-refresh weather when switching to weather tab
-    if (btn.dataset.tab === 'weather' && Date.now() - lastWeatherUpdate > WEATHER_UPDATE_INTERVAL) {
-        loadWeatherData();
+    if (btn.dataset.tab === 'logs' && rtdbLogsEnabled) {
+        setupRTDBLogListener();
     }
   });
 });
 
 // --- INITIALIZATION ---
 loadDeviceInfo();
+setupRTDBLogListener();
 addLogEntry('INFO', 'Dashboard initialized successfully.');
 
 </script>
