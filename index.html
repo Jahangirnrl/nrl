@@ -1133,7 +1133,7 @@ restartBtn.addEventListener('click', () => {
 });
 
 // Listen for BEEP state from RTDB
-onValue(ref(db, 'HOME/ROOM_2/beepEnabled'), (snapshot) => {
+onValue(ref(db, 'HOME/ROOM_2/settings/beepEnabled'), (snapshot) => {
     const beepState = snapshot.val();
     beepSwitch.classList.toggle('on', beepState === true);
 });
@@ -1717,4 +1717,3 @@ addLogEntry('INFO', 'Dashboard initialized successfully.');
 </script>
 </body>
 </html>
-
