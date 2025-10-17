@@ -184,18 +184,18 @@
     font-weight: 600;
     font-size: 0.9rem;
   }
-  .ir-lock-switch {
+  ir-lock-switch {
     width: 50px;
     height: 24px;
     border-radius: 12px;
-    background: #ef4444; /* Red when locked */
+    background: #10b981; /* Red when locked */
     position: relative;
     cursor: pointer;
     transition: background 0.2s;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
   }
   .ir-lock-switch.unlocked {
-    background: #10b981; /* Green when unlocked */
+    background: #ef4444; /* Green when unlocked */
   }
   .ir-lock-switch::after {
     content: '';
@@ -233,14 +233,14 @@
     width: 50px;
     height: 24px;
     border-radius: 12px;
-    background: #ef4444; /* Red when locked */
+    background:#10b981;  /* Red when locked */
     position: relative;
     cursor: pointer;
     transition: background 0.2s;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
   }
   .button-lock-switch.unlocked {
-    background: #10b981; /* Green when unlocked */
+    background: #ef4444;  /* Green when unlocked */
   }
   .button-lock-switch::after {
     content: '';
@@ -1900,3 +1900,4 @@ addLogEntry('INFO', 'Dashboard initialized successfully.');
 </script>
 </body>
 </html>
+
