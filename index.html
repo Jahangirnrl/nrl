@@ -167,6 +167,96 @@
     color: #0f172a;
   }
   .restart-btn:hover { background: #d97706; }
+  
+  /* UPDATED: IR Lock Switch Styles */
+  .ir-lock-switch-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(30, 41, 59, 0.7);
+    border-radius: 8px;
+    border: 1px solid #334155;
+  }
+  .ir-lock-switch-label {
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .ir-lock-switch {
+    width: 50px;
+    height: 24px;
+    border-radius: 12px;
+    background: #ef4444; /* Red when locked */
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .ir-lock-switch.unlocked {
+    background: #10b981; /* Green when unlocked */
+  }
+  .ir-lock-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  .ir-lock-switch.unlocked::after {
+    transform: translateX(26px);
+  }
+
+  /* NEW: Physical Button Lock Switch Styles */
+  .button-lock-switch-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(30, 41, 59, 0.7);
+    border-radius: 8px;
+    border: 1px solid #334155;
+  }
+  .button-lock-switch-label {
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .button-lock-switch {
+    width: 50px;
+    height: 24px;
+    border-radius: 12px;
+    background: #ef4444; /* Red when locked */
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .button-lock-switch.unlocked {
+    background: #10b981; /* Green when unlocked */
+  }
+  .button-lock-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  .button-lock-switch.unlocked::after {
+    transform: translateX(26px);
+  }
 
   /* BEEP Switch Styles */
   .beep-switch-container {
@@ -530,9 +620,14 @@
     cursor: pointer;
     margin-top: 10px;
     transition: background 0.2s;
+    width: 100%;
   }
   .weather-refresh-btn:hover {
     background: #0ea5e9;
+  }
+  .weather-refresh-btn:disabled {
+    background: #64748b;
+    cursor: not-allowed;
   }
   .weather-loading {
     text-align: center;
@@ -623,6 +718,18 @@
             <div class="beep-switch-container">
                 <span class="beep-switch-label">MUTE / UNMUTE</span>
                 <div class="beep-switch" id="beepSwitch"></div>
+            </div>
+            
+            <!-- UPDATED: IR Lock Switch -->
+            <div class="ir-lock-switch-container">
+                <span class="ir-lock-switch-label">IR LOCK</span>
+                <div class="ir-lock-switch" id="irLockSwitch"></div>
+            </div>
+
+            <!-- NEW: Physical Button Lock Switch -->
+            <div class="button-lock-switch-container">
+                <span class="button-lock-switch-label">BUTTON LOCK</span>
+                <div class="button-lock-switch" id="buttonLockSwitch"></div>
             </div>
             
             <button class="dropdown-btn restart-btn" id="restartBtn">ESP32 RESTART</button>
@@ -806,6 +913,11 @@
         </div>
       </div>
       
+      <!-- NEW: Weather Refresh Button -->
+      <button class="weather-refresh-btn" id="weatherRefreshBtn">
+        <i class="fas fa-sync-alt"></i> Refresh Weather Data
+      </button>
+      
       <div id="weatherSource" class="weather-source"></div>
     </div>
   </div>
@@ -813,7 +925,7 @@
   <div id="logs" class="tab-content">
     <div class="automation-content-wrapper" style="margin-bottom: 15px;">
       <div class="automation-switch" id="rtdbLogsSwitchContainer">
-        <span>Load Logs from RTDB (Realtime Device Logs)</span>
+        <span>Load Logs from RTDB</span>
         <div id="rtdbLogsSwitch" class="switch-btn"></div>
       </div>
     </div>
@@ -847,7 +959,7 @@ const auth = getAuth(app);
 
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'room2_session_active';
-const DASHBOARD_VERSION = 'v1.0.0'; // Updated version for firmware display
+const DASHBOARD_VERSION = 'v1.0.1';
 
 const loginScreen = document.getElementById('loginScreen');
 const dashboardContainer = document.getElementById('dashboardContainer');
@@ -861,8 +973,9 @@ const profileDropdown = document.getElementById('profileDropdown');
 const userEmailDisplay = document.getElementById('userEmailDisplay');
 const logoutBtn = document.getElementById('logoutBtn');
 const beepSwitch = document.getElementById('beepSwitch');
+const irLockSwitch = document.getElementById('irLockSwitch'); // NEW: IR Lock switch
+const buttonLockSwitch = document.getElementById('buttonLockSwitch'); // NEW: Physical Button Lock switch
 const restartBtn = document.getElementById('restartBtn');
-
 const statusEl = document.getElementById('status');
 const versionInfoEl = document.getElementById('versionInfo');
 const firmwareInfoEl = document.getElementById('firmwareInfo');
@@ -870,6 +983,7 @@ const uptimeEl = document.getElementById('uptime');
 const lastDisconnectEl = document.getElementById('lastDisconnect');
 const logViewer = document.getElementById('logViewer');
 const relayBtns = [document.getElementById('r1'),document.getElementById('r2'),document.getElementById('r3'),document.getElementById('r4')];
+const weatherRefreshBtn = document.getElementById('weatherRefreshBtn');
 
 // Individual Relay Automation Switches
 const relayAutoSwitches = [
@@ -1097,11 +1211,52 @@ beepSwitch.addEventListener('click', () => {
             beepSwitch.classList.toggle('on', newBeepState);
             const statusText = newBeepState ? 'ENABLED' : 'DISABLED';
             addLogEntry('INFO', `BEEP ${statusText}.`, 'device');
-            (9020);
-            profileDropdown.classList.remove('show');//-----------------------------------------
+            profileDropdown.classList.remove('show');
         })
         .catch(error => {
             addLogEntry('ERROR', `Failed to set BEEP state: ${error.message}`);
+        });
+});
+
+// NEW: IR Lock Switch Event Listener
+irLockSwitch.addEventListener('click', () => {
+    if (!clientConnected) {
+        addLogEntry('ERROR', 'Cannot toggle IR Lock: Client disconnected from Firebase.');
+        return;
+    }
+    
+    const newIrLockState = !irLockSwitch.classList.contains('unlocked');
+    
+    set(ref(db, 'HOME/ROOM_2/settings/ir_lock'), newIrLockState)
+        .then(() => {
+            irLockSwitch.classList.toggle('unlocked', newIrLockState);
+            const statusText = newIrLockState ? 'UNLOCKED' : 'LOCKED';
+            addLogEntry('INFO', `IR ${statusText}.`, 'device');
+            profileDropdown.classList.remove('show');
+        })
+        .catch(error => {
+            addLogEntry('ERROR', `Failed to set IR lock state: ${error.message}`);
+        });
+});
+
+// NEW: Physical Button Lock Switch Event Listener
+buttonLockSwitch.addEventListener('click', () => {
+    if (!clientConnected) {
+        addLogEntry('ERROR', 'Cannot toggle Physical Button Lock: Client disconnected from Firebase.');
+        return;
+    }
+    
+    const newButtonLockState = !buttonLockSwitch.classList.contains('unlocked');
+    
+    set(ref(db, 'HOME/ROOM_2/settings/button_lock'), newButtonLockState)
+        .then(() => {
+            buttonLockSwitch.classList.toggle('unlocked', newButtonLockState);
+            const statusText = newButtonLockState ? 'UNLOCKED' : 'LOCKED';
+            addLogEntry('INFO', `Physical Buttons ${statusText}.`, 'device');
+            profileDropdown.classList.remove('show');
+        })
+        .catch(error => {
+            addLogEntry('ERROR', `Failed to set physical button lock state: ${error.message}`);
         });
 });
 
@@ -1136,6 +1291,18 @@ restartBtn.addEventListener('click', () => {
 onValue(ref(db, 'HOME/ROOM_2/settings/beepEnabled'), (snapshot) => {
     const beepState = snapshot.val();
     beepSwitch.classList.toggle('on', beepState === true);
+});
+
+// Listen for IR LOCK state from RTDB
+onValue(ref(db, 'HOME/ROOM_2/settings/ir_lock'), (snapshot) => {
+    const irLockState = snapshot.val();
+    irLockSwitch.classList.toggle('unlocked', irLockState === true);
+});
+
+// NEW: Listen for Physical Button Lock state from RTDB
+onValue(ref(db, 'HOME/ROOM_2/settings/button_lock'), (snapshot) => {
+    const buttonLockState = snapshot.val();
+    buttonLockSwitch.classList.toggle('unlocked', buttonLockState === true);
 });
 
 // Listen for RESTART state from RTDB (in case it's set elsewhere)
@@ -1228,6 +1395,10 @@ function generateDemoWeatherData() {
 }
 
 async function loadWeatherData() {
+  // Disable refresh button during loading
+  weatherRefreshBtn.disabled = true;
+  weatherRefreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+  
   weatherLocationEl.textContent = 'Loading weather data...';
   temperatureEl.textContent = '--';
   humidityEl.textContent = '--';
@@ -1283,8 +1454,15 @@ async function loadWeatherData() {
     weatherSourceEl.textContent = `Source: ${demoData.source}`;
 
     addLogEntry('ERROR', `All weather services failed: ${error.message}`, 'weather');
+  } finally {
+    // Re-enable refresh button
+    weatherRefreshBtn.disabled = false;
+    weatherRefreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Weather Data';
   }
 }
+
+// Weather Refresh Button Event Listener
+weatherRefreshBtn.addEventListener('click', loadWeatherData);
 
 // --- AUTHENTICATION & SESSION LOGIC ---
 function showLogin() {
@@ -1706,6 +1884,11 @@ tabs.forEach(btn=>{
     if (btn.dataset.tab === 'logs' && rtdbLogsEnabled) {
         setupRTDBLogListener();
     }
+    
+    // Load weather data when switching to weather tab
+    if (btn.dataset.tab === 'weather') {
+        loadWeatherData();
+    }
   });
 });
 
@@ -1717,5 +1900,3 @@ addLogEntry('INFO', 'Dashboard initialized successfully.');
 </script>
 </body>
 </html>
-
-
