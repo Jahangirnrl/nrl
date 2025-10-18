@@ -1,0 +1,2092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROOM_2 Dashboard</title>
+<link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/7733/7733361.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+  body {
+    margin:0; padding:0; 
+    font-family: "Inter", sans-serif;
+    background:#0f172a; /* Slate 900 */
+    color:#e2e8f0; /* Slate 200 */
+    line-height:1.4;
+    font-size: 0.95rem; 
+  }
+
+  /* Global Container for Dashboard Content */
+  #dashboardContainer {
+    padding: 10px;
+  }
+
+  /* --- LOGIN SCREEN STYLES --- */
+  #loginScreen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+    background: #1e293b; 
+  }
+  .login-card {
+    background: #0f172a;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    max-width: 350px;
+    width: 100%;
+  }
+  .login-card h2 {
+    color: #38bdf8;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+  }
+  .login-input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    background: #1e293b;
+    color: #f1f5f9;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+  .login-input:focus { outline: none; border-color: #38bdf8; }
+  .login-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    background: #10b981;
+    color: #042f2e;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .login-btn:hover { background: #059669; }
+  #loginError {
+    color: #ef4444;
+    margin-top: 10px;
+    font-size: 0.85rem;
+  }
+
+  /* --- HEADER AND PROFILE MENU STYLES (MODIFIED) --- */
+  header {
+    display: grid;
+    /* 3-column layout: Left Button | Centered Content | Right Spacer */
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 0 5px; 
+    position: relative; 
+  }
+  header h1 {
+    color:#38bdf8; 
+    margin:0; 
+    font-size:1.6rem; 
+    text-align: center;
+  }
+  header h1 i {
+    margin-right: 8px; /* Spacing for the icon */
+  }
+  .header-center-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Centers items horizontally */
+      justify-content: center;
+      grid-column: 2; /* Ensures this content sits in the middle column */
+      width: 100%;
+  }
+  .profile-menu {
+    grid-column: 1; /* NEW: Ensures menu is in the left column */
+    justify-self: start; /* Pushes the menu to the far left */
+    position: relative;
+    z-index: 02;
+  }
+  .profile-btn {
+    background: transparent;
+    border: none;
+    color: #38bdf8;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+  }
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    /* NEW: Position the dropdown 10px ABOVE the button, aligned to the left */
+    margin-top: 0;
+    left: 0;
+    background-color: #1e293b;
+    min-width: 220px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.4);
+    border-radius: 8px;
+    z-index: 20;
+    padding: 15px;
+    border: 1px solid #334155;
+    text-align: left;
+  }
+  .dropdown-content.show {
+    display: block;
+  }
+  .dropdown-content p {
+    margin: 0 0 15px 0;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    word-break: break-word;
+  }
+  .dropdown-btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+    margin-bottom: 10px;
+  }
+  .dropdown-btn:last-child {
+    margin-bottom: 0;
+  }
+  .logout-btn { 
+    background: #ef4444;
+    color: #fff;
+  }
+  .logout-btn:hover { background: #b91c1c; }
+  .restart-btn {
+    background: #f59e0b;
+    color: #0f172a;
+  }
+  .restart-btn:hover { background: #d97706; }
+  
+  /* UPDATED: IR Lock Switch Styles */
+  .ir-lock-switch-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(30, 41, 59, 0.7);
+    border-radius: 8px;
+    border: 1px solid #334155;
+  }
+  .ir-lock-switch-label {
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .ir-lock-switch {
+    width: 50px;
+    height: 24px;
+    border-radius: 12px;
+    background: #10b981; /* Green when unlocked */
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .ir-lock-switch.unlocked {
+    background: #ef4444; /* Red when locked */
+    
+  }
+  .ir-lock-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  .ir-lock-switch.unlocked::after {
+    transform: translateX(26px);
+  }
+
+  /* NEW: Physical Button Lock Switch Styles */
+  .button-lock-switch-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(30, 41, 59, 0.7);
+    border-radius: 8px;
+    border: 1px solid #334155;
+  }
+  .button-lock-switch-label {
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .button-lock-switch {
+    width: 50px;
+    height: 24px;
+    border-radius: 12px;
+    background: #10b981; /* Green when unlocked */
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .button-lock-switch.unlocked {
+    background: #ef4444; /* Red when locked */
+  }
+  .button-lock-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  .button-lock-switch.unlocked::after {
+    transform: translateX(26px);
+  }
+
+  /* BEEP Switch Styles */
+  .beep-switch-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(30, 41, 59, 0.7);
+    border-radius: 8px;
+    border: 1px solid #334155;
+  }
+  .beep-switch-label {
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .beep-switch {
+    width: 50px;
+    height: 24px;
+    border-radius: 12px;
+    background: #ef4444;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .beep-switch.on {
+    background: #10b981;
+  }
+  .beep-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  .beep-switch.on::after {
+    transform: translateX(26px);
+  }
+
+  /* --- DASHBOARD ELEMENTS --- */
+  .tabs { 
+    display:flex; 
+    gap:6px; 
+    margin-top:6px; 
+    justify-content: center;
+  }
+  .tab-btn { 
+    padding:6px 12px; 
+    border:none; 
+    border-radius:6px; 
+    background:#1e293b; 
+    color:#94a3b8; 
+    cursor:pointer; 
+    font-weight:600; 
+    transition: background 0.2s, color 0.2s;
+    font-size:0.8rem; 
+  }
+  .tab-btn:hover { background:#334155; }
+  .tab-btn.active { 
+    background:#10b981; 
+    color:#042f2e; 
+  }
+  .tab-content { display:none; padding-top: 6px; }
+  .tab-content.active { display:block; }
+  
+  /* Status styles now handle three colors */
+  .status { 
+    display:inline-block; 
+    padding:4px 10px; 
+    border-radius:16px; 
+    background:#ef4444; /* Default: Device Offline (Red) */
+    color:#fff; 
+    font-weight:600; 
+    font-size:0.75rem; 
+    margin-top:10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: background 0.3s;
+    text-align: center;
+  }
+  .status.online { background:#10b981; } /* Device Online (Green) */
+
+  /* Version Info Styles - MODIFIED FOR COLORFUL DISPLAY */
+  .version-info-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 5px;
+    font-size: 0.7rem;
+  }
+  .dashboard-version {
+    text-align: left;
+    color: #38bdf8; /* Sky blue for dashboard version */
+    font-weight: 600;
+  }
+  .firmware-version {
+    text-align: right;
+    color: #10b981; /* Green for firmware version */
+    font-weight: 600;
+  }
+
+  .info-main { 
+    display:grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap:8px; 
+    margin-bottom:12px; 
+  }
+  .panel { 
+    background: rgba(30,41,59,0.9); 
+    border-radius:10px; 
+    padding:10px; 
+    text-align:center; 
+    box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+    border: 1px solid #334155;
+  }
+  .panel .label { 
+    font-size:0.65rem; 
+    color:#94a3b8; 
+    margin-bottom:2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .panel .value { 
+    font-weight:700; 
+    font-size:1rem; 
+    color:#f1f5f9; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .relays { 
+    display:flex; 
+    justify-content:center; 
+    gap:16px; 
+    flex-wrap:wrap; 
+    margin-bottom:20px; 
+    padding: 6px 0;
+  }
+  .relay-btn { 
+    width:65px; 
+    height:65px; 
+    border-radius:50%; 
+    border:3px solid #475569; 
+    display:flex; 
+    flex-direction: column;
+    justify-content:center; 
+    align-items:center; 
+    background:#1e293b; 
+    color:#94a3b8; 
+    font-weight:600; 
+    font-size:0.85rem;
+    cursor:pointer; 
+    transition:0.3s; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+  }
+  .relay-btn.on { 
+    background:#10b981; 
+    border-color:#34d399; 
+    color:#042f2e; 
+    box-shadow: 0 6px 12px rgba(16, 185, 129, 0.4);
+  }
+
+  /* Automation Centering */
+  .automation-content-wrapper {
+    max-width: 500px; 
+    margin: 0 auto; 
+  }
+
+  /* NEW: Automation Schedule Styles */
+  .automation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(30, 41, 59, 0.9);
+    border-radius: 8px;
+    border: 1px solid #334155;
+  }
+
+  .add-schedule-btn {
+    background: #10b981;
+    color: #042f2e;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .add-schedule-btn:hover {
+    background: #059669;
+  }
+
+  .schedule-card {
+    background: rgba(30, 41, 59, 0.9);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 12px;
+    border: 1px solid #334155;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+  }
+
+  .schedule-card.enabled {
+    border-left: 4px solid #10b981;
+  }
+
+  .schedule-card.disabled {
+    border-left: 4px solid #ef4444;
+    opacity: 0.7;
+  }
+
+  .schedule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .schedule-name {
+    font-weight: 700;
+    color: #38bdf8;
+    font-size: 1rem;
+  }
+
+  .schedule-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .schedule-action-btn {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: color 0.2s;
+  }
+
+  .schedule-action-btn:hover {
+    color: #e2e8f0;
+  }
+
+  .schedule-details {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-bottom: 10px;
+  }
+
+  .schedule-trigger, .schedule-action {
+    margin-bottom: 5px;
+  }
+
+  /* Schedule Form Styles */
+  .schedule-form {
+    background: rgba(30, 41, 59, 0.95);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border: 2px solid #38bdf8;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .form-input, .form-select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #475569;
+    border-radius: 6px;
+    background: #1e293b;
+    color: #f1f5f9;
+    font-size: 0.9rem;
+  }
+
+  .form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: #38bdf8;
+  }
+
+  .trigger-fields {
+    background: rgba(55, 65, 81, 0.5);
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 8px;
+  }
+
+  .days-selector {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .day-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 15px;
+  }
+
+  .save-btn {
+    background: #10b981;
+    color: #042f2e;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .cancel-btn {
+    background: #64748b;
+    color: #f1f5f9;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* Weather Tab Styles - 2x2 Grid Layout */
+  .weather-content-wrapper {
+    max-width: 400px; 
+    margin: 0 auto; 
+  }
+  .weather-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  .weather-tile {
+    background: rgba(30,41,59,0.9);
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid #334155;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+  }
+  .weather-tile .title {
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: #38bdf8;
+    font-size: 1rem;
+    text-align: center;
+  }
+  .weather-tile .value {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #f1f5f9;
+  }
+  .weather-tile .unit {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    margin-left: 4px;
+  }
+  .weather-tile .icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    color: #38bdf8;
+  }
+  .weather-location {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #94a3b8;
+    font-size: 0.9rem;
+  }
+  .weather-refresh-btn {
+    background: #38bdf8;
+    color: #0f172a;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+    width: 100%;
+  }
+  .weather-refresh-btn:hover {
+    background: #0ea5e9;
+  }
+  .weather-refresh-btn:disabled {
+    background: #64748b;
+    cursor: not-allowed;
+  }
+  .weather-loading {
+    text-align: center;
+    color: #94a3b8;
+    font-style: italic;
+  }
+  .weather-error {
+    text-align: center;
+    color: #fbbf24;
+    font-size: 0.85rem;
+    margin-top: 10px;
+    padding: 8px;
+    background: rgba(251, 191, 36, 0.1);
+    border-radius: 6px;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+  }
+  .weather-source {
+    text-align: center;
+    font-size: 0.7rem;
+    color: #64748b;
+    margin-top: 5px;
+  }
+
+  /* Log Viewer Styles */
+  .log-viewer {
+    height: 350px; 
+    overflow-y: scroll;
+    background: #1e293b;
+    border-radius: 8px;
+    padding: 8px;
+    border: 1px solid #334155;
+    white-space: pre-wrap;
+    font-family: monospace;
+    font-size: 0.8rem; 
+    color: #cbd5e1;
+  }
+  .log-entry {
+    border-bottom: 1px dotted #334155;
+    padding: 3px 0;
+  }
+  .log-entry:last-child { border-bottom: none; }
+  .log-entry-time {
+    color: #94a3b8;
+    margin-right: 6px;
+  }
+  .log-entry-type-info { color: #38bdf8; }
+  .log-entry-type-warn { color: #fbbf24; }
+  .log-entry-type-error { color: #ef4444; }
+  .log-entry-type-relay { color: #10b981; }
+  .log-entry-type-device { color: #8b5cf6; } /* Purple for device logs */
+  .log-entry-type-rtdb { color: #f97316; } /* Orange for RTDB logs */
+  .log-entry-type-weather { color: #06b6d4; } /* Cyan for weather logs */
+  .log-entry-type-automation { color: #f97316; } /* Orange for automation logs */
+</style>
+</head>
+<body>
+
+<div id="loginScreen" style="display: none;">
+  <div class="login-card">
+    <h2>ROOM_2 Login</h2>
+    <input type="email" id="loginEmail" class="login-input" placeholder="Email">
+    <input type="password" id="loginPassword" class="login-input" placeholder="Password">
+    <button id="loginBtn" class="login-btn">Sign In</button>
+    <div id="loginError"></div>
+    <button id="createAccountBtn" class="login-btn" style="margin-top: 10px; background: #94a3b8;">Create Account (New User)</button>
+  </div>
+</div>
+
+<div id="dashboardContainer" style="display: none;">
+  <header>
+    <div class="profile-menu">
+        <button class="profile-btn" id="profileBtn">⋮</button>
+        <div class="dropdown-content" id="profileDropdown">
+            <p>Logged in as:</p>
+            <p id="userEmailDisplay">user@gmail.com</p>
+            
+            <!-- BEEP Switch -->
+            <div class="beep-switch-container">
+                <span class="beep-switch-label">MUTE / UNMUTE</span>
+                <div class="beep-switch" id="beepSwitch"></div>
+            </div>
+            
+            <!-- UPDATED: IR Lock Switch -->
+            <div class="ir-lock-switch-container">
+                <span class="ir-lock-switch-label">IR LOCK</span>
+                <div class="ir-lock-switch" id="irLockSwitch"></div>
+            </div>
+
+            <!-- NEW: Physical Button Lock Switch -->
+            <div class="button-lock-switch-container">
+                <span class="button-lock-switch-label">BUTTON LOCK</span>
+                <div class="button-lock-switch" id="buttonLockSwitch"></div>
+            </div>
+            
+            <button class="dropdown-btn restart-btn" id="restartBtn">ESP32 RESTART</button>
+            <button class="dropdown-btn logout-btn" id="logoutBtn">Logout</button>
+        </div>
+    </div>
+    
+    <div class="header-center-content">
+      <h1><i class="fa-solid fa-house-chimney"></i> ROOM_2 Dashboard</h1>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+        <button class="tab-btn" data-tab="automation">Automation</button>
+        <button class="tab-btn" data-tab="stats">Stats</button>
+        <button class="tab-btn" data-tab="weather">Weather</button>
+        <button class="tab-btn" data-tab="logs">Logs</button>
+      </div>
+      
+      <div class="version-info-container">
+        <div class="dashboard-version" id="versionInfo"></div>
+        <div id="status" class="status">Offline</div>
+        <div class="firmware-version" id="firmwareInfo">Firmware: --</div>
+      </div>
+    </div>
+    
+    <div></div> 
+  </header>
+
+  <div id="dashboard" class="tab-content active">
+    <div class="info-main">
+      <div class="panel"><div class="label">IP</div><div id="ip" class="value">--</div></div>
+      <div class="panel"><div class="label">MAC</div><div id="mac" class="value">--</div></div>
+      <div class="panel"><div class="label">SSID</div><div id="ssid" class="value">--</div></div>
+      <div class="panel"><div class="label">Uptime</div><div id="uptime" class="value">--</div></div>
+      <div class="panel"><div class="label">SunRise</div><div id="sunrise" class="value">--:--</div></div>
+      <div class="panel"><div class="label">SunSet</div><div id="sunset" class="value">--:--</div></div>
+    </div>
+
+    <div class="relays">
+      <div id="r1" class="relay-btn">FAN</div>
+      <div id="r2" class="relay-btn">LIGHT</div>
+      <div id="r3" class="relay-btn">FAN-2</div>
+      <div id="r4" class="relay-btn">DIM-L</div>
+    </div>
+
+    <footer class="info-main">
+      <div class="panel"><div class="label">Last Update (Human)</div><div id="lastUpdateHuman" class="value">--:--</div></div>
+      <div class="panel"><div class="label">Last Update (Timestamp)</div><div id="lastUpdate" class="value">--:--</div></div>
+    </footer>
+  </div>
+
+  <div id="automation" class="tab-content">
+    <div class="automation-content-wrapper">
+      <div class="automation-header">
+        <h3 style="color: #38bdf8; margin: 0;">Automation Schedules</h3>
+        <button class="add-schedule-btn" id="addScheduleBtn">
+          <i class="fas fa-plus"></i> Add Schedule
+        </button>
+      </div>
+
+      <div id="scheduleFormContainer" style="display: none;"></div>
+      <div id="schedulesList"></div>
+    </div>
+  </div>
+
+  <div id="stats" class="tab-content">
+    <div class="info-main">
+      <div class="panel">
+        <div class="label">Online Duration (Today)</div>
+        <div id="onlineDuration" class="value">--</div>
+      </div>
+      <div class="panel">
+        <div class="label">Offline Duration (Today)</div>
+        <div id="offlineDuration" class="value">--</div>
+      </div>
+      <div class="panel">
+        <div class="label">Daily Uptime (%)</div>
+        <div id="uptimePercent" class="value">--</div>
+      </div>
+      <div class="panel">
+        <div class="label">Last Disconnect</div>
+        <div id="lastDisconnect" class="value">--</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="weather" class="tab-content">
+    <div class="weather-content-wrapper">
+      <div class="weather-location" id="weatherLocation">Loading weather data...</div>
+      
+      <div class="weather-grid">
+        <div class="weather-tile">
+          <div class="icon"><i class="fas fa-thermometer-half"></i></div>
+          <div class="title">Temperature</div>
+          <div class="value"><span id="temperature">--</span><span class="unit">°C</span></div>
+        </div>
+        <div class="weather-tile">
+          <div class="icon"><i class="fas fa-tint"></i></div>
+          <div class="title">Humidity</div>
+          <div class="value"><span id="humidity">--</span><span class="unit">%</span></div>
+        </div>
+        
+        <div class="weather-tile">
+          <div class="icon"><i class="fas fa-wind"></i></div>
+          <div class="title">Wind Speed</div>
+          <div class="value"><span id="windSpeed">--</span><span class="unit">km/h</span></div>
+        </div>
+        <div class="weather-tile">
+          <div class="icon"><i class="fas fa-cloud-rain"></i></div>
+          <div class="title">Rain Status</div>
+          <div class="value"><span id="rainStatus">--</span></div>
+        </div>
+      </div>
+      
+      <!-- NEW: Weather Refresh Button -->
+      <button class="weather-refresh-btn" id="weatherRefreshBtn">
+        <i class="fas fa-sync-alt"></i> Refresh Weather Data
+      </button>
+      
+      <div id="weatherSource" class="weather-source"></div>
+    </div>
+  </div>
+
+  <div id="logs" class="tab-content">
+    <div class="automation-content-wrapper" style="margin-bottom: 15px;">
+      <div class="automation-switch" id="rtdbLogsSwitchContainer">
+        <span>Load Logs from RTDB</span>
+        <div id="rtdbLogsSwitch" class="switch-btn"></div>
+      </div>
+    </div>
+    <div class="log-viewer" id="logViewer">
+      <div class="log-entry"><span class="log-entry-time">--:--:--</span><span class="log-entry-type-info">INFO:</span> Client-side log initialized.</div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+// --- FIREBASE IMPORTS ---
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getDatabase, ref, onValue, set, get, remove } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAei8j8RQXq_zspkohtH40g_gvHUfIx-Uw",
+  authDomain: "home-control-df716.firebaseapp.com",
+  databaseURL: "https://home-control-df716-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "home-control-df716",
+  storageBucket: "home-control-df716.firebasestorage.app",
+  messagingSenderId: "956714070689",
+  appId: "1:956714070689:web:414179e22a04601349b6e0",
+  measurementId: "G-LEHP8KM47D"
+};
+
+// Initialize Firebase services
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+// --- GLOBAL STATE & UI ELEMENTS ---
+const SESSION_KEY = 'room2_session_active';
+const DASHBOARD_VERSION = 'v1.0.1';
+
+const loginScreen = document.getElementById('loginScreen');
+const dashboardContainer = document.getElementById('dashboardContainer');
+const loginEmail = document.getElementById('loginEmail');
+const loginPassword = document.getElementById('loginPassword');
+const loginBtn = document.getElementById('loginBtn');
+const createAccountBtn = document.getElementById('createAccountBtn');
+const loginError = document.getElementById('loginError');
+const profileBtn = document.getElementById('profileBtn');
+const profileDropdown = document.getElementById('profileDropdown');
+const userEmailDisplay = document.getElementById('userEmailDisplay');
+const logoutBtn = document.getElementById('logoutBtn');
+const beepSwitch = document.getElementById('beepSwitch');
+const irLockSwitch = document.getElementById('irLockSwitch');
+const buttonLockSwitch = document.getElementById('buttonLockSwitch');
+const restartBtn = document.getElementById('restartBtn');
+const statusEl = document.getElementById('status');
+const versionInfoEl = document.getElementById('versionInfo');
+const firmwareInfoEl = document.getElementById('firmwareInfo');
+const uptimeEl = document.getElementById('uptime');
+const lastDisconnectEl = document.getElementById('lastDisconnect');
+const logViewer = document.getElementById('logViewer');
+const relayBtns = [document.getElementById('r1'),document.getElementById('r2'),document.getElementById('r3'),document.getElementById('r4')];
+const weatherRefreshBtn = document.getElementById('weatherRefreshBtn');
+
+// NEW: Automation elements
+const addScheduleBtn = document.getElementById('addScheduleBtn');
+const scheduleFormContainer = document.getElementById('scheduleFormContainer');
+const schedulesList = document.getElementById('schedulesList');
+
+// NEW LOG ELEMENTS
+const rtdbLogsSwitch = document.getElementById('rtdbLogsSwitch');
+const rtdbLogsSwitchContainer = document.getElementById('rtdbLogsSwitchContainer');
+
+// Weather elements
+const temperatureEl = document.getElementById('temperature');
+const humidityEl = document.getElementById('humidity');
+const rainStatusEl = document.getElementById('rainStatus');
+const windSpeedEl = document.getElementById('windSpeed');
+const weatherLocationEl = document.getElementById('weatherLocation');
+const weatherSourceEl = document.getElementById('weatherSource');
+
+// Internal State for Connection Management
+let lastHeartbeatTime = null; 
+let deviceOnline = false;     
+let clientConnected = false;  
+let initialOnlineLoadComplete = false;
+let reconnectTimer = null;
+
+// Heartbeat Thresholds
+const OFFLINE_TIMEOUT = 59;
+const RECONNECT_DEBOUNCE = 20;
+
+// Client Stats
+let lastDisconnectTimestamp = null; 
+let totalOnlineSeconds = 0;
+let totalOfflineSeconds = 0;
+let lastStateChangeTime = Date.now(); 
+
+// Weather Configuration
+const WEATHER_UPDATE_INTERVAL = 10 * 60 * 1000;
+let lastWeatherUpdate = 0;
+let currentWeatherSource = "Loading...";
+
+// Internal state for RTDB Log
+let rtdbLogsEnabled = false;
+let logListenerUnsubscribe = null;
+
+// --- UTILITIES & DASHBOARD LOGIC ---
+
+// Dhaka Time Options for robust time zone handling
+const DHAKA_OPTIONS = { 
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit', 
+  minute: '2-digit', 
+  second: '2-digit',
+  hour12: true, 
+  timeZone: 'Asia/Dhaka' 
+};
+
+function formatTime(timestamp) {
+    if (!timestamp) return '--:--:--';
+    const d = new Date(timestamp);
+    
+    const formatter = new Intl.DateTimeFormat('en-US', DHAKA_OPTIONS);
+    const parts = formatter.formatToParts(d);
+
+    let h, m, s, ampm;
+    
+    parts.forEach(part => {
+        if (part.type === 'hour') h = part.value;
+        if (part.type === 'minute') m = part.value;
+        if (part.type === 'second') s = part.value;
+        if (part.type === 'dayPeriod') ampm = part.value;
+    });
+
+    if (h && m && s) {
+        return `${h}:${m}:${s} ${ampm}`;
+    }
+    
+    return d.toLocaleTimeString('en-US', DHAKA_OPTIONS);
+}
+
+function addLogEntry(type, message, source = 'client') {
+    if (rtdbLogsEnabled && source === 'client') {
+        return; 
+    }
+    
+    const time = formatTime(Date.now());
+    const typeClass = `log-entry-type-${type.toLowerCase()}`;
+    const sourceClass = source === 'device' ? 'log-entry-type-device' : 
+                        source === 'rtdb' ? 'log-entry-type-rtdb' :
+                        source === 'weather' ? 'log-entry-type-weather' :
+                        source === 'automation' ? 'log-entry-type-automation' : '';
+    
+    const entry = document.createElement('div');
+    entry.className = 'log-entry';
+    entry.innerHTML = `<span class="log-entry-time">${time}</span><span class="${typeClass} ${sourceClass}">${type}:</span> ${message}`;
+
+    logViewer.prepend(entry);
+    while (logViewer.children.length > 50) {
+        logViewer.removeChild(logViewer.lastChild);
+    }
+}
+
+// Set version on load
+versionInfoEl.textContent = `Dashboard: ${DASHBOARD_VERSION}`;
+
+// Listen for Firmware Version from RTDB
+onValue(ref(db, 'HOME/ROOM_2/device/firmwareVersion'), (snapshot) => {
+    const firmwareVersion = snapshot.val();
+    if (firmwareVersion) {
+        firmwareInfoEl.textContent = `Firmware: ${firmwareVersion}`;
+        addLogEntry('INFO', `Firmware version detected: ${firmwareVersion}`, 'device');
+    } else {
+        firmwareInfoEl.textContent = 'Firmware: --';
+    }
+});
+
+// --- AUTOMATION SCHEDULE FUNCTIONS ---
+
+function showScheduleForm(scheduleData = null) {
+    const isEdit = scheduleData !== null;
+    
+    const formHTML = `
+        <div class="schedule-form">
+            <h3 style="color: #38bdf8; margin-bottom: 15px;">${isEdit ? 'Edit Schedule' : 'Add New Schedule'}</h3>
+            
+            <div class="form-group">
+                <label class="form-label">Schedule Name</label>
+                <input type="text" id="scheduleName" class="form-input" value="${isEdit ? scheduleData.name : ''}" placeholder="Enter schedule name">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Trigger Type</label>
+                <select id="triggerType" class="form-select">
+                    <option value="time" ${isEdit && scheduleData.triggerType === 'time' ? 'selected' : ''}>Time-based</option>
+                    <option value="sunrise" ${isEdit && scheduleData.triggerType === 'sunrise' ? 'selected' : ''}>Sunrise</option>
+                    <option value="sunset" ${isEdit && scheduleData.triggerType === 'sunset' ? 'selected' : ''}>Sunset</option>
+                    <option value="temperature" ${isEdit && scheduleData.triggerType === 'temperature' ? 'selected' : ''}>Temperature</option>
+                    <option value="web" ${isEdit && scheduleData.triggerType === 'web' ? 'selected' : ''}>Web Trigger</option>
+                </select>
+            </div>
+            
+            <div id="triggerFields" class="trigger-fields">
+                ${renderTriggerFields(scheduleData)}
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Action</label>
+                <select id="actionSelect" class="form-select">
+                    <option value="relay1_on" ${isEdit && scheduleData.action === 'relay1_on' ? 'selected' : ''}>Turn Relay 1 (FAN) On</option>
+                    <option value="relay1_off" ${isEdit && scheduleData.action === 'relay1_off' ? 'selected' : ''}>Turn Relay 1 (FAN) Off</option>
+                    <option value="relay2_on" ${isEdit && scheduleData.action === 'relay2_on' ? 'selected' : ''}>Turn Relay 2 (LIGHT) On</option>
+                    <option value="relay2_off" ${isEdit && scheduleData.action === 'relay2_off' ? 'selected' : ''}>Turn Relay 2 (LIGHT) Off</option>
+                    <option value="relay3_on" ${isEdit && scheduleData.action === 'relay3_on' ? 'selected' : ''}>Turn Relay 3 (FAN-2) On</option>
+                    <option value="relay3_off" ${isEdit && scheduleData.action === 'relay3_off' ? 'selected' : ''}>Turn Relay 3 (FAN-2) Off</option>
+                    <option value="relay4_on" ${isEdit && scheduleData.action === 'relay4_on' ? 'selected' : ''}>Turn Relay 4 (DIM-L) On</option>
+                    <option value="relay4_off" ${isEdit && scheduleData.action === 'relay4_off' ? 'selected' : ''}>Turn Relay 4 (DIM-L) Off</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <input type="checkbox" id="scheduleEnabled" ${isEdit && scheduleData.enabled !== false ? 'checked' : ''}>
+                    Enable Schedule
+                </label>
+            </div>
+            
+            <div class="form-actions">
+                <button class="cancel-btn" id="cancelScheduleBtn">Cancel</button>
+                <button class="save-btn" id="saveScheduleBtn">Save Schedule</button>
+            </div>
+        </div>
+    `;
+    
+    scheduleFormContainer.innerHTML = formHTML;
+    scheduleFormContainer.style.display = 'block';
+    
+    // Add event listeners for the new buttons
+    document.getElementById('cancelScheduleBtn').addEventListener('click', hideScheduleForm);
+    document.getElementById('saveScheduleBtn').addEventListener('click', () => saveSchedule(scheduleData?.id));
+    
+    // Add event listener for trigger type change
+    document.getElementById('triggerType').addEventListener('change', updateTriggerFields);
+    
+    // Scroll to form
+    scheduleFormContainer.scrollIntoView({ behavior: 'smooth' });
+}
+
+function renderTriggerFields(scheduleData) {
+    const triggerType = scheduleData?.triggerType || 'time';
+    
+    switch(triggerType) {
+        case 'time':
+            return `
+                <div class="form-group">
+                    <label class="form-label">Time</label>
+                    <input type="time" id="scheduleTime" class="form-input" value="${scheduleData?.time || '07:00'}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Days</label>
+                    <div class="days-selector">
+                        ${['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].map(day => `
+                            <label class="day-checkbox">
+                                <input type="checkbox" id="day_${day}" ${!scheduleData || scheduleData.days?.includes(day) ? 'checked' : ''}>
+                                ${day.toUpperCase()}
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        case 'temperature':
+            return `
+                <div class="form-group">
+                    <label class="form-label">Condition</label>
+                    <select id="tempCondition" class="form-select">
+                        <option value=">" ${scheduleData?.condition === '>' ? 'selected' : ''}>Temperature Above</option>
+                        <option value="<" ${scheduleData?.condition === '<' ? 'selected' : ''}>Temperature Below</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Temperature Value (°C)</label>
+                    <input type="number" id="tempValue" class="form-input" value="${scheduleData?.value || 25}" min="-10" max="50" step="0.5" placeholder="Enter temperature">
+                </div>
+            `;
+        case 'sunrise':
+            return `
+                <div class="form-group">
+                    <label class="form-label">Sunrise Offset (minutes)</label>
+                    <input type="number" id="sunOffset" class="form-input" value="${scheduleData?.offset || 0}" min="-120" max="120" step="1">
+                    <small style="color: #94a3b8;">Positive for after sunrise, negative for before sunrise</small>
+                </div>
+            `;
+        case 'sunset':
+            return `
+                <div class="form-group">
+                    <label class="form-label">Sunset Offset (minutes)</label>
+                    <input type="number" id="sunOffset" class="form-input" value="${scheduleData?.offset || 0}" min="-120" max="120" step="1">
+                    <small style="color: #94a3b8;">Positive for after sunset, negative for before sunset</small>
+                </div>
+            `;
+        case 'web':
+            return `
+                <div class="form-group">
+                    <label class="form-label">Web Trigger</label>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin: 5px 0;">
+                        This schedule can be triggered manually from the web interface or via API.
+                    </p>
+                </div>
+            `;
+        default:
+            return '';
+    }
+}
+
+function updateTriggerFields() {
+    const triggerType = document.getElementById('triggerType').value;
+    const triggerFields = document.getElementById('triggerFields');
+    
+    // Create a temporary schedule data object to pass to renderTriggerFields
+    const tempScheduleData = { triggerType: triggerType };
+    triggerFields.innerHTML = renderTriggerFields(tempScheduleData);
+}
+
+function hideScheduleForm() {
+    scheduleFormContainer.style.display = 'none';
+    scheduleFormContainer.innerHTML = '';
+}
+
+function getSelectedDays() {
+    const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+    return days.filter(day => {
+        const checkbox = document.getElementById(`day_${day}`);
+        return checkbox ? checkbox.checked : false;
+    });
+}
+
+function saveSchedule(scheduleId = null) {
+    if (!clientConnected) {
+        addLogEntry('ERROR', 'Cannot save schedule: Client disconnected from Firebase.');
+        return;
+    }
+
+    const triggerType = document.getElementById('triggerType').value;
+    const name = document.getElementById('scheduleName').value;
+    const action = document.getElementById('actionSelect').value;
+    const enabled = document.getElementById('scheduleEnabled').checked;
+
+    if (!name.trim()) {
+        alert('Please enter a schedule name');
+        return;
+    }
+
+    const scheduleData = {
+        id: scheduleId || 'schedule_' + Date.now().toString(),
+        name: name,
+        enabled: enabled,
+        triggerType: triggerType,
+        action: action,
+        createdAt: scheduleId ? undefined : Date.now()
+    };
+
+    // Add trigger-specific data
+    if (triggerType === 'time') {
+        const time = document.getElementById('scheduleTime').value;
+        if (!time) {
+            alert('Please select a time');
+            return;
+        }
+        scheduleData.time = time;
+        const selectedDays = getSelectedDays();
+        if (selectedDays.length === 0) {
+            alert('Please select at least one day');
+            return;
+        }
+        scheduleData.days = selectedDays;
+    } else if (triggerType === 'temperature') {
+        const condition = document.getElementById('tempCondition').value;
+        const value = parseFloat(document.getElementById('tempValue').value);
+        if (isNaN(value)) {
+            alert('Please enter a valid temperature');
+            return;
+        }
+        scheduleData.condition = condition;
+        scheduleData.value = value;
+    } else if (triggerType === 'sunrise' || triggerType === 'sunset') {
+        const offset = parseInt(document.getElementById('sunOffset').value) || 0;
+        scheduleData.offset = offset;
+    }
+
+    const path = `HOME/ROOM_2/automation/schedules/${scheduleData.id}`;
+    
+    set(ref(db, path), scheduleData)
+        .then(() => {
+            addLogEntry('AUTOMATION', `Schedule "${name}" ${scheduleId ? 'updated' : 'created'}`, 'automation');
+            hideScheduleForm();
+        })
+        .catch(error => {
+            addLogEntry('ERROR', `Failed to save schedule: ${error.message}`);
+            alert('Failed to save schedule: ' + error.message);
+        });
+}
+
+function deleteSchedule(scheduleId) {
+    if (!clientConnected) {
+        addLogEntry('ERROR', 'Cannot delete schedule: Client disconnected from Firebase.');
+        return;
+    }
+
+    if (confirm('Are you sure you want to delete this schedule?')) {
+        remove(ref(db, `HOME/ROOM_2/automation/schedules/${scheduleId}`))
+            .then(() => {
+                addLogEntry('AUTOMATION', 'Schedule deleted', 'automation');
+            })
+            .catch(error => {
+                addLogEntry('ERROR', `Failed to delete schedule: ${error.message}`);
+            });
+    }
+}
+
+function toggleSchedule(scheduleId, currentState) {
+    if (!clientConnected) {
+        addLogEntry('ERROR', 'Cannot toggle schedule: Client disconnected from Firebase.');
+        return;
+    }
+
+    set(ref(db, `HOME/ROOM_2/automation/schedules/${scheduleId}/enabled`), !currentState)
+        .then(() => {
+            const statusText = !currentState ? 'ENABLED' : 'DISABLED';
+            addLogEntry('AUTOMATION', `Schedule ${statusText}`, 'automation');
+        })
+        .catch(error => {
+            addLogEntry('ERROR', `Failed to toggle schedule: ${error.message}`);
+        });
+}
+
+function loadSchedules() {
+    onValue(ref(db, 'HOME/ROOM_2/automation/schedules'), (snapshot) => {
+        const schedules = snapshot.val();
+        displaySchedules(schedules);
+    });
+}
+
+function displaySchedules(schedules) {
+    schedulesList.innerHTML = '';
+    
+    if (!schedules) {
+        schedulesList.innerHTML = `
+            <div class="schedule-card">
+                <div style="text-align: center; color: #94a3b8; padding: 20px;">
+                    No schedules found. Click "Add Schedule" to create your first automation.
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    const scheduleKeys = Object.keys(schedules).sort((a, b) => {
+        return (schedules[b].createdAt || 0) - (schedules[a].createdAt || 0);
+    });
+    
+    scheduleKeys.forEach(scheduleId => {
+        const schedule = schedules[scheduleId];
+        const card = document.createElement('div');
+        card.className = `schedule-card ${schedule.enabled ? 'enabled' : 'disabled'}`;
+        
+        let triggerText = '';
+        switch(schedule.triggerType) {
+            case 'time':
+                triggerText = `Time: ${schedule.time} on ${schedule.days?.join(', ') || 'selected days'}`;
+                break;
+            case 'sunrise':
+                triggerText = `Sunrise ${schedule.offset >= 0 ? '+' : ''}${schedule.offset} minutes`;
+                break;
+            case 'sunset':
+                triggerText = `Sunset ${schedule.offset >= 0 ? '+' : ''}${schedule.offset} minutes`;
+                break;
+            case 'temperature':
+                triggerText = `Temperature ${schedule.condition} ${schedule.value}°C`;
+                break;
+            case 'web':
+                triggerText = 'Web Trigger';
+                break;
+        }
+        
+        let actionText = '';
+        const actionMap = {
+            'relay1_on': 'Turn FAN ON', 'relay1_off': 'Turn FAN OFF',
+            'relay2_on': 'Turn LIGHT ON', 'relay2_off': 'Turn LIGHT OFF',
+            'relay3_on': 'Turn FAN-2 ON', 'relay3_off': 'Turn FAN-2 OFF',
+            'relay4_on': 'Turn DIM-L ON', 'relay4_off': 'Turn DIM-L OFF'
+        };
+        actionText = actionMap[schedule.action] || schedule.action;
+        
+        card.innerHTML = `
+            <div class="schedule-header">
+                <div class="schedule-name">${schedule.name}</div>
+                <div class="schedule-actions">
+                    <button class="schedule-action-btn" onclick="toggleSchedule('${scheduleId}', ${schedule.enabled})" title="${schedule.enabled ? 'Disable' : 'Enable'}">
+                        <i class="fas ${schedule.enabled ? 'fa-pause' : 'fa-play'}"></i>
+                    </button>
+                    <button class="schedule-action-btn" onclick="editSchedule('${scheduleId}')" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="schedule-action-btn" onclick="deleteSchedule('${scheduleId}')" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="schedule-details">
+                <div class="schedule-trigger"><strong>Trigger:</strong> ${triggerText}</div>
+                <div class="schedule-action"><strong>Action:</strong> ${actionText}</div>
+                <div class="schedule-status"><strong>Status:</strong> ${schedule.enabled ? 'Enabled' : 'Disabled'}</div>
+            </div>
+        `;
+        
+        schedulesList.appendChild(card);
+    });
+}
+
+function editSchedule(scheduleId) {
+    get(ref(db, `HOME/ROOM_2/automation/schedules/${scheduleId}`))
+        .then((snapshot) => {
+            const scheduleData = snapshot.val();
+            if (scheduleData) {
+                showScheduleForm(scheduleData);
+            }
+        })
+        .catch(error => {
+            addLogEntry('ERROR', `Failed to load schedule for editing: ${error.message}`);
+        });
+}
+
+// Add schedule button event listener
+addScheduleBtn.addEventListener('click', () => {
+    showScheduleForm();
+});
+
+// --- RTDB LOGIC AND TOGGLE ---
+function setupRTDBLogListener() {
+    if (logListenerUnsubscribe) {
+        logListenerUnsubscribe();
+        logListenerUnsubscribe = null;
+    }
+    logViewer.innerHTML = '';
+    
+    if (rtdbLogsEnabled) {
+        rtdbLogsSwitch.classList.add('on');
+        rtdbLogsSwitchContainer.classList.add('on');
+        addLogEntry('INFO', 'Loading logs from RTDB...', 'rtdb');
+        
+        logListenerUnsubscribe = onValue(ref(db, 'HOME/ROOM_2/log'), (snapshot) => {
+            if (!rtdbLogsEnabled) return;
+            
+            const logs = snapshot.val();
+            logViewer.innerHTML = '';
+            
+            if (logs) {
+                const logKeys = Object.keys(logs).sort((a, b) => logs[b].timestamp - logs[a].timestamp);
+                
+                logKeys.slice(0, 50).forEach(key => {
+                    const logEntry = logs[key];
+                    const time = formatTime(logEntry.timestamp);
+                    const typeClass = `log-entry-type-${logEntry.type ? logEntry.type.toLowerCase() : 'info'}`;
+                    const sourceClass = 'log-entry-type-device'; 
+                    
+                    const entry = document.createElement('div');
+                    entry.className = 'log-entry';
+                    entry.innerHTML = `<span class="log-entry-time">${time}</span><span class="${typeClass} ${sourceClass}">${logEntry.type || 'UNKNOWN'}:</span> ${logEntry.message}`;
+                    logViewer.appendChild(entry); 
+                });
+                logViewer.scrollTop = logViewer.scrollHeight; 
+            }
+        });
+    } else {
+        rtdbLogsSwitch.classList.remove('on');
+        rtdbLogsSwitchContainer.classList.remove('on');
+        logViewer.innerHTML = '';
+        addLogEntry('INFO', 'Client-side log re-initialized.');
+    }
+}
+
+// RTDB Logs Switch Event Listener
+rtdbLogsSwitch.addEventListener('click', () => {
+    if (!clientConnected) {
+        addLogEntry('ERROR', 'Cannot change settings: Client disconnected from Firebase.');
+        return;
+    }
+    
+    rtdbLogsEnabled = !rtdbLogsEnabled;
+    const statusText = rtdbLogsEnabled ? 'ENABLED' : 'DISABLED';
+    addLogEntry('INFO', `RTDB Logs: ${statusText}.`, 'rtdb');
+    
+    setupRTDBLogListener();
+});
+
+// --- BEEP AND RESTART FUNCTIONS ---
+
+// BEEP Switch Event Listener
+beepSwitch.addEventListener('click', () => {
+    if (!clientConnected) {
+        addLogEntry('ERROR', 'Cannot toggle BEEP: Client disconnected from Firebase.');
+        return;
+    }
+    
+    const newBeepState = !beepSwitch.classList.contains('on');
+    
+    set(ref(db, 'HOME/ROOM_2/settings/beepEnabled'), newBeepState)
+        .then(() => {
+            beepSwitch.classList.toggle('on', newBeepState);
+            const statusText = newBeepState ? 'ENABLED' : 'DISABLED';
+            addLogEntry('INFO', `BEEP ${statusText}.`, 'device');
+            profileDropdown.classList.remove('show');
+        })
+        .catch(error => {
+            addLogEntry('ERROR', `Failed to set BEEP state: ${error.message}`);
+        });
+});
+
+// NEW: IR Lock Switch Event Listener
+irLockSwitch.addEventListener('click', () => {
+    if (!clientConnected) {
+        addLogEntry('ERROR', 'Cannot toggle IR Lock: Client disconnected from Firebase.');
+        return;
+    }
+    
+    const newIrLockState = !irLockSwitch.classList.contains('unlocked');
+    
+    set(ref(db, 'HOME/ROOM_2/settings/ir_lock'), newIrLockState)
+        .then(() => {
+            irLockSwitch.classList.toggle('unlocked', newIrLockState);
+            const statusText = newIrLockState ? 'UNLOCKED' : 'LOCKED';
+            addLogEntry('INFO', `IR ${statusText}.`, 'device');
+            profileDropdown.classList.remove('show');
+        })
+        .catch(error => {
+            addLogEntry('ERROR', `Failed to set IR lock state: ${error.message}`);
+        });
+});
+
+// NEW: Physical Button Lock Switch Event Listener
+buttonLockSwitch.addEventListener('click', () => {
+    if (!clientConnected) {
+        addLogEntry('ERROR', 'Cannot toggle Physical Button Lock: Client disconnected from Firebase.');
+        return;
+    }
+    
+    const newButtonLockState = !buttonLockSwitch.classList.contains('unlocked');
+    
+    set(ref(db, 'HOME/ROOM_2/settings/button_lock'), newButtonLockState)
+        .then(() => {
+            buttonLockSwitch.classList.toggle('unlocked', newButtonLockState);
+            const statusText = newButtonLockState ? 'UNLOCKED' : 'LOCKED';
+            addLogEntry('INFO', `Physical Buttons ${statusText}.`, 'device');
+            profileDropdown.classList.remove('show');
+        })
+        .catch(error => {
+            addLogEntry('ERROR', `Failed to set physical button lock state: ${error.message}`);
+        });
+});
+
+// RESTART Button Event Listener
+restartBtn.addEventListener('click', () => {
+    if (!clientConnected) {
+        addLogEntry('ERROR', 'Cannot send RESTART command: Client disconnected from Firebase.');
+        return;
+    }
+    
+    if (confirm('Are you sure you want to restart the ESP32 device? This will temporarily disconnect the device.')) {
+        set(ref(db, 'HOME/ROOM_2/device/rest'), true)
+            .then(() => {
+                addLogEntry('INFO', 'RESTART command sent to device.', 'device');
+                profileDropdown.classList.remove('show');
+                
+                // Reset the restart flag after a short delay
+                setTimeout(() => {
+                    set(ref(db, 'HOME/ROOM_2/device/rest'), false)
+                        .catch(error => {
+                            addLogEntry('WARN', `Failed to reset restart flag: ${error.message}`);
+                        });
+                }, 4500);
+            })
+            .catch(error => {
+                addLogEntry('ERROR', `Failed to send RESTART command: ${error.message}`);
+            });
+    }
+});
+
+// Listen for BEEP state from RTDB
+onValue(ref(db, 'HOME/ROOM_2/settings/beepEnabled'), (snapshot) => {
+    const beepState = snapshot.val();
+    beepSwitch.classList.toggle('on', beepState === true);
+});
+
+// Listen for IR LOCK state from RTDB
+onValue(ref(db, 'HOME/ROOM_2/settings/ir_lock'), (snapshot) => {
+    const irLockState = snapshot.val();
+    irLockSwitch.classList.toggle('unlocked', irLockState === true);
+});
+
+// NEW: Listen for Physical Button Lock state from RTDB
+onValue(ref(db, 'HOME/ROOM_2/settings/button_lock'), (snapshot) => {
+    const buttonLockState = snapshot.val();
+    buttonLockSwitch.classList.toggle('unlocked', buttonLockState === true);
+});
+
+// Listen for RESTART state from RTDB (in case it's set elsewhere)
+onValue(ref(db, 'HOME/ROOM_2/device/rest'), (snapshot) => {
+    const restartState = snapshot.val();
+    if (restartState === true) {
+        addLogEntry('INFO', 'Device restart flag detected in RTDB.', 'device');
+    }
+});
+
+// --- WEATHER SERVICE ---
+async function fetchWeatherData() {
+  const weatherServices = [
+    {
+      name: "Open-Meteo (Free)",
+      url: "https://api.open-meteo.com/v1/forecast?latitude=23.8103&longitude=90.4125&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m&timezone=auto",
+      parser: (data) => ({
+        temperature: Math.round(data.current.temperature_2m),
+        humidity: data.current.relative_humidity_2m,
+        rain: data.current.precipitation > 0,
+        windSpeed: Math.round(data.current.wind_speed_10m * 3.6),
+        location: "Dhaka, Bangladesh",
+        source: "Open-Meteo"
+      })
+    }
+  ];
+
+  for (const service of weatherServices) {
+    try {
+      addLogEntry('INFO', `Trying weather service: ${service.name}`, 'weather');
+      
+      const response = await fetch(service.url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+        mode: 'cors'
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
+      const data = await response.json();
+      const weatherData = service.parser(data);
+      currentWeatherSource = service.name;
+      
+      addLogEntry('INFO', `Weather data loaded from ${service.name}`, 'weather');
+      return weatherData;
+      
+    } catch (error) {
+      addLogEntry('WARN', `Weather service ${service.name} failed: ${error.message}`, 'weather');
+      continue;
+    }
+  }
+  
+  return generateDemoWeatherData();
+}
+
+function generateDemoWeatherData() {
+  const now = new Date();
+  const hour = now.getHours();
+  
+  let baseTemp = 28;
+  if (hour >= 22 || hour < 6) baseTemp -= 3;
+  if (hour >= 12 && hour < 16) baseTemp += 4;
+  
+  const temp = baseTemp + Math.floor(Math.random() * 3) - 1;
+  
+  let baseHumidity = 65;
+  if (hour >= 22 || hour < 6) baseHumidity += 15;
+  if (hour >= 12 && hour < 16) baseHumidity -= 10;
+  
+  const humidity = Math.max(40, Math.min(90, baseHumidity + Math.floor(Math.random() * 10) - 5));
+  
+  const isMonsoon = now.getMonth() >= 5 && now.getMonth() <= 8;
+  const rainChance = isMonsoon ? 0.3 : 0.1;
+  const isRaining = Math.random() < rainChance;
+  
+  const windSpeed = 8 + Math.floor(Math.random() * 15);
+  
+  return {
+    temperature: temp,
+    humidity: humidity,
+    rain: isRaining,
+    windSpeed: windSpeed,
+    location: "Dhaka, Bangladesh (Demo)",
+    source: "Demo Data"
+  };
+}
+
+async function loadWeatherData() {
+  // Disable refresh button during loading
+  weatherRefreshBtn.disabled = true;
+  weatherRefreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+  
+  weatherLocationEl.textContent = 'Loading weather data...';
+  temperatureEl.textContent = '--';
+  humidityEl.textContent = '--';
+  rainStatusEl.textContent = '--';
+  windSpeedEl.textContent = '--';
+  weatherSourceEl.textContent = '';
+  
+  const existingError = document.querySelector('.weather-error');
+  if (existingError) existingError.remove();
+
+  try {
+    const weatherData = await fetchWeatherData();
+    
+    temperatureEl.textContent = weatherData.temperature;
+    humidityEl.textContent = weatherData.humidity;
+    rainStatusEl.textContent = weatherData.rain ? 'Raining' : 'Not Raining';
+    windSpeedEl.textContent = weatherData.windSpeed;
+    weatherLocationEl.textContent = weatherData.location;
+    weatherSourceEl.textContent = `Source: ${weatherData.source}`;
+    
+    lastWeatherUpdate = Date.now();
+    
+    if (clientConnected) {
+      try {
+        await set(ref(db, 'HOME/ROOM_2/weather'), {
+          temperature: weatherData.temperature,
+          humidity: weatherData.humidity,
+          rain: weatherData.rain,
+          windSpeed: weatherData.windSpeed,
+          lastUpdate: Date.now(),
+          source: weatherData.source
+        });
+        addLogEntry('INFO', 'Weather data stored in RTDB', 'weather');
+      } catch (error) {
+        addLogEntry('WARN', `Failed to store weather data in RTDB: ${error.message}`, 'weather');
+      }
+    }
+    
+  } catch (error) {
+    console.error('Weather loading error:', error);
+    
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'weather-error';
+    errorDiv.textContent = 'Weather service temporarily unavailable. Using demo data.';
+    weatherLocationEl.after(errorDiv);
+    
+    const demoData = generateDemoWeatherData();
+    temperatureEl.textContent = demoData.temperature;
+    humidityEl.textContent = demoData.humidity;
+    rainStatusEl.textContent = demoData.rain ? 'Raining' : 'Not Raining';
+    windSpeedEl.textContent = demoData.windSpeed;
+    weatherLocationEl.textContent = demoData.location;
+    weatherSourceEl.textContent = `Source: ${demoData.source}`;
+
+    addLogEntry('ERROR', `All weather services failed: ${error.message}`, 'weather');
+  } finally {
+    // Re-enable refresh button
+    weatherRefreshBtn.disabled = false;
+    weatherRefreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Weather Data';
+  }
+}
+
+// Weather Refresh Button Event Listener
+weatherRefreshBtn.addEventListener('click', loadWeatherData);
+
+// --- AUTHENTICATION & SESSION LOGIC ---
+function showLogin() {
+    dashboardContainer.style.display = 'none';
+    loginScreen.style.display = 'flex';
+}
+
+function showDashboard(user) {
+    localStorage.setItem(SESSION_KEY, 'true');
+    userEmailDisplay.textContent = user.email;
+    loginScreen.style.display = 'none';
+    dashboardContainer.style.display = 'block';
+    
+    if (user && db) {
+        set(ref(db, 'HOME/ROOM_2/version'), DASHBOARD_VERSION); 
+        addLogEntry('INFO', `Dashboard version ${DASHBOARD_VERSION} logged to RTDB.`, 'rtdb');
+    }
+}
+
+function handleAuthError(error) {
+    loginError.textContent = error.message.replace('Firebase: ', '');
+    addLogEntry('ERROR', `Authentication failed: ${error.code}`);
+}
+
+if (localStorage.getItem(SESSION_KEY) === 'true') {
+    showDashboard({ email: 'Checking session...' }); 
+} else {
+    showLogin();
+}
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        showDashboard(user);
+        addLogEntry('INFO', `User ${user.email} signed in successfully.`);
+        loadWeatherData();
+        loadSchedules(); // Load automation schedules
+    } else {
+        if (localStorage.getItem(SESSION_KEY) === 'true') {
+            localStorage.removeItem(SESSION_KEY);
+            addLogEntry('WARN', 'Device session expired. Please log in again.');
+        }
+        showLogin();
+    }
+});
+
+loginBtn.addEventListener('click', async () => {
+    loginError.textContent = '';
+    try {
+        await signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
+    } catch (error) {
+        handleAuthError(error);
+    }
+});
+
+createAccountBtn.addEventListener('click', async () => {
+    loginError.textContent = '';
+    if (!loginEmail.value || !loginPassword.value) {
+        loginError.textContent = 'Please enter both email and password.';
+        return;
+    }
+    try {
+        await createUserWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
+    } catch (error) {
+        handleAuthError(error);
+    }
+});
+
+logoutBtn.addEventListener('click', async () => {
+    try {
+        await signOut(auth);
+        localStorage.removeItem(SESSION_KEY); 
+        addLogEntry('INFO', 'User logged out.');
+    } catch (error) {
+        handleAuthError(error);
+    }
+});
+
+document.getElementById('profileBtn').addEventListener('click', (event) => {
+    event.stopPropagation();
+    profileDropdown.classList.toggle('show');
+});
+window.addEventListener('click', (event) => {
+    if (!event.target.matches('#profileBtn') && !event.target.closest('.dropdown-content')) {
+        if (profileDropdown.classList.contains('show')) {
+            profileDropdown.classList.remove('show');
+        }
+    }
+});
+
+// --- STATUS DISPLAY LOGIC ---
+function writeOnlineFlag(state){
+    if (clientConnected) {
+        set(ref(db,'HOME/ROOM_2/online'),!!state);
+        addLogEntry('INFO', `RTDB 'online' flag set to ${!!state}.`, 'rtdb');
+    } else {
+        addLogEntry('WARN', `RTDB write prevented: Client disconnected.`, 'rtdb');
+    }
+}
+
+function updateStatusDisplay() {
+    statusEl.classList.remove('online');
+    statusEl.style.color = '#fff';
+    
+    if (!clientConnected) {
+        statusEl.textContent = "Client Disconnected";
+        statusEl.style.backgroundColor = '#fbbf24';
+        statusEl.style.color = '#0f172a';
+    } else if (deviceOnline) {
+        statusEl.textContent = "Online";
+        statusEl.style.backgroundColor = '';
+        statusEl.classList.add('online');
+    } else {
+        statusEl.textContent = "Offline";
+        statusEl.style.backgroundColor = '#ef4444';
+    }
+}
+
+// 1. Client Connection Listener
+onValue(ref(db, '.info/connected'), (snap) => {
+    const wasConnected = clientConnected;
+    clientConnected = snap.val();
+    
+    if (clientConnected && !wasConnected) {
+        addLogEntry('INFO', 'Client reconnected to Firebase.');
+    } else if (!clientConnected && wasConnected) {
+        addLogEntry('ERROR', 'Client lost connection to Firebase. Relays cannot be toggled.');
+    }
+    updateStatusDisplay();
+});
+
+// 2. Initial Device Online State Loader
+onValue(ref(db, 'HOME/ROOM_2/online'), (snap) => {
+    const onlineState = snap.val() === true;
+    if (!initialOnlineLoadComplete) {
+        deviceOnline = onlineState;
+        initialOnlineLoadComplete = true;
+        updateStatusDisplay();
+        addLogEntry('INFO', `Initial device state loaded: ${deviceOnline ? 'ONLINE' : 'OFFLINE'}.`);
+    }
+}, { onlyOnce: false });
+
+// 3. Device Heartbeat Listener
+onValue(ref(db,'HOME/ROOM_2/uptime'),snap=>{
+  const val=snap.val(); 
+  if(val===null||val===undefined) return; 
+  
+  uptimeEl.textContent=val;
+  lastHeartbeatTime = Date.now(); 
+  
+  if (!deviceOnline) {
+      if (!reconnectTimer) {
+          addLogEntry('INFO', `Heartbeat detected. Starting ${RECONNECT_DEBOUNCE}s reconnection check...`);
+          
+          reconnectTimer = setTimeout(() => {
+              if (!deviceOnline && clientConnected) {
+                  deviceOnline = true;
+                  updateStatusDisplay(); 
+                  writeOnlineFlag(true); 
+                  addLogEntry('RELAY', 'Stable heartbeat confirmed. Device Status: ONLINE.');
+              }
+              reconnectTimer = null;
+          }, RECONNECT_DEBOUNCE * 1000);
+      }
+  }
+});
+
+// 4. Status Interval
+setInterval(()=>{
+    const now = Date.now();
+    const elapsedSinceHeartbeat = (now - lastHeartbeatTime) / 1000;
+    
+    if(deviceOnline && elapsedSinceHeartbeat > OFFLINE_TIMEOUT) { 
+        deviceOnline = false;
+        updateStatusDisplay();
+        writeOnlineFlag(false);
+        addLogEntry('RELAY', `Heartbeat timeout (${OFFLINE_TIMEOUT}s). Device Status: OFFLINE.`);
+        
+        if (reconnectTimer) {
+            clearTimeout(reconnectTimer);
+            reconnectTimer = null;
+            addLogEntry('INFO', 'Cleared pending reconnection timer due to timeout.');
+        }
+    }
+    
+    if(reconnectTimer && clientConnected === false) {
+        clearTimeout(reconnectTimer);
+        reconnectTimer = null;
+        addLogEntry('INFO', 'Cleared pending reconnection timer due to client disconnect.');
+    }
+    
+}, 1000);
+
+// --- DEVICE INFORMATION RETRIEVAL ---
+function loadDeviceInfo() {
+    // IP Address
+    onValue(ref(db, 'HOME/ROOM_2/device/ip'), (snap) => {
+        const ip = snap.val();
+        document.getElementById('ip').textContent = ip || '--';
+        if (ip) addLogEntry('INFO', `Device IP: ${ip}`, 'device');
+    });
+    
+    // MAC Address
+    onValue(ref(db, 'HOME/ROOM_2/device/mac'), (snap) => {
+        const mac = snap.val();
+        document.getElementById('mac').textContent = mac || '--';
+        if (mac) addLogEntry('INFO', `Device MAC: ${mac}`, 'device');
+    });
+    
+    // SSID
+    onValue(ref(db, 'HOME/ROOM_2/device/ssid'), (snap) => {
+        const ssid = snap.val();
+        document.getElementById('ssid').textContent = ssid || '--';
+        if (ssid) addLogEntry('INFO', `WiFi SSID: ${ssid}`, 'device');
+    });
+    
+    // Sunrise
+    onValue(ref(db, 'HOME/ROOM_2/sunrise'), (snap) => {
+        const sunrise = snap.val();
+        document.getElementById('sunrise').textContent = sunrise || '--:--';
+    });
+    
+    // Sunset
+    onValue(ref(db, 'HOME/ROOM_2/sunset'), (snap) => {
+        const sunset = snap.val();
+        document.getElementById('sunset').textContent = sunset || '--:--';
+    });
+    
+    // Last Update (Human)
+    onValue(ref(db, 'HOME/ROOM_2/lastUpdateHuman'), (snap) => {
+        const lastUpdateHuman = snap.val();
+        document.getElementById('lastUpdateHuman').textContent = lastUpdateHuman || '--:--';
+    });
+    
+    // Last Update (Timestamp)
+    onValue(ref(db, 'HOME/ROOM_2/lastUpdate'), (snap) => {
+        const lastUpdate = snap.val();
+        document.getElementById('lastUpdate').textContent = lastUpdate ? formatTime(lastUpdate) : '--:--';
+    });
+}
+
+// --- RELAY CONTROL LOGIC ---
+function toggleRelay(index){ 
+    if (!clientConnected) {
+        addLogEntry('ERROR', 'Cannot toggle relay: Client disconnected from Firebase.');
+        const messageBox = document.createElement('div');
+        messageBox.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:20px;background:#ef4444;color:#fff;border-radius:8px;z-index:1000;box-shadow:0 0 10px rgba(0,0,0,0.5);font-weight:bold;';
+        messageBox.textContent = 'ERROR: Dashboard disconnected. Cannot send command.';
+        document.body.appendChild(messageBox);
+        setTimeout(() => messageBox.remove(), 3000);
+        return;
+    }
+
+    const path=`HOME/ROOM_2/relay${index+1}`; 
+    get(ref(db,path)).then(snap=>{
+        const newState = !snap.val();
+        set(ref(db,path), newState); 
+        const relayName = relayBtns[index].textContent;
+        const stateStr = newState ? 'ON' : 'OFF';
+        addLogEntry('RELAY', `${relayName} manually set to ${stateStr}`); 
+    }).catch(error => {
+        addLogEntry('ERROR', `Failed to read/write relay state: ${error.message}`);
+    });
+}
+
+function setRelayState(btn,on){ if(on) btn.classList.add('on'); else btn.classList.remove('on'); }
+relayBtns.forEach((btn,i)=>{ 
+    btn.addEventListener('click',()=>toggleRelay(i)); 
+    onValue(ref(db,`HOME/ROOM_2/relay${i+1}`),snap=>setRelayState(btn,!!snap.val())); 
+});
+
+// --- STATS LOGIC ---
+function updateStats() {
+    const now = Date.now();
+    const elapsed = (now - lastStateChangeTime) / 1000;
+    
+    if (deviceOnline) {
+        totalOnlineSeconds += elapsed;
+    } else {
+        totalOfflineSeconds += elapsed;
+    }
+    lastStateChangeTime = now;
+    
+    document.getElementById('onlineDuration').textContent = formatDuration(totalOnlineSeconds);
+    document.getElementById('offlineDuration').textContent = formatDuration(totalOfflineSeconds);
+    
+    const totalSeconds = totalOnlineSeconds + totalOfflineSeconds;
+    const uptimePercent = totalSeconds > 0 ? ((totalOnlineSeconds / totalSeconds) * 100).toFixed(1) : 0;
+    document.getElementById('uptimePercent').textContent = `${uptimePercent}%`;
+    
+    if (lastDisconnectTimestamp) {
+        document.getElementById('lastDisconnect').textContent = formatTime(lastDisconnectTimestamp);
+    }
+}
+
+function formatDuration(seconds) {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.floor(seconds % 60);
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+}
+
+setInterval(updateStats, 1000);
+
+// --- TAB NAVIGATION LOGIC ---
+const tabs = document.querySelectorAll('.tab-btn');
+const contents = document.querySelectorAll('.tab-content');
+tabs.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    tabs.forEach(b=>b.classList.remove('active'));
+    contents.forEach(c=>c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    
+    if (btn.dataset.tab === 'logs' && rtdbLogsEnabled) {
+        setupRTDBLogListener();
+    }
+    
+    // Load weather data when switching to weather tab
+    if (btn.dataset.tab === 'weather') {
+        loadWeatherData();
+    }
+  });
+});
+
+// --- INITIALIZATION ---
+loadDeviceInfo();
+setupRTDBLogListener();
+addLogEntry('INFO', 'Dashboard initialized successfully.');
+
+// Make functions globally available for onclick handlers
+window.toggleSchedule = toggleSchedule;
+window.deleteSchedule = deleteSchedule;
+window.editSchedule = editSchedule;
+window.updateTriggerFields = updateTriggerFields;
+
+</script>
+</body>
+</html>
