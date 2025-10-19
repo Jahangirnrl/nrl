@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+//DASHBOARD_VERSION = 'v1.0.2';
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -429,135 +430,179 @@
 
   /* Automation Centering */
   .automation-content-wrapper {
-    max-width: 400px; 
+    max-width: 500px; 
     margin: 0 auto; 
   }
 
-  .automation-switch { 
-    display:flex; 
-    align-items:center; 
-    gap:10px; 
-    margin-bottom:20px; 
-    cursor:pointer; 
-    font-weight:600; 
-    justify-content:center; 
-    font-size:1rem;
-    color:#94a3b8;
+  /* NEW: Automation Schedule Styles */
+  .automation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(30, 41, 59, 0.9);
+    border-radius: 8px;
+    border: 1px solid #334155;
   }
-  .automation-switch.on span { color: #f1f5f9; }
-  .switch-btn { 
-    width:44px; 
-    height:22px; 
-    border-radius:11px; 
-    background:#ef4444; 
-    position:relative; 
-    transition:0.2s;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
-  }
-  .switch-btn.on { background:#10b981; }
-  .switch-btn::after { 
-    content:''; 
-    position:absolute; 
-    top:2px; 
-    left:2px; 
-    width:18px; 
-    height:18px; 
-    border-radius:50%; 
-    background:#fff; 
-    transition:0.2s; 
-    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-  }
-  .switch-btn.on::after { transform:translateX(22px); }
 
-  .automation-relays-container {
-    display:flex; 
-    flex-direction:column; 
-    gap:10px;
+  .add-schedule-btn {
+    background: #10b981;
+    color: #042f2e;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
   }
-  .automation-panel { 
-    padding: 12px;
+
+  .add-schedule-btn:hover {
+    background: #059669;
+  }
+
+  .schedule-card {
+    background: rgba(30, 41, 59, 0.9);
     border-radius: 10px;
-    background: rgba(30,41,59,0.9);
+    padding: 15px;
+    margin-bottom: 12px;
     border: 1px solid #334155;
     box-shadow: 0 3px 5px rgba(0,0,0,0.3);
   }
-  .automation-panel > div:first-child {
-    font-weight:800; 
-    margin-bottom:8px; 
-    color: #38bdf8;
-    font-size: 1.1rem;
-    text-align: center;
-  }
-  
-  /* Update the offset-group-inline styles */
-.offset-group-inline {
-    display: flex; 
-    gap: 12px; 
-    align-items: center; 
-    justify-content: space-between; 
-    flex-wrap: wrap;
-    font-size: 0.85rem;
-}
-.offset-group-inline label {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    min-width: 120px;
-    justify-content: space-between;
-}
-.offset-group-inline input { 
-    width: 50px; 
-    text-align: center; 
-    border-radius: 6px; 
-    border: 1px solid #475569; 
-    background: #1e293b; 
-    color: #fff; 
-    padding: 4px; 
-    margin-left: 4px; 
-    font-size: 0.9rem;
-}
 
-  /* Individual Relay Automation Switch */
-  .relay-automation-switch {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0 10px;
+  .schedule-card.enabled {
+    border-left: 4px solid #10b981;
   }
-  .relay-automation-label {
+
+  .schedule-card.disabled {
+    border-left: 4px solid #ef4444;
+    opacity: 0.7;
+  }
+
+  .schedule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .schedule-name {
+    font-weight: 700;
+    color: #38bdf8;
+    font-size: 1rem;
+  }
+
+  .schedule-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .schedule-action-btn {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: color 0.2s;
+  }
+
+  .schedule-action-btn:hover {
+    color: #e2e8f0;
+  }
+
+  .schedule-details {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-bottom: 10px;
+  }
+
+  .schedule-trigger, .schedule-action {
+    margin-bottom: 5px;
+  }
+
+  /* Schedule Form Styles */
+  .schedule-form {
+    background: rgba(30, 41, 59, 0.95);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border: 2px solid #38bdf8;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 5px;
     color: #94a3b8;
     font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .form-input, .form-select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #475569;
+    border-radius: 6px;
+    background: #1e293b;
+    color: #f1f5f9;
+    font-size: 0.9rem;
+  }
+
+  .form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: #38bdf8;
+  }
+
+  .trigger-fields {
+    background: rgba(55, 65, 81, 0.5);
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 8px;
+  }
+
+  .days-selector {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .day-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     font-size: 0.8rem;
-    white-space: nowrap;
   }
-  .relay-automation-switch-btn {
-    width: 36px;
-    height: 18px;
-    border-radius: 9px;
-    background: #ef4444;
-    position: relative;
-    cursor: pointer;
-    transition: background 0.2s;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
-    flex-shrink: 0;
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 15px;
   }
-  .relay-automation-switch-btn.on {
+
+  .save-btn {
     background: #10b981;
+    color: #042f2e;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: 600;
+    cursor: pointer;
   }
-  .relay-automation-switch-btn::after {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: #fff;
-    transition: transform 0.2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-  }
-  .relay-automation-switch-btn.on::after {
-    transform: translateX(18px);
+
+  .cancel-btn {
+    background: #64748b;
+    color: #f1f5f9;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: 600;
+    cursor: pointer;
   }
 
   /* Weather Tab Styles - 2x2 Grid Layout */
@@ -681,17 +726,7 @@
   .log-entry-type-device { color: #8b5cf6; } /* Purple for device logs */
   .log-entry-type-rtdb { color: #f97316; } /* Orange for RTDB logs */
   .log-entry-type-weather { color: #06b6d4; } /* Cyan for weather logs */
-  
-  /* NEW: Automation Schedule Display Style */
-  .automation-schedule-display {
-    display:flex; 
-    justify-content:space-between; 
-    font-size:0.8rem; 
-    color:#f97316; 
-    margin-top:8px; 
-    border-top: 1px dotted #334155; 
-    padding-top: 22px;
-  }
+  .log-entry-type-automation { color: #f97316; } /* Orange for automation logs */
 </style>
 </head>
 <body>
@@ -743,7 +778,6 @@
       <div class="tabs">
         <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
         <button class="tab-btn" data-tab="automation">Automation</button>
-        <button class="tab-btn" data-tab="stats">Stats</button>
         <button class="tab-btn" data-tab="weather">Weather</button>
         <button class="tab-btn" data-tab="logs">Logs</button>
       </div>
@@ -783,106 +817,15 @@
 
   <div id="automation" class="tab-content">
     <div class="automation-content-wrapper">
-      <div class="automation-switch">
-        <span>Automation Schedule</span>
-        <div id="automationSwitch" class="switch-btn"></div>
+      <div class="automation-header">
+        <h3 style="color: #38bdf8; margin: 0;">Automation Schedules</h3>
+        <button class="add-schedule-btn" id="addScheduleBtn">
+          <i class="fas fa-plus"></i> Add Schedule
+        </button>
       </div>
 
-      <div class="automation-relays-container">
-        <div class="automation-panel">
-          <div>Relay 1 (FAN)</div>
-          <div class="offset-group-inline">
-            <label>Sunrise (min): <input type="number" id="r1_sunrise" min="-60" max="60" step="1" value="0"></label>
-            
-            <label>Sunset (min): <input type="number" id="r1_sunset" min="-60" max="60" step="1" value="0"></label>
-          </div>
-          <div class="automation-schedule-display">
-            <span>ON: <span id="r1_sunrise_time">--:--</span></span>
-            <!-- Individual Relay Automation Switch -->
-            <div class="relay-automation-switch">
-              <span class="relay-automation-label">Auto</span>
-              <div class="relay-automation-switch-btn" id="r1_auto_switch"></div>
-            </div>
-
-            <span>OFF: <span id="r1_sunset_time">--:--</span></span>
-          </div>
-        </div>
-
-        <div class="automation-panel">
-          <div>Relay 2 (LIGHT)</div>
-          <div class="offset-group-inline">
-            <label>Sunrise (min): <input type="number" id="r2_sunrise" min="-60" max="60" step="1" value="0"></label>
-            
-            <label>Sunset (min): <input type="number" id="r2_sunset" min="-60" max="60" step="1" value="0"></label>
-          </div>
-          <div class="automation-schedule-display">
-            <span>ON: <span id="r2_sunrise_time">--:--</span></span>
-            <!-- Individual Relay Automation Switch -->
-            <div class="relay-automation-switch">
-              <span class="relay-automation-label">Auto</span>
-              <div class="relay-automation-switch-btn" id="r2_auto_switch"></div>
-            </div>
-            <span>OFF: <span id="r2_sunset_time">--:--</span></span>
-          </div>
-        </div>
-
-        <div class="automation-panel">
-          <div>Relay 3 (FAN-2)</div>
-          <div class="offset-group-inline">
-            <label>Sunrise (min): <input type="number" id="r3_sunrise" min="-60" max="60" step="1" value="0"></label>
-            
-            <label>Sunset (min): <input type="number" id="r3_sunset" min="-60" max="60" step="1" value="0"></label>
-          </div>
-          <div class="automation-schedule-display">
-            <span>ON: <span id="r3_sunrise_time">--:--</span></span>
-            <!-- Individual Relay Automation Switch -->
-            <div class="relay-automation-switch">
-              <span class="relay-automation-label">Auto</span>
-              <div class="relay-automation-switch-btn" id="r3_auto_switch"></div>
-            </div>
-            <span>OFF: <span id="r3_sunset_time">--:--</span></span>
-          </div>
-        </div>
-
-        <div class="automation-panel">
-          <div>Relay 4 (DIM-L)</div>
-          <div class="offset-group-inline">
-            <label>Sunrise (min): <input type="number" id="r4_sunrise" min="-60" max="60" step="1" value="0"></label>
-            
-            <label>Sunset (min): <input type="number" id="r4_sunset" min="-60" max="60" step="1" value="0"></label>
-          </div>
-          <div class="automation-schedule-display">
-            <span>ON: <span id="r4_sunrise_time">--:--</span></span>
-            <!-- Individual Relay Automation Switch -->
-            <div class="relay-automation-switch">
-              <span class="relay-automation-label">Auto</span>
-              <div class="relay-automation-switch-btn" id="r4_auto_switch"></div>
-            </div>
-            <span>OFF: <span id="r4_sunset_time">--:--</span></span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="stats" class="tab-content">
-    <div class="info-main">
-      <div class="panel">
-        <div class="label">Online Duration (Today)</div>
-        <div id="onlineDuration" class="value">--</div>
-      </div>
-      <div class="panel">
-        <div class="label">Offline Duration (Today)</div>
-        <div id="offlineDuration" class="value">--</div>
-      </div>
-      <div class="panel">
-        <div class="label">Daily Uptime (%)</div>
-        <div id="uptimePercent" class="value">--</div>
-      </div>
-      <div class="panel">
-        <div class="label">Last Disconnect</div>
-        <div id="lastDisconnect" class="value">--</div>
-      </div>
+      <div id="scheduleFormContainer" style="display: none;"></div>
+      <div id="schedulesList"></div>
     </div>
   </div>
 
@@ -939,7 +882,7 @@
 <script type="module">
 // --- FIREBASE IMPORTS ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { getDatabase, ref, onValue, set, get, remove } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -960,7 +903,7 @@ const auth = getAuth(app);
 
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'room2_session_active';
-const DASHBOARD_VERSION = 'v1.0.1';
+const DASHBOARD_VERSION = 'v1.0.2';  // AUTOMATION HUZE CHANGE, TIMER DAILY WEEKLY, SUN AND OFFSET, TEMPERATURE
 
 const loginScreen = document.getElementById('loginScreen');
 const dashboardContainer = document.getElementById('dashboardContainer');
@@ -974,25 +917,21 @@ const profileDropdown = document.getElementById('profileDropdown');
 const userEmailDisplay = document.getElementById('userEmailDisplay');
 const logoutBtn = document.getElementById('logoutBtn');
 const beepSwitch = document.getElementById('beepSwitch');
-const irLockSwitch = document.getElementById('irLockSwitch'); // NEW: IR Lock switch
-const buttonLockSwitch = document.getElementById('buttonLockSwitch'); // NEW: Physical Button Lock switch
+const irLockSwitch = document.getElementById('irLockSwitch');
+const buttonLockSwitch = document.getElementById('buttonLockSwitch');
 const restartBtn = document.getElementById('restartBtn');
 const statusEl = document.getElementById('status');
 const versionInfoEl = document.getElementById('versionInfo');
 const firmwareInfoEl = document.getElementById('firmwareInfo');
 const uptimeEl = document.getElementById('uptime');
-const lastDisconnectEl = document.getElementById('lastDisconnect');
 const logViewer = document.getElementById('logViewer');
 const relayBtns = [document.getElementById('r1'),document.getElementById('r2'),document.getElementById('r3'),document.getElementById('r4')];
 const weatherRefreshBtn = document.getElementById('weatherRefreshBtn');
 
-// Individual Relay Automation Switches
-const relayAutoSwitches = [
-  document.getElementById('r1_auto_switch'),
-  document.getElementById('r2_auto_switch'),
-  document.getElementById('r3_auto_switch'),
-  document.getElementById('r4_auto_switch')
-];
+// NEW: Automation elements
+const addScheduleBtn = document.getElementById('addScheduleBtn');
+const scheduleFormContainer = document.getElementById('scheduleFormContainer');
+const schedulesList = document.getElementById('schedulesList');
 
 // NEW LOG ELEMENTS
 const rtdbLogsSwitch = document.getElementById('rtdbLogsSwitch');
@@ -1016,12 +955,6 @@ let reconnectTimer = null;
 // Heartbeat Thresholds
 const OFFLINE_TIMEOUT = 59;
 const RECONNECT_DEBOUNCE = 20;
-
-// Client Stats
-let lastDisconnectTimestamp = null; 
-let totalOnlineSeconds = 0;
-let totalOfflineSeconds = 0;
-let lastStateChangeTime = Date.now(); 
 
 // Weather Configuration
 const WEATHER_UPDATE_INTERVAL = 10 * 60 * 1000;
@@ -1078,7 +1011,8 @@ function addLogEntry(type, message, source = 'client') {
     const typeClass = `log-entry-type-${type.toLowerCase()}`;
     const sourceClass = source === 'device' ? 'log-entry-type-device' : 
                         source === 'rtdb' ? 'log-entry-type-rtdb' :
-                        source === 'weather' ? 'log-entry-type-weather' : '';
+                        source === 'weather' ? 'log-entry-type-weather' :
+                        source === 'automation' ? 'log-entry-type-automation' : '';
     
     const entry = document.createElement('div');
     entry.className = 'log-entry';
@@ -1102,6 +1036,450 @@ onValue(ref(db, 'HOME/ROOM_2/device/firmwareVersion'), (snapshot) => {
     } else {
         firmwareInfoEl.textContent = 'Firmware: --';
     }
+});
+
+// --- AUTOMATION SCHEDULE FUNCTIONS (UPDATED FOR ARDUINO COMPATIBILITY) ---
+
+function showScheduleForm(scheduleData = null) {
+    const isEdit = scheduleData !== null;
+    const scheduleId = scheduleData?.id || getNextAvailableScheduleId();
+    
+    const formHTML = `
+        <div class="schedule-form">
+            <h3 style="color: #38bdf8; margin-bottom: 15px;">${isEdit ? 'Edit Schedule' : 'Add New Schedule'}</h3>
+            
+            <div class="form-group">
+                <label class="form-label">Schedule Name</label>
+                <input type="text" id="scheduleName" class="form-input" value="${isEdit ? scheduleData.name : ''}" placeholder="Enter schedule name">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Schedule Type</label>
+                <select id="scheduleType" class="form-select">
+                    <option value="daily" ${isEdit && scheduleData.type === 'daily' ? 'selected' : ''}>Daily Time-based</option>
+                    <option value="weekly" ${isEdit && scheduleData.type === 'weekly' ? 'selected' : ''}>Weekly Time-based</option>
+                    <option value="sunrise" ${isEdit && scheduleData.type === 'sunrise' ? 'selected' : ''}>Sunrise with Offset</option>
+                    <option value="sunset" ${isEdit && scheduleData.type === 'sunset' ? 'selected' : ''}>Sunset with Offset</option>
+                    <option value="temperature" ${isEdit && scheduleData.type === 'temperature' ? 'selected' : ''}>Temperature-based</option>
+                    <option value="timer" ${isEdit && scheduleData.type === 'timer' ? 'selected' : ''}>Timer</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Relay</label>
+                <select id="scheduleRelay" class="form-select">
+                    <option value="1" ${isEdit && scheduleData.relay === 1 ? 'selected' : ''}>Relay 1 (FAN)</option>
+                    <option value="2" ${isEdit && scheduleData.relay === 2 ? 'selected' : ''}>Relay 2 (LIGHT)</option>
+                    <option value="3" ${isEdit && scheduleData.relay === 3 ? 'selected' : ''}>Relay 3 (FAN-2)</option>
+                    <option value="4" ${isEdit && scheduleData.relay === 4 ? 'selected' : ''}>Relay 4 (DIM-L)</option>
+                </select>
+            </div>
+            
+            <div id="triggerFields" class="trigger-fields">
+                ${renderTriggerFields(scheduleData)}
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Action</label>
+                <select id="actionSelect" class="form-select">
+                    <option value="true" ${isEdit && scheduleData.action === true ? 'selected' : ''}>Turn ON</option>
+                    <option value="false" ${isEdit && scheduleData.action === false ? 'selected' : ''}>Turn OFF</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <input type="checkbox" id="scheduleEnabled" ${isEdit && scheduleData.enabled !== false ? 'checked' : ''}>
+                    Enable Schedule
+                </label>
+            </div>
+            
+            <div class="form-actions">
+                <button class="cancel-btn" id="cancelScheduleBtn">Cancel</button>
+                <button class="save-btn" id="saveScheduleBtn">Save Schedule</button>
+            </div>
+        </div>
+    `;
+    
+    scheduleFormContainer.innerHTML = formHTML;
+    scheduleFormContainer.style.display = 'block';
+    
+    // Add event listeners for the new buttons
+    document.getElementById('cancelScheduleBtn').addEventListener('click', hideScheduleForm);
+    document.getElementById('saveScheduleBtn').addEventListener('click', () => saveSchedule(scheduleId));
+    
+    // Add event listener for schedule type change
+    document.getElementById('scheduleType').addEventListener('change', updateTriggerFields);
+    
+    // Scroll to form
+    scheduleFormContainer.scrollIntoView({ behavior: 'smooth' });
+}
+
+function getNextAvailableScheduleId() {
+    // Find the next available schedule ID (1-50)
+    for (let i = 1; i <= 50; i++) {
+        if (!document.querySelector(`[data-schedule-id="${i}"]`)) {
+            return i;
+        }
+    }
+    return 1; // Default to 1 if all are taken
+}
+
+function renderTriggerFields(scheduleData) {
+    const scheduleType = scheduleData?.type || 'daily';
+    
+    switch(scheduleType) {
+        case 'daily':
+            return `
+                <div class="form-group">
+                    <label class="form-label">ON Time</label>
+                    <input type="time" id="onTime" class="form-input" value="${scheduleData?.onTime || '07:00'}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">OFF Time</label>
+                    <input type="time" id="offTime" class="form-input" value="${scheduleData?.offTime || '18:00'}">
+                </div>
+            `;
+        case 'weekly':
+            return `
+                <div class="form-group">
+                    <label class="form-label">ON Time</label>
+                    <input type="time" id="onTime" class="form-input" value="${scheduleData?.onTime || '07:00'}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">OFF Time</label>
+                    <input type="time" id="offTime" class="form-input" value="${scheduleData?.offTime || '18:00'}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Days (0=Sun, 1=Mon, ..., 6=Sat)</label>
+                    <input type="text" id="days" class="form-input" value="${scheduleData?.days || '1,2,3,4,5'}" placeholder="e.g., 1,2,3,4,5">
+                    <small style="color: #94a3b8;">Comma-separated day numbers (0-6)</small>
+                </div>
+            `;
+        case 'sunrise':
+        case 'sunset':
+            const offset = scheduleData?.offset || 0;
+            return `
+                <div class="form-group">
+                    <label class="form-label">Offset (minutes)</label>
+                    <input type="number" id="sunOffset" class="form-input" value="${offset}" min="-120" max="120" step="1">
+                    <small style="color: #94a3b8;">Positive for after ${scheduleType}, negative for before ${scheduleType}</small>
+                </div>
+            `;
+        case 'temperature':
+            const condition = scheduleData?.condition || '>';
+            const tempValue = scheduleData?.value || 25;
+            return `
+                <div class="form-group">
+                    <label class="form-label">Condition</label>
+                    <select id="tempCondition" class="form-select">
+                        <option value=">" ${condition === '>' ? 'selected' : ''}>Temperature Above</option>
+                        <option value="<" ${condition === '<' ? 'selected' : ''}>Temperature Below</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Temperature Value (°C)</label>
+                    <input type="number" id="tempValue" class="form-input" value="${tempValue}" min="-10" max="50" step="0.5" placeholder="Enter temperature">
+                </div>
+            `;
+        case 'timer':
+            return `
+                <div class="form-group">
+                    <label class="form-label">Duration (minutes)</label>
+                    <input type="number" id="duration" class="form-input" value="${scheduleData?.duration || 30}" min="1" max="1440">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="timerTrigger" ${scheduleData?.trigger ? 'checked' : ''}>
+                        Trigger Now
+                    </label>
+                    <small style="color: #94a3b8;">Check to start the timer immediately</small>
+                </div>
+            `;
+        default:
+            return '';
+    }
+}
+
+function updateTriggerFields() {
+    const scheduleType = document.getElementById('scheduleType').value;
+    const triggerFields = document.getElementById('triggerFields');
+    
+    // Create a temporary schedule data object to pass to renderTriggerFields
+    const tempScheduleData = { type: scheduleType };
+    triggerFields.innerHTML = renderTriggerFields(tempScheduleData);
+}
+
+function hideScheduleForm() {
+    scheduleFormContainer.style.display = 'none';
+    scheduleFormContainer.innerHTML = '';
+}
+
+function saveSchedule(scheduleId) {
+    if (!clientConnected) {
+        addLogEntry('ERROR', 'Cannot save schedule: Client disconnected from Firebase.');
+        return;
+    }
+
+    const scheduleType = document.getElementById('scheduleType').value;
+    const name = document.getElementById('scheduleName').value;
+    const relay = parseInt(document.getElementById('scheduleRelay').value);
+    const action = document.getElementById('actionSelect').value === 'true';
+    const enabled = document.getElementById('scheduleEnabled').checked;
+
+    if (!name.trim()) {
+        alert('Please enter a schedule name');
+        return;
+    }
+
+    if (relay < 1 || relay > 4) {
+        alert('Please select a valid relay (1-4)');
+        return;
+    }
+
+    const scheduleData = {
+        name: name,
+        enabled: enabled,
+        type: scheduleType,
+        relay: relay,
+        action: action
+    };
+
+    // Add type-specific data
+    if (scheduleType === 'daily' || scheduleType === 'weekly') {
+        const onTime = document.getElementById('onTime').value;
+        const offTime = document.getElementById('offTime').value;
+        
+        if (!onTime || !offTime) {
+            alert('Please enter both ON and OFF times');
+            return;
+        }
+        
+        scheduleData.onTime = onTime;
+        scheduleData.offTime = offTime;
+        
+        if (scheduleType === 'weekly') {
+            const days = document.getElementById('days').value;
+            if (!days.trim()) {
+                alert('Please enter days for weekly schedule');
+                return;
+            }
+            scheduleData.days = days;
+        }
+    } else if (scheduleType === 'sunrise' || scheduleType === 'sunset') {
+        const offset = parseInt(document.getElementById('sunOffset').value) || 0;
+        scheduleData.offset = offset;
+    } else if (scheduleType === 'temperature') {
+        const condition = document.getElementById('tempCondition').value;
+        const value = parseFloat(document.getElementById('tempValue').value);
+        if (isNaN(value)) {
+            alert('Please enter a valid temperature');
+            return;
+        }
+        scheduleData.condition = condition;
+        scheduleData.value = value;
+    } else if (scheduleType === 'timer') {
+        const duration = parseInt(document.getElementById('duration').value);
+        const trigger = document.getElementById('timerTrigger').checked;
+        
+        if (isNaN(duration) || duration < 1) {
+            alert('Please enter a valid duration');
+            return;
+        }
+        
+        scheduleData.duration = duration;
+        scheduleData.trigger = trigger;
+    }
+
+    const path = `HOME/ROOM_2/automation/schedule${scheduleId}`;
+    
+    set(ref(db, path), scheduleData)
+        .then(() => {
+            addLogEntry('AUTOMATION', `Schedule "${name}" ${scheduleData.enabled ? 'created/enabled' : 'created/disabled'}`, 'automation');
+            hideScheduleForm();
+            loadSchedules(); // Reload schedules to update the UI
+        })
+        .catch(error => {
+            addLogEntry('ERROR', `Failed to save schedule: ${error.message}`);
+            alert('Failed to save schedule: ' + error.message);
+        });
+}
+
+function deleteSchedule(scheduleId) {
+    if (!clientConnected) {
+        addLogEntry('ERROR', 'Cannot delete schedule: Client disconnected from Firebase.');
+        return;
+    }
+
+    if (confirm('Are you sure you want to delete this schedule?')) {
+        remove(ref(db, `HOME/ROOM_2/automation/schedule${scheduleId}`))
+            .then(() => {
+                addLogEntry('AUTOMATION', 'Schedule deleted', 'automation');
+                loadSchedules(); // Reload schedules to update the UI
+            })
+            .catch(error => {
+                addLogEntry('ERROR', `Failed to delete schedule: ${error.message}`);
+            });
+    }
+}
+
+function toggleSchedule(scheduleId, currentState) {
+    if (!clientConnected) {
+        addLogEntry('ERROR', 'Cannot toggle schedule: Client disconnected from Firebase.');
+        return;
+    }
+
+    const newState = !currentState;
+    
+    set(ref(db, `HOME/ROOM_2/automation/schedule${scheduleId}/enabled`), newState)
+        .then(() => {
+            const statusText = newState ? 'ENABLED' : 'DISABLED';
+            addLogEntry('AUTOMATION', `Schedule ${statusText}`, 'automation');
+            loadSchedules(); // Reload schedules to update the UI
+        })
+        .catch(error => {
+            addLogEntry('ERROR', `Failed to toggle schedule: ${error.message}`);
+        });
+}
+
+function loadSchedules() {
+    // Load all schedules (schedule1 to schedule50)
+    const schedulePromises = [];
+    
+    for (let i = 1; i <= 50; i++) {
+        schedulePromises.push(
+            get(ref(db, `HOME/ROOM_2/automation/schedule${i}`))
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        return { id: i, ...snapshot.val() };
+                    }
+                    return null;
+                })
+        );
+    }
+    
+    Promise.all(schedulePromises)
+        .then((schedules) => {
+            const validSchedules = schedules.filter(schedule => schedule !== null);
+            displaySchedules(validSchedules);
+        })
+        .catch(error => {
+            addLogEntry('ERROR', `Failed to load schedules: ${error.message}`);
+        });
+}
+
+function displaySchedules(schedules) {
+    schedulesList.innerHTML = '';
+    
+    if (schedules.length === 0) {
+        schedulesList.innerHTML = `
+            <div class="schedule-card">
+                <div style="text-align: center; color: #94a3b8; padding: 20px;">
+                    No schedules found. Click "Add Schedule" to create your first automation.
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    schedules.sort((a, b) => a.id - b.id);
+    
+    schedules.forEach(schedule => {
+        const card = document.createElement('div');
+        card.className = `schedule-card ${schedule.enabled ? 'enabled' : 'disabled'}`;
+        card.setAttribute('data-schedule-id', schedule.id);
+        
+        let triggerText = '';
+        switch(schedule.type) {
+            case 'daily':
+                triggerText = `Daily: ON at ${schedule.onTime}, OFF at ${schedule.offTime}`;
+                break;
+            case 'weekly':
+                triggerText = `Weekly: ON at ${schedule.onTime}, OFF at ${schedule.offTime} on days ${schedule.days}`;
+                break;
+            case 'sunrise':
+                triggerText = `Sunrise ${schedule.offset >= 0 ? '+' : ''}${schedule.offset} minutes: ${schedule.action ? 'ON' : 'OFF'}`;
+                break;
+            case 'sunset':
+                triggerText = `Sunset ${schedule.offset >= 0 ? '+' : ''}${schedule.offset} minutes: ${schedule.action ? 'ON' : 'OFF'}`;
+                break;
+            case 'temperature':
+                triggerText = `Temperature ${schedule.condition} ${schedule.value}°C: ${schedule.action ? 'ON' : 'OFF'}`;
+                break;
+            case 'timer':
+                triggerText = `Timer: ${schedule.duration} minutes ${schedule.trigger ? '(Active)' : '(Inactive)'}`;
+                break;
+        }
+        
+        const relayNames = ['FAN', 'LIGHT', 'FAN-2', 'DIM-L'];
+        const actionText = schedule.action ? 'ON' : 'OFF';
+        
+        card.innerHTML = `
+            <div class="schedule-header">
+                <div class="schedule-name">${schedule.name} (Schedule${schedule.id})</div>
+                <div class="schedule-actions">
+                    <button class="schedule-action-btn toggle-btn" data-schedule-id="${schedule.id}" data-current-state="${schedule.enabled}" title="${schedule.enabled ? 'Disable' : 'Enable'}">
+                        <i class="fas ${schedule.enabled ? 'fa-pause' : 'fa-play'}"></i>
+                    </button>
+                    <button class="schedule-action-btn edit-btn" data-schedule-id="${schedule.id}" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="schedule-action-btn delete-btn" data-schedule-id="${schedule.id}" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="schedule-details">
+                <div class="schedule-trigger"><strong>Trigger:</strong> ${triggerText}</div>
+                <div class="schedule-action"><strong>Action:</strong> ${relayNames[schedule.relay - 1]} ${actionText}</div>
+                <div class="schedule-status"><strong>Status:</strong> ${schedule.enabled ? 'Enabled' : 'Disabled'}</div>
+            </div>
+        `;
+        
+        schedulesList.appendChild(card);
+    });
+
+    // Add event listeners to the buttons
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const scheduleId = e.target.closest('.toggle-btn').getAttribute('data-schedule-id');
+            const currentState = e.target.closest('.toggle-btn').getAttribute('data-current-state') === 'true';
+            toggleSchedule(parseInt(scheduleId), currentState);
+        });
+    });
+
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const scheduleId = e.target.closest('.edit-btn').getAttribute('data-schedule-id');
+            editSchedule(parseInt(scheduleId));
+        });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const scheduleId = e.target.closest('.delete-btn').getAttribute('data-schedule-id');
+            deleteSchedule(parseInt(scheduleId));
+        });
+    });
+}
+
+function editSchedule(scheduleId) {
+    get(ref(db, `HOME/ROOM_2/automation/schedule${scheduleId}`))
+        .then((snapshot) => {
+            const scheduleData = snapshot.val();
+            if (scheduleData) {
+                scheduleData.id = scheduleId;
+                showScheduleForm(scheduleData);
+            }
+        })
+        .catch(error => {
+            addLogEntry('ERROR', `Failed to load schedule for editing: ${error.message}`);
+        });
+}
+
+// Add schedule button event listener
+addScheduleBtn.addEventListener('click', () => {
+    showScheduleForm();
 });
 
 // --- RTDB LOGIC AND TOGGLE ---
@@ -1160,40 +1538,6 @@ rtdbLogsSwitch.addEventListener('click', () => {
     addLogEntry('INFO', `RTDB Logs: ${statusText}.`, 'rtdb');
     
     setupRTDBLogListener();
-});
-
-// --- INDIVIDUAL RELAY AUTOMATION FUNCTIONS ---
-
-// Initialize individual relay automation switches
-relayAutoSwitches.forEach((switchEl, index) => {
-    const relayNum = index + 1;
-    const path = `HOME/ROOM_2/settings/relay${relayNum}/autoEnabled`;
-    
-    // Listen for automation state from RTDB
-    onValue(ref(db, path), (snapshot) => {
-        const autoState = snapshot.val();
-        switchEl.classList.toggle('on', autoState === true);
-    });
-    
-    // Handle switch click
-    switchEl.addEventListener('click', () => {
-        if (!clientConnected) {
-            addLogEntry('ERROR', `Cannot toggle Relay ${relayNum} automation: Client disconnected from Firebase.`);
-            return;
-        }
-        
-        const newAutoState = !switchEl.classList.contains('on');
-        const relayName = relayBtns[index].textContent;
-        
-        set(ref(db, path), newAutoState)
-            .then(() => {
-                const statusText = newAutoState ? 'ENABLED' : 'DISABLED';
-                addLogEntry('INFO', `Relay ${relayNum} (${relayName}) automation ${statusText}.`, 'rtdb');
-            })
-            .catch(error => {
-                addLogEntry('ERROR', `Failed to set Relay ${relayNum} automation state: ${error.message}`);
-            });
-    });
 });
 
 // --- BEEP AND RESTART FUNCTIONS ---
@@ -1499,6 +1843,7 @@ onAuthStateChanged(auth, (user) => {
         showDashboard(user);
         addLogEntry('INFO', `User ${user.email} signed in successfully.`);
         loadWeatherData();
+        loadSchedules(); // Load automation schedules
     } else {
         if (localStorage.getItem(SESSION_KEY) === 'true') {
             localStorage.removeItem(SESSION_KEY);
@@ -1733,145 +2078,6 @@ relayBtns.forEach((btn,i)=>{
     onValue(ref(db,`HOME/ROOM_2/relay${i+1}`),snap=>setRelayState(btn,!!snap.val())); 
 });
 
-// --- AUTOMATION LOGIC ---
-const automationSwitch = document.getElementById('automationSwitch');
-const offsetInputs = [
-  {sunrise: document.getElementById('r1_sunrise'), sunset: document.getElementById('r1_sunset')},
-  {sunrise: document.getElementById('r2_sunrise'), sunset: document.getElementById('r2_sunset')},
-  {sunrise: document.getElementById('r3_sunrise'), sunset: document.getElementById('r3_sunset')},
-  {sunrise: document.getElementById('r4_sunrise'), sunset: document.getElementById('r4_sunset')}
-];
-
-function updateAutomationScheduleDisplay(relayIndex, sunriseVal, sunsetVal) {
-    const sunriseTimeEl = document.getElementById(`r${relayIndex+1}_sunrise_time`);
-    const sunsetTimeEl = document.getElementById(`r${relayIndex+1}_sunset_time`);
-    const sunriseRef = ref(db, 'HOME/ROOM_2/sunrise');
-    const sunsetRef = ref(db, 'HOME/ROOM_2/sunset');
-    
-    const calculateOffsetTime = (baseTime, offset) => {
-        if (!baseTime || baseTime === '--:--') return '--:--';
-        const [hourStr, minuteStr] = baseTime.split(':');
-        
-        const now = new Date();
-        const baseDate = new Date(now.toDateString() + ' ' + baseTime);
-        
-        if (isNaN(baseDate)) return '--:--';
-        
-        baseDate.setMinutes(baseDate.getMinutes() + offset);
-        
-        return baseDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-    };
-
-    onValue(sunriseRef, (snap) => {
-        const baseSunrise = snap.val();
-        sunriseTimeEl.textContent = baseSunrise ? calculateOffsetTime(baseSunrise, sunriseVal) : '--:--';
-    }, { onlyOnce: true });
-
-    onValue(sunsetRef, (snap) => {
-        const baseSunset = snap.val();
-        sunsetTimeEl.textContent = baseSunset ? calculateOffsetTime(baseSunset, sunsetVal) : '--:--';
-    }, { onlyOnce: true });
-}
-
-onValue(ref(db,'HOME/ROOM_2/settings/scheduleEnabled'),snap=>{
-  const val=snap.val();
-  if(val) automationSwitch.classList.add('on'); else automationSwitch.classList.remove('on');
-  automationSwitch.parentNode.classList.toggle('on', !!val); 
-});
-
-automationSwitch.addEventListener('click',()=>{
-  if (!clientConnected) {
-      const messageBox = document.createElement('div');
-      messageBox.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:20px;background:#ef4444;color:#fff;border-radius:8px;z-index:1000;box-shadow:0 0 10px rgba(0,0,0,0.5);font-weight:bold;';
-      messageBox.textContent = 'ERROR: Dashboard disconnected. Cannot change settings.';
-      document.body.appendChild(messageBox);
-      setTimeout(() => messageBox.remove(), 3000);
-      return;
-  }
-  const newVal=!automationSwitch.classList.contains('on');
-  set(ref(db,'HOME/ROOM_2/settings/scheduleEnabled'), newVal);
-});
-
-offsetInputs.forEach((obj,i)=>{
-  const pathPrefix = `HOME/ROOM_2/settings/relay${i+1}/`;
-  const relayName = relayBtns[i].textContent;
-  
-  const sunriseTimeEl = document.getElementById(`r${i+1}_sunrise_time`);
-  const sunsetTimeEl = document.getElementById(`r${i+1}_sunset_time`);
-  
-  let currentSunriseOffset = 0;
-  let currentSunsetOffset = 0;
-
-  onValue(ref(db,pathPrefix + 'sunriseOffset'),snap=>{
-    currentSunriseOffset = snap.val() || 0;
-    obj.sunrise.value = currentSunriseOffset;
-    updateAutomationScheduleDisplay(i, currentSunriseOffset, currentSunsetOffset);
-  });
-  
-  onValue(ref(db,pathPrefix + 'sunsetOffset'),snap=>{
-    currentSunsetOffset = snap.val() || 0;
-    obj.sunset.value = currentSunsetOffset;
-    updateAutomationScheduleDisplay(i, currentSunriseOffset, currentSunsetOffset);
-  });
-  
-  const handleOffsetChange = (input, offsetType) => {
-      if (!clientConnected) {
-          const messageBox = document.createElement('div');
-          messageBox.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:20px;background:#ef4444;color:#fff;border-radius:8px;z-index:1000;box-shadow:0 0 10px rgba(0,0,0,0.5);font-weight:bold;';
-          messageBox.textContent = 'ERROR: Dashboard disconnected. Cannot change settings.';
-          document.body.appendChild(messageBox);
-          setTimeout(() => messageBox.remove(), 3000);
-          return;
-      }
-      const val = Number(input.value);
-      set(ref(db,pathPrefix + offsetType + 'Offset'), val);
-      addLogEntry('INFO', `${relayName} ${offsetType} Offset set to ${val} min.`, 'rtdb'); 
-      
-      if (offsetType === 'sunrise') {
-          currentSunriseOffset = val;
-      } else {
-          currentSunsetOffset = val;
-      }
-      updateAutomationScheduleDisplay(i, currentSunriseOffset, currentSunsetOffset);
-  };
-
-  obj.sunrise.addEventListener('change',()=>handleOffsetChange(obj.sunrise, 'sunrise'));
-  obj.sunset.addEventListener('change',()=>handleOffsetChange(obj.sunset, 'sunset'));
-});
-
-// --- STATS LOGIC ---
-function updateStats() {
-    const now = Date.now();
-    const elapsed = (now - lastStateChangeTime) / 1000;
-    
-    if (deviceOnline) {
-        totalOnlineSeconds += elapsed;
-    } else {
-        totalOfflineSeconds += elapsed;
-    }
-    lastStateChangeTime = now;
-    
-    document.getElementById('onlineDuration').textContent = formatDuration(totalOnlineSeconds);
-    document.getElementById('offlineDuration').textContent = formatDuration(totalOfflineSeconds);
-    
-    const totalSeconds = totalOnlineSeconds + totalOfflineSeconds;
-    const uptimePercent = totalSeconds > 0 ? ((totalOnlineSeconds / totalSeconds) * 100).toFixed(1) : 0;
-    document.getElementById('uptimePercent').textContent = `${uptimePercent}%`;
-    
-    if (lastDisconnectTimestamp) {
-        document.getElementById('lastDisconnect').textContent = formatTime(lastDisconnectTimestamp);
-    }
-}
-
-function formatDuration(seconds) {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = Math.floor(seconds % 60);
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-}
-
-setInterval(updateStats, 1000);
-
 // --- TAB NAVIGATION LOGIC ---
 const tabs = document.querySelectorAll('.tab-btn');
 const contents = document.querySelectorAll('.tab-content');
@@ -1897,6 +2103,12 @@ tabs.forEach(btn=>{
 loadDeviceInfo();
 setupRTDBLogListener();
 addLogEntry('INFO', 'Dashboard initialized successfully.');
+
+// Make functions globally available for onclick handlers
+window.toggleSchedule = toggleSchedule;
+window.deleteSchedule = deleteSchedule;
+window.editSchedule = editSchedule;
+window.updateTriggerFields = updateTriggerFields;
 
 </script>
 </body>
