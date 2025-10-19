@@ -311,6 +311,7 @@
     gap:6px; 
     margin-top:6px; 
     justify-content: center;
+    flex-wrap: wrap;
   }
   .tab-btn { 
     padding:6px 12px; 
@@ -322,6 +323,7 @@
     font-weight:600; 
     transition: background 0.2s, color 0.2s;
     font-size:0.8rem; 
+    white-space: nowrap;
   }
   .tab-btn:hover { background:#334155; }
   .tab-btn.active { 
@@ -330,6 +332,15 @@
   }
   .tab-content { display:none; padding-top: 6px; }
   .tab-content.active { display:block; }
+  
+  /* NEW: Room Tabs Container */
+  .room-tabs-container {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
   
   /* Status styles now handle three colors */
   .status { 
@@ -775,11 +786,21 @@
     
     <div class="header-center-content">
       <h1><i class="fa-solid fa-house-chimney"></i> ROOM_2 Dashboard</h1>
+      
+      <!-- First Row: Main Tabs -->
       <div class="tabs">
         <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
         <button class="tab-btn" data-tab="automation">Automation</button>
         <button class="tab-btn" data-tab="weather">Weather</button>
         <button class="tab-btn" data-tab="logs">Logs</button>
+      </div>
+      
+      <!-- Second Row: Room Tabs (UNDER the main tabs) -->
+      <div class="room-tabs-container">
+        <button class="tab-btn room-tab" data-link="https://jahangirnrl.github.io/nrl/room-1.html">Room-1</button>
+        <button class="tab-btn room-tab" data-link="https://jahangirnrl.github.io/nrl">Room-2</button>
+        <button class="tab-btn room-tab" data-link="https://jahangirnrl.github.io/nrl/room-3.html">Room-3</button>
+        <button class="tab-btn room-tab" data-link="https://jahangirnrl.github.io/nrl/room-4">Room-4.html</button>
       </div>
       
       <div class="version-info-container">
@@ -903,7 +924,7 @@ const auth = getAuth(app);
 
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'room2_session_active';
-const DASHBOARD_VERSION = 'v1.0.2';  // AUTOMATION HUZE CHANGE, TIMER DAILY WEEKLY, SUN AND OFFSET, TEMPERATURE
+const DASHBOARD_VERSION = 'v1.0.3';  // AUTOMATION HUZE CHANGE, TIMER DAILY WEEKLY, SUN AND OFFSET, TEMPERATURE
 
 const loginScreen = document.getElementById('loginScreen');
 const dashboardContainer = document.getElementById('dashboardContainer');
@@ -2086,7 +2107,24 @@ tabs.forEach(btn=>{
     tabs.forEach(b=>b.classList.remove('active'));
     contents.forEach(c=>c.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById(btn.dataset.tab).classList.add('active');
+    
+    // Check if it's a room tab (external link)
+    if (btn.classList.contains('room-tab')) {
+        const link = btn.getAttribute('data-link');
+        if (link) {
+            window.open(link, '_blank');
+            // Re-activate the previously active tab
+            const activeTab = document.querySelector('.tab-btn.active:not(.room-tab)');
+            if (activeTab) {
+                activeTab.classList.add('active');
+                document.getElementById(activeTab.dataset.tab).classList.add('active');
+            }
+            btn.classList.remove('active');
+            return;
+        }
+    } else {
+        document.getElementById(btn.dataset.tab).classList.add('active');
+    }
     
     if (btn.dataset.tab === 'logs' && rtdbLogsEnabled) {
         setupRTDBLogListener();
@@ -2113,4 +2151,3 @@ window.updateTriggerFields = updateTriggerFields;
 </script>
 </body>
 </html>
-
