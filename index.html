@@ -253,8 +253,8 @@
   .tab-content { display:none; padding-top: 6px; }
   .tab-content.active { display:block; }
   
-  /* Status styles */
-  .status { 
+/* Status styles */
+.status { 
     display:inline-block; 
     padding:4px 10px; 
     border-radius:16px; 
@@ -266,11 +266,18 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     transition: background 0.3s;
     text-align: center;
-  }
-  .status.online.room-1-online { background:#10b981; }
-  .status.online.room-2-online { background:#38bdf8; }
-  .status.online.room-3-online { background:#f59e0b; }
-  .status.online.room-4-online { background:#8b5cf6; }
+}
+.status.online { 
+    background:#10b981 !important; 
+}
+.status.unstable { 
+    background: #f59e0b !important;
+    color: #0f172a !important;
+}
+.status.connecting { 
+    background: #38bdf8 !important;
+    color: #0f172a !important;
+}
 
   /* Version Info */
   .version-info-container {
@@ -994,6 +1001,8 @@ devices.forEach(device => {
   deviceStates[device] = { 
     online: false, 
     lastHeartbeat: null, 
+    lastOnlineUpdate: null,
+    connectionStability: 'unknown', // 'stable', 'unstable', 'offline', 'unknown'
     relays: [false, false, false, false],
     firmware: '--',
     ip: '--',
@@ -1063,6 +1072,9 @@ function switchDevice(deviceId) {
   
   currentDevice = deviceId;
   
+  // Reset connection stability for the new device
+  deviceStates[currentDevice].connectionStability = 'unknown';
+  
   // Update UI
   deviceTabs.forEach(tab => {
     tab.classList.remove('active-room-1', 'active-room-2', 'active-room-3', 'active-room-4');
@@ -1119,7 +1131,7 @@ function updateThemeColors() {
   });
   
   // Update online status
-  statusEl.classList.remove('room-1-online', 'room-2-online', 'room-3-online', 'room-4-online');
+  //statusEl.classList.remove('room-1-online', 'room-2-online', 'room-3-online', 'room-4-online');
   if (statusEl.classList.contains('online')) {
     statusEl.classList.add(`room-${roomNum}-online`);
   }
@@ -1153,6 +1165,117 @@ function setupDeviceListeners() {
   
   // Setup switch listeners
   setupSwitchListeners();
+}
+
+// --- ONLINE STATUS LOGIC ---
+
+function setupStatusListeners() {
+  // Online status from device
+  const onlineUnsubscribe = db.ref(getDevicePath('online')).on('value', (snap) => {
+    const isOnline = snap.val() === true;
+    deviceStates[currentDevice].online = isOnline;
+    deviceStates[currentDevice].lastOnlineUpdate = Date.now();
+    updateStatusDisplay();
+  });
+  allListeners.push(() => db.ref(getDevicePath('online')).off('value', onlineUnsubscribe));
+  
+  // Heartbeat monitoring via uptime changes
+  startHeartbeatMonitoring();
+}
+
+function startHeartbeatMonitoring() {
+  let lastUptimeValue = '';
+  let stableCount = 0;
+  let unstableCount = 0;
+  
+  const uptimeUnsubscribe = db.ref(getDevicePath('uptime')).on('value', snap => {
+    const currentUptime = snap.val() || '';
+    
+    // Check if uptime changed (heartbeat pulse)
+    if (currentUptime !== lastUptimeValue && currentUptime !== '') {
+      const now = Date.now();
+      deviceStates[currentDevice].lastHeartbeat = now;
+      deviceStates[currentDevice].online = true;
+      
+      // Check heartbeat frequency
+      const lastHeartbeat = deviceStates[currentDevice].lastHeartbeat || now;
+      const timeDiff = now - lastHeartbeat;
+      
+      if (timeDiff < 20000) { // Less than 20 seconds between pulses
+        stableCount++;
+        unstableCount = 0;
+        if (stableCount >= 2) { // Require 2 consecutive stable pulses
+          deviceStates[currentDevice].connectionStability = 'stable';
+        }
+      } else {
+        unstableCount++;
+        stableCount = 0;
+        if (unstableCount >= 2) { // 2 consecutive unstable pulses
+          deviceStates[currentDevice].connectionStability = 'unstable';
+        }
+      }
+      
+      updateStatusDisplay();
+    }
+    
+    lastUptimeValue = currentUptime;
+  });
+  
+  allListeners.push(() => db.ref(getDevicePath('uptime')).off('value', uptimeUnsubscribe));
+  
+  // Monitor for offline status - check every 30 seconds
+  const offlineCheckInterval = setInterval(() => {
+    const deviceState = deviceStates[currentDevice];
+    const now = Date.now();
+    
+    // If no heartbeat in 1 minute, mark as offline
+    if (deviceState.lastHeartbeat && (now - deviceState.lastHeartbeat > 60000)) {
+      deviceState.online = false;
+      deviceState.connectionStability = 'offline';
+      updateStatusDisplay();
+    }
+    
+    // If device explicitly set online=false, respect that immediately
+    if (deviceState.online === false) {
+      deviceState.connectionStability = 'offline';
+      updateStatusDisplay();
+    }
+    
+  }, 30000);
+  
+  allListeners.push(() => clearInterval(offlineCheckInterval));
+}
+
+function updateStatusDisplay() {
+  const deviceState = deviceStates[currentDevice];
+  
+  // Clear all status classes
+  statusEl.classList.remove('online', 'unstable', 'connecting');
+  statusEl.style.color = '#fff';
+  
+  if (!clientConnected) {
+    statusEl.textContent = "Client Disconnected";
+    statusEl.style.backgroundColor = '#fbbf24';
+    statusEl.style.color = '#0f172a';
+  } else if (!deviceState.online) {
+    statusEl.textContent = "Offline";
+    statusEl.style.backgroundColor = '#ef4444';
+  } else {
+    // Device is online, check stability
+    switch(deviceState.connectionStability) {
+      case 'stable':
+        statusEl.textContent = "Online ✓";
+        statusEl.classList.add('online');
+        break;
+      case 'unstable':
+        statusEl.textContent = "Connection Unstable";
+        statusEl.classList.add('unstable');
+        break;
+      default:
+        statusEl.textContent = "Connecting...";
+        statusEl.classList.add('connecting');
+    }
+  }
 }
 
 // --- RELAY CONTROL LOGIC ---
@@ -1254,50 +1377,6 @@ function setupDeviceInfoListeners() {
     
     allListeners.push(() => db.ref(fullPath).off('value', unsubscribe));
   });
-}
-
-function setupStatusListeners() {
-  // Online status
-  const onlineUnsubscribe = db.ref(getDevicePath('online')).on('value', (snap) => {
-    const isOnline = snap.val() === true;
-    deviceStates[currentDevice].online = isOnline;
-    updateStatusDisplay();
-  });
-  allListeners.push(() => db.ref(getDevicePath('online')).off('value', onlineUnsubscribe));
-  
-  // Heartbeat via uptime
-  const heartbeatUnsubscribe = db.ref(getDevicePath('uptime')).on('value', snap => {
-    const val = snap.val(); 
-    if(val === null || val === undefined) return; 
-    
-    deviceStates[currentDevice].lastHeartbeat = Date.now();
-    deviceStates[currentDevice].online = true;
-    updateStatusDisplay();
-  });
-  allListeners.push(() => db.ref(getDevicePath('uptime')).off('value', heartbeatUnsubscribe));
-}
-
-// --- STATUS DISPLAY LOGIC ---
-
-function updateStatusDisplay() {
-  const deviceState = deviceStates[currentDevice];
-  const roomNum = currentDevice.split('_')[1];
-  
-  statusEl.classList.remove('online', 'room-1-online', 'room-2-online', 'room-3-online', 'room-4-online');
-  statusEl.style.color = '#fff';
-  
-  if (!clientConnected) {
-    statusEl.textContent = "Client Disconnected";
-    statusEl.style.backgroundColor = '#fbbf24';
-    statusEl.style.color = '#0f172a';
-  } else if (deviceState.online) {
-    statusEl.textContent = "Online";
-    statusEl.style.backgroundColor = '';
-    statusEl.classList.add('online', `room-${roomNum}-online`);
-  } else {
-    statusEl.textContent = "Offline";
-    statusEl.style.backgroundColor = '#ef4444';
-  }
 }
 
 // --- SWITCH CONTROL FUNCTIONS ---
