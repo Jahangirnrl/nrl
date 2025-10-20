@@ -231,10 +231,25 @@
     white-space: nowrap;
   }
   .tab-btn:hover { background:#334155; }
-  .tab-btn.active { 
+  
+  /* Room-specific active tab colors */
+  .tab-btn.active.room-1-active { 
     background:#10b981; 
     color:#042f2e; 
   }
+  .tab-btn.active.room-2-active { 
+    background:#38bdf8; 
+    color:#0f172a; 
+  }
+  .tab-btn.active.room-3-active { 
+    background:#f59e0b; 
+    color:#0f172a; 
+  }
+  .tab-btn.active.room-4-active { 
+    background:#8b5cf6; 
+    color:#f1f5f9; 
+  }
+  
   .tab-content { display:none; padding-top: 6px; }
   .tab-content.active { display:block; }
   
@@ -252,7 +267,10 @@
     transition: background 0.3s;
     text-align: center;
   }
-  .status.online { background:#10b981; }
+  .status.online.room-1-online { background:#10b981; }
+  .status.online.room-2-online { background:#38bdf8; }
+  .status.online.room-3-online { background:#f59e0b; }
+  .status.online.room-4-online { background:#8b5cf6; }
 
   /* Version Info */
   .version-info-container {
@@ -263,16 +281,15 @@
     margin-top: 5px;
     font-size: 0.7rem;
   }
-  .dashboard-version {
-    text-align: left;
-    color: #38bdf8;
-    font-weight: 600;
-  }
-  .firmware-version {
-    text-align: right;
-    color: #10b981;
-    font-weight: 600;
-  }
+  .dashboard-version.room-1-version { color: #10b981; }
+  .dashboard-version.room-2-version { color: #38bdf8; }
+  .dashboard-version.room-3-version { color: #f59e0b; }
+  .dashboard-version.room-4-version { color: #8b5cf6; }
+  
+  .firmware-version.room-1-firmware { color: #10b981; }
+  .firmware-version.room-2-firmware { color: #38bdf8; }
+  .firmware-version.room-3-firmware { color: #f59e0b; }
+  .firmware-version.room-4-firmware { color: #8b5cf6; }
 
   .info-main { 
     display:grid; 
@@ -804,16 +821,16 @@
       
       <!-- Main Tabs -->
       <div class="tabs">
-        <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+        <button class="tab-btn active room-1-active" data-tab="dashboard">Dashboard</button>
         <button class="tab-btn" data-tab="automation">Automation</button>
         <button class="tab-btn" data-tab="weather">Weather</button>
         <button class="tab-btn" data-tab="logs">Logs</button>
       </div>
       
       <div class="version-info-container">
-        <div class="dashboard-version" id="versionInfo">Dashboard: v2.0.0</div>
+        <div class="dashboard-version room-1-version" id="versionInfo">Dashboard: v2.0.0</div>
         <div id="status" class="status">Offline</div>
-        <div class="firmware-version" id="firmwareInfo">Firmware: --</div>
+        <div class="firmware-version room-1-firmware" id="firmwareInfo">Firmware: --</div>
       </div>
     </div>
     
@@ -1063,6 +1080,9 @@ function switchDevice(deviceId) {
   // Update theme for relays
   updateDeviceTheme();
   
+  // Update theme for main tabs, status, and version info
+  updateThemeColors();
+  
   // Setup new listeners for the current device
   setupDeviceListeners();
   
@@ -1081,6 +1101,32 @@ function updateDeviceTheme() {
       btn.classList.add(`room-${roomNum}`);
     }
   });
+}
+
+function updateThemeColors() {
+  const roomNum = currentDevice.split('_')[1];
+  
+  // Update main tabs
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  tabBtns.forEach(btn => {
+    // Remove all room-specific active classes
+    btn.classList.remove('room-1-active', 'room-2-active', 'room-3-active', 'room-4-active');
+    
+    // Add the current room's active class to active tabs
+    if (btn.classList.contains('active')) {
+      btn.classList.add(`room-${roomNum}-active`);
+    }
+  });
+  
+  // Update online status
+  statusEl.classList.remove('room-1-online', 'room-2-online', 'room-3-online', 'room-4-online');
+  if (statusEl.classList.contains('online')) {
+    statusEl.classList.add(`room-${roomNum}-online`);
+  }
+  
+  // Update version info colors
+  versionInfoEl.className = `dashboard-version room-${roomNum}-version`;
+  firmwareInfoEl.className = `firmware-version room-${roomNum}-firmware`;
 }
 
 function cleanupListeners() {
@@ -1235,8 +1281,9 @@ function setupStatusListeners() {
 
 function updateStatusDisplay() {
   const deviceState = deviceStates[currentDevice];
+  const roomNum = currentDevice.split('_')[1];
   
-  statusEl.classList.remove('online');
+  statusEl.classList.remove('online', 'room-1-online', 'room-2-online', 'room-3-online', 'room-4-online');
   statusEl.style.color = '#fff';
   
   if (!clientConnected) {
@@ -1246,7 +1293,7 @@ function updateStatusDisplay() {
   } else if (deviceState.online) {
     statusEl.textContent = "Online";
     statusEl.style.backgroundColor = '';
-    statusEl.classList.add('online');
+    statusEl.classList.add('online', `room-${roomNum}-online`);
   } else {
     statusEl.textContent = "Offline";
     statusEl.style.backgroundColor = '#ef4444';
@@ -1370,50 +1417,31 @@ restartBtn.addEventListener('click', () => {
 // --- WEATHER FUNCTIONS ---
 
 async function fetchWeatherData() {
-  const weatherServices = [
-    {
-      name: "Open-Meteo (Free)",
-      url: "https://api.open-meteo.com/v1/forecast?latitude=23.8103&longitude=90.4125&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m&timezone=auto",
-      parser: (data) => ({
-        temperature: Math.round(data.current.temperature_2m),
-        humidity: data.current.relative_humidity_2m,
-        rain: data.current.precipitation > 0,
-        windSpeed: Math.round(data.current.wind_speed_10m * 3.6),
-        location: "Dhaka, Bangladesh",
-        source: "Open-Meteo"
-      })
+  try {
+    addLogEntry('Fetching weather data from Firebase', 'info', 'weather');
+    
+    const snapshot = await db.ref('HOME/weather').once('value');
+    const weatherData = snapshot.val();
+    
+    if (!weatherData) {
+      throw new Error('No weather data found in Firebase');
     }
-  ];
-
-  for (const service of weatherServices) {
-    try {
-      addLogEntry(`Trying weather service: ${service.name}`, 'info', 'weather');
-      
-      const response = await fetch(service.url, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-        },
-        mode: 'cors'
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-      
-      const data = await response.json();
-      const weatherData = service.parser(data);
-      
-      addLogEntry(`Weather data loaded from ${service.name}`, 'info', 'weather');
-      return weatherData;
-      
-    } catch (error) {
-      addLogEntry(`Weather service ${service.name} failed: ${error.message}`, 'warn', 'weather');
-      continue;
-    }
+    
+    addLogEntry('Weather data loaded from Firebase', 'info', 'weather');
+    
+    return {
+      temperature: weatherData.temperature || '--',
+      humidity: weatherData.humidity || '--',
+      rain: weatherData.rain || false,
+      windSpeed: weatherData.windSpeed || '--',
+      location: "Weather Station",
+      source: "Firebase Realtime Database"
+    };
+    
+  } catch (error) {
+    addLogEntry(`Failed to fetch weather data from Firebase: ${error.message}`, 'warn', 'weather');
+    return generateDemoWeatherData();
   }
-  
-  return generateDemoWeatherData();
 }
 
 function generateDemoWeatherData() {
@@ -1443,7 +1471,7 @@ function generateDemoWeatherData() {
     humidity: humidity,
     rain: isRaining,
     windSpeed: windSpeed,
-    location: "Dhaka, Bangladesh (Demo)",
+    location: "Demo Weather Station",
     source: "Demo Data"
   };
 }
@@ -1475,22 +1503,7 @@ async function loadWeatherData() {
     
     lastWeatherUpdate = Date.now();
     
-    
-if (clientConnected) {
-      try {
-        await db.ref('HOME/weather').set({
-          temperature: weatherData.temperature,
-          humidity: weatherData.humidity,
-          rain: weatherData.rain,
-          windSpeed: weatherData.windSpeed,
-          lastUpdate: Date.now(),
-          source: weatherData.source
-        });
-        addLogEntry('Weather data stored in RTDB', 'info', 'weather');
-      } catch (error) {
-        addLogEntry(`Failed to store weather data in RTDB: ${error.message}`, 'warn', 'weather');
-      }
-    }
+    addLogEntry(`Weather data updated: ${weatherData.temperature}°C, ${weatherData.humidity}% humidity`, 'info', 'weather');
     
   } catch (error) {
     console.error('Weather loading error:', error);
@@ -2134,6 +2147,9 @@ tabs.forEach(btn => {
     contents.forEach(c => c.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(btn.dataset.tab).classList.add('active');
+    
+    // Update tab theme colors
+    updateThemeColors();
     
     // Load schedules when switching to automation tab
     if (btn.dataset.tab === 'automation') {
