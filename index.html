@@ -3,22 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROOM_2 Dashboard</title>
+<title>Multi-Room Dashboard</title>
 <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/7733/7733361.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
   body {
-    /* DASHBOARD_VERSION = 'v1.0.2'                                  FOR HELP TO FIND VERSION */
     margin:0; padding:0; 
     font-family: "Inter", sans-serif;
-    background:#0f172a; /* Slate 900 */
-    color:#e2e8f0; /* Slate 200 */
+    background:#0f172a;
+    color:#e2e8f0;
     line-height:1.4;
     font-size: 0.95rem; 
   }
 
-  /* Global Container for Dashboard Content */
   #dashboardContainer {
     padding: 10px;
   }
@@ -79,10 +77,9 @@
     font-size: 0.85rem;
   }
 
-  /* --- HEADER AND PROFILE MENU STYLES (MODIFIED) --- */
+  /* --- HEADER AND PROFILE MENU STYLES --- */
   header {
     display: grid;
-    /* 3-column layout: Left Button | Centered Content | Right Spacer */
     grid-template-columns: auto 1fr auto;
     align-items: center;
     margin-bottom: 12px;
@@ -96,19 +93,19 @@
     text-align: center;
   }
   header h1 i {
-    margin-right: 8px; /* Spacing for the icon */
+    margin-right: 8px;
   }
   .header-center-content {
       display: flex;
       flex-direction: column;
-      align-items: center; /* Centers items horizontally */
+      align-items: center;
       justify-content: center;
-      grid-column: 2; /* Ensures this content sits in the middle column */
+      grid-column: 2;
       width: 100%;
   }
   .profile-menu {
-    grid-column: 1; /* NEW: Ensures menu is in the left column */
-    justify-self: start; /* Pushes the menu to the far left */
+    grid-column: 1;
+    justify-self: start;
     position: relative;
     z-index: 02;
   }
@@ -123,7 +120,6 @@
   .dropdown-content {
     display: none;
     position: absolute;
-    /* NEW: Position the dropdown 10px ABOVE the button, aligned to the left */
     margin-top: 0;
     left: 0;
     background-color: #1e293b;
@@ -169,147 +165,56 @@
   }
   .restart-btn:hover { background: #d97706; }
   
-  /* UPDATED: IR Lock Switch Styles */
-  .ir-lock-switch-container {
+  /* Device Selection Tabs */
+  .device-tabs {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    padding: 10px;
-    background: rgba(30, 41, 59, 0.7);
-    border-radius: 8px;
-    border: 1px solid #334155;
+    gap: 6px;
+    margin-top: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
   }
-  .ir-lock-switch-label {
+  .device-tab {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background: #1e293b;
     color: #94a3b8;
-    font-weight: 600;
-    font-size: 0.9rem;
-  }
-  .ir-lock-switch {
-    width: 50px;
-    height: 24px;
-    border-radius: 12px;
-    background: #10b981; /* Green when unlocked */
-    position: relative;
     cursor: pointer;
-    transition: background 0.2s;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
-  }
-  .ir-lock-switch.unlocked {
-    background: #ef4444; /* Red when locked */
-    
-  }
-  .ir-lock-switch::after {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #fff;
-    transition: transform 0.2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-  }
-  .ir-lock-switch.unlocked::after {
-    transform: translateX(26px);
-  }
-
-  /* NEW: Physical Button Lock Switch Styles */
-  .button-lock-switch-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    padding: 10px;
-    background: rgba(30, 41, 59, 0.7);
-    border-radius: 8px;
-    border: 1px solid #334155;
-  }
-  .button-lock-switch-label {
-    color: #94a3b8;
     font-weight: 600;
-    font-size: 0.9rem;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+    border: 2px solid transparent;
   }
-  .button-lock-switch {
-    width: 50px;
-    height: 24px;
-    border-radius: 12px;
-    background: #10b981; /* Green when unlocked */
-    position: relative;
-    cursor: pointer;
-    transition: background 0.2s;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  .device-tab:hover {
+    background: #334155;
+    color: #e2e8f0;
   }
-  .button-lock-switch.unlocked {
-    background: #ef4444; /* Red when locked */
-  }
-  .button-lock-switch::after {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #fff;
-    transition: transform 0.2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-  }
-  .button-lock-switch.unlocked::after {
-    transform: translateX(26px);
-  }
-
-  /* BEEP Switch Styles */
-  .beep-switch-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    padding: 10px;
-    background: rgba(30, 41, 59, 0.7);
-    border-radius: 8px;
-    border: 1px solid #334155;
-  }
-  .beep-switch-label {
-    color: #94a3b8;
-    font-weight: 600;
-    font-size: 0.9rem;
-  }
-  .beep-switch {
-    width: 50px;
-    height: 24px;
-    border-radius: 12px;
-    background: #ef4444;
-    position: relative;
-    cursor: pointer;
-    transition: background 0.2s;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
-  }
-  .beep-switch.on {
+  .device-tab.active-room-1 {
     background: #10b981;
+    color: #042f2e;
+    border-color: #10b981;
   }
-  .beep-switch::after {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #fff;
-    transition: transform 0.2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  .device-tab.active-room-2 {
+    background: #38bdf8;
+    color: #0f172a;
+    border-color: #38bdf8;
   }
-  .beep-switch.on::after {
-    transform: translateX(26px);
+  .device-tab.active-room-3 {
+    background: #f59e0b;
+    color: #0f172a;
+    border-color: #f59e0b;
+  }
+  .device-tab.active-room-4 {
+    background: #8b5cf6;
+    color: #f1f5f9;
+    border-color: #8b5cf6;
   }
 
-  /* --- DASHBOARD ELEMENTS --- */
+  /* Main Tabs */
   .tabs { 
     display:flex; 
     gap:6px; 
-    margin-top:6px; 
+    margin-top:12px; 
     justify-content: center;
     flex-wrap: wrap;
   }
@@ -333,21 +238,12 @@
   .tab-content { display:none; padding-top: 6px; }
   .tab-content.active { display:block; }
   
-  /* NEW: Room Tabs Container */
-  .room-tabs-container {
-    display: flex;
-    gap: 6px;
-    margin-top: 6px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  
-  /* Status styles now handle three colors */
+  /* Status styles */
   .status { 
     display:inline-block; 
     padding:4px 10px; 
     border-radius:16px; 
-    background:#ef4444; /* Default: Device Offline (Red) */
+    background:#ef4444;
     color:#fff; 
     font-weight:600; 
     font-size:0.75rem; 
@@ -356,9 +252,9 @@
     transition: background 0.3s;
     text-align: center;
   }
-  .status.online { background:#10b981; } /* Device Online (Green) */
+  .status.online { background:#10b981; }
 
-  /* Version Info Styles - MODIFIED FOR COLORFUL DISPLAY */
+  /* Version Info */
   .version-info-container {
     display: flex;
     justify-content: space-between;
@@ -369,12 +265,12 @@
   }
   .dashboard-version {
     text-align: left;
-    color: #38bdf8; /* Sky blue for dashboard version */
+    color: #38bdf8;
     font-weight: 600;
   }
   .firmware-version {
     text-align: right;
-    color: #10b981; /* Green for firmware version */
+    color: #10b981;
     font-weight: 600;
   }
 
@@ -439,7 +335,103 @@
     box-shadow: 0 6px 12px rgba(16, 185, 129, 0.4);
   }
 
-  /* Automation Centering */
+  /* Device-specific relay colors */
+  .relay-btn.room-1.on { background: #10b981; border-color: #34d399; }
+  .relay-btn.room-2.on { background: #38bdf8; border-color: #7dd3fc; }
+  .relay-btn.room-3.on { background: #f59e0b; border-color: #fbbf24; }
+  .relay-btn.room-4.on { background: #8b5cf6; border-color: #a78bfa; }
+
+  /* Switch Styles */
+  .switch-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(30, 41, 59, 0.7);
+    border-radius: 8px;
+    border: 1px solid #334155;
+  }
+  .switch-label {
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .switch {
+    width: 50px;
+    height: 24px;
+    border-radius: 12px;
+    background: #ef4444;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .switch.on {
+    background: #10b981;
+  }
+  .switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  .switch.on::after {
+    transform: translateX(26px);
+  }
+
+  /* Lock Switch Styles */
+  .lock-switch {
+    width: 50px;
+    height: 24px;
+    border-radius: 12px;
+    background: #10b981; /* Green when unlocked */
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .lock-switch.locked {
+    background: #ef4444; /* Red when locked */
+  }
+  .lock-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  .lock-switch.locked::after {
+    transform: translateX(26px);
+  }
+
+  /* Current Device Indicator */
+  .current-device {
+    text-align: center;
+    margin: 8px 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #38bdf8;
+  }
+
+  /* Device-specific theme colors */
+  .room-1-theme { color: #10b981; }
+  .room-2-theme { color: #38bdf8; }
+  .room-3-theme { color: #f59e0b; }
+  .room-4-theme { color: #8b5cf6; }
+
+  /* Basic styles for other components */
   .automation-content-wrapper {
     max-width: 500px; 
     margin: 0 auto; 
@@ -530,6 +522,17 @@
 
   .schedule-trigger, .schedule-action {
     margin-bottom: 5px;
+  }
+
+  /* NEW: Next Execution Time Styles */
+  .next-execution {
+    color: #10b981;
+    font-weight: 600;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-top: 5px;
+    display: inline-block;
   }
 
   /* Schedule Form Styles */
@@ -708,7 +711,6 @@
     margin-top: 5px;
   }
 
-  /* Log Viewer Styles */
   .log-viewer {
     height: 350px; 
     overflow-y: scroll;
@@ -721,6 +723,8 @@
     font-size: 0.8rem; 
     color: #cbd5e1;
   }
+
+  /* Log entry styles */
   .log-entry {
     border-bottom: 1px dotted #334155;
     padding: 3px 0;
@@ -734,17 +738,17 @@
   .log-entry-type-warn { color: #fbbf24; }
   .log-entry-type-error { color: #ef4444; }
   .log-entry-type-relay { color: #10b981; }
-  .log-entry-type-device { color: #8b5cf6; } /* Purple for device logs */
-  .log-entry-type-rtdb { color: #f97316; } /* Orange for RTDB logs */
-  .log-entry-type-weather { color: #06b6d4; } /* Cyan for weather logs */
-  .log-entry-type-automation { color: #f97316; } /* Orange for automation logs */
+  .log-entry-type-device { color: #8b5cf6; }
+  .log-entry-type-rtdb { color: #f97316; }
+  .log-entry-type-weather { color: #06b6d4; }
+  .log-entry-type-automation { color: #f97316; }
 </style>
 </head>
 <body>
 
-<div id="loginScreen" style="display: none;">
+<div id="loginScreen">
   <div class="login-card">
-    <h2>ROOM_2 Login</h2>
+    <h2>Multi-Room Dashboard</h2>
     <input type="email" id="loginEmail" class="login-input" placeholder="Email">
     <input type="password" id="loginPassword" class="login-input" placeholder="Password">
     <button id="loginBtn" class="login-btn">Sign In</button>
@@ -762,32 +766,43 @@
             <p id="userEmailDisplay">user@gmail.com</p>
             
             <!-- BEEP Switch -->
-            <div class="beep-switch-container">
-                <span class="beep-switch-label">MUTE / UNMUTE</span>
-                <div class="beep-switch" id="beepSwitch"></div>
+            <div class="switch-container">
+                <span class="switch-label">MUTE / UNMUTE</span>
+                <div class="switch" id="beepSwitch"></div>
             </div>
             
-            <!-- UPDATED: IR Lock Switch -->
-            <div class="ir-lock-switch-container">
-                <span class="ir-lock-switch-label">IR LOCK</span>
-                <div class="ir-lock-switch" id="irLockSwitch"></div>
+            <!-- IR Lock Switch -->
+            <div class="switch-container">
+                <span class="switch-label">IR LOCK</span>
+                <div class="lock-switch" id="irLockSwitch"></div>
             </div>
 
-            <!-- NEW: Physical Button Lock Switch -->
-            <div class="button-lock-switch-container">
-                <span class="button-lock-switch-label">BUTTON LOCK</span>
-                <div class="button-lock-switch" id="buttonLockSwitch"></div>
+            <!-- Physical Button Lock Switch -->
+            <div class="switch-container">
+                <span class="switch-label">BUTTON LOCK</span>
+                <div class="lock-switch" id="buttonLockSwitch"></div>
             </div>
             
-            <button class="dropdown-btn restart-btn" id="restartBtn">ESP32 RESTART</button>
+            <button class="dropdown-btn restart-btn" id="restartBtn">DEVICE RESTART</button>
             <button class="dropdown-btn logout-btn" id="logoutBtn">Logout</button>
         </div>
     </div>
     
     <div class="header-center-content">
-      <h1><i class="fa-solid fa-house-chimney"></i> ROOM_2 Dashboard</h1>
+      <h1><i class="fa-solid fa-house-chimney"></i> Multi-Room Control</h1>
       
-      <!-- First Row: Main Tabs -->
+      <!-- Device Selection Tabs -->
+      <div class="device-tabs">
+        <button class="device-tab active-room-1" data-device="ROOM_1">Room-1</button>
+        <button class="device-tab" data-device="ROOM_2">Room-2</button>
+        <button class="device-tab" data-device="ROOM_3">Room-3</button>
+        <button class="device-tab" data-device="ROOM_4">Room-4</button>
+      </div>
+
+      <!-- Current Device Indicator -->
+      <div class="current-device room-1-theme" id="currentDeviceDisplay">Controlling: ROOM-1</div>
+      
+      <!-- Main Tabs -->
       <div class="tabs">
         <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
         <button class="tab-btn" data-tab="automation">Automation</button>
@@ -795,16 +810,8 @@
         <button class="tab-btn" data-tab="logs">Logs</button>
       </div>
       
-      <!-- Second Row: Room Tabs (UNDER the main tabs) -->
-      <div class="room-tabs-container">
-        <button class="tab-btn room-tab" data-link="https://jahangirnrl.github.io/nrl/room-1.html">Room-1</button>
-        <button class="tab-btn room-tab" data-link="https://jahangirnrl.github.io/nrl">Room-2</button>
-        <button class="tab-btn room-tab" data-link="https://jahangirnrl.github.io/nrl/room-3.html">Room-3</button>
-        <button class="tab-btn room-tab" data-link="https://jahangirnrl.github.io/nrl/room-4">Room-4.html</button>
-      </div>
-      
       <div class="version-info-container">
-        <div class="dashboard-version" id="versionInfo"></div>
+        <div class="dashboard-version" id="versionInfo">Dashboard: v2.0.0</div>
         <div id="status" class="status">Offline</div>
         <div class="firmware-version" id="firmwareInfo">Firmware: --</div>
       </div>
@@ -878,7 +885,7 @@
         </div>
       </div>
       
-      <!-- NEW: Weather Refresh Button -->
+      <!-- Weather Refresh Button -->
       <button class="weather-refresh-btn" id="weatherRefreshBtn">
         <i class="fas fa-sync-alt"></i> Refresh Weather Data
       </button>
@@ -888,24 +895,19 @@
   </div>
 
   <div id="logs" class="tab-content">
-    <div class="automation-content-wrapper" style="margin-bottom: 15px;">
-      <div class="automation-switch" id="rtdbLogsSwitchContainer">
-        <span>Load Logs from RTDB</span>
-        <div id="rtdbLogsSwitch" class="switch-btn"></div>
-      </div>
-    </div>
     <div class="log-viewer" id="logViewer">
-      <div class="log-entry"><span class="log-entry-time">--:--:--</span><span class="log-entry-type-info">INFO:</span> Client-side log initialized.</div>
+      <div class="log-entry"><span class="log-entry-time">--:--:--</span><span class="log-entry-type-info">INFO:</span> Dashboard initialized. Please login.</div>
     </div>
   </div>
 </div>
 
-<script type="module">
-// --- FIREBASE IMPORTS ---
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, get, remove } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+<!-- Add Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
+<script>
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAei8j8RQXq_zspkohtH40g_gvHUfIx-Uw",
   authDomain: "home-control-df716.firebaseapp.com",
@@ -917,15 +919,20 @@ const firebaseConfig = {
   measurementId: "G-LEHP8KM47D"
 };
 
-// Initialize Firebase services
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const auth = getAuth(app);
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const auth = firebase.auth();
 
 // --- GLOBAL STATE & UI ELEMENTS ---
-const SESSION_KEY = 'room2_session_active';
-const DASHBOARD_VERSION = 'v1.0.3';  // AUTOMATION HUZE CHANGE, TIMER DAILY WEEKLY, SUN AND OFFSET, TEMPERATURE
+const SESSION_KEY = 'multiroom_session_active';
+const DASHBOARD_VERSION = 'v2.0.0';
 
+// Current device state
+let currentDevice = 'ROOM_1';
+const devices = ['ROOM_1', 'ROOM_2', 'ROOM_3', 'ROOM_4'];
+
+// UI Elements
 const loginScreen = document.getElementById('loginScreen');
 const dashboardContainer = document.getElementById('dashboardContainer');
 const loginEmail = document.getElementById('loginEmail');
@@ -947,16 +954,13 @@ const firmwareInfoEl = document.getElementById('firmwareInfo');
 const uptimeEl = document.getElementById('uptime');
 const logViewer = document.getElementById('logViewer');
 const relayBtns = [document.getElementById('r1'),document.getElementById('r2'),document.getElementById('r3'),document.getElementById('r4')];
-const weatherRefreshBtn = document.getElementById('weatherRefreshBtn');
+const currentDeviceDisplay = document.getElementById('currentDeviceDisplay');
+const deviceTabs = document.querySelectorAll('.device-tab');
 
-// NEW: Automation elements
+// Automation elements
 const addScheduleBtn = document.getElementById('addScheduleBtn');
 const scheduleFormContainer = document.getElementById('scheduleFormContainer');
 const schedulesList = document.getElementById('schedulesList');
-
-// NEW LOG ELEMENTS
-const rtdbLogsSwitch = document.getElementById('rtdbLogsSwitch');
-const rtdbLogsSwitchContainer = document.getElementById('rtdbLogsSwitchContainer');
 
 // Weather elements
 const temperatureEl = document.getElementById('temperature');
@@ -965,70 +969,51 @@ const rainStatusEl = document.getElementById('rainStatus');
 const windSpeedEl = document.getElementById('windSpeed');
 const weatherLocationEl = document.getElementById('weatherLocation');
 const weatherSourceEl = document.getElementById('weatherSource');
+const weatherRefreshBtn = document.getElementById('weatherRefreshBtn');
 
-// Internal State for Connection Management
-let lastHeartbeatTime = null; 
-let deviceOnline = false;     
-let clientConnected = false;  
-let initialOnlineLoadComplete = false;
-let reconnectTimer = null;
+// Device-specific state
+const deviceStates = {};
+devices.forEach(device => {
+  deviceStates[device] = { 
+    online: false, 
+    lastHeartbeat: null, 
+    relays: [false, false, false, false],
+    firmware: '--',
+    ip: '--',
+    mac: '--',
+    ssid: '--',
+    uptime: '--',
+    sunrise: '--:--',
+    sunset: '--:--',
+    lastUpdateHuman: '--:--',
+    lastUpdate: '--:--'
+  };
+});
 
-// Heartbeat Thresholds
-const OFFLINE_TIMEOUT = 59;
-const RECONNECT_DEBOUNCE = 20;
+// Connection management
+let clientConnected = false;
+let allListeners = [];
 
 // Weather Configuration
 const WEATHER_UPDATE_INTERVAL = 10 * 60 * 1000;
 let lastWeatherUpdate = 0;
-let currentWeatherSource = "Loading...";
 
-// Internal state for RTDB Log
-let rtdbLogsEnabled = false;
-let logListenerUnsubscribe = null;
+// --- UTILITY FUNCTIONS ---
 
-// --- UTILITIES & DASHBOARD LOGIC ---
-
-// Dhaka Time Options for robust time zone handling
-const DHAKA_OPTIONS = { 
-  year: 'numeric',
-  month: '2-digit',
-  day: '2-digit',
-  hour: '2-digit', 
-  minute: '2-digit', 
-  second: '2-digit',
-  hour12: true, 
-  timeZone: 'Asia/Dhaka' 
-};
-
-function formatTime(timestamp) {
+function formatTime12Hour(timestamp) {
     if (!timestamp) return '--:--:--';
     const d = new Date(timestamp);
-    
-    const formatter = new Intl.DateTimeFormat('en-US', DHAKA_OPTIONS);
-    const parts = formatter.formatToParts(d);
-
-    let h, m, s, ampm;
-    
-    parts.forEach(part => {
-        if (part.type === 'hour') h = part.value;
-        if (part.type === 'minute') m = part.value;
-        if (part.type === 'second') s = part.value;
-        if (part.type === 'dayPeriod') ampm = part.value;
+    const formatter = new Intl.DateTimeFormat('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true 
     });
-
-    if (h && m && s) {
-        return `${h}:${m}:${s} ${ampm}`;
-    }
-    
-    return d.toLocaleTimeString('en-US', DHAKA_OPTIONS);
+    return formatter.format(d);
 }
 
-function addLogEntry(type, message, source = 'client') {
-    if (rtdbLogsEnabled && source === 'client') {
-        return; 
-    }
-    
-    const time = formatTime(Date.now());
+function addLogEntry(message, type = 'info', source = 'client') {
+    const time = formatTime12Hour(Date.now());
     const typeClass = `log-entry-type-${type.toLowerCase()}`;
     const sourceClass = source === 'device' ? 'log-entry-type-device' : 
                         source === 'rtdb' ? 'log-entry-type-rtdb' :
@@ -1037,7 +1022,7 @@ function addLogEntry(type, message, source = 'client') {
     
     const entry = document.createElement('div');
     entry.className = 'log-entry';
-    entry.innerHTML = `<span class="log-entry-time">${time}</span><span class="${typeClass} ${sourceClass}">${type}:</span> ${message}`;
+    entry.innerHTML = `<span class="log-entry-time">${time}</span><span class="${typeClass} ${sourceClass}">${type.toUpperCase()}:</span> ${message}`;
 
     logViewer.prepend(entry);
     while (logViewer.children.length > 50) {
@@ -1045,641 +1030,345 @@ function addLogEntry(type, message, source = 'client') {
     }
 }
 
-// Set version on load
-versionInfoEl.textContent = `Dashboard: ${DASHBOARD_VERSION}`;
+// --- DEVICE MANAGEMENT FUNCTIONS ---
 
-// Listen for Firmware Version from RTDB
-onValue(ref(db, 'HOME/ROOM_2/device/firmwareVersion'), (snapshot) => {
-    const firmwareVersion = snapshot.val();
-    if (firmwareVersion) {
-        firmwareInfoEl.textContent = `Firmware: ${firmwareVersion}`;
-        addLogEntry('INFO', `Firmware version detected: ${firmwareVersion}`, 'device');
-    } else {
-        firmwareInfoEl.textContent = 'Firmware: --';
-    }
-});
-
-// --- AUTOMATION SCHEDULE FUNCTIONS (UPDATED FOR ARDUINO COMPATIBILITY) ---
-
-function showScheduleForm(scheduleData = null) {
-    const isEdit = scheduleData !== null;
-    const scheduleId = scheduleData?.id || getNextAvailableScheduleId();
-    
-    const formHTML = `
-        <div class="schedule-form">
-            <h3 style="color: #38bdf8; margin-bottom: 15px;">${isEdit ? 'Edit Schedule' : 'Add New Schedule'}</h3>
-            
-            <div class="form-group">
-                <label class="form-label">Schedule Name</label>
-                <input type="text" id="scheduleName" class="form-input" value="${isEdit ? scheduleData.name : ''}" placeholder="Enter schedule name">
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Schedule Type</label>
-                <select id="scheduleType" class="form-select">
-                    <option value="daily" ${isEdit && scheduleData.type === 'daily' ? 'selected' : ''}>Daily Time-based</option>
-                    <option value="weekly" ${isEdit && scheduleData.type === 'weekly' ? 'selected' : ''}>Weekly Time-based</option>
-                    <option value="sunrise" ${isEdit && scheduleData.type === 'sunrise' ? 'selected' : ''}>Sunrise with Offset</option>
-                    <option value="sunset" ${isEdit && scheduleData.type === 'sunset' ? 'selected' : ''}>Sunset with Offset</option>
-                    <option value="temperature" ${isEdit && scheduleData.type === 'temperature' ? 'selected' : ''}>Temperature-based</option>
-                    <option value="timer" ${isEdit && scheduleData.type === 'timer' ? 'selected' : ''}>Timer</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Relay</label>
-                <select id="scheduleRelay" class="form-select">
-                    <option value="1" ${isEdit && scheduleData.relay === 1 ? 'selected' : ''}>Relay 1 (FAN)</option>
-                    <option value="2" ${isEdit && scheduleData.relay === 2 ? 'selected' : ''}>Relay 2 (LIGHT)</option>
-                    <option value="3" ${isEdit && scheduleData.relay === 3 ? 'selected' : ''}>Relay 3 (FAN-2)</option>
-                    <option value="4" ${isEdit && scheduleData.relay === 4 ? 'selected' : ''}>Relay 4 (DIM-L)</option>
-                </select>
-            </div>
-            
-            <div id="triggerFields" class="trigger-fields">
-                ${renderTriggerFields(scheduleData)}
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Action</label>
-                <select id="actionSelect" class="form-select">
-                    <option value="true" ${isEdit && scheduleData.action === true ? 'selected' : ''}>Turn ON</option>
-                    <option value="false" ${isEdit && scheduleData.action === false ? 'selected' : ''}>Turn OFF</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">
-                    <input type="checkbox" id="scheduleEnabled" ${isEdit && scheduleData.enabled !== false ? 'checked' : ''}>
-                    Enable Schedule
-                </label>
-            </div>
-            
-            <div class="form-actions">
-                <button class="cancel-btn" id="cancelScheduleBtn">Cancel</button>
-                <button class="save-btn" id="saveScheduleBtn">Save Schedule</button>
-            </div>
-        </div>
-    `;
-    
-    scheduleFormContainer.innerHTML = formHTML;
-    scheduleFormContainer.style.display = 'block';
-    
-    // Add event listeners for the new buttons
-    document.getElementById('cancelScheduleBtn').addEventListener('click', hideScheduleForm);
-    document.getElementById('saveScheduleBtn').addEventListener('click', () => saveSchedule(scheduleId));
-    
-    // Add event listener for schedule type change
-    document.getElementById('scheduleType').addEventListener('change', updateTriggerFields);
-    
-    // Scroll to form
-    scheduleFormContainer.scrollIntoView({ behavior: 'smooth' });
+function getDevicePath(path) {
+  return `HOME/${currentDevice}/${path}`;
 }
 
-function getNextAvailableScheduleId() {
-    // Find the next available schedule ID (1-50)
-    for (let i = 1; i <= 50; i++) {
-        if (!document.querySelector(`[data-schedule-id="${i}"]`)) {
-            return i;
-        }
+function switchDevice(deviceId) {
+  if (!devices.includes(deviceId)) return;
+  
+  console.log(`Switching to device: ${deviceId}`);
+  
+  // Clean up existing listeners
+  cleanupListeners();
+  
+  currentDevice = deviceId;
+  
+  // Update UI
+  deviceTabs.forEach(tab => {
+    tab.classList.remove('active-room-1', 'active-room-2', 'active-room-3', 'active-room-4');
+    if (tab.dataset.device === deviceId) {
+      const roomNum = deviceId.split('_')[1];
+      tab.classList.add(`active-room-${roomNum}`);
     }
-    return 1; // Default to 1 if all are taken
+  });
+  
+  const displayName = deviceId.replace('_', '-');
+  currentDeviceDisplay.textContent = `Controlling: ${displayName}`;
+  const roomNum = deviceId.split('_')[1];
+  currentDeviceDisplay.className = `current-device room-${roomNum}-theme`;
+  
+  // Update theme for relays
+  updateDeviceTheme();
+  
+  // Setup new listeners for the current device
+  setupDeviceListeners();
+  
+  // Load schedules for the current device
+  loadSchedules();
+  
+  addLogEntry(`Switched to ${displayName}`, 'info');
 }
 
-function renderTriggerFields(scheduleData) {
-    const scheduleType = scheduleData?.type || 'daily';
-    
-    switch(scheduleType) {
-        case 'daily':
-            return `
-                <div class="form-group">
-                    <label class="form-label">ON Time</label>
-                    <input type="time" id="onTime" class="form-input" value="${scheduleData?.onTime || '07:00'}">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">OFF Time</label>
-                    <input type="time" id="offTime" class="form-input" value="${scheduleData?.offTime || '18:00'}">
-                </div>
-            `;
-        case 'weekly':
-            return `
-                <div class="form-group">
-                    <label class="form-label">ON Time</label>
-                    <input type="time" id="onTime" class="form-input" value="${scheduleData?.onTime || '07:00'}">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">OFF Time</label>
-                    <input type="time" id="offTime" class="form-input" value="${scheduleData?.offTime || '18:00'}">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Days (0=Sun, 1=Mon, ..., 6=Sat)</label>
-                    <input type="text" id="days" class="form-input" value="${scheduleData?.days || '1,2,3,4,5'}" placeholder="e.g., 1,2,3,4,5">
-                    <small style="color: #94a3b8;">Comma-separated day numbers (0-6)</small>
-                </div>
-            `;
-        case 'sunrise':
-        case 'sunset':
-            const offset = scheduleData?.offset || 0;
-            return `
-                <div class="form-group">
-                    <label class="form-label">Offset (minutes)</label>
-                    <input type="number" id="sunOffset" class="form-input" value="${offset}" min="-120" max="120" step="1">
-                    <small style="color: #94a3b8;">Positive for after ${scheduleType}, negative for before ${scheduleType}</small>
-                </div>
-            `;
-        case 'temperature':
-            const condition = scheduleData?.condition || '>';
-            const tempValue = scheduleData?.value || 25;
-            return `
-                <div class="form-group">
-                    <label class="form-label">Condition</label>
-                    <select id="tempCondition" class="form-select">
-                        <option value=">" ${condition === '>' ? 'selected' : ''}>Temperature Above</option>
-                        <option value="<" ${condition === '<' ? 'selected' : ''}>Temperature Below</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Temperature Value (°C)</label>
-                    <input type="number" id="tempValue" class="form-input" value="${tempValue}" min="-10" max="50" step="0.5" placeholder="Enter temperature">
-                </div>
-            `;
-        case 'timer':
-            return `
-                <div class="form-group">
-                    <label class="form-label">Duration (minutes)</label>
-                    <input type="number" id="duration" class="form-input" value="${scheduleData?.duration || 30}" min="1" max="1440">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">
-                        <input type="checkbox" id="timerTrigger" ${scheduleData?.trigger ? 'checked' : ''}>
-                        Trigger Now
-                    </label>
-                    <small style="color: #94a3b8;">Check to start the timer immediately</small>
-                </div>
-            `;
-        default:
-            return '';
+function updateDeviceTheme() {
+  // Update relay buttons theme
+  relayBtns.forEach(btn => {
+    btn.className = btn.className.replace(/\broom-\d\b/g, '');
+    const roomNum = currentDevice.split('_')[1];
+    if (btn.classList.contains('on')) {
+      btn.classList.add(`room-${roomNum}`);
     }
+  });
 }
 
-function updateTriggerFields() {
-    const scheduleType = document.getElementById('scheduleType').value;
-    const triggerFields = document.getElementById('triggerFields');
-    
-    // Create a temporary schedule data object to pass to renderTriggerFields
-    const tempScheduleData = { type: scheduleType };
-    triggerFields.innerHTML = renderTriggerFields(tempScheduleData);
+function cleanupListeners() {
+  // Remove all existing Firebase listeners
+  allListeners.forEach(unsubscribe => {
+    if (unsubscribe && typeof unsubscribe === 'function') {
+      unsubscribe();
+    }
+  });
+  allListeners = [];
 }
 
-function hideScheduleForm() {
-    scheduleFormContainer.style.display = 'none';
-    scheduleFormContainer.innerHTML = '';
+function setupDeviceListeners() {
+  console.log(`Setting up listeners for ${currentDevice}`);
+  
+  // Setup relay listeners
+  setupRelayListeners();
+  
+  // Setup device info listeners
+  setupDeviceInfoListeners();
+  
+  // Setup status listeners
+  setupStatusListeners();
+  
+  // Setup switch listeners
+  setupSwitchListeners();
 }
 
-function saveSchedule(scheduleId) {
-    if (!clientConnected) {
-        addLogEntry('ERROR', 'Cannot save schedule: Client disconnected from Firebase.');
-        return;
-    }
+// --- RELAY CONTROL LOGIC ---
 
-    const scheduleType = document.getElementById('scheduleType').value;
-    const name = document.getElementById('scheduleName').value;
-    const relay = parseInt(document.getElementById('scheduleRelay').value);
-    const action = document.getElementById('actionSelect').value === 'true';
-    const enabled = document.getElementById('scheduleEnabled').checked;
+function toggleRelay(index){ 
+  if (!clientConnected) {
+    addLogEntry('Cannot toggle relay: Client disconnected from Firebase.', 'error');
+    return;
+  }
 
-    if (!name.trim()) {
-        alert('Please enter a schedule name');
-        return;
-    }
-
-    if (relay < 1 || relay > 4) {
-        alert('Please select a valid relay (1-4)');
-        return;
-    }
-
-    const scheduleData = {
-        name: name,
-        enabled: enabled,
-        type: scheduleType,
-        relay: relay,
-        action: action
-    };
-
-    // Add type-specific data
-    if (scheduleType === 'daily' || scheduleType === 'weekly') {
-        const onTime = document.getElementById('onTime').value;
-        const offTime = document.getElementById('offTime').value;
-        
-        if (!onTime || !offTime) {
-            alert('Please enter both ON and OFF times');
-            return;
-        }
-        
-        scheduleData.onTime = onTime;
-        scheduleData.offTime = offTime;
-        
-        if (scheduleType === 'weekly') {
-            const days = document.getElementById('days').value;
-            if (!days.trim()) {
-                alert('Please enter days for weekly schedule');
-                return;
-            }
-            scheduleData.days = days;
-        }
-    } else if (scheduleType === 'sunrise' || scheduleType === 'sunset') {
-        const offset = parseInt(document.getElementById('sunOffset').value) || 0;
-        scheduleData.offset = offset;
-    } else if (scheduleType === 'temperature') {
-        const condition = document.getElementById('tempCondition').value;
-        const value = parseFloat(document.getElementById('tempValue').value);
-        if (isNaN(value)) {
-            alert('Please enter a valid temperature');
-            return;
-        }
-        scheduleData.condition = condition;
-        scheduleData.value = value;
-    } else if (scheduleType === 'timer') {
-        const duration = parseInt(document.getElementById('duration').value);
-        const trigger = document.getElementById('timerTrigger').checked;
-        
-        if (isNaN(duration) || duration < 1) {
-            alert('Please enter a valid duration');
-            return;
-        }
-        
-        scheduleData.duration = duration;
-        scheduleData.trigger = trigger;
-    }
-
-    const path = `HOME/ROOM_2/automation/schedule${scheduleId}`;
-    
-    set(ref(db, path), scheduleData)
-        .then(() => {
-            addLogEntry('AUTOMATION', `Schedule "${name}" ${scheduleData.enabled ? 'created/enabled' : 'created/disabled'}`, 'automation');
-            hideScheduleForm();
-            loadSchedules(); // Reload schedules to update the UI
-        })
-        .catch(error => {
-            addLogEntry('ERROR', `Failed to save schedule: ${error.message}`);
-            alert('Failed to save schedule: ' + error.message);
-        });
+  const path = getDevicePath(`relay${index+1}`);
+  console.log(`Toggling relay ${index+1} for ${currentDevice}`);
+  
+  db.ref(path).once('value').then(snap => {
+    const newState = !snap.val();
+    db.ref(path).set(newState);
+    const relayName = relayBtns[index].textContent;
+    const stateStr = newState ? 'ON' : 'OFF';
+    addLogEntry(`${relayName} manually set to ${stateStr} for ${currentDevice}`, 'relay');
+  }).catch(error => {
+    addLogEntry(`Failed to read/write relay state: ${error.message}`, 'error');
+    console.error('Relay toggle error:', error);
+  });
 }
 
-function deleteSchedule(scheduleId) {
-    if (!clientConnected) {
-        addLogEntry('ERROR', 'Cannot delete schedule: Client disconnected from Firebase.');
-        return;
-    }
-
-    if (confirm('Are you sure you want to delete this schedule?')) {
-        remove(ref(db, `HOME/ROOM_2/automation/schedule${scheduleId}`))
-            .then(() => {
-                addLogEntry('AUTOMATION', 'Schedule deleted', 'automation');
-                loadSchedules(); // Reload schedules to update the UI
-            })
-            .catch(error => {
-                addLogEntry('ERROR', `Failed to delete schedule: ${error.message}`);
-            });
-    }
+function setRelayState(btn, on) { 
+  btn.classList.toggle('on', on);
+  btn.className = btn.className.replace(/\broom-\d\b/g, '');
+  if (on) {
+    const roomNum = currentDevice.split('_')[1];
+    btn.classList.add(`room-${roomNum}`);
+  }
 }
 
-function toggleSchedule(scheduleId, currentState) {
-    if (!clientConnected) {
-        addLogEntry('ERROR', 'Cannot toggle schedule: Client disconnected from Firebase.');
-        return;
-    }
+function setupRelayListeners() {
+  // Clear any existing click listeners by cloning and replacing
+  relayBtns.forEach((btn, i) => {
+    const newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+    relayBtns[i] = newBtn;
+  });
 
-    const newState = !currentState;
-    
-    set(ref(db, `HOME/ROOM_2/automation/schedule${scheduleId}/enabled`), newState)
-        .then(() => {
-            const statusText = newState ? 'ENABLED' : 'DISABLED';
-            addLogEntry('AUTOMATION', `Schedule ${statusText}`, 'automation');
-            loadSchedules(); // Reload schedules to update the UI
-        })
-        .catch(error => {
-            addLogEntry('ERROR', `Failed to toggle schedule: ${error.message}`);
-        });
-}
+  // Add click listeners
+  relayBtns.forEach((btn, i) => {
+    btn.addEventListener('click', () => toggleRelay(i));
+  });
 
-function loadSchedules() {
-    // Load all schedules (schedule1 to schedule50)
-    const schedulePromises = [];
+  // Add Firebase listeners for relays
+  for (let i = 0; i < 4; i++) {
+    const relayPath = getDevicePath(`relay${i+1}`);
+    console.log(`Listening to relay path: ${relayPath}`);
     
-    for (let i = 1; i <= 50; i++) {
-        schedulePromises.push(
-            get(ref(db, `HOME/ROOM_2/automation/schedule${i}`))
-                .then((snapshot) => {
-                    if (snapshot.exists()) {
-                        return { id: i, ...snapshot.val() };
-                    }
-                    return null;
-                })
-        );
-    }
-    
-    Promise.all(schedulePromises)
-        .then((schedules) => {
-            const validSchedules = schedules.filter(schedule => schedule !== null);
-            displaySchedules(validSchedules);
-        })
-        .catch(error => {
-            addLogEntry('ERROR', `Failed to load schedules: ${error.message}`);
-        });
-}
-
-function displaySchedules(schedules) {
-    schedulesList.innerHTML = '';
-    
-    if (schedules.length === 0) {
-        schedulesList.innerHTML = `
-            <div class="schedule-card">
-                <div style="text-align: center; color: #94a3b8; padding: 20px;">
-                    No schedules found. Click "Add Schedule" to create your first automation.
-                </div>
-            </div>
-        `;
-        return;
-    }
-    
-    schedules.sort((a, b) => a.id - b.id);
-    
-    schedules.forEach(schedule => {
-        const card = document.createElement('div');
-        card.className = `schedule-card ${schedule.enabled ? 'enabled' : 'disabled'}`;
-        card.setAttribute('data-schedule-id', schedule.id);
-        
-        let triggerText = '';
-        switch(schedule.type) {
-            case 'daily':
-                triggerText = `Daily: ON at ${schedule.onTime}, OFF at ${schedule.offTime}`;
-                break;
-            case 'weekly':
-                triggerText = `Weekly: ON at ${schedule.onTime}, OFF at ${schedule.offTime} on days ${schedule.days}`;
-                break;
-            case 'sunrise':
-                triggerText = `Sunrise ${schedule.offset >= 0 ? '+' : ''}${schedule.offset} minutes: ${schedule.action ? 'ON' : 'OFF'}`;
-                break;
-            case 'sunset':
-                triggerText = `Sunset ${schedule.offset >= 0 ? '+' : ''}${schedule.offset} minutes: ${schedule.action ? 'ON' : 'OFF'}`;
-                break;
-            case 'temperature':
-                triggerText = `Temperature ${schedule.condition} ${schedule.value}°C: ${schedule.action ? 'ON' : 'OFF'}`;
-                break;
-            case 'timer':
-                triggerText = `Timer: ${schedule.duration} minutes ${schedule.trigger ? '(Active)' : '(Inactive)'}`;
-                break;
-        }
-        
-        const relayNames = ['FAN', 'LIGHT', 'FAN-2', 'DIM-L'];
-        const actionText = schedule.action ? 'ON' : 'OFF';
-        
-        card.innerHTML = `
-            <div class="schedule-header">
-                <div class="schedule-name">${schedule.name} (Schedule${schedule.id})</div>
-                <div class="schedule-actions">
-                    <button class="schedule-action-btn toggle-btn" data-schedule-id="${schedule.id}" data-current-state="${schedule.enabled}" title="${schedule.enabled ? 'Disable' : 'Enable'}">
-                        <i class="fas ${schedule.enabled ? 'fa-pause' : 'fa-play'}"></i>
-                    </button>
-                    <button class="schedule-action-btn edit-btn" data-schedule-id="${schedule.id}" title="Edit">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="schedule-action-btn delete-btn" data-schedule-id="${schedule.id}" title="Delete">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="schedule-details">
-                <div class="schedule-trigger"><strong>Trigger:</strong> ${triggerText}</div>
-                <div class="schedule-action"><strong>Action:</strong> ${relayNames[schedule.relay - 1]} ${actionText}</div>
-                <div class="schedule-status"><strong>Status:</strong> ${schedule.enabled ? 'Enabled' : 'Disabled'}</div>
-            </div>
-        `;
-        
-        schedulesList.appendChild(card);
+    const unsubscribe = db.ref(relayPath).on('value', snap => {
+      const state = !!snap.val();
+      console.log(`Relay ${i+1} state changed to: ${state} for ${currentDevice}`);
+      deviceStates[currentDevice].relays[i] = state;
+      setRelayState(relayBtns[i], state);
+    }, error => {
+      console.error(`Error listening to relay ${i+1}:`, error);
     });
-
-    // Add event listeners to the buttons
-    document.querySelectorAll('.toggle-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const scheduleId = e.target.closest('.toggle-btn').getAttribute('data-schedule-id');
-            const currentState = e.target.closest('.toggle-btn').getAttribute('data-current-state') === 'true';
-            toggleSchedule(parseInt(scheduleId), currentState);
-        });
-    });
-
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const scheduleId = e.target.closest('.edit-btn').getAttribute('data-schedule-id');
-            editSchedule(parseInt(scheduleId));
-        });
-    });
-
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const scheduleId = e.target.closest('.delete-btn').getAttribute('data-schedule-id');
-            deleteSchedule(parseInt(scheduleId));
-        });
-    });
+    
+    allListeners.push(() => db.ref(relayPath).off('value', unsubscribe));
+  }
 }
 
-function editSchedule(scheduleId) {
-    get(ref(db, `HOME/ROOM_2/automation/schedule${scheduleId}`))
-        .then((snapshot) => {
-            const scheduleData = snapshot.val();
-            if (scheduleData) {
-                scheduleData.id = scheduleId;
-                showScheduleForm(scheduleData);
-            }
-        })
-        .catch(error => {
-            addLogEntry('ERROR', `Failed to load schedule for editing: ${error.message}`);
-        });
+function setupDeviceInfoListeners() {
+  const paths = [
+    { path: 'device/ip', key: 'ip', element: 'ip' },
+    { path: 'device/mac', key: 'mac', element: 'mac' },
+    { path: 'device/ssid', key: 'ssid', element: 'ssid' },
+    { path: 'device/firmwareVersion', key: 'firmware', element: null },
+    { path: 'uptime', key: 'uptime', element: 'uptime' },
+    { path: 'sunrise', key: 'sunrise', element: 'sunrise' },
+    { path: 'sunset', key: 'sunset', element: 'sunset' },
+    { path: 'lastUpdateHuman', key: 'lastUpdateHuman', element: 'lastUpdateHuman' },
+    { path: 'lastUpdate', key: 'lastUpdate', element: 'lastUpdate' }
+  ];
+
+  paths.forEach(({ path, key, element }) => {
+    const fullPath = getDevicePath(path);
+    console.log(`Listening to device info: ${fullPath}`);
+    
+    const unsubscribe = db.ref(fullPath).on('value', (snap) => {
+      const value = snap.val() || '--';
+      deviceStates[currentDevice][key] = value;
+      
+      // Update UI if this is the current device
+      if (element && document.getElementById(element)) {
+        document.getElementById(element).textContent = value;
+      }
+      
+      if (key === 'firmware') {
+        firmwareInfoEl.textContent = `Firmware: ${value}`;
+      }
+      
+    }, error => {
+      console.error(`Error listening to ${path}:`, error);
+    });
+    
+    allListeners.push(() => db.ref(fullPath).off('value', unsubscribe));
+  });
 }
 
-// Add schedule button event listener
-addScheduleBtn.addEventListener('click', () => {
-    showScheduleForm();
-});
-
-// --- RTDB LOGIC AND TOGGLE ---
-function setupRTDBLogListener() {
-    if (logListenerUnsubscribe) {
-        logListenerUnsubscribe();
-        logListenerUnsubscribe = null;
-    }
-    logViewer.innerHTML = '';
+function setupStatusListeners() {
+  // Online status
+  const onlineUnsubscribe = db.ref(getDevicePath('online')).on('value', (snap) => {
+    const isOnline = snap.val() === true;
+    deviceStates[currentDevice].online = isOnline;
+    updateStatusDisplay();
+  });
+  allListeners.push(() => db.ref(getDevicePath('online')).off('value', onlineUnsubscribe));
+  
+  // Heartbeat via uptime
+  const heartbeatUnsubscribe = db.ref(getDevicePath('uptime')).on('value', snap => {
+    const val = snap.val(); 
+    if(val === null || val === undefined) return; 
     
-    if (rtdbLogsEnabled) {
-        rtdbLogsSwitch.classList.add('on');
-        rtdbLogsSwitchContainer.classList.add('on');
-        addLogEntry('INFO', 'Loading logs from RTDB...', 'rtdb');
-        
-        logListenerUnsubscribe = onValue(ref(db, 'HOME/ROOM_2/log'), (snapshot) => {
-            if (!rtdbLogsEnabled) return;
-            
-            const logs = snapshot.val();
-            logViewer.innerHTML = '';
-            
-            if (logs) {
-                const logKeys = Object.keys(logs).sort((a, b) => logs[b].timestamp - logs[a].timestamp);
-                
-                logKeys.slice(0, 50).forEach(key => {
-                    const logEntry = logs[key];
-                    const time = formatTime(logEntry.timestamp);
-                    const typeClass = `log-entry-type-${logEntry.type ? logEntry.type.toLowerCase() : 'info'}`;
-                    const sourceClass = 'log-entry-type-device'; 
-                    
-                    const entry = document.createElement('div');
-                    entry.className = 'log-entry';
-                    entry.innerHTML = `<span class="log-entry-time">${time}</span><span class="${typeClass} ${sourceClass}">${logEntry.type || 'UNKNOWN'}:</span> ${logEntry.message}`;
-                    logViewer.appendChild(entry); 
-                });
-                logViewer.scrollTop = logViewer.scrollHeight; 
-            }
-        });
-    } else {
-        rtdbLogsSwitch.classList.remove('on');
-        rtdbLogsSwitchContainer.classList.remove('on');
-        logViewer.innerHTML = '';
-        addLogEntry('INFO', 'Client-side log re-initialized.');
-    }
+    deviceStates[currentDevice].lastHeartbeat = Date.now();
+    deviceStates[currentDevice].online = true;
+    updateStatusDisplay();
+  });
+  allListeners.push(() => db.ref(getDevicePath('uptime')).off('value', heartbeatUnsubscribe));
 }
 
-// RTDB Logs Switch Event Listener
-rtdbLogsSwitch.addEventListener('click', () => {
-    if (!clientConnected) {
-        addLogEntry('ERROR', 'Cannot change settings: Client disconnected from Firebase.');
-        return;
-    }
-    
-    rtdbLogsEnabled = !rtdbLogsEnabled;
-    const statusText = rtdbLogsEnabled ? 'ENABLED' : 'DISABLED';
-    addLogEntry('INFO', `RTDB Logs: ${statusText}.`, 'rtdb');
-    
-    setupRTDBLogListener();
-});
+// --- STATUS DISPLAY LOGIC ---
 
-// --- BEEP AND RESTART FUNCTIONS ---
+function updateStatusDisplay() {
+  const deviceState = deviceStates[currentDevice];
+  
+  statusEl.classList.remove('online');
+  statusEl.style.color = '#fff';
+  
+  if (!clientConnected) {
+    statusEl.textContent = "Client Disconnected";
+    statusEl.style.backgroundColor = '#fbbf24';
+    statusEl.style.color = '#0f172a';
+  } else if (deviceState.online) {
+    statusEl.textContent = "Online";
+    statusEl.style.backgroundColor = '';
+    statusEl.classList.add('online');
+  } else {
+    statusEl.textContent = "Offline";
+    statusEl.style.backgroundColor = '#ef4444';
+  }
+}
 
-// BEEP Switch Event Listener
-beepSwitch.addEventListener('click', () => {
-    if (!clientConnected) {
-        addLogEntry('ERROR', 'Cannot toggle BEEP: Client disconnected from Firebase.');
-        return;
-    }
-    
-    const newBeepState = !beepSwitch.classList.contains('on');
-    
-    set(ref(db, 'HOME/ROOM_2/settings/beepEnabled'), newBeepState)
-        .then(() => {
-            beepSwitch.classList.toggle('on', newBeepState);
-            const statusText = newBeepState ? 'ENABLED' : 'DISABLED';
-            addLogEntry('INFO', `BEEP ${statusText}.`, 'device');
-            profileDropdown.classList.remove('show');
-        })
-        .catch(error => {
-            addLogEntry('ERROR', `Failed to set BEEP state: ${error.message}`);
-        });
-});
+// --- SWITCH CONTROL FUNCTIONS ---
 
-// NEW: IR Lock Switch Event Listener
-irLockSwitch.addEventListener('click', () => {
-    if (!clientConnected) {
-        addLogEntry('ERROR', 'Cannot toggle IR Lock: Client disconnected from Firebase.');
-        return;
-    }
-    
-    const newIrLockState = !irLockSwitch.classList.contains('unlocked');
-    
-    set(ref(db, 'HOME/ROOM_2/settings/ir_lock'), newIrLockState)
-        .then(() => {
-            irLockSwitch.classList.toggle('unlocked', newIrLockState);
-            const statusText = newIrLockState ? 'UNLOCKED' : 'LOCKED';
-            addLogEntry('INFO', `IR ${statusText}.`, 'device');
-            profileDropdown.classList.remove('show');
-        })
-        .catch(error => {
-            addLogEntry('ERROR', `Failed to set IR lock state: ${error.message}`);
-        });
-});
-
-// NEW: Physical Button Lock Switch Event Listener
-buttonLockSwitch.addEventListener('click', () => {
-    if (!clientConnected) {
-        addLogEntry('ERROR', 'Cannot toggle Physical Button Lock: Client disconnected from Firebase.');
-        return;
-    }
-    
-    const newButtonLockState = !buttonLockSwitch.classList.contains('unlocked');
-    
-    set(ref(db, 'HOME/ROOM_2/settings/button_lock'), newButtonLockState)
-        .then(() => {
-            buttonLockSwitch.classList.toggle('unlocked', newButtonLockState);
-            const statusText = newButtonLockState ? 'UNLOCKED' : 'LOCKED';
-            addLogEntry('INFO', `Physical Buttons ${statusText}.`, 'device');
-            profileDropdown.classList.remove('show');
-        })
-        .catch(error => {
-            addLogEntry('ERROR', `Failed to set physical button lock state: ${error.message}`);
-        });
-});
-
-// RESTART Button Event Listener
-restartBtn.addEventListener('click', () => {
-    if (!clientConnected) {
-        addLogEntry('ERROR', 'Cannot send RESTART command: Client disconnected from Firebase.');
-        return;
-    }
-    
-    if (confirm('Are you sure you want to restart the ESP32 device? This will temporarily disconnect the device.')) {
-        set(ref(db, 'HOME/ROOM_2/device/rest'), true)
-            .then(() => {
-                addLogEntry('INFO', 'RESTART command sent to device.', 'device');
-                profileDropdown.classList.remove('show');
-                
-                // Reset the restart flag after a short delay
-                setTimeout(() => {
-                    set(ref(db, 'HOME/ROOM_2/device/rest'), false)
-                        .catch(error => {
-                            addLogEntry('WARN', `Failed to reset restart flag: ${error.message}`);
-                        });
-                }, 4500);
-            })
-            .catch(error => {
-                addLogEntry('ERROR', `Failed to send RESTART command: ${error.message}`);
-            });
-    }
-});
-
-// Listen for BEEP state from RTDB
-onValue(ref(db, 'HOME/ROOM_2/settings/beepEnabled'), (snapshot) => {
+function setupSwitchListeners() {
+  // BEEP state
+  const beepUnsubscribe = db.ref(getDevicePath('settings/beepEnabled')).on('value', (snapshot) => {
     const beepState = snapshot.val();
     beepSwitch.classList.toggle('on', beepState === true);
-});
-
-// Listen for IR LOCK state from RTDB
-onValue(ref(db, 'HOME/ROOM_2/settings/ir_lock'), (snapshot) => {
+  });
+  allListeners.push(() => db.ref(getDevicePath('settings/beepEnabled')).off('value', beepUnsubscribe));
+  
+  // IR LOCK state
+  const irLockUnsubscribe = db.ref(getDevicePath('settings/ir_lock')).on('value', (snapshot) => {
     const irLockState = snapshot.val();
-    irLockSwitch.classList.toggle('unlocked', irLockState === true);
-});
-
-// NEW: Listen for Physical Button Lock state from RTDB
-onValue(ref(db, 'HOME/ROOM_2/settings/button_lock'), (snapshot) => {
+    irLockSwitch.classList.toggle('locked', irLockState === true);
+  });
+  allListeners.push(() => db.ref(getDevicePath('settings/ir_lock')).off('value', irLockUnsubscribe));
+  
+  // Button LOCK state
+  const buttonLockUnsubscribe = db.ref(getDevicePath('settings/button_lock')).on('value', (snapshot) => {
     const buttonLockState = snapshot.val();
-    buttonLockSwitch.classList.toggle('unlocked', buttonLockState === true);
+    buttonLockSwitch.classList.toggle('locked', buttonLockState === true);
+  });
+  allListeners.push(() => db.ref(getDevicePath('settings/button_lock')).off('value', buttonLockUnsubscribe));
+}
+
+// BEEP Switch
+beepSwitch.addEventListener('click', () => {
+  if (!clientConnected) {
+    addLogEntry('Cannot toggle BEEP: Client disconnected from Firebase.', 'error');
+    return;
+  }
+  
+  const newBeepState = !beepSwitch.classList.contains('on');
+  
+  db.ref(getDevicePath('settings/beepEnabled')).set(newBeepState)
+    .then(() => {
+      beepSwitch.classList.toggle('on', newBeepState);
+      const statusText = newBeepState ? 'ENABLED' : 'DISABLED';
+      addLogEntry(`BEEP ${statusText} for ${currentDevice}`, 'info');
+      profileDropdown.classList.remove('show');
+    })
+    .catch(error => {
+      addLogEntry(`Failed to set BEEP state: ${error.message}`, 'error');
+    });
 });
 
-// Listen for RESTART state from RTDB (in case it's set elsewhere)
-onValue(ref(db, 'HOME/ROOM_2/device/rest'), (snapshot) => {
-    const restartState = snapshot.val();
-    if (restartState === true) {
-        addLogEntry('INFO', 'Device restart flag detected in RTDB.', 'device');
-    }
+// IR Lock Switch
+irLockSwitch.addEventListener('click', () => {
+  if (!clientConnected) {
+    addLogEntry('Cannot toggle IR Lock: Client disconnected from Firebase.', 'error');
+    return;
+  }
+  
+  const newIrLockState = !irLockSwitch.classList.contains('locked');
+  
+  db.ref(getDevicePath('settings/ir_lock')).set(newIrLockState)
+    .then(() => {
+      irLockSwitch.classList.toggle('locked', newIrLockState);
+      const statusText = newIrLockState ? 'LOCKED' : 'UNLOCKED';
+      addLogEntry(`IR ${statusText} for ${currentDevice}`, 'info');
+      profileDropdown.classList.remove('show');
+    })
+    .catch(error => {
+      addLogEntry(`Failed to set IR lock state: ${error.message}`, 'error');
+    });
 });
 
-// --- WEATHER SERVICE ---
+// Button Lock Switch
+buttonLockSwitch.addEventListener('click', () => {
+  if (!clientConnected) {
+    addLogEntry('Cannot toggle Button Lock: Client disconnected from Firebase.', 'error');
+    return;
+  }
+  
+  const newButtonLockState = !buttonLockSwitch.classList.contains('locked');
+  
+  db.ref(getDevicePath('settings/button_lock')).set(newButtonLockState)
+    .then(() => {
+      buttonLockSwitch.classList.toggle('locked', newButtonLockState);
+      const statusText = newButtonLockState ? 'LOCKED' : 'UNLOCKED';
+      addLogEntry(`Physical Buttons ${statusText} for ${currentDevice}`, 'info');
+      profileDropdown.classList.remove('show');
+    })
+    .catch(error => {
+      addLogEntry(`Failed to set button lock state: ${error.message}`, 'error');
+    });
+});
+
+// Restart Button
+restartBtn.addEventListener('click', () => {
+  if (!clientConnected) {
+    addLogEntry('Cannot send RESTART command: Client disconnected from Firebase.', 'error');
+    return;
+  }
+  
+  if (confirm(`Are you sure you want to restart the ${currentDevice} device? This will temporarily disconnect the device.`)) {
+    db.ref(getDevicePath('device/rest')).set(true)
+      .then(() => {
+        addLogEntry(`RESTART command sent to ${currentDevice}`, 'info');
+        profileDropdown.classList.remove('show');
+        
+        setTimeout(() => {
+          db.ref(getDevicePath('device/rest')).set(false)
+            .catch(error => {
+              addLogEntry(`Failed to reset restart flag: ${error.message}`, 'warn');
+            });
+        }, 4500);
+      })
+      .catch(error => {
+        addLogEntry(`Failed to send RESTART command: ${error.message}`, 'error');
+      });
+  }
+});
+
+// --- WEATHER FUNCTIONS ---
+
 async function fetchWeatherData() {
   const weatherServices = [
     {
@@ -1698,7 +1387,7 @@ async function fetchWeatherData() {
 
   for (const service of weatherServices) {
     try {
-      addLogEntry('INFO', `Trying weather service: ${service.name}`, 'weather');
+      addLogEntry(`Trying weather service: ${service.name}`, 'info', 'weather');
       
       const response = await fetch(service.url, {
         method: 'GET',
@@ -1714,13 +1403,12 @@ async function fetchWeatherData() {
       
       const data = await response.json();
       const weatherData = service.parser(data);
-      currentWeatherSource = service.name;
       
-      addLogEntry('INFO', `Weather data loaded from ${service.name}`, 'weather');
+      addLogEntry(`Weather data loaded from ${service.name}`, 'info', 'weather');
       return weatherData;
       
     } catch (error) {
-      addLogEntry('WARN', `Weather service ${service.name} failed: ${error.message}`, 'weather');
+      addLogEntry(`Weather service ${service.name} failed: ${error.message}`, 'warn', 'weather');
       continue;
     }
   }
@@ -1787,9 +1475,10 @@ async function loadWeatherData() {
     
     lastWeatherUpdate = Date.now();
     
-    if (clientConnected) {
+    
+if (clientConnected) {
       try {
-        await set(ref(db, 'HOME/ROOM_2/weather'), {
+        await db.ref('HOME/weather').set({
           temperature: weatherData.temperature,
           humidity: weatherData.humidity,
           rain: weatherData.rain,
@@ -1797,9 +1486,9 @@ async function loadWeatherData() {
           lastUpdate: Date.now(),
           source: weatherData.source
         });
-        addLogEntry('INFO', 'Weather data stored in RTDB', 'weather');
+        addLogEntry('Weather data stored in RTDB', 'info', 'weather');
       } catch (error) {
-        addLogEntry('WARN', `Failed to store weather data in RTDB: ${error.message}`, 'weather');
+        addLogEntry(`Failed to store weather data in RTDB: ${error.message}`, 'warn', 'weather');
       }
     }
     
@@ -1819,7 +1508,7 @@ async function loadWeatherData() {
     weatherLocationEl.textContent = demoData.location;
     weatherSourceEl.textContent = `Source: ${demoData.source}`;
 
-    addLogEntry('ERROR', `All weather services failed: ${error.message}`, 'weather');
+    addLogEntry(`All weather services failed: ${error.message}`, 'error', 'weather');
   } finally {
     // Re-enable refresh button
     weatherRefreshBtn.disabled = false;
@@ -1830,7 +1519,506 @@ async function loadWeatherData() {
 // Weather Refresh Button Event Listener
 weatherRefreshBtn.addEventListener('click', loadWeatherData);
 
+// --- NEW: NEXT EXECUTION TIME CALCULATION ---
+
+function calculateNextExecutionTime(schedule) {
+  if (!schedule.enabled) return 'Schedule disabled';
+  
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  
+  // Get sunrise and sunset times from device state
+  const deviceState = deviceStates[currentDevice];
+  
+  // Check if we have valid sunrise/sunset data
+  if (!deviceState.sunrise || deviceState.sunrise === '--:--' || 
+      !deviceState.sunset || deviceState.sunset === '--:--') {
+    return 'No sunrise/sunset data';
+  }
+  
+  let baseTime = null;
+  
+  if (schedule.type === 'sunrise') {
+    const [hours, minutes] = deviceState.sunrise.split(':').map(Number);
+    baseTime = new Date(today);
+    baseTime.setHours(hours, minutes, 0, 0);
+  } else if (schedule.type === 'sunset') {
+    const [hours, minutes] = deviceState.sunset.split(':').map(Number);
+    baseTime = new Date(today);
+    baseTime.setHours(hours, minutes, 0, 0);
+  }
+  
+  if (!baseTime) return 'Unknown schedule type';
+  
+  // Apply offset (in minutes)
+  const offsetMs = (schedule.offset || 0) * 60 * 1000;
+  const executionTime = new Date(baseTime.getTime() + offsetMs);
+  
+  // If the execution time has already passed today, calculate for tomorrow
+  if (executionTime < now) {
+    executionTime.setDate(executionTime.getDate() + 1);
+  }
+  
+  return formatTime12Hour(executionTime);
+}
+
+// --- AUTOMATION SCHEDULE FUNCTIONS ---
+
+function showScheduleForm(scheduleData = null) {
+    const isEdit = scheduleData !== null;
+    const scheduleId = scheduleData?.id || getNextAvailableScheduleId();
+    
+    // Calculate next execution time for display in form
+    let nextExecutionDisplay = 'Will be calculated after save';
+    if (isEdit && (scheduleData.type === 'sunrise' || scheduleData.type === 'sunset')) {
+        nextExecutionDisplay = calculateNextExecutionTime(scheduleData);
+    }
+    
+    const formHTML = `
+        <div class="schedule-form">
+            <h3 style="color: #38bdf8; margin-bottom: 15px;">${isEdit ? 'Edit Schedule' : 'Add New Schedule'}</h3>
+            
+            <div class="form-group">
+                <label class="form-label">Schedule Name</label>
+                <input type="text" id="scheduleName" class="form-input" value="${isEdit ? scheduleData.name : ''}" placeholder="Enter schedule name">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Schedule Type</label>
+                <select id="scheduleType" class="form-select">
+                    <option value="daily" ${isEdit && scheduleData.type === 'daily' ? 'selected' : ''}>Daily Time-based</option>
+                    <option value="weekly" ${isEdit && scheduleData.type === 'weekly' ? 'selected' : ''}>Weekly Time-based</option>
+                    <option value="sunrise" ${isEdit && scheduleData.type === 'sunrise' ? 'selected' : ''}>Sunrise with Offset</option>
+                    <option value="sunset" ${isEdit && scheduleData.type === 'sunset' ? 'selected' : ''}>Sunset with Offset</option>
+                    <option value="temperature" ${isEdit && scheduleData.type === 'temperature' ? 'selected' : ''}>Temperature-based</option>
+                    <option value="timer" ${isEdit && scheduleData.type === 'timer' ? 'selected' : ''}>Timer</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Relay</label>
+                <select id="scheduleRelay" class="form-select">
+                    <option value="1" ${isEdit && scheduleData.relay === 1 ? 'selected' : ''}>Relay 1 (FAN)</option>
+                    <option value="2" ${isEdit && scheduleData.relay === 2 ? 'selected' : ''}>Relay 2 (LIGHT)</option>
+                    <option value="3" ${isEdit && scheduleData.relay === 3 ? 'selected' : ''}>Relay 3 (FAN-2)</option>
+                    <option value="4" ${isEdit && scheduleData.relay === 4 ? 'selected' : ''}>Relay 4 (DIM-L)</option>
+                </select>
+            </div>
+            
+            <div id="triggerFields" class="trigger-fields">
+                ${renderTriggerFields(scheduleData)}
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Action</label>
+                <select id="actionSelect" class="form-select">
+                    <option value="true" ${isEdit && scheduleData.action === true ? 'selected' : ''}>Turn ON</option>
+                    <option value="false" ${isEdit && scheduleData.action === false ? 'selected' : ''}>Turn OFF</option>
+                </select>
+            </div>
+            
+            ${(scheduleData?.type === 'sunrise' || scheduleData?.type === 'sunset') ? `
+            <div class="form-group">
+                <label class="form-label">Next Execution</label>
+                <div class="next-execution">${nextExecutionDisplay}</div>
+            </div>
+            ` : ''}
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <input type="checkbox" id="scheduleEnabled" ${isEdit && scheduleData.enabled !== false ? 'checked' : ''}>
+                    Enable Schedule
+                </label>
+            </div>
+            
+            <div class="form-actions">
+                <button class="cancel-btn" id="cancelScheduleBtn">Cancel</button>
+                <button class="save-btn" id="saveScheduleBtn">Save Schedule</button>
+            </div>
+        </div>
+    `;
+    
+    scheduleFormContainer.innerHTML = formHTML;
+    scheduleFormContainer.style.display = 'block';
+    
+    // Add event listeners
+    document.getElementById('cancelScheduleBtn').addEventListener('click', hideScheduleForm);
+    document.getElementById('saveScheduleBtn').addEventListener('click', () => saveSchedule(scheduleId));
+    document.getElementById('scheduleType').addEventListener('change', updateTriggerFields);
+    
+    // Scroll to form
+    scheduleFormContainer.scrollIntoView({ behavior: 'smooth' });
+}
+
+function getNextAvailableScheduleId() {
+    for (let i = 1; i <= 50; i++) {
+        if (!document.querySelector(`[data-schedule-id="${i}"]`)) {
+            return i;
+        }
+    }
+    return 1;
+}
+
+function renderTriggerFields(scheduleData) {
+    const scheduleType = scheduleData?.type || 'daily';
+    
+    switch(scheduleType) {
+        case 'daily':
+            return `
+                <div class="form-group">
+                    <label class="form-label">ON Time</label>
+                    <input type="time" id="onTime" class="form-input" value="${scheduleData?.onTime || '07:00'}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">OFF Time</label>
+                    <input type="time" id="offTime" class="form-input" value="${scheduleData?.offTime || '18:00'}">
+                </div>
+            `;
+        case 'weekly':
+            return `
+                <div class="form-group">
+                    <label class="form-label">ON Time</label>
+                    <input type="time" id="onTime" class="form-input" value="${scheduleData?.onTime || '07:00'}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">OFF Time</label>
+                    <input type="time" id="offTime" class="form-input" value="${scheduleData?.offTime || '18:00'}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Days (0=Sun, 1=Mon, ..., 6=Sat)</label>
+                    <input type="text" id="days" class="form-input" value="${scheduleData?.days || '1,2,3,4,5'}" placeholder="e.g., 1,2,3,4,5">
+                    <small style="color: #94a3b8;">Comma-separated day numbers (0-6)</small>
+                </div>
+            `;
+        case 'sunrise':
+        case 'sunset':
+            const offset = scheduleData?.offset || 0;
+            return `
+                <div class="form-group">
+                    <label class="form-label">Offset (minutes)</label>
+                    <input type="number" id="sunOffset" class="form-input" value="${offset}" min="-120" max="120" step="1">
+                    <small style="color: #94a3b8;">Positive for after ${scheduleType}, negative for before ${scheduleType}</small>
+                </div>
+            `;
+        case 'temperature':
+            const condition = scheduleData?.condition || '>';
+            const tempValue = scheduleData?.value || 25;
+            return `
+                <div class="form-group">
+                    <label class="form-label">Condition</label>
+                    <select id="tempCondition" class="form-select">
+                        <option value=">" ${condition === '>' ? 'selected' : ''}>Temperature Above</option>
+                        <option value="<" ${condition === '<' ? 'selected' : ''}>Temperature Below</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Temperature Value (°C)</label>
+                    <input type="number" id="tempValue" class="form-input" value="${tempValue}" min="-10" max="50" step="0.5" placeholder="Enter temperature">
+                </div>
+            `;
+        case 'timer':
+            return `
+                <div class="form-group">
+                    <label class="form-label">Duration (minutes)</label>
+                    <input type="number" id="duration" class="form-input" value="${scheduleData?.duration || 30}" min="1" max="1440">
+                </div>
+            `;
+        default:
+            return '';
+    }
+}
+
+function updateTriggerFields() {
+    const scheduleType = document.getElementById('scheduleType').value;
+    const triggerFields = document.getElementById('triggerFields');
+    
+    const tempScheduleData = { type: scheduleType };
+    triggerFields.innerHTML = renderTriggerFields(tempScheduleData);
+}
+
+function hideScheduleForm() {
+    scheduleFormContainer.style.display = 'none';
+    scheduleFormContainer.innerHTML = '';
+}
+
+function saveSchedule(scheduleId) {
+    if (!clientConnected) {
+        addLogEntry('Cannot save schedule: Client disconnected from Firebase.', 'error');
+        return;
+    }
+
+    const scheduleType = document.getElementById('scheduleType').value;
+    const name = document.getElementById('scheduleName').value;
+    const relay = parseInt(document.getElementById('scheduleRelay').value);
+    const action = document.getElementById('actionSelect').value === 'true';
+    const enabled = document.getElementById('scheduleEnabled').checked;
+
+    if (!name.trim()) {
+        alert('Please enter a schedule name');
+        return;
+    }
+
+    if (relay < 1 || relay > 4) {
+        alert('Please select a valid relay (1-4)');
+        return;
+    }
+
+    const scheduleData = {
+        name: name,
+        enabled: enabled,
+        type: scheduleType,
+        relay: relay,
+        action: action
+    };
+
+    // Add type-specific data
+    if (scheduleType === 'daily' || scheduleType === 'weekly') {
+        const onTime = document.getElementById('onTime').value;
+        const offTime = document.getElementById('offTime').value;
+        
+        if (!onTime || !offTime) {
+            alert('Please enter both ON and OFF times');
+            return;
+        }
+        
+        scheduleData.onTime = onTime;
+        scheduleData.offTime = offTime;
+        
+        if (scheduleType === 'weekly') {
+            const days = document.getElementById('days').value;
+            if (!days.trim()) {
+                alert('Please enter days for weekly schedule');
+                return;
+            }
+            scheduleData.days = days;
+        }
+    } else if (scheduleType === 'sunrise' || scheduleType === 'sunset') {
+        const offset = parseInt(document.getElementById('sunOffset').value) || 0;
+        scheduleData.offset = offset;
+        
+        // Calculate next execution time
+        scheduleData.nextExecution = calculateNextExecutionTime(scheduleData);
+    } else if (scheduleType === 'temperature') {
+        const condition = document.getElementById('tempCondition').value;
+        const value = parseFloat(document.getElementById('tempValue').value);
+        if (isNaN(value)) {
+            alert('Please enter a valid temperature');
+            return;
+        }
+        scheduleData.condition = condition;
+        scheduleData.value = value;
+    } else if (scheduleType === 'timer') {
+        const duration = parseInt(document.getElementById('duration').value);
+        
+        if (isNaN(duration) || duration < 1) {
+            alert('Please enter a valid duration');
+            return;
+        }
+        
+        scheduleData.duration = duration;
+    }
+
+    const path = getDevicePath(`automation/schedule${scheduleId}`);
+    
+    db.ref(path).set(scheduleData)
+        .then(() => {
+            addLogEntry(`Schedule "${name}" ${scheduleData.enabled ? 'created/enabled' : 'created/disabled'} for ${currentDevice}`, 'automation', 'automation');
+            hideScheduleForm();
+            loadSchedules();
+        })
+        .catch(error => {
+            addLogEntry(`Failed to save schedule: ${error.message}`, 'error');
+            alert('Failed to save schedule: ' + error.message);
+        });
+}
+
+function deleteSchedule(scheduleId) {
+    if (!clientConnected) {
+        addLogEntry('Cannot delete schedule: Client disconnected from Firebase.', 'error');
+        return;
+    }
+
+    if (confirm('Are you sure you want to delete this schedule?')) {
+        db.ref(getDevicePath(`automation/schedule${scheduleId}`)).remove()
+            .then(() => {
+                addLogEntry(`Schedule deleted from ${currentDevice}`, 'automation', 'automation');
+                loadSchedules();
+            })
+            .catch(error => {
+                addLogEntry(`Failed to delete schedule: ${error.message}`, 'error');
+            });
+    }
+}
+
+function toggleSchedule(scheduleId, currentState) {
+    if (!clientConnected) {
+        addLogEntry('Cannot toggle schedule: Client disconnected from Firebase.', 'error');
+        return;
+    }
+
+    const newState = !currentState;
+    
+    db.ref(getDevicePath(`automation/schedule${scheduleId}/enabled`)).set(newState)
+        .then(() => {
+            const statusText = newState ? 'ENABLED' : 'DISABLED';
+            addLogEntry(`Schedule ${statusText} for ${currentDevice}`, 'automation', 'automation');
+            loadSchedules();
+        })
+        .catch(error => {
+            addLogEntry(`Failed to toggle schedule: ${error.message}`, 'error');
+        });
+}
+
+function loadSchedules() {
+    // Load all schedules (schedule1 to schedule50) for current device
+    const schedulePromises = [];
+    
+    for (let i = 1; i <= 50; i++) {
+        schedulePromises.push(
+            db.ref(getDevicePath(`automation/schedule${i}`)).once('value')
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        return { id: i, ...snapshot.val() };
+                    }
+                    return null;
+                })
+        );
+    }
+    
+    Promise.all(schedulePromises)
+        .then((schedules) => {
+            const validSchedules = schedules.filter(schedule => schedule !== null);
+            displaySchedules(validSchedules);
+        })
+        .catch(error => {
+            addLogEntry(`Failed to load schedules: ${error.message}`, 'error');
+        });
+}
+
+function displaySchedules(schedules) {
+    schedulesList.innerHTML = '';
+    
+    if (schedules.length === 0) {
+        schedulesList.innerHTML = `
+            <div class="schedule-card">
+                <div style="text-align: center; color: #94a3b8; padding: 20px;">
+                    No schedules found for ${currentDevice}. Click "Add Schedule" to create your first automation.
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    schedules.sort((a, b) => a.id - b.id);
+    
+    schedules.forEach(schedule => {
+        const card = document.createElement('div');
+        card.className = `schedule-card ${schedule.enabled ? 'enabled' : 'disabled'}`;
+        card.setAttribute('data-schedule-id', schedule.id);
+        
+        let triggerText = '';
+        switch(schedule.type) {
+            case 'daily':
+                triggerText = `Daily: ON at ${schedule.onTime}, OFF at ${schedule.offTime}`;
+                break;
+            case 'weekly':
+                triggerText = `Weekly: ON at ${schedule.onTime}, OFF at ${schedule.offTime} on days ${schedule.days}`;
+                break;
+            case 'sunrise':
+                triggerText = `Sunrise ${schedule.offset >= 0 ? '+' : ''}${schedule.offset} minutes: ${schedule.action ? 'ON' : 'OFF'}`;
+                break;
+            case 'sunset':
+                triggerText = `Sunset ${schedule.offset >= 0 ? '+' : ''}${schedule.offset} minutes: ${schedule.action ? 'ON' : 'OFF'}`;
+                break;
+            case 'temperature':
+                triggerText = `Temperature ${schedule.condition} ${schedule.value}°C: ${schedule.action ? 'ON' : 'OFF'}`;
+                break;
+            case 'timer':
+                triggerText = `Timer: ${schedule.duration} minutes`;
+                break;
+        }
+        
+        const relayNames = ['FAN', 'LIGHT', 'FAN-2', 'DIM-L'];
+        const actionText = schedule.action ? 'ON' : 'OFF';
+        
+        // Calculate next execution time for sunrise/sunset schedules
+        let nextExecutionHTML = '';
+        if ((schedule.type === 'sunrise' || schedule.type === 'sunset') && schedule.enabled) {
+            const nextExecution = calculateNextExecutionTime(schedule);
+            nextExecutionHTML = `<div class="schedule-trigger"><strong>Next Execution:</strong> <span class="next-execution">${nextExecution}</span></div>`;
+        }
+        
+        card.innerHTML = `
+            <div class="schedule-header">
+                <div class="schedule-name">${schedule.name} (Schedule${schedule.id})</div>
+                <div class="schedule-actions">
+                    <button class="schedule-action-btn toggle-btn" data-schedule-id="${schedule.id}" data-current-state="${schedule.enabled}" title="${schedule.enabled ? 'Disable' : 'Enable'}">
+                        <i class="fas ${schedule.enabled ? 'fa-pause' : 'fa-play'}"></i>
+                    </button>
+                    <button class="schedule-action-btn edit-btn" data-schedule-id="${schedule.id}" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="schedule-action-btn delete-btn" data-schedule-id="${schedule.id}" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="schedule-details">
+                <div class="schedule-trigger"><strong>Trigger:</strong> ${triggerText}</div>
+                <div class="schedule-action"><strong>Action:</strong> ${relayNames[schedule.relay - 1]} ${actionText}</div>
+                ${nextExecutionHTML}
+                <div class="schedule-status"><strong>Status:</strong> ${schedule.enabled ? 'Enabled' : 'Disabled'}</div>
+            </div>
+        `;
+        
+        schedulesList.appendChild(card);
+    });
+
+    // Add event listeners to the buttons
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const scheduleId = e.target.closest('.toggle-btn').getAttribute('data-schedule-id');
+            const currentState = e.target.closest('.toggle-btn').getAttribute('data-current-state') === 'true';
+            toggleSchedule(parseInt(scheduleId), currentState);
+        });
+    });
+
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const scheduleId = e.target.closest('.edit-btn').getAttribute('data-schedule-id');
+            editSchedule(parseInt(scheduleId));
+        });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const scheduleId = e.target.closest('.delete-btn').getAttribute('data-schedule-id');
+            deleteSchedule(parseInt(scheduleId));
+        });
+    });
+}
+
+function editSchedule(scheduleId) {
+    db.ref(getDevicePath(`automation/schedule${scheduleId}`)).once('value')
+        .then((snapshot) => {
+            const scheduleData = snapshot.val();
+            if (scheduleData) {
+                scheduleData.id = scheduleId;
+                showScheduleForm(scheduleData);
+            }
+        })
+        .catch(error => {
+            addLogEntry(`Failed to load schedule for editing: ${error.message}`, 'error');
+        });
+}
+
+// Add schedule button event listener
+addScheduleBtn.addEventListener('click', () => {
+    showScheduleForm();
+});
+
 // --- AUTHENTICATION & SESSION LOGIC ---
+
 function showLogin() {
     dashboardContainer.style.display = 'none';
     loginScreen.style.display = 'flex';
@@ -1842,47 +2030,56 @@ function showDashboard(user) {
     loginScreen.style.display = 'none';
     dashboardContainer.style.display = 'block';
     
-    if (user && db) {
-        set(ref(db, 'HOME/ROOM_2/version'), DASHBOARD_VERSION); 
-        addLogEntry('INFO', `Dashboard version ${DASHBOARD_VERSION} logged to RTDB.`, 'rtdb');
-    }
+    addLogEntry(`Multi-room dashboard ${DASHBOARD_VERSION} initialized`, 'info');
+    
+    // Initialize the current device
+    setupDeviceListeners();
+    
+    // Set version info
+    versionInfoEl.textContent = `Dashboard: ${DASHBOARD_VERSION}`;
+    
+    // Load initial weather data
+    loadWeatherData();
 }
 
 function handleAuthError(error) {
     loginError.textContent = error.message.replace('Firebase: ', '');
-    addLogEntry('ERROR', `Authentication failed: ${error.code}`);
+    addLogEntry(`Authentication failed: ${error.code}`, 'error');
 }
 
+// Check for existing session
 if (localStorage.getItem(SESSION_KEY) === 'true') {
     showDashboard({ email: 'Checking session...' }); 
 } else {
     showLogin();
 }
 
-onAuthStateChanged(auth, (user) => {
+// Auth state listener
+auth.onAuthStateChanged((user) => {
     if (user) {
         showDashboard(user);
-        addLogEntry('INFO', `User ${user.email} signed in successfully.`);
-        loadWeatherData();
+        addLogEntry(`User ${user.email} signed in successfully.`, 'info');
         loadSchedules(); // Load automation schedules
     } else {
         if (localStorage.getItem(SESSION_KEY) === 'true') {
             localStorage.removeItem(SESSION_KEY);
-            addLogEntry('WARN', 'Device session expired. Please log in again.');
+            addLogEntry('Session expired. Please log in again.', 'warn');
         }
         showLogin();
     }
 });
 
+// Login button event
 loginBtn.addEventListener('click', async () => {
     loginError.textContent = '';
     try {
-        await signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
+        await auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value);
     } catch (error) {
         handleAuthError(error);
     }
 });
 
+// Create account button event
 createAccountBtn.addEventListener('click', async () => {
     loginError.textContent = '';
     if (!loginEmail.value || !loginPassword.value) {
@@ -1890,23 +2087,25 @@ createAccountBtn.addEventListener('click', async () => {
         return;
     }
     try {
-        await createUserWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
+        await auth.createUserWithEmailAndPassword(loginEmail.value, loginPassword.value);
     } catch (error) {
         handleAuthError(error);
     }
 });
 
+// Logout button event
 logoutBtn.addEventListener('click', async () => {
     try {
-        await signOut(auth);
+        await auth.signOut();
         localStorage.removeItem(SESSION_KEY); 
-        addLogEntry('INFO', 'User logged out.');
+        addLogEntry('User logged out.', 'info');
     } catch (error) {
         handleAuthError(error);
     }
 });
 
-document.getElementById('profileBtn').addEventListener('click', (event) => {
+// Profile menu toggle
+profileBtn.addEventListener('click', (event) => {
     event.stopPropagation();
     profileDropdown.classList.toggle('show');
 });
@@ -1918,235 +2117,58 @@ window.addEventListener('click', (event) => {
     }
 });
 
-// --- STATUS DISPLAY LOGIC ---
-function writeOnlineFlag(state){
-    if (clientConnected) {
-        set(ref(db,'HOME/ROOM_2/online'),!!state);
-        addLogEntry('INFO', `RTDB 'online' flag set to ${!!state}.`, 'rtdb');
-    } else {
-        addLogEntry('WARN', `RTDB write prevented: Client disconnected.`, 'rtdb');
-    }
-}
+// --- DEVICE SWITCHING EVENT LISTENERS ---
 
-function updateStatusDisplay() {
-    statusEl.classList.remove('online');
-    statusEl.style.color = '#fff';
-    
-    if (!clientConnected) {
-        statusEl.textContent = "Client Disconnected";
-        statusEl.style.backgroundColor = '#fbbf24';
-        statusEl.style.color = '#0f172a';
-    } else if (deviceOnline) {
-        statusEl.textContent = "Online";
-        statusEl.style.backgroundColor = '';
-        statusEl.classList.add('online');
-    } else {
-        statusEl.textContent = "Offline";
-        statusEl.style.backgroundColor = '#ef4444';
-    }
-}
-
-// 1. Client Connection Listener
-onValue(ref(db, '.info/connected'), (snap) => {
-    const wasConnected = clientConnected;
-    clientConnected = snap.val();
-    
-    if (clientConnected && !wasConnected) {
-        addLogEntry('INFO', 'Client reconnected to Firebase.');
-    } else if (!clientConnected && wasConnected) {
-        addLogEntry('ERROR', 'Client lost connection to Firebase. Relays cannot be toggled.');
-    }
-    updateStatusDisplay();
-});
-
-// 2. Initial Device Online State Loader
-onValue(ref(db, 'HOME/ROOM_2/online'), (snap) => {
-    const onlineState = snap.val() === true;
-    if (!initialOnlineLoadComplete) {
-        deviceOnline = onlineState;
-        initialOnlineLoadComplete = true;
-        updateStatusDisplay();
-        addLogEntry('INFO', `Initial device state loaded: ${deviceOnline ? 'ONLINE' : 'OFFLINE'}.`);
-    }
-}, { onlyOnce: false });
-
-// 3. Device Heartbeat Listener
-onValue(ref(db,'HOME/ROOM_2/uptime'),snap=>{
-  const val=snap.val(); 
-  if(val===null||val===undefined) return; 
-  
-  uptimeEl.textContent=val;
-  lastHeartbeatTime = Date.now(); 
-  
-  if (!deviceOnline) {
-      if (!reconnectTimer) {
-          addLogEntry('INFO', `Heartbeat detected. Starting ${RECONNECT_DEBOUNCE}s reconnection check...`);
-          
-          reconnectTimer = setTimeout(() => {
-              if (!deviceOnline && clientConnected) {
-                  deviceOnline = true;
-                  updateStatusDisplay(); 
-                  writeOnlineFlag(true); 
-                  addLogEntry('RELAY', 'Stable heartbeat confirmed. Device Status: ONLINE.');
-              }
-              reconnectTimer = null;
-          }, RECONNECT_DEBOUNCE * 1000);
-      }
-  }
-});
-
-// 4. Status Interval
-setInterval(()=>{
-    const now = Date.now();
-    const elapsedSinceHeartbeat = (now - lastHeartbeatTime) / 1000;
-    
-    if(deviceOnline && elapsedSinceHeartbeat > OFFLINE_TIMEOUT) { 
-        deviceOnline = false;
-        updateStatusDisplay();
-        writeOnlineFlag(false);
-        addLogEntry('RELAY', `Heartbeat timeout (${OFFLINE_TIMEOUT}s). Device Status: OFFLINE.`);
-        
-        if (reconnectTimer) {
-            clearTimeout(reconnectTimer);
-            reconnectTimer = null;
-            addLogEntry('INFO', 'Cleared pending reconnection timer due to timeout.');
-        }
-    }
-    
-    if(reconnectTimer && clientConnected === false) {
-        clearTimeout(reconnectTimer);
-        reconnectTimer = null;
-        addLogEntry('INFO', 'Cleared pending reconnection timer due to client disconnect.');
-    }
-    
-}, 1000);
-
-// --- DEVICE INFORMATION RETRIEVAL ---
-function loadDeviceInfo() {
-    // IP Address
-    onValue(ref(db, 'HOME/ROOM_2/device/ip'), (snap) => {
-        const ip = snap.val();
-        document.getElementById('ip').textContent = ip || '--';
-        if (ip) addLogEntry('INFO', `Device IP: ${ip}`, 'device');
-    });
-    
-    // MAC Address
-    onValue(ref(db, 'HOME/ROOM_2/device/mac'), (snap) => {
-        const mac = snap.val();
-        document.getElementById('mac').textContent = mac || '--';
-        if (mac) addLogEntry('INFO', `Device MAC: ${mac}`, 'device');
-    });
-    
-    // SSID
-    onValue(ref(db, 'HOME/ROOM_2/device/ssid'), (snap) => {
-        const ssid = snap.val();
-        document.getElementById('ssid').textContent = ssid || '--';
-        if (ssid) addLogEntry('INFO', `WiFi SSID: ${ssid}`, 'device');
-    });
-    
-    // Sunrise
-    onValue(ref(db, 'HOME/ROOM_2/sunrise'), (snap) => {
-        const sunrise = snap.val();
-        document.getElementById('sunrise').textContent = sunrise || '--:--';
-    });
-    
-    // Sunset
-    onValue(ref(db, 'HOME/ROOM_2/sunset'), (snap) => {
-        const sunset = snap.val();
-        document.getElementById('sunset').textContent = sunset || '--:--';
-    });
-    
-    // Last Update (Human)
-    onValue(ref(db, 'HOME/ROOM_2/lastUpdateHuman'), (snap) => {
-        const lastUpdateHuman = snap.val();
-        document.getElementById('lastUpdateHuman').textContent = lastUpdateHuman || '--:--';
-    });
-    
-    // Last Update (Timestamp)
-    onValue(ref(db, 'HOME/ROOM_2/lastUpdate'), (snap) => {
-        const lastUpdate = snap.val();
-        document.getElementById('lastUpdate').textContent = lastUpdate ? formatTime(lastUpdate) : '--:--';
-    });
-}
-
-// --- RELAY CONTROL LOGIC ---
-function toggleRelay(index){ 
-    if (!clientConnected) {
-        addLogEntry('ERROR', 'Cannot toggle relay: Client disconnected from Firebase.');
-        const messageBox = document.createElement('div');
-        messageBox.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:20px;background:#ef4444;color:#fff;border-radius:8px;z-index:1000;box-shadow:0 0 10px rgba(0,0,0,0.5);font-weight:bold;';
-        messageBox.textContent = 'ERROR: Dashboard disconnected. Cannot send command.';
-        document.body.appendChild(messageBox);
-        setTimeout(() => messageBox.remove(), 3000);
-        return;
-    }
-
-    const path=`HOME/ROOM_2/relay${index+1}`; 
-    get(ref(db,path)).then(snap=>{
-        const newState = !snap.val();
-        set(ref(db,path), newState); 
-        const relayName = relayBtns[index].textContent;
-        const stateStr = newState ? 'ON' : 'OFF';
-        addLogEntry('RELAY', `${relayName} manually set to ${stateStr}`); 
-    }).catch(error => {
-        addLogEntry('ERROR', `Failed to read/write relay state: ${error.message}`);
-    });
-}
-
-function setRelayState(btn,on){ if(on) btn.classList.add('on'); else btn.classList.remove('on'); }
-relayBtns.forEach((btn,i)=>{ 
-    btn.addEventListener('click',()=>toggleRelay(i)); 
-    onValue(ref(db,`HOME/ROOM_2/relay${i+1}`),snap=>setRelayState(btn,!!snap.val())); 
+deviceTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    switchDevice(tab.dataset.device);
+  });
 });
 
 // --- TAB NAVIGATION LOGIC ---
 const tabs = document.querySelectorAll('.tab-btn');
 const contents = document.querySelectorAll('.tab-content');
-tabs.forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    tabs.forEach(b=>b.classList.remove('active'));
-    contents.forEach(c=>c.classList.remove('active'));
+tabs.forEach(btn => {
+  btn.addEventListener('click', () => {
+    tabs.forEach(b => b.classList.remove('active'));
+    contents.forEach(c => c.classList.remove('active'));
     btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
     
-    // Check if it's a room tab (external link)
-    if (btn.classList.contains('room-tab')) {
-        const link = btn.getAttribute('data-link');
-        if (link) {
-            window.open(link, '_blank');
-            // Re-activate the previously active tab
-            const activeTab = document.querySelector('.tab-btn.active:not(.room-tab)');
-            if (activeTab) {
-                activeTab.classList.add('active');
-                document.getElementById(activeTab.dataset.tab).classList.add('active');
-            }
-            btn.classList.remove('active');
-            return;
-        }
-    } else {
-        document.getElementById(btn.dataset.tab).classList.add('active');
+    // Load schedules when switching to automation tab
+    if (btn.dataset.tab === 'automation') {
+        loadSchedules();
     }
     
-    if (btn.dataset.tab === 'logs' && rtdbLogsEnabled) {
-        setupRTDBLogListener();
-    }
-    
-    // Load weather data when switching to weather tab
+    // Load weather when switching to weather tab
     if (btn.dataset.tab === 'weather') {
         loadWeatherData();
     }
   });
 });
 
-// --- INITIALIZATION ---
-loadDeviceInfo();
-setupRTDBLogListener();
-addLogEntry('INFO', 'Dashboard initialized successfully.');
+// --- FIREBASE CONNECTION LISTENER ---
 
-// Make functions globally available for onclick handlers
-window.toggleSchedule = toggleSchedule;
-window.deleteSchedule = deleteSchedule;
-window.editSchedule = editSchedule;
-window.updateTriggerFields = updateTriggerFields;
+db.ref('.info/connected').on('value', (snap) => {
+    const wasConnected = clientConnected;
+    clientConnected = snap.val();
+    
+    if (clientConnected && !wasConnected) {
+        addLogEntry('Client connected to Firebase.', 'info');
+        // Re-initialize listeners when reconnecting
+        setupDeviceListeners();
+    } else if (!clientConnected && wasConnected) {
+        addLogEntry('Client lost connection to Firebase.', 'error');
+    }
+    updateStatusDisplay();
+});
+
+// --- INITIALIZATION ---
+
+// Set initial device and initialize
+switchDevice('ROOM_1');
+
+addLogEntry('Multi-room dashboard initialized successfully. Ready to control 4 devices.', 'info');
 
 </script>
 </body>
