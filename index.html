@@ -1500,7 +1500,7 @@ restartBtn.addEventListener('click', () => {
             .catch(error => {
               addLogEntry(`Failed to reset restart flag: ${error.message}`, 'warn');
             });
-        }, 4500);
+        }, 9500);
       })
       .catch(error => {
         addLogEntry(`Failed to send RESTART command: ${error.message}`, 'error');
@@ -2283,3 +2283,4 @@ addLogEntry('Multi-room dashboard initialized successfully. Ready to control 4 d
 </script>
 </body>
 </html>
+
