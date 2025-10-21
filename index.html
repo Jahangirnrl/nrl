@@ -789,19 +789,16 @@
             <p>Logged in as:</p>
             <p id="userEmailDisplay">user@gmail.com</p>
             
-            <!-- BEEP Switch -->
             <div class="switch-container">
                 <span class="switch-label">MUTE / UNMUTE</span>
                 <div class="switch" id="beepSwitch"></div>
             </div>
             
-            <!-- IR Lock Switch -->
             <div class="switch-container">
                 <span class="switch-label">IR LOCK</span>
                 <div class="lock-switch" id="irLockSwitch"></div>
             </div>
 
-            <!-- Physical Button Lock Switch -->
             <div class="switch-container">
                 <span class="switch-label">BUTTON LOCK</span>
                 <div class="lock-switch" id="buttonLockSwitch"></div>
@@ -815,7 +812,6 @@
     <div class="header-center-content">
       <h1><i class="fa-solid fa-house-chimney"></i> Multi-Room Control</h1>
       
-      <!-- Device Selection Tabs -->
       <div class="device-tabs">
         <button class="device-tab active-room-1" data-device="ROOM_1">Room-1</button>
         <button class="device-tab" data-device="ROOM_2">Room-2</button>
@@ -823,10 +819,8 @@
         <button class="device-tab" data-device="ROOM_4">Room-4</button>
       </div>
 
-      <!-- Current Device Indicator -->
       <div class="current-device room-1-theme" id="currentDeviceDisplay">Controlling: ROOM-1</div>
       
-      <!-- Main Tabs -->
       <div class="tabs">
         <button class="tab-btn active room-1-active" data-tab="dashboard">Dashboard</button>
         <button class="tab-btn" data-tab="automation">Automation</button>
@@ -909,7 +903,6 @@
         </div>
       </div>
       
-      <!-- Weather Refresh Button -->
       <button class="weather-refresh-btn" id="weatherRefreshBtn">
         <i class="fas fa-sync-alt"></i> Refresh Weather Data
       </button>
@@ -925,7 +918,6 @@
   </div>
 </div>
 
-<!-- Add Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -955,6 +947,11 @@ const DASHBOARD_VERSION = 'v2.0.0';
 // Current device state
 let currentDevice = 'ROOM_1';
 const devices = ['ROOM_1', 'ROOM_2', 'ROOM_3', 'ROOM_4'];
+
+// New Heartbeat Constants
+const STABLE_MAX_MS = 15000;
+const UNSTABLE_MAX_MS = 59000;
+const HEARTBEAT_CHECK_INTERVAL_MS = 5000; // Check every 5 seconds for stability
 
 // UI Elements
 const loginScreen = document.getElementById('loginScreen');
@@ -998,11 +995,11 @@ const weatherRefreshBtn = document.getElementById('weatherRefreshBtn');
 // Device-specific state
 const deviceStates = {};
 devices.forEach(device => {
-  deviceStates[device] = { 
-    online: false, 
-    lastHeartbeat: null, 
+  deviceStates[device] = {
+    online: false,
+    lastHeartbeat: null,
     lastOnlineUpdate: null,
-    connectionStability: 'unknown', // 'stable', 'unstable', 'offline', 'unknown'
+    connectionStability: 'unknown', // 'stable', 'unstable', 'offline', 'unknown', 'connecting'
     relays: [false, false, false, false],
     firmware: '--',
     ip: '--',
@@ -1024,57 +1021,53 @@ let allListeners = [];
 const WEATHER_UPDATE_INTERVAL = 10 * 60 * 1000;
 let lastWeatherUpdate = 0;
 
-// --- UTILITY FUNCTIONS ---
 
+// --- UTILITY FUNCTIONS ---
 function formatTime12Hour(timestamp) {
-    if (!timestamp) return '--:--:--';
-    const d = new Date(timestamp);
-    const formatter = new Intl.DateTimeFormat('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true 
-    });
-    return formatter.format(d);
+  if (!timestamp) return '--:--:--';
+  const d = new Date(timestamp);
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  });
+  return formatter.format(d);
 }
 
 function addLogEntry(message, type = 'info', source = 'client') {
-    const time = formatTime12Hour(Date.now());
-    const typeClass = `log-entry-type-${type.toLowerCase()}`;
-    const sourceClass = source === 'device' ? 'log-entry-type-device' : 
-                        source === 'rtdb' ? 'log-entry-type-rtdb' :
-                        source === 'weather' ? 'log-entry-type-weather' :
-                        source === 'automation' ? 'log-entry-type-automation' : '';
-    
-    const entry = document.createElement('div');
-    entry.className = 'log-entry';
-    entry.innerHTML = `<span class="log-entry-time">${time}</span><span class="${typeClass} ${sourceClass}">${type.toUpperCase()}:</span> ${message}`;
-
-    logViewer.prepend(entry);
-    while (logViewer.children.length > 50) {
-        logViewer.removeChild(logViewer.lastChild);
-    }
+  const time = formatTime12Hour(Date.now());
+  const typeClass = `log-entry-type-${type.toLowerCase()}`;
+  const sourceClass = source === 'device' ? 'log-entry-type-device' : source === 'rtdb' ? 'log-entry-type-rtdb' : source === 'weather' ? 'log-entry-type-weather' : source === 'automation' ? 'log-entry-type-automation' : '';
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.innerHTML = `<span class="log-entry-time">${time}</span><span class="${typeClass} ${sourceClass}">${type.toUpperCase()}:</span> ${message}`;
+  logViewer.prepend(entry);
+  while (logViewer.children.length > 50) {
+    logViewer.removeChild(logViewer.lastChild);
+  }
 }
 
 // --- DEVICE MANAGEMENT FUNCTIONS ---
-
 function getDevicePath(path) {
   return `HOME/${currentDevice}/${path}`;
 }
 
 function switchDevice(deviceId) {
   if (!devices.includes(deviceId)) return;
-  
+
   console.log(`Switching to device: ${deviceId}`);
-  
+
   // Clean up existing listeners
   cleanupListeners();
-  
+
   currentDevice = deviceId;
   
   // Reset connection stability for the new device
-  deviceStates[currentDevice].connectionStability = 'unknown';
-  
+  // We want to re-evaluate it based on the RTDB state when listeners are set up
+  deviceStates[currentDevice].connectionStability = 'unknown'; 
+  deviceStates[currentDevice].lastHeartbeat = null; 
+
   // Update UI
   deviceTabs.forEach(tab => {
     tab.classList.remove('active-room-1', 'active-room-2', 'active-room-3', 'active-room-4');
@@ -1083,24 +1076,24 @@ function switchDevice(deviceId) {
       tab.classList.add(`active-room-${roomNum}`);
     }
   });
-  
+
   const displayName = deviceId.replace('_', '-');
   currentDeviceDisplay.textContent = `Controlling: ${displayName}`;
   const roomNum = deviceId.split('_')[1];
   currentDeviceDisplay.className = `current-device room-${roomNum}-theme`;
-  
+
   // Update theme for relays
   updateDeviceTheme();
-  
+
   // Update theme for main tabs, status, and version info
   updateThemeColors();
-  
+
   // Setup new listeners for the current device
   setupDeviceListeners();
-  
+
   // Load schedules for the current device
   loadSchedules();
-  
+
   addLogEntry(`Switched to ${displayName}`, 'info');
 }
 
@@ -1117,25 +1110,24 @@ function updateDeviceTheme() {
 
 function updateThemeColors() {
   const roomNum = currentDevice.split('_')[1];
-  
+
   // Update main tabs
   const tabBtns = document.querySelectorAll('.tab-btn');
   tabBtns.forEach(btn => {
     // Remove all room-specific active classes
     btn.classList.remove('room-1-active', 'room-2-active', 'room-3-active', 'room-4-active');
-    
     // Add the current room's active class to active tabs
     if (btn.classList.contains('active')) {
       btn.classList.add(`room-${roomNum}-active`);
     }
   });
-  
-  // Update online status
-  //statusEl.classList.remove('room-1-online', 'room-2-online', 'room-3-online', 'room-4-online');
-  if (statusEl.classList.contains('online')) {
-    statusEl.classList.add(`room-${roomNum}-online`);
-  }
-  
+
+  // Update online status (this logic is now mostly handled by updateStatusDisplay)
+  // statusEl.classList.remove('room-1-online', 'room-2-online', 'room-3-online', 'room-4-online');
+  // if (statusEl.classList.contains('online')) {
+  //   statusEl.classList.add(`room-${roomNum}-online`);
+  // }
+
   // Update version info colors
   versionInfoEl.className = `dashboard-version room-${roomNum}-version`;
   firmwareInfoEl.className = `firmware-version room-${roomNum}-firmware`;
@@ -1153,132 +1145,155 @@ function cleanupListeners() {
 
 function setupDeviceListeners() {
   console.log(`Setting up listeners for ${currentDevice}`);
-  
+
   // Setup relay listeners
   setupRelayListeners();
-  
+
   // Setup device info listeners
   setupDeviceInfoListeners();
-  
+
   // Setup status listeners
   setupStatusListeners();
-  
+
   // Setup switch listeners
   setupSwitchListeners();
 }
 
-// --- ONLINE STATUS LOGIC ---
+// --- ONLINE STATUS LOGIC (UPDATED) ---
 
 function setupStatusListeners() {
-  // Online status from device
-  const onlineUnsubscribe = db.ref(getDevicePath('online')).on('value', (snap) => {
-    const isOnline = snap.val() === true;
-    deviceStates[currentDevice].online = isOnline;
-    deviceStates[currentDevice].lastOnlineUpdate = Date.now();
-    updateStatusDisplay();
-  });
-  allListeners.push(() => db.ref(getDevicePath('online')).off('value', onlineUnsubscribe));
-  
-  // Heartbeat monitoring via uptime changes
-  startHeartbeatMonitoring();
+    // 1. Initial/Explicit Online Status from RTDB
+    const onlinePath = getDevicePath('online');
+    const deviceState = deviceStates[currentDevice];
+
+    const onlineUnsubscribe = db.ref(onlinePath).on('value', (snap) => {
+        const isOnline = snap.val() === true;
+
+        if (isOnline === false) {
+            // Requirement 1b: If RTDB /online is false, display Offline (red).
+            deviceState.online = false;
+            deviceState.connectionStability = 'offline';
+        } else {
+            // Requirement 1a: If RTDB /online is true, display Online (green).
+            deviceState.online = true;
+            // Optimistically set to stable until the first pulse updates lastHeartbeat
+            if (deviceState.lastHeartbeat === null) {
+                deviceState.connectionStability = 'stable'; 
+            }
+        }
+        updateStatusDisplay();
+    });
+    allListeners.push(() => db.ref(onlinePath).off('value', onlineUnsubscribe));
+
+    // 2. Heartbeat Pulse Listener (uptime change)
+    setupHeartbeatPulseListener();
+
+    // 3. Periodic Stability Check (The core logic for 5s, 15s, 59s rules)
+    startStabilityCheck();
 }
 
-function startHeartbeatMonitoring() {
-  let lastUptimeValue = '';
-  let stableCount = 0;
-  let unstableCount = 0;
-  
-  const uptimeUnsubscribe = db.ref(getDevicePath('uptime')).on('value', snap => {
-    const currentUptime = snap.val() || '';
-    
-    // Check if uptime changed (heartbeat pulse)
-    if (currentUptime !== lastUptimeValue && currentUptime !== '') {
-      const now = Date.now();
-      deviceStates[currentDevice].lastHeartbeat = now;
-      deviceStates[currentDevice].online = true;
-      
-      // Check heartbeat frequency
-      const lastHeartbeat = deviceStates[currentDevice].lastHeartbeat || now;
-      const timeDiff = now - lastHeartbeat;
-      
-      if (timeDiff < 20000) { // Less than 20 seconds between pulses
-        stableCount++;
-        unstableCount = 0;
-        if (stableCount >= 2) { // Require 2 consecutive stable pulses
-          deviceStates[currentDevice].connectionStability = 'stable';
+function setupHeartbeatPulseListener() {
+    let lastUptimeValue = ''; // Variable to track the previous uptime value
+
+    // Listener for uptime changes to track the last heartbeat time
+    const uptimeUnsubscribe = db.ref(getDevicePath('uptime')).on('value', snap => {
+        const currentUptime = snap.val() || '';
+        const deviceState = deviceStates[currentDevice];
+
+        // Check if uptime changed (heartbeat pulse)
+        if (currentUptime !== lastUptimeValue && currentUptime !== '') {
+            deviceState.lastHeartbeat = Date.now();
+            deviceState.online = true; // A successful pulse confirms it's online
+            // The periodic check will set stability
         }
-      } else {
-        unstableCount++;
-        stableCount = 0;
-        if (unstableCount >= 2) { // 2 consecutive unstable pulses
-          deviceStates[currentDevice].connectionStability = 'unstable';
+        // Update the last known uptime for the next comparison
+        lastUptimeValue = currentUptime;
+        
+        // Update display to reflect potential immediate stability change
+        updateStatusDisplay(); 
+    });
+    allListeners.push(() => db.ref(getDevicePath('uptime')).off('value', uptimeUnsubscribe));
+}
+
+function startStabilityCheck() {
+    const intervalId = setInterval(() => {
+        const deviceState = deviceStates[currentDevice];
+        const now = Date.now();
+        const onlinePath = getDevicePath('online');
+
+        if (!deviceState.online && deviceState.lastHeartbeat === null) {
+            // Initial state: not explicitly online in RTDB, and no heartbeat yet
+            deviceState.connectionStability = 'connecting';
+        } else if (deviceState.lastHeartbeat !== null) {
+            const timeSinceLastHeartbeat = now - deviceState.lastHeartbeat;
+
+            // Requirement: obserb 5 sec pulse if 5 to 15 duration then consider ok stable
+            if (timeSinceLastHeartbeat <= STABLE_MAX_MS) { // 0 to 15 seconds
+                deviceState.connectionStability = 'stable';
+                deviceState.online = true;
+            } 
+            // Requirement: else more than 15 sec consider unstable
+            else if (timeSinceLastHeartbeat > STABLE_MAX_MS && timeSinceLastHeartbeat <= UNSTABLE_MAX_MS) { // 15 to 59 seconds
+                deviceState.connectionStability = 'unstable';
+                deviceState.online = true; // Still considered online, but unstable
+            } 
+            // Requirement: if more than 59 sec then show offline, rtdb online value set false.
+            else if (timeSinceLastHeartbeat > UNSTABLE_MAX_MS) { // > 59 seconds (60 seconds or more)
+                deviceState.connectionStability = 'offline';
+                
+                if (deviceState.online === true) {
+                    deviceState.online = false;
+                    // Set RTDB /online value to false.
+                    db.ref(onlinePath).set(false).then(() => {
+                        addLogEntry(`${currentDevice} heartbeat lost (>59s), RTDB /online set to false.`, 'rtdb');
+                    }).catch(error => {
+                        addLogEntry(`Failed to set /online to false: ${error.message}`, 'error');
+                    });
+                }
+            }
         }
-      }
-      
-      updateStatusDisplay();
-    }
-    
-    lastUptimeValue = currentUptime;
-  });
-  
-  allListeners.push(() => db.ref(getDevicePath('uptime')).off('value', uptimeUnsubscribe));
-  
-  // Monitor for offline status - check every 30 seconds
-  const offlineCheckInterval = setInterval(() => {
-    const deviceState = deviceStates[currentDevice];
-    const now = Date.now();
-    
-    // If no heartbeat in 1 minute, mark as offline
-    if (deviceState.lastHeartbeat && (now - deviceState.lastHeartbeat > 60000)) {
-      deviceState.online = false;
-      deviceState.connectionStability = 'offline';
-      updateStatusDisplay();
-    }
-    
-    // If device explicitly set online=false, respect that immediately
-    if (deviceState.online === false) {
-      deviceState.connectionStability = 'offline';
-      updateStatusDisplay();
-    }
-    
-  }, 30000);
-  
-  allListeners.push(() => clearInterval(offlineCheckInterval));
+
+        updateStatusDisplay();
+    }, HEARTBEAT_CHECK_INTERVAL_MS); // Check every 5 seconds
+
+    allListeners.push(() => clearInterval(intervalId));
 }
 
 function updateStatusDisplay() {
-  const deviceState = deviceStates[currentDevice];
-  
-  // Clear all status classes
-  statusEl.classList.remove('online', 'unstable', 'connecting');
-  statusEl.style.color = '#fff';
-  
-  if (!clientConnected) {
-    statusEl.textContent = "Client Disconnected";
-    statusEl.style.backgroundColor = '#fbbf24';
-    statusEl.style.color = '#0f172a';
-  } else if (!deviceState.online) {
-    statusEl.textContent = "Offline";
-    statusEl.style.backgroundColor = '#ef4444';
-  } else {
-    // Device is online, check stability
-    switch(deviceState.connectionStability) {
-      case 'stable':
-        statusEl.textContent = "Online ✓";
-        statusEl.classList.add('online');
-        break;
-      case 'unstable':
-        statusEl.textContent = "Connection Unstable";
-        statusEl.classList.add('unstable');
-        break;
-      default:
-        statusEl.textContent = "Connecting...";
-        statusEl.classList.add('connecting');
+    const deviceState = deviceStates[currentDevice];
+    // Clear all status classes and ensure default style
+    statusEl.classList.remove('online', 'unstable', 'connecting');
+    statusEl.style.cssText = ''; // Reset inline styles (like background/color)
+
+    if (!clientConnected) {
+        statusEl.textContent = "Client Disconnected";
+        statusEl.style.backgroundColor = '#fbbf24';
+        statusEl.style.color = '#0f172a';
+    } else {
+        // Use connectionStability determined by the periodic check or RTDB listener
+        switch(deviceState.connectionStability) {
+            case 'stable':
+                statusEl.textContent = "Online ✓";
+                statusEl.classList.add('online'); // Green color
+                break;
+            case 'unstable':
+                statusEl.textContent = "Connection Unstable";
+                statusEl.classList.add('unstable'); // Yellow/Orange color
+                break;
+            case 'offline':
+                statusEl.textContent = "Offline";
+                // Falls back to default CSS (Red color)
+                break;
+            case 'connecting':
+            case 'unknown':
+            default:
+                statusEl.textContent = "Connecting...";
+                statusEl.classList.add('connecting'); // Blue color
+        }
     }
-  }
 }
 
-// --- RELAY CONTROL LOGIC ---
+/// --- RELAY CONTROL LOGIC ---
 
 function toggleRelay(index){ 
   if (!clientConnected) {
