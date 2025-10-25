@@ -165,6 +165,13 @@
   }
   .restart-btn:hover { background: #d97706; }
   
+  /* NEW: Settings Button */
+  .settings-btn {
+    background: #8b5cf6;
+    color: #f1f5f9;
+  }
+  .settings-btn:hover { background: #7c3aed; }
+
   /* Device Selection Tabs */
   .device-tabs {
     display: flex;
@@ -766,6 +773,193 @@
   .log-entry-type-rtdb { color: #f97316; }
   .log-entry-type-weather { color: #06b6d4; }
   .log-entry-type-automation { color: #f97316; }
+
+  /* NEW: Settings Modal Styles */
+  .settings-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .settings-modal.show {
+    display: flex;
+  }
+  
+  .settings-content {
+    background: #1e293b;
+    border-radius: 12px;
+    padding: 25px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    border: 1px solid #334155;
+  }
+  
+  .settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #334155;
+  }
+  
+  .settings-header h3 {
+    color: #38bdf8;
+    margin: 0;
+    font-size: 1.3rem;
+  }
+  
+  .close-settings {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+  }
+  
+  .close-settings:hover {
+    color: #e2e8f0;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .settings-tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #334155;
+    padding-bottom: 10px;
+  }
+  
+  .settings-tab {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background: #0f172a;
+    color: #94a3b8;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+  }
+  
+  .settings-tab:hover {
+    background: #1e293b;
+    color: #e2e8f0;
+  }
+  
+  .settings-tab.active {
+    background: #38bdf8;
+    color: #0f172a;
+  }
+  
+  .settings-panel {
+    display: none;
+  }
+  
+  .settings-panel.active {
+    display: block;
+  }
+  
+  .room-settings {
+    margin-bottom: 20px;
+  }
+  
+  .room-settings h4 {
+    color: #38bdf8;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+  }
+  
+  .settings-form-group {
+    margin-bottom: 15px;
+  }
+  
+  .settings-form-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  
+  .settings-form-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #475569;
+    border-radius: 6px;
+    background: #0f172a;
+    color: #f1f5f9;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+  }
+  
+  .settings-form-input:focus {
+    outline: none;
+    border-color: #38bdf8;
+  }
+  
+  .relay-settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  
+  .settings-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #334155;
+  }
+  
+  .save-settings-btn {
+    background: #10b981;
+    color: #042f2e;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .save-settings-btn:hover {
+    background: #059669;
+  }
+  
+  .cancel-settings-btn {
+    background: #64748b;
+    color: #f1f5f9;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .cancel-settings-btn:hover {
+    background: #475569;
+  }
+  
+  /* Update for room-specific colors in settings */
+  .settings-tab.room-1-color.active { background: #10b981; }
+  .settings-tab.room-2-color.active { background: #38bdf8; }
+  .settings-tab.room-3-color.active { background: #f59e0b; }
+  .settings-tab.room-4-color.active { background: #8b5cf6; }
 </style>
 </head>
 <body>
@@ -804,6 +998,29 @@
                 <div class="lock-switch" id="buttonLockSwitch"></div>
             </div>
             
+            <!-- NEW: Settings Button -->
+            <button class="dropdown-btn settings-btn" id="settingsBtn">
+              <i class="fas fa-cog"></i> Settings Room
+            </button>
+            
+<!--
+            <button class="dropdown-btn settings-btn" id="settingsBtn2">
+              <i class="fas fa-cog"></i> Set R2
+            </button>
+-->
+            
+<!--
+            <button class="dropdown-btn settings-btn" id="settingsBtn3">
+              <i class="fas fa-cog"></i> Set R3
+            </button>
+-->
+            
+<!--
+            <button class="dropdown-btn settings-btn" id="settingsBtn4">
+              <i class="fas fa-cog"></i> Set R4
+            </button>
+-->
+            
             <button class="dropdown-btn restart-btn" id="restartBtn">DEVICE RESTART</button>
             <button class="dropdown-btn logout-btn" id="logoutBtn">Logout</button>
         </div>
@@ -818,7 +1035,7 @@
         <button class="device-tab" data-device="ROOM_3">Room-3</button>
         <button class="device-tab" data-device="ROOM_4">Room-4</button>
       </div>
-
+      
       <div class="current-device room-1-theme" id="currentDeviceDisplay">Controlling: ROOM-1</div>
       
       <div class="tabs">
@@ -918,6 +1135,115 @@
   </div>
 </div>
 
+<!-- NEW: Settings Modal -->
+<div class="settings-modal" id="settingsModal">
+  <div class="settings-content">
+    <div class="settings-header">
+      <h3>Device Settings</h3>
+      <button class="close-settings" id="closeSettingsBtn">&times;</button>
+    </div>
+    
+    <div class="settings-tabs">
+        <button class="tab-btn" id="settingsBtn1">ROOM-1</button>
+        <button class="tab-btn" id="settingsBtn2">ROOM-2</button>
+        <button class="tab-btn" id="settingsBtn3">ROOM-3</button>
+        <button class="tab-btn" id="settingsBtn4">ROOM-4</button>
+   
+    </div>
+    <div class="settings-tabs">
+      <button class="settings-tab room-1-color active" data-room="ROOM_1">Room 1</button>
+      <button class="settings-tab room-2-color" data-room="ROOM_2">Room 2</button>
+      <button class="settings-tab room-3-color" data-room="ROOM_3">Room 3</button>
+      <button class="settings-tab room-4-color" data-room="ROOM_4">Room 4</button>
+    </div>  
+    
+    <div id="room1Settings" class="settings-panel active">
+      <div class="room-settings">
+        <h4>Room 1 Settings</h4>
+        <div class="settings-form-group">
+          <label class="settings-form-label">Room Display Name</label>
+          <input type="text" id="room1Name" class="settings-form-input" placeholder="e.g., Living Room">
+        </div>
+        
+        <div class="settings-form-group">
+          <label class="settings-form-label">Relay Labels</label>
+          <div class="relay-settings-grid">
+            <input type="text" id="room1Relay1" class="settings-form-input" placeholder="Relay 1 Name">
+            <input type="text" id="room1Relay2" class="settings-form-input" placeholder="Relay 2 Name">
+            <input type="text" id="room1Relay3" class="settings-form-input" placeholder="Relay 3 Name">
+            <input type="text" id="room1Relay4" class="settings-form-input" placeholder="Relay 4 Name">
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="room2Settings" class="settings-panel">
+      <div class="room-settings">
+        <h4>Room 2 Settings</h4>
+        <div class="settings-form-group">
+          <label class="settings-form-label">Room Display Name</label>
+          <input type="text" id="room2Name" class="settings-form-input" placeholder="e.g., Bedroom">
+        </div>
+        
+        <div class="settings-form-group">
+          <label class="settings-form-label">Relay Labels</label>
+          <div class="relay-settings-grid">
+            <input type="text" id="room2Relay1" class="settings-form-input" placeholder="Relay 1 Name">
+            <input type="text" id="room2Relay2" class="settings-form-input" placeholder="Relay 2 Name">
+            <input type="text" id="room2Relay3" class="settings-form-input" placeholder="Relay 3 Name">
+            <input type="text" id="room2Relay4" class="settings-form-input" placeholder="Relay 4 Name">
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="room3Settings" class="settings-panel">
+      <div class="room-settings">
+        <h4>Room 3 Settings</h4>
+        <div class="settings-form-group">
+          <label class="settings-form-label">Room Display Name</label>
+          <input type="text" id="room3Name" class="settings-form-input" placeholder="e.g., Kitchen">
+        </div>
+        
+        <div class="settings-form-group">
+          <label class="settings-form-label">Relay Labels</label>
+          <div class="relay-settings-grid">
+            <input type="text" id="room3Relay1" class="settings-form-input" placeholder="Relay 1 Name">
+            <input type="text" id="room3Relay2" class="settings-form-input" placeholder="Relay 2 Name">
+            <input type="text" id="room3Relay3" class="settings-form-input" placeholder="Relay 3 Name">
+            <input type="text" id="room3Relay4" class="settings-form-input" placeholder="Relay 4 Name">
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="room4Settings" class="settings-panel">
+      <div class="room-settings">
+        <h4>Room 4 Settings</h4>
+        <div class="settings-form-group">
+          <label class="settings-form-label">Room Display Name</label>
+          <input type="text" id="room4Name" class="settings-form-input" placeholder="e.g., Bathroom">
+        </div>
+        
+        <div class="settings-form-group">
+          <label class="settings-form-label">Relay Labels</label>
+          <div class="relay-settings-grid">
+            <input type="text" id="room4Relay1" class="settings-form-input" placeholder="Relay 1 Name">
+            <input type="text" id="room4Relay2" class="settings-form-input" placeholder="Relay 2 Name">
+            <input type="text" id="room4Relay3" class="settings-form-input" placeholder="Relay 3 Name">
+            <input type="text" id="room4Relay4" class="settings-form-input" placeholder="Relay 4 Name">
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="settings-actions">
+      <button class="cancel-settings-btn" id="cancelSettingsBtn">Cancel</button>
+      <button class="save-settings-btn" id="saveSettingsBtn">Save Settings</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -992,6 +1318,15 @@ const weatherLocationEl = document.getElementById('weatherLocation');
 const weatherSourceEl = document.getElementById('weatherSource');
 const weatherRefreshBtn = document.getElementById('weatherRefreshBtn');
 
+// NEW: Settings elements
+const settingsModal = document.getElementById('settingsModal');
+const settingsBtn = document.getElementById('settingsBtn');
+const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+const cancelSettingsBtn = document.getElementById('cancelSettingsBtn');
+const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+const settingsTabs = document.querySelectorAll('.settings-tab');
+const settingsPanels = document.querySelectorAll('.settings-panel');
+
 // Device-specific state
 const deviceStates = {};
 devices.forEach(device => {
@@ -1021,6 +1356,45 @@ let allListeners = [];
 const WEATHER_UPDATE_INTERVAL = 10 * 60 * 1000;
 let lastWeatherUpdate = 0;
 
+// NEW: Custom Names Management
+const defaultRoomNames = {
+  'ROOM_1': 'Room-1',
+  'ROOM_2': 'Room-2',
+  'ROOM_3': 'Room-3',
+  'ROOM_4': 'Room-4'
+};
+
+const defaultRelayLabels = {
+  'ROOM_1': ['FAN', 'LIGHT', 'FAN-2', 'DIM-L'],
+  'ROOM_2': ['FAN', 'LIGHT', 'FAN-2', 'DIM-L'],
+  'ROOM_3': ['FAN', 'LIGHT', 'FAN-2', 'DIM-L'],
+  'ROOM_4': ['FAN', 'LIGHT', 'FAN-2', 'DIM-L']
+};
+
+// Load custom names from localStorage or use defaults
+function loadCustomNames() {
+  const savedNames = JSON.parse(localStorage.getItem('roomCustomNames')) || {};
+  const savedRelays = JSON.parse(localStorage.getItem('relayCustomNames')) || {};
+  
+  // Merge with defaults
+  const roomNames = {...defaultRoomNames, ...savedNames};
+  const relayNames = {};
+  
+  devices.forEach(device => {
+    relayNames[device] = savedRelays[device] || [...defaultRelayLabels[device]];
+  });
+  
+  return { roomNames, relayNames };
+}
+
+// Save custom names to localStorage
+function saveCustomNames(roomNames, relayNames) {
+  localStorage.setItem('roomCustomNames', JSON.stringify(roomNames));
+  localStorage.setItem('relayCustomNames', JSON.stringify(relayNames));
+}
+
+// Get current room and relay names
+let { roomNames, relayNames } = loadCustomNames();
 
 // --- UTILITY FUNCTIONS ---
 function formatTime12Hour(timestamp) {
@@ -1048,6 +1422,24 @@ function addLogEntry(message, type = 'info', source = 'client') {
   }
 }
 
+// NEW: Update UI with custom names
+function updateUICustomNames() {
+  // Update device tabs
+  deviceTabs.forEach(tab => {
+    const device = tab.dataset.device;
+    tab.textContent = roomNames[device];
+  });
+  
+  // Update current device display
+  const displayName = roomNames[currentDevice];
+  currentDeviceDisplay.textContent = `Controlling: ${displayName}`;
+  
+  // Update relay buttons
+  relayBtns.forEach((btn, index) => {
+    btn.textContent = relayNames[currentDevice][index];
+  });
+}
+
 // --- DEVICE MANAGEMENT FUNCTIONS ---
 function getDevicePath(path) {
   return `HOME/${currentDevice}/${path}`;
@@ -1064,11 +1456,13 @@ function switchDevice(deviceId) {
   currentDevice = deviceId;
   
   // Reset connection stability for the new device
-  // We want to re-evaluate it based on the RTDB state when listeners are set up
   deviceStates[currentDevice].connectionStability = 'unknown'; 
   deviceStates[currentDevice].lastHeartbeat = null; 
 
-  // Update UI
+  // Update UI with custom names
+  updateUICustomNames();
+  
+  // Update device tabs styling
   deviceTabs.forEach(tab => {
     tab.classList.remove('active-room-1', 'active-room-2', 'active-room-3', 'active-room-4');
     if (tab.dataset.device === deviceId) {
@@ -1077,8 +1471,6 @@ function switchDevice(deviceId) {
     }
   });
 
-  const displayName = deviceId.replace('_', '-');
-  currentDeviceDisplay.textContent = `Controlling: ${displayName}`;
   const roomNum = deviceId.split('_')[1];
   currentDeviceDisplay.className = `current-device room-${roomNum}-theme`;
 
@@ -1094,7 +1486,7 @@ function switchDevice(deviceId) {
   // Load schedules for the current device
   loadSchedules();
 
-  addLogEntry(`Switched to ${displayName}`, 'info');
+  addLogEntry(`Switched to ${roomNames[deviceId]}`, 'info');
 }
 
 function updateDeviceTheme() {
@@ -1121,12 +1513,6 @@ function updateThemeColors() {
       btn.classList.add(`room-${roomNum}-active`);
     }
   });
-
-  // Update online status (this logic is now mostly handled by updateStatusDisplay)
-  // statusEl.classList.remove('room-1-online', 'room-2-online', 'room-3-online', 'room-4-online');
-  // if (statusEl.classList.contains('online')) {
-  //   statusEl.classList.add(`room-${roomNum}-online`);
-  // }
 
   // Update version info colors
   versionInfoEl.className = `dashboard-version room-${roomNum}-version`;
@@ -1626,48 +2012,216 @@ async function loadWeatherData() {
 // Weather Refresh Button Event Listener
 weatherRefreshBtn.addEventListener('click', loadWeatherData);
 
-// --- NEW: NEXT EXECUTION TIME CALCULATION ---
+// --- NEW: SETTINGS FUNCTIONS ---
 
-function calculateNextExecutionTime(schedule) {
-  if (!schedule.enabled) return 'Schedule disabled';
+// Open settings modal 1--START----------------------------------------------------------------------------------------
+function openSettingsModal() {
+  // Reset to first tab
+  settingsTabs.forEach(t => t.classList.remove('active'));
+  settingsPanels.forEach(p => p.classList.remove('active'));
   
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  document.querySelector('.settings-tab[data-room="ROOM_1"]').classList.add('active');
+  document.getElementById('room1Settings').classList.add('active');
   
-  // Get sunrise and sunset times from device state
-  const deviceState = deviceStates[currentDevice];
+  // Load current values into form
+  devices.forEach(device => {
+    const roomNum = device.split('_')[1];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device];
+    
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device][i-1];
+    }
+  });
   
-  // Check if we have valid sunrise/sunset data
-  if (!deviceState.sunrise || deviceState.sunrise === '--:--' || 
-      !deviceState.sunset || deviceState.sunset === '--:--') {
-    return 'No sunrise/sunset data';
-  }
-  
-  let baseTime = null;
-  
-  if (schedule.type === 'sunrise') {
-    const [hours, minutes] = deviceState.sunrise.split(':').map(Number);
-    baseTime = new Date(today);
-    baseTime.setHours(hours, minutes, 0, 0);
-  } else if (schedule.type === 'sunset') {
-    const [hours, minutes] = deviceState.sunset.split(':').map(Number);
-    baseTime = new Date(today);
-    baseTime.setHours(hours, minutes, 0, 0);
-  }
-  
-  if (!baseTime) return 'Unknown schedule type';
-  
-  // Apply offset (in minutes)
-  const offsetMs = (schedule.offset || 0) * 60 * 1000;
-  const executionTime = new Date(baseTime.getTime() + offsetMs);
-  
-  // If the execution time has already passed today, calculate for tomorrow
-  if (executionTime < now) {
-    executionTime.setDate(executionTime.getDate() + 1);
-  }
-  
-  return formatTime12Hour(executionTime);
+  // Show modal
+  settingsModal.classList.add('show');
+  profileDropdown.classList.remove('show');
 }
+// Open settings modal M--END----------------------------------------------------------------------------------------    
+
+// Open settings modal 1--START----------------------------------------------------------------------------------------
+function openSettingsModal1() {
+  // Reset to first tab
+  settingsTabs.forEach(t => t.classList.remove('active'));
+  settingsPanels.forEach(p => p.classList.remove('active'));
+  
+  document.querySelector('.settings-tab[data-room="ROOM_1"]').classList.add('active');
+  document.getElementById('room1Settings').classList.add('active');
+  
+  // Load current values into form
+  devices.forEach(device => {
+    const roomNum = device.split('_')[1];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device];
+    
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device][i-1];
+    }
+  });
+  
+  // Show modal
+  settingsModal.classList.add('show');
+  profileDropdown.classList.remove('show');
+}
+// Open settings modal 1--END----------------------------------------------------------------------------------------    
+    
+    
+// Open settings modal 2--START----------------------------------------------------------------------------------------
+function openSettingsModal2() {
+  // Reset to first tab
+  settingsTabs.forEach(t => t.classList.remove('active'));
+  settingsPanels.forEach(p => p.classList.remove('active'));
+  
+  document.querySelector('.settings-tab[data-room="ROOM_2"]').classList.add('active');
+  document.getElementById('room2Settings').classList.add('active');
+  
+  // Load current values into form
+  devices.forEach(device => {
+    const roomNum = device.split('_')[1];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device];
+    
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device][i-1];
+    }
+  });
+  
+  // Show modal
+  settingsModal.classList.add('show');
+  profileDropdown.classList.remove('show');
+}
+// Open settings modal 2--END----------------------------------------------------------------------------------------    
+
+// Open settings modal 3--START----------------------------------------------------------------------------------------
+function openSettingsModal3() {
+  // Reset to first tab
+  settingsTabs.forEach(t => t.classList.remove('active'));
+  settingsPanels.forEach(p => p.classList.remove('active'));
+  
+  document.querySelector('.settings-tab[data-room="ROOM_3"]').classList.add('active');
+  document.getElementById('room3Settings').classList.add('active');
+  
+  // Load current values into form
+  devices.forEach(device => {
+    const roomNum = device.split('_')[1];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device];
+    
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device][i-1];
+    }
+  });
+  
+  // Show modal
+  settingsModal.classList.add('show');
+  profileDropdown.classList.remove('show');
+}
+// Open settings modal 3--END----------------------------------------------------------------------------------------    
+    
+// Open settings modal 4--START----------------------------------------------------------------------------------------
+function openSettingsModal4() {
+  // Reset to first tab
+  settingsTabs.forEach(t => t.classList.remove('active'));
+  settingsPanels.forEach(p => p.classList.remove('active'));
+  
+  document.querySelector('.settings-tab[data-room="ROOM_4"]').classList.add('active');
+  document.getElementById('room4Settings').classList.add('active');
+  
+  // Load current values into form
+  devices.forEach(device => {
+    const roomNum = device.split('_')[1];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device];
+    
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device][i-1];
+    }
+  });
+  
+  // Show modal
+  settingsModal.classList.add('show');
+  profileDropdown.classList.remove('show');
+}
+// Open settings modal 4--END----------------------------------------------------------------------------------------    
+
+    
+    
+    
+// Close settings modal
+function closeSettingsModal() {
+  settingsModal.classList.remove('show');
+}
+
+// Save settings
+function saveSettings() {
+  // Collect values from form
+  const newRoomNames = {...roomNames};
+  const newRelayNames = {...relayNames};
+  
+  devices.forEach(device => {
+    const roomNum = device.split('_')[1];
+    const roomNameInput = document.getElementById(`room${roomNum}Name`);
+    newRoomNames[device] = roomNameInput.value.trim() || defaultRoomNames[device];
+    
+    for (let i = 1; i <= 4; i++) {
+      const relayInput = document.getElementById(`room${roomNum}Relay${i}`);
+      newRelayNames[device][i-1] = relayInput.value.trim() || defaultRelayLabels[device][i-1];
+    }
+  });
+  
+  // Save to localStorage
+  roomNames = newRoomNames;
+  relayNames = newRelayNames;
+  saveCustomNames(roomNames, relayNames);
+  
+  // Update UI
+  updateUICustomNames();
+  
+  // Close modal
+  closeSettingsModal();
+  
+  // Add log entry
+  addLogEntry('Room and relay names updated', 'info');
+}
+
+// Settings tab switching
+function setupSettingsTabs() {
+  settingsTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const room = tab.dataset.room;
+      
+      // Update active tab
+      settingsTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      // Update active panel
+      settingsPanels.forEach(panel => panel.classList.remove('active'));
+      
+      // Show the corresponding panel
+      const panelId = `${room.toLowerCase()}Settings`;
+      const targetPanel = document.getElementById(panelId);
+      if (targetPanel) {
+        targetPanel.classList.add('active');
+      }
+    });
+  });
+}
+
+// Event listeners for settings
+settingsBtn.addEventListener('click', openSettingsModal);
+settingsBtn1.addEventListener('click', openSettingsModal1);    
+settingsBtn2.addEventListener('click', openSettingsModal2);
+settingsBtn3.addEventListener('click', openSettingsModal3);
+settingsBtn4.addEventListener('click', openSettingsModal4);
+closeSettingsBtn.addEventListener('click', closeSettingsModal);
+cancelSettingsBtn.addEventListener('click', closeSettingsModal);
+saveSettingsBtn.addEventListener('click', saveSettings);
+
+// Close modal when clicking outside
+window.addEventListener('click', (event) => {
+  if (event.target === settingsModal) {
+    closeSettingsModal();
+  }
+});
+
+// Initialize settings tabs
+setupSettingsTabs();
 
 // --- AUTOMATION SCHEDULE FUNCTIONS ---
 
@@ -2147,6 +2701,9 @@ function showDashboard(user) {
     
     // Load initial weather data
     loadWeatherData();
+    
+    // Initialize custom names
+    updateUICustomNames();
 }
 
 function handleAuthError(error) {
@@ -2283,5 +2840,3 @@ addLogEntry('Multi-room dashboard initialized successfully. Ready to control 4 d
 </script>
 </body>
 </html>
-
-
