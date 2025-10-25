@@ -1000,7 +1000,19 @@
             
             <!-- NEW: Settings Button -->
             <button class="dropdown-btn settings-btn" id="settingsBtn">
-              <i class="fas fa-cog"></i> Settings
+              <i class="fas fa-cog"></i> Set R1
+            </button>
+            
+            <button class="dropdown-btn settings-btn" id="settingsBtn2">
+              <i class="fas fa-cog"></i> Set R2
+            </button>
+            
+            <button class="dropdown-btn settings-btn" id="settingsBtn3">
+              <i class="fas fa-cog"></i> Set R3
+            </button>
+            
+            <button class="dropdown-btn settings-btn" id="settingsBtn4">
+              <i class="fas fa-cog"></i> Set R4
             </button>
             
             <button class="dropdown-btn restart-btn" id="restartBtn">DEVICE RESTART</button>
@@ -1989,8 +2001,15 @@ weatherRefreshBtn.addEventListener('click', loadWeatherData);
 
 // --- NEW: SETTINGS FUNCTIONS ---
 
-// Open settings modal
+// Open settings modal 1--START----------------------------------------------------------------------------------------
 function openSettingsModal() {
+  // Reset to first tab
+  settingsTabs.forEach(t => t.classList.remove('active'));
+  settingsPanels.forEach(p => p.classList.remove('active'));
+  
+  document.querySelector('.settings-tab[data-room="ROOM_1"]').classList.add('active');
+  document.getElementById('room1Settings').classList.add('active');
+  
   // Load current values into form
   devices.forEach(device => {
     const roomNum = device.split('_')[1];
@@ -2005,7 +2024,86 @@ function openSettingsModal() {
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
 }
+// Open settings modal 1--END----------------------------------------------------------------------------------------    
 
+// Open settings modal 2--START----------------------------------------------------------------------------------------
+function openSettingsModal2() {
+  // Reset to first tab
+  settingsTabs.forEach(t => t.classList.remove('active'));
+  settingsPanels.forEach(p => p.classList.remove('active'));
+  
+  document.querySelector('.settings-tab[data-room="ROOM_2"]').classList.add('active');
+  document.getElementById('room2Settings').classList.add('active');
+  
+  // Load current values into form
+  devices.forEach(device => {
+    const roomNum = device.split('_')[1];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device];
+    
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device][i-1];
+    }
+  });
+  
+  // Show modal
+  settingsModal.classList.add('show');
+  profileDropdown.classList.remove('show');
+}
+// Open settings modal 2--END----------------------------------------------------------------------------------------    
+
+// Open settings modal 3--START----------------------------------------------------------------------------------------
+function openSettingsModal3() {
+  // Reset to first tab
+  settingsTabs.forEach(t => t.classList.remove('active'));
+  settingsPanels.forEach(p => p.classList.remove('active'));
+  
+  document.querySelector('.settings-tab[data-room="ROOM_3"]').classList.add('active');
+  document.getElementById('room3Settings').classList.add('active');
+  
+  // Load current values into form
+  devices.forEach(device => {
+    const roomNum = device.split('_')[1];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device];
+    
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device][i-1];
+    }
+  });
+  
+  // Show modal
+  settingsModal.classList.add('show');
+  profileDropdown.classList.remove('show');
+}
+// Open settings modal 3--END----------------------------------------------------------------------------------------    
+    
+// Open settings modal 4--START----------------------------------------------------------------------------------------
+function openSettingsModal4() {
+  // Reset to first tab
+  settingsTabs.forEach(t => t.classList.remove('active'));
+  settingsPanels.forEach(p => p.classList.remove('active'));
+  
+  document.querySelector('.settings-tab[data-room="ROOM_4"]').classList.add('active');
+  document.getElementById('room4Settings').classList.add('active');
+  
+  // Load current values into form
+  devices.forEach(device => {
+    const roomNum = device.split('_')[1];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device];
+    
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device][i-1];
+    }
+  });
+  
+  // Show modal
+  settingsModal.classList.add('show');
+  profileDropdown.classList.remove('show');
+}
+// Open settings modal 4--END----------------------------------------------------------------------------------------    
+
+    
+    
+    
 // Close settings modal
 function closeSettingsModal() {
   settingsModal.classList.remove('show');
@@ -2043,26 +2141,12 @@ function saveSettings() {
   addLogEntry('Room and relay names updated', 'info');
 }
 
-
-
 // Settings tab switching
 function setupSettingsTabs() {
   settingsTabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const room = tab.dataset.room;
       
-
-
-function openSettingsModal() {
-  // Reset to first tab
-  settingsTabs.forEach(t => t.classList.remove('active'));
-  settingsPanels.forEach(p => p.classList.remove('active'));
-  
-  document.querySelector('.settings-tab[data-room="ROOM_1"]').classList.add('active');
-  document.getElementById('room1Settings').classList.add('active');
-  
-  // ... rest of your existing code
-}
       // Update active tab
       settingsTabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
@@ -2078,11 +2162,13 @@ function openSettingsModal() {
       }
     });
   });
-
-
+}
 
 // Event listeners for settings
 settingsBtn.addEventListener('click', openSettingsModal);
+settingsBtn2.addEventListener('click', openSettingsModal2);
+settingsBtn3.addEventListener('click', openSettingsModal3);
+settingsBtn4.addEventListener('click', openSettingsModal4);
 closeSettingsBtn.addEventListener('click', closeSettingsModal);
 cancelSettingsBtn.addEventListener('click', closeSettingsModal);
 saveSettingsBtn.addEventListener('click', saveSettings);
@@ -2094,12 +2180,7 @@ window.addEventListener('click', (event) => {
   }
 });
 
-
-
-
-}
-
-// Initialize settings tabs when the page loads
+// Initialize settings tabs
 setupSettingsTabs();
 
 // --- AUTOMATION SCHEDULE FUNCTIONS ---
