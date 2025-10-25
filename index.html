@@ -1003,24 +1003,6 @@
               <i class="fas fa-cog"></i> Settings Room
             </button>
             
-<!--
-            <button class="dropdown-btn settings-btn" id="settingsBtn2">
-              <i class="fas fa-cog"></i> Set R2
-            </button>
--->
-            
-<!--
-            <button class="dropdown-btn settings-btn" id="settingsBtn3">
-              <i class="fas fa-cog"></i> Set R3
-            </button>
--->
-            
-<!--
-            <button class="dropdown-btn settings-btn" id="settingsBtn4">
-              <i class="fas fa-cog"></i> Set R4
-            </button>
--->
-            
             <button class="dropdown-btn restart-btn" id="restartBtn">DEVICE RESTART</button>
             <button class="dropdown-btn logout-btn" id="logoutBtn">Logout</button>
         </div>
@@ -1142,14 +1124,15 @@
       <h3>Device Settings</h3>
       <button class="close-settings" id="closeSettingsBtn">&times;</button>
     </div>
-    
-    <div class="settings-tabs">
+      
+      <div class="settings-tabs">
         <button class="tab-btn" id="settingsBtn1">ROOM-1</button>
         <button class="tab-btn" id="settingsBtn2">ROOM-2</button>
         <button class="tab-btn" id="settingsBtn3">ROOM-3</button>
         <button class="tab-btn" id="settingsBtn4">ROOM-4</button>
    
     </div>
+    
     <div class="settings-tabs">
       <button class="settings-tab room-1-color active" data-room="ROOM_1">Room 1</button>
       <button class="settings-tab room-2-color" data-room="ROOM_2">Room 2</button>
@@ -1356,45 +1339,54 @@ let allListeners = [];
 const WEATHER_UPDATE_INTERVAL = 10 * 60 * 1000;
 let lastWeatherUpdate = 0;
 
-// NEW: Custom Names Management
-const defaultRoomNames = {
-  'ROOM_1': 'Room-1',
-  'ROOM_2': 'Room-2',
-  'ROOM_3': 'Room-3',
-  'ROOM_4': 'Room-4'
-};
+// NEW: Room and Relay Names Management
+let roomNames = {};
+let relayNames = {};
 
-const defaultRelayLabels = {
-  'ROOM_1': ['FAN', 'LIGHT', 'FAN-2', 'DIM-L'],
-  'ROOM_2': ['FAN', 'LIGHT', 'FAN-2', 'DIM-L'],
-  'ROOM_3': ['FAN', 'LIGHT', 'FAN-2', 'DIM-L'],
-  'ROOM_4': ['FAN', 'LIGHT', 'FAN-2', 'DIM-L']
-};
-
-// Load custom names from localStorage or use defaults
-function loadCustomNames() {
-  const savedNames = JSON.parse(localStorage.getItem('roomCustomNames')) || {};
-  const savedRelays = JSON.parse(localStorage.getItem('relayCustomNames')) || {};
-  
-  // Merge with defaults
-  const roomNames = {...defaultRoomNames, ...savedNames};
-  const relayNames = {};
-  
+// Initialize default names
+function initializeDefaultNames() {
   devices.forEach(device => {
-    relayNames[device] = savedRelays[device] || [...defaultRelayLabels[device]];
+    roomNames[device] = device.replace('_', '-');
+    relayNames[device] = ['FAN', 'LIGHT', 'FAN-2', 'DIM-L'];
   });
-  
-  return { roomNames, relayNames };
 }
 
-// Save custom names to localStorage
-function saveCustomNames(roomNames, relayNames) {
-  localStorage.setItem('roomCustomNames', JSON.stringify(roomNames));
-  localStorage.setItem('relayCustomNames', JSON.stringify(relayNames));
+// Load room and relay names from Firebase
+function loadRoomAndRelayNames() {
+  devices.forEach(device => {
+    // Load room name
+    db.ref(`HOME/${device}/R_B_NAME/roomName`).on('value', (snapshot) => {
+      if (snapshot.exists()) {
+        roomNames[device] = snapshot.val();
+        updateUICustomNames();
+      }
+    });
+    
+    // Load relay names
+    for (let i = 1; i <= 4; i++) {
+      db.ref(`HOME/${device}/R_B_NAME/relay${i}`).on('value', (snapshot) => {
+        if (snapshot.exists()) {
+          if (!relayNames[device]) relayNames[device] = [];
+          relayNames[device][i-1] = snapshot.val();
+          updateUICustomNames();
+        }
+      });
+    }
+  });
 }
 
-// Get current room and relay names
-let { roomNames, relayNames } = loadCustomNames();
+// Save room and relay names to Firebase
+function saveRoomAndRelayNamesToFirebase() {
+  devices.forEach(device => {
+    // Save room name
+    db.ref(`HOME/${device}/R_B_NAME/roomName`).set(roomNames[device]);
+    
+    // Save relay names
+    for (let i = 1; i <= 4; i++) {
+      db.ref(`HOME/${device}/R_B_NAME/relay${i}`).set(relayNames[device][i-1]);
+    }
+  });
+}
 
 // --- UTILITY FUNCTIONS ---
 function formatTime12Hour(timestamp) {
@@ -1427,17 +1419,22 @@ function updateUICustomNames() {
   // Update device tabs
   deviceTabs.forEach(tab => {
     const device = tab.dataset.device;
-    tab.textContent = roomNames[device];
+    if (roomNames[device]) {
+      tab.textContent = roomNames[device];
+    }
   });
   
   // Update current device display
-  const displayName = roomNames[currentDevice];
-  currentDeviceDisplay.textContent = `Controlling: ${displayName}`;
+  if (roomNames[currentDevice]) {
+    currentDeviceDisplay.textContent = `Controlling: ${roomNames[currentDevice]}`;
+  }
   
   // Update relay buttons
-  relayBtns.forEach((btn, index) => {
-    btn.textContent = relayNames[currentDevice][index];
-  });
+  if (relayNames[currentDevice]) {
+    relayBtns.forEach((btn, index) => {
+      btn.textContent = relayNames[currentDevice][index];
+    });
+  }
 }
 
 // --- DEVICE MANAGEMENT FUNCTIONS ---
@@ -1486,7 +1483,7 @@ function switchDevice(deviceId) {
   // Load schedules for the current device
   loadSchedules();
 
-  addLogEntry(`Switched to ${roomNames[deviceId]}`, 'info');
+  addLogEntry(`Switched to ${roomNames[deviceId] || deviceId}`, 'info');
 }
 
 function updateDeviceTheme() {
@@ -1920,40 +1917,8 @@ async function fetchWeatherData() {
     
   } catch (error) {
     addLogEntry(`Failed to fetch weather data from Firebase: ${error.message}`, 'warn', 'weather');
-    return generateDemoWeatherData();
+    return null;
   }
-}
-
-function generateDemoWeatherData() {
-  const now = new Date();
-  const hour = now.getHours();
-  
-  let baseTemp = 28;
-  if (hour >= 22 || hour < 6) baseTemp -= 3;
-  if (hour >= 12 && hour < 16) baseTemp += 4;
-  
-  const temp = baseTemp + Math.floor(Math.random() * 3) - 1;
-  
-  let baseHumidity = 65;
-  if (hour >= 22 || hour < 6) baseHumidity += 15;
-  if (hour >= 12 && hour < 16) baseHumidity -= 10;
-  
-  const humidity = Math.max(40, Math.min(90, baseHumidity + Math.floor(Math.random() * 10) - 5));
-  
-  const isMonsoon = now.getMonth() >= 5 && now.getMonth() <= 8;
-  const rainChance = isMonsoon ? 0.3 : 0.1;
-  const isRaining = Math.random() < rainChance;
-  
-  const windSpeed = 8 + Math.floor(Math.random() * 15);
-  
-  return {
-    temperature: temp,
-    humidity: humidity,
-    rain: isRaining,
-    windSpeed: windSpeed,
-    location: "Demo Weather Station",
-    source: "Demo Data"
-  };
 }
 
 async function loadWeatherData() {
@@ -1974,34 +1939,30 @@ async function loadWeatherData() {
   try {
     const weatherData = await fetchWeatherData();
     
-    temperatureEl.textContent = weatherData.temperature;
-    humidityEl.textContent = weatherData.humidity;
-    rainStatusEl.textContent = weatherData.rain ? 'Raining' : 'Not Raining';
-    windSpeedEl.textContent = weatherData.windSpeed;
-    weatherLocationEl.textContent = weatherData.location;
-    weatherSourceEl.textContent = `Source: ${weatherData.source}`;
-    
-    lastWeatherUpdate = Date.now();
-    
-    addLogEntry(`Weather data updated: ${weatherData.temperature}°C, ${weatherData.humidity}% humidity`, 'info', 'weather');
+    if (weatherData) {
+      temperatureEl.textContent = weatherData.temperature;
+      humidityEl.textContent = weatherData.humidity;
+      rainStatusEl.textContent = weatherData.rain ? 'Raining' : 'Not Raining';
+      windSpeedEl.textContent = weatherData.windSpeed;
+      weatherLocationEl.textContent = weatherData.location;
+      weatherSourceEl.textContent = `Source: ${weatherData.source}`;
+      
+      lastWeatherUpdate = Date.now();
+      
+      addLogEntry(`Weather data updated: ${weatherData.temperature}°C, ${weatherData.humidity}% humidity`, 'info', 'weather');
+    } else {
+      throw new Error('No weather data available');
+    }
     
   } catch (error) {
     console.error('Weather loading error:', error);
     
     const errorDiv = document.createElement('div');
     errorDiv.className = 'weather-error';
-    errorDiv.textContent = 'Weather service temporarily unavailable. Using demo data.';
+    errorDiv.textContent = 'Weather service temporarily unavailable.';
     weatherLocationEl.after(errorDiv);
-    
-    const demoData = generateDemoWeatherData();
-    temperatureEl.textContent = demoData.temperature;
-    humidityEl.textContent = demoData.humidity;
-    rainStatusEl.textContent = demoData.rain ? 'Raining' : 'Not Raining';
-    windSpeedEl.textContent = demoData.windSpeed;
-    weatherLocationEl.textContent = demoData.location;
-    weatherSourceEl.textContent = `Source: ${demoData.source}`;
 
-    addLogEntry(`All weather services failed: ${error.message}`, 'error', 'weather');
+    addLogEntry(`Weather services failed: ${error.message}`, 'error', 'weather');
   } finally {
     // Re-enable refresh button
     weatherRefreshBtn.disabled = false;
@@ -2014,7 +1975,7 @@ weatherRefreshBtn.addEventListener('click', loadWeatherData);
 
 // --- NEW: SETTINGS FUNCTIONS ---
 
-// Open settings modal 1--START----------------------------------------------------------------------------------------
+// Open settings modal
 function openSettingsModal() {
   // Reset to first tab
   settingsTabs.forEach(t => t.classList.remove('active'));
@@ -2026,10 +1987,10 @@ function openSettingsModal() {
   // Load current values into form
   devices.forEach(device => {
     const roomNum = device.split('_')[1];
-    document.getElementById(`room${roomNum}Name`).value = roomNames[device];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device] || '';
     
     for (let i = 1; i <= 4; i++) {
-      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device][i-1];
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device] ? relayNames[device][i-1] : '';
     }
   });
   
@@ -2037,9 +1998,8 @@ function openSettingsModal() {
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
 }
-// Open settings modal M--END----------------------------------------------------------------------------------------    
-
-// Open settings modal 1--START----------------------------------------------------------------------------------------
+    
+// Open settings modal_1
 function openSettingsModal1() {
   // Reset to first tab
   settingsTabs.forEach(t => t.classList.remove('active'));
@@ -2051,21 +2011,19 @@ function openSettingsModal1() {
   // Load current values into form
   devices.forEach(device => {
     const roomNum = device.split('_')[1];
-    document.getElementById(`room${roomNum}Name`).value = roomNames[device];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device] || '';
     
     for (let i = 1; i <= 4; i++) {
-      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device][i-1];
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device] ? relayNames[device][i-1] : '';
     }
   });
   
   // Show modal
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
-}
-// Open settings modal 1--END----------------------------------------------------------------------------------------    
-    
-    
-// Open settings modal 2--START----------------------------------------------------------------------------------------
+}    
+
+// Open settings modal_2
 function openSettingsModal2() {
   // Reset to first tab
   settingsTabs.forEach(t => t.classList.remove('active'));
@@ -2077,20 +2035,19 @@ function openSettingsModal2() {
   // Load current values into form
   devices.forEach(device => {
     const roomNum = device.split('_')[1];
-    document.getElementById(`room${roomNum}Name`).value = roomNames[device];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device] || '';
     
     for (let i = 1; i <= 4; i++) {
-      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device][i-1];
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device] ? relayNames[device][i-1] : '';
     }
   });
   
   // Show modal
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
-}
-// Open settings modal 2--END----------------------------------------------------------------------------------------    
-
-// Open settings modal 3--START----------------------------------------------------------------------------------------
+}  
+    
+// Open settings modal_3
 function openSettingsModal3() {
   // Reset to first tab
   settingsTabs.forEach(t => t.classList.remove('active'));
@@ -2102,10 +2059,10 @@ function openSettingsModal3() {
   // Load current values into form
   devices.forEach(device => {
     const roomNum = device.split('_')[1];
-    document.getElementById(`room${roomNum}Name`).value = roomNames[device];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device] || '';
     
     for (let i = 1; i <= 4; i++) {
-      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device][i-1];
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device] ? relayNames[device][i-1] : '';
     }
   });
   
@@ -2113,9 +2070,8 @@ function openSettingsModal3() {
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
 }
-// Open settings modal 3--END----------------------------------------------------------------------------------------    
-    
-// Open settings modal 4--START----------------------------------------------------------------------------------------
+
+// Open settings modal_4
 function openSettingsModal4() {
   // Reset to first tab
   settingsTabs.forEach(t => t.classList.remove('active'));
@@ -2127,22 +2083,19 @@ function openSettingsModal4() {
   // Load current values into form
   devices.forEach(device => {
     const roomNum = device.split('_')[1];
-    document.getElementById(`room${roomNum}Name`).value = roomNames[device];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device] || '';
     
     for (let i = 1; i <= 4; i++) {
-      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device][i-1];
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device] ? relayNames[device][i-1] : '';
     }
   });
   
   // Show modal
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
-}
-// Open settings modal 4--END----------------------------------------------------------------------------------------    
-
+}    
     
-    
-    
+//-------------------------------------------------------------------------------------------------------------------------------------------
 // Close settings modal
 function closeSettingsModal() {
   settingsModal.classList.remove('show');
@@ -2157,18 +2110,19 @@ function saveSettings() {
   devices.forEach(device => {
     const roomNum = device.split('_')[1];
     const roomNameInput = document.getElementById(`room${roomNum}Name`);
-    newRoomNames[device] = roomNameInput.value.trim() || defaultRoomNames[device];
+    newRoomNames[device] = roomNameInput.value.trim() || device.replace('_', '-');
     
+    if (!newRelayNames[device]) newRelayNames[device] = [];
     for (let i = 1; i <= 4; i++) {
       const relayInput = document.getElementById(`room${roomNum}Relay${i}`);
-      newRelayNames[device][i-1] = relayInput.value.trim() || defaultRelayLabels[device][i-1];
+      newRelayNames[device][i-1] = relayInput.value.trim() || `Relay ${i}`;
     }
   });
   
-  // Save to localStorage
+  // Save to Firebase
   roomNames = newRoomNames;
   relayNames = newRelayNames;
-  saveCustomNames(roomNames, relayNames);
+  saveRoomAndRelayNamesToFirebase();
   
   // Update UI
   updateUICustomNames();
@@ -2208,7 +2162,7 @@ settingsBtn.addEventListener('click', openSettingsModal);
 settingsBtn1.addEventListener('click', openSettingsModal1);    
 settingsBtn2.addEventListener('click', openSettingsModal2);
 settingsBtn3.addEventListener('click', openSettingsModal3);
-settingsBtn4.addEventListener('click', openSettingsModal4);
+settingsBtn4.addEventListener('click', openSettingsModal4);    
 closeSettingsBtn.addEventListener('click', closeSettingsModal);
 cancelSettingsBtn.addEventListener('click', closeSettingsModal);
 saveSettingsBtn.addEventListener('click', saveSettings);
@@ -2692,6 +2646,12 @@ function showDashboard(user) {
     dashboardContainer.style.display = 'block';
     
     addLogEntry(`Multi-room dashboard ${DASHBOARD_VERSION} initialized`, 'info');
+    
+    // Initialize default names
+    initializeDefaultNames();
+    
+    // Load room and relay names from Firebase
+    loadRoomAndRelayNames();
     
     // Initialize the current device
     setupDeviceListeners();
