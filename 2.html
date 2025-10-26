@@ -7,6 +7,74 @@
 <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/7733/7733361.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
+    
+ /* ADDED: Branding Header Styles */
+  .branding-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #334155;
+  }
+  
+  .branding-logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0f172a;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  
+  .branding-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #38bdf8;
+    letter-spacing: 0.5px;
+  }
+
+  /* ADDED: Copyright Footer Styles */
+  .copyright-footer {
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 20px;
+    border-top: 1px solid #334155;
+    color: #94a3b8;
+    font-size: 0.8rem;
+  }
+
+  /* UPDATED: Full width panel for last update */
+  .panel-full-width {
+    grid-column: 1 / -1; /* Span across all columns */
+    background: rgba(30,41,59,0.9); 
+    border-radius:10px; 
+    padding:10px; 
+    text-align:center; 
+    box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+    border: 1px solid #334155;
+  }
+  .panel-full-width .label { 
+    font-size:0.65rem; 
+    color:#94a3b8; 
+    margin-bottom:2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .panel-full-width .value { 
+    font-weight:700; 
+    font-size:1rem; 
+    color:#f1f5f9; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
   body {
     margin:0; padding:0; 
@@ -197,9 +265,9 @@
     color: #e2e8f0;
   }
   .device-tab.active-room-1 {
-    background: #10b981;
+    background: #f59e0b;
     color: #042f2e;
-    border-color: #10b981;
+    border-color: #f59e0b;
   }
   .device-tab.active-room-2 {
     background: #38bdf8;
@@ -207,9 +275,9 @@
     border-color: #38bdf8;
   }
   .device-tab.active-room-3 {
-    background: #f59e0b;
+    background: #10b981;
     color: #0f172a;
-    border-color: #f59e0b;
+    border-color: #10b981;
   }
   .device-tab.active-room-4 {
     background: #8b5cf6;
@@ -241,7 +309,7 @@
   
   /* Room-specific active tab colors */
   .tab-btn.active.room-1-active { 
-    background:#10b981; 
+    background:#f59e0b; 
     color:#042f2e; 
   }
   .tab-btn.active.room-2-active { 
@@ -249,7 +317,7 @@
     color:#0f172a; 
   }
   .tab-btn.active.room-3-active { 
-    background:#f59e0b; 
+    background:#10b981; 
     color:#0f172a; 
   }
   .tab-btn.active.room-4-active { 
@@ -295,14 +363,14 @@
     margin-top: 5px;
     font-size: 0.7rem;
   }
-  .dashboard-version.room-1-version { color: #10b981; }
+  .dashboard-version.room-1-version { color: #f59e0b; }
   .dashboard-version.room-2-version { color: #38bdf8; }
-  .dashboard-version.room-3-version { color: #f59e0b; }
+  .dashboard-version.room-3-version { color: #10b981; }
   .dashboard-version.room-4-version { color: #8b5cf6; }
   
-  .firmware-version.room-1-firmware { color: #10b981; }
+  .firmware-version.room-1-firmware { color: #f59e0b; }
   .firmware-version.room-2-firmware { color: #38bdf8; }
-  .firmware-version.room-3-firmware { color: #f59e0b; }
+  .firmware-version.room-3-firmware { color: #10b981; }
   .firmware-version.room-4-firmware { color: #8b5cf6; }
 
   .info-main { 
@@ -327,6 +395,31 @@
     letter-spacing: 0.5px;
   }
   .panel .value { 
+    font-weight:700; 
+    font-size:1rem; 
+    color:#f1f5f9; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* UPDATED: Full width panel for last update */
+  .panel-full-width {
+    grid-column: 1 / -1; /* Span across all columns */
+    background: rgba(30,41,59,0.9); 
+    border-radius:10px; 
+    padding:10px; 
+    text-align:center; 
+    box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+    border: 1px solid #334155;
+  }
+  .panel-full-width .label { 
+    font-size:0.65rem; 
+    color:#94a3b8; 
+    margin-bottom:2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .panel-full-width .value { 
     font-weight:700; 
     font-size:1rem; 
     color:#f1f5f9; 
@@ -367,9 +460,9 @@
   }
 
   /* Device-specific relay colors */
-  .relay-btn.room-1.on { background: #10b981; border-color: #34d399; }
+  .relay-btn.room-1.on { background: #f59e0b; border-color: #fbbf24; }
   .relay-btn.room-2.on { background: #38bdf8; border-color: #7dd3fc; }
-  .relay-btn.room-3.on { background: #f59e0b; border-color: #fbbf24; }
+  .relay-btn.room-3.on { background: #10b981; border-color: #34d399; }
   .relay-btn.room-4.on { background: #8b5cf6; border-color: #a78bfa; }
 
   /* Switch Styles */
@@ -457,9 +550,9 @@
   }
 
   /* Device-specific theme colors */
-  .room-1-theme { color: #10b981; }
+  .room-1-theme { color: #f59e0b; }
   .room-2-theme { color: #38bdf8; }
-  .room-3-theme { color: #f59e0b; }
+  .room-3-theme { color: #10b981; }
   .room-4-theme { color: #8b5cf6; }
 
   /* Basic styles for other components */
@@ -956,9 +1049,9 @@
   }
   
   /* Update for room-specific colors in settings */
-  .settings-tab.room-1-color.active { background: #10b981; }
+  .settings-tab.room-1-color.active { background: #f59e0b; }
   .settings-tab.room-2-color.active { background: #38bdf8; }
-  .settings-tab.room-3-color.active { background: #f59e0b; }
+  .settings-tab.room-3-color.active { background: #10b981; }
   .settings-tab.room-4-color.active { background: #8b5cf6; }
 </style>
 </head>
@@ -974,6 +1067,12 @@
     <button id="createAccountBtn" class="login-btn" style="margin-top: 10px; background: #94a3b8;">Create Account (New User)</button>
   </div>
 </div>
+
+    <!-- ADDED: Branding Header -->
+  <div class="branding-header">
+    <div class="branding-logo">JHC</div>
+    <div class="branding-name">Jahangir HomeControl Pro</div>
+  </div>
 
 <div id="dashboardContainer" style="display: none;">
   <header>
@@ -1000,19 +1099,7 @@
             
             <!-- NEW: Settings Button -->
             <button class="dropdown-btn settings-btn" id="settingsBtn">
-              <i class="fas fa-cog"></i> Set R1
-            </button>
-            
-            <button class="dropdown-btn settings-btn" id="settingsBtn2">
-              <i class="fas fa-cog"></i> Set R2
-            </button>
-            
-            <button class="dropdown-btn settings-btn" id="settingsBtn3">
-              <i class="fas fa-cog"></i> Set R3
-            </button>
-            
-            <button class="dropdown-btn settings-btn" id="settingsBtn4">
-              <i class="fas fa-cog"></i> Set R4
+              <i class="fas fa-cog"></i> Settings Room
             </button>
             
             <button class="dropdown-btn restart-btn" id="restartBtn">DEVICE RESTART</button>
@@ -1029,7 +1116,7 @@
         <button class="device-tab" data-device="ROOM_3">Room-3</button>
         <button class="device-tab" data-device="ROOM_4">Room-4</button>
       </div>
-
+      
       <div class="current-device room-1-theme" id="currentDeviceDisplay">Controlling: ROOM-1</div>
       
       <div class="tabs">
@@ -1040,7 +1127,7 @@
       </div>
       
       <div class="version-info-container">
-        <div class="dashboard-version room-1-version" id="versionInfo">Dashboard: v2.0.0</div>
+        <div class="dashboard-version room-1-version" id="versionInfo">Dashboard: v2.1.0</div>
         <div id="status" class="status">Offline</div>
         <div class="firmware-version room-1-firmware" id="firmwareInfo">Firmware: --</div>
       </div>
@@ -1057,6 +1144,12 @@
       <div class="panel"><div class="label">Uptime</div><div id="uptime" class="value">--</div></div>
       <div class="panel"><div class="label">SunRise</div><div id="sunrise" class="value">--:--</div></div>
       <div class="panel"><div class="label">SunSet</div><div id="sunset" class="value">--:--</div></div>
+      
+      <!-- UPDATED: Combined Last Update panel - full width -->
+      <div class="panel-full-width">
+        <div class="label">Last Update</div>
+        <div id="lastUpdateHuman" class="value">--:--</div>
+      </div>
     </div>
 
     <div class="relays">
@@ -1066,10 +1159,7 @@
       <div id="r4" class="relay-btn">DIM-L</div>
     </div>
 
-    <footer class="info-main">
-      <div class="panel"><div class="label">Last Update (Human)</div><div id="lastUpdateHuman" class="value">--:--</div></div>
-      <div class="panel"><div class="label">Last Update (Timestamp)</div><div id="lastUpdate" class="value">--:--</div></div>
-    </footer>
+    <!-- REMOVED: The old footer with two separate update panels -->
   </div>
 
   <div id="automation" class="tab-content">
@@ -1129,6 +1219,13 @@
   </div>
 </div>
 
+  <!-- ADDED: Copyright Footer -->
+  <div class="copyright-footer">
+    &copy; <span id="currentYear"></span> | Md. Jahangir Alam - 01911132254 | All rights reserved.
+  </div>
+</div>    
+    
+    
 <!-- NEW: Settings Modal -->
 <div class="settings-modal" id="settingsModal">
   <div class="settings-content">
@@ -1136,13 +1233,21 @@
       <h3>Device Settings</h3>
       <button class="close-settings" id="closeSettingsBtn">&times;</button>
     </div>
+      
+      <div class="settings-tabs">
+        <button class="tab-btn" id="settingsBtn1">ROOM-1</button>
+        <button class="tab-btn" id="settingsBtn2">ROOM-2</button>
+        <button class="tab-btn" id="settingsBtn3">ROOM-3</button>
+        <button class="tab-btn" id="settingsBtn4">ROOM-4</button>
+   
+    </div>
     
     <div class="settings-tabs">
       <button class="settings-tab room-1-color active" data-room="ROOM_1">Room 1</button>
       <button class="settings-tab room-2-color" data-room="ROOM_2">Room 2</button>
       <button class="settings-tab room-3-color" data-room="ROOM_3">Room 3</button>
       <button class="settings-tab room-4-color" data-room="ROOM_4">Room 4</button>
-    </div>
+    </div>  
     
     <div id="room1Settings" class="settings-panel active">
       <div class="room-settings">
@@ -1236,6 +1341,9 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <script>
+// ADDED: Set current year in copyright
+document.getElementById('currentYear').textContent = new Date().getFullYear();        
+    
 // Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAei8j8RQXq_zspkohtH40g_gvHUfIx-Uw",
@@ -1343,45 +1451,54 @@ let allListeners = [];
 const WEATHER_UPDATE_INTERVAL = 10 * 60 * 1000;
 let lastWeatherUpdate = 0;
 
-// NEW: Custom Names Management
-const defaultRoomNames = {
-  'ROOM_1': 'Room-1',
-  'ROOM_2': 'Room-2',
-  'ROOM_3': 'Room-3',
-  'ROOM_4': 'Room-4'
-};
+// NEW: Room and Relay Names Management
+let roomNames = {};
+let relayNames = {};
 
-const defaultRelayLabels = {
-  'ROOM_1': ['FAN', 'LIGHT', 'FAN-2', 'DIM-L'],
-  'ROOM_2': ['FAN', 'LIGHT', 'FAN-2', 'DIM-L'],
-  'ROOM_3': ['FAN', 'LIGHT', 'FAN-2', 'DIM-L'],
-  'ROOM_4': ['FAN', 'LIGHT', 'FAN-2', 'DIM-L']
-};
-
-// Load custom names from localStorage or use defaults
-function loadCustomNames() {
-  const savedNames = JSON.parse(localStorage.getItem('roomCustomNames')) || {};
-  const savedRelays = JSON.parse(localStorage.getItem('relayCustomNames')) || {};
-  
-  // Merge with defaults
-  const roomNames = {...defaultRoomNames, ...savedNames};
-  const relayNames = {};
-  
+// Initialize default names
+function initializeDefaultNames() {
   devices.forEach(device => {
-    relayNames[device] = savedRelays[device] || [...defaultRelayLabels[device]];
+    roomNames[device] = device.replace('_', '-');
+    relayNames[device] = ['FAN', 'LIGHT', 'FAN-2', 'DIM-L'];
   });
-  
-  return { roomNames, relayNames };
 }
 
-// Save custom names to localStorage
-function saveCustomNames(roomNames, relayNames) {
-  localStorage.setItem('roomCustomNames', JSON.stringify(roomNames));
-  localStorage.setItem('relayCustomNames', JSON.stringify(relayNames));
+// Load room and relay names from Firebase
+function loadRoomAndRelayNames() {
+  devices.forEach(device => {
+    // Load room name
+    db.ref(`HOME/${device}/R_B_NAME/roomName`).on('value', (snapshot) => {
+      if (snapshot.exists()) {
+        roomNames[device] = snapshot.val();
+        updateUICustomNames();
+      }
+    });
+    
+    // Load relay names
+    for (let i = 1; i <= 4; i++) {
+      db.ref(`HOME/${device}/R_B_NAME/relay${i}`).on('value', (snapshot) => {
+        if (snapshot.exists()) {
+          if (!relayNames[device]) relayNames[device] = [];
+          relayNames[device][i-1] = snapshot.val();
+          updateUICustomNames();
+        }
+      });
+    }
+  });
 }
 
-// Get current room and relay names
-let { roomNames, relayNames } = loadCustomNames();
+// Save room and relay names to Firebase
+function saveRoomAndRelayNamesToFirebase() {
+  devices.forEach(device => {
+    // Save room name
+    db.ref(`HOME/${device}/R_B_NAME/roomName`).set(roomNames[device]);
+    
+    // Save relay names
+    for (let i = 1; i <= 4; i++) {
+      db.ref(`HOME/${device}/R_B_NAME/relay${i}`).set(relayNames[device][i-1]);
+    }
+  });
+}
 
 // --- UTILITY FUNCTIONS ---
 function formatTime12Hour(timestamp) {
@@ -1414,17 +1531,22 @@ function updateUICustomNames() {
   // Update device tabs
   deviceTabs.forEach(tab => {
     const device = tab.dataset.device;
-    tab.textContent = roomNames[device];
+    if (roomNames[device]) {
+      tab.textContent = roomNames[device];
+    }
   });
   
   // Update current device display
-  const displayName = roomNames[currentDevice];
-  currentDeviceDisplay.textContent = `Controlling: ${displayName}`;
+  if (roomNames[currentDevice]) {
+    currentDeviceDisplay.textContent = `Controlling: ${roomNames[currentDevice]}`;
+  }
   
   // Update relay buttons
-  relayBtns.forEach((btn, index) => {
-    btn.textContent = relayNames[currentDevice][index];
-  });
+  if (relayNames[currentDevice]) {
+    relayBtns.forEach((btn, index) => {
+      btn.textContent = relayNames[currentDevice][index];
+    });
+  }
 }
 
 // --- DEVICE MANAGEMENT FUNCTIONS ---
@@ -1473,7 +1595,7 @@ function switchDevice(deviceId) {
   // Load schedules for the current device
   loadSchedules();
 
-  addLogEntry(`Switched to ${roomNames[deviceId]}`, 'info');
+  addLogEntry(`Switched to ${roomNames[deviceId] || deviceId}`, 'info');
 }
 
 function updateDeviceTheme() {
@@ -1739,7 +1861,7 @@ function setupDeviceInfoListeners() {
     { path: 'sunrise', key: 'sunrise', element: 'sunrise' },
     { path: 'sunset', key: 'sunset', element: 'sunset' },
     { path: 'lastUpdateHuman', key: 'lastUpdateHuman', element: 'lastUpdateHuman' },
-    { path: 'lastUpdate', key: 'lastUpdate', element: 'lastUpdate' }
+    { path: 'lastUpdate', key: 'lastUpdate', element: null } // Removed from UI
   ];
 
   paths.forEach(({ path, key, element }) => {
@@ -1907,40 +2029,8 @@ async function fetchWeatherData() {
     
   } catch (error) {
     addLogEntry(`Failed to fetch weather data from Firebase: ${error.message}`, 'warn', 'weather');
-    return generateDemoWeatherData();
+    return null;
   }
-}
-
-function generateDemoWeatherData() {
-  const now = new Date();
-  const hour = now.getHours();
-  
-  let baseTemp = 28;
-  if (hour >= 22 || hour < 6) baseTemp -= 3;
-  if (hour >= 12 && hour < 16) baseTemp += 4;
-  
-  const temp = baseTemp + Math.floor(Math.random() * 3) - 1;
-  
-  let baseHumidity = 65;
-  if (hour >= 22 || hour < 6) baseHumidity += 15;
-  if (hour >= 12 && hour < 16) baseHumidity -= 10;
-  
-  const humidity = Math.max(40, Math.min(90, baseHumidity + Math.floor(Math.random() * 10) - 5));
-  
-  const isMonsoon = now.getMonth() >= 5 && now.getMonth() <= 8;
-  const rainChance = isMonsoon ? 0.3 : 0.1;
-  const isRaining = Math.random() < rainChance;
-  
-  const windSpeed = 8 + Math.floor(Math.random() * 15);
-  
-  return {
-    temperature: temp,
-    humidity: humidity,
-    rain: isRaining,
-    windSpeed: windSpeed,
-    location: "Demo Weather Station",
-    source: "Demo Data"
-  };
 }
 
 async function loadWeatherData() {
@@ -1961,34 +2051,30 @@ async function loadWeatherData() {
   try {
     const weatherData = await fetchWeatherData();
     
-    temperatureEl.textContent = weatherData.temperature;
-    humidityEl.textContent = weatherData.humidity;
-    rainStatusEl.textContent = weatherData.rain ? 'Raining' : 'Not Raining';
-    windSpeedEl.textContent = weatherData.windSpeed;
-    weatherLocationEl.textContent = weatherData.location;
-    weatherSourceEl.textContent = `Source: ${weatherData.source}`;
-    
-    lastWeatherUpdate = Date.now();
-    
-    addLogEntry(`Weather data updated: ${weatherData.temperature}°C, ${weatherData.humidity}% humidity`, 'info', 'weather');
+    if (weatherData) {
+      temperatureEl.textContent = weatherData.temperature;
+      humidityEl.textContent = weatherData.humidity;
+      rainStatusEl.textContent = weatherData.rain ? 'Raining' : 'Not Raining';
+      windSpeedEl.textContent = weatherData.windSpeed;
+      weatherLocationEl.textContent = weatherData.location;
+      weatherSourceEl.textContent = `Source: ${weatherData.source}`;
+      
+      lastWeatherUpdate = Date.now();
+      
+      addLogEntry(`Weather data updated: ${weatherData.temperature}°C, ${weatherData.humidity}% humidity`, 'info', 'weather');
+    } else {
+      throw new Error('No weather data available');
+    }
     
   } catch (error) {
     console.error('Weather loading error:', error);
     
     const errorDiv = document.createElement('div');
     errorDiv.className = 'weather-error';
-    errorDiv.textContent = 'Weather service temporarily unavailable. Using demo data.';
+    errorDiv.textContent = 'Weather service temporarily unavailable.';
     weatherLocationEl.after(errorDiv);
-    
-    const demoData = generateDemoWeatherData();
-    temperatureEl.textContent = demoData.temperature;
-    humidityEl.textContent = demoData.humidity;
-    rainStatusEl.textContent = demoData.rain ? 'Raining' : 'Not Raining';
-    windSpeedEl.textContent = demoData.windSpeed;
-    weatherLocationEl.textContent = demoData.location;
-    weatherSourceEl.textContent = `Source: ${demoData.source}`;
 
-    addLogEntry(`All weather services failed: ${error.message}`, 'error', 'weather');
+    addLogEntry(`Weather services failed: ${error.message}`, 'error', 'weather');
   } finally {
     // Re-enable refresh button
     weatherRefreshBtn.disabled = false;
@@ -2001,7 +2087,7 @@ weatherRefreshBtn.addEventListener('click', loadWeatherData);
 
 // --- NEW: SETTINGS FUNCTIONS ---
 
-// Open settings modal 1--START----------------------------------------------------------------------------------------
+// Open settings modal
 function openSettingsModal() {
   // Reset to first tab
   settingsTabs.forEach(t => t.classList.remove('active'));
@@ -2013,10 +2099,10 @@ function openSettingsModal() {
   // Load current values into form
   devices.forEach(device => {
     const roomNum = device.split('_')[1];
-    document.getElementById(`room${roomNum}Name`).value = roomNames[device];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device] || '';
     
     for (let i = 1; i <= 4; i++) {
-      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device][i-1];
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device] ? relayNames[device][i-1] : '';
     }
   });
   
@@ -2024,9 +2110,32 @@ function openSettingsModal() {
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
 }
-// Open settings modal 1--END----------------------------------------------------------------------------------------    
+    
+// Open settings modal_1
+function openSettingsModal1() {
+  // Reset to first tab
+  settingsTabs.forEach(t => t.classList.remove('active'));
+  settingsPanels.forEach(p => p.classList.remove('active'));
+  
+  document.querySelector('.settings-tab[data-room="ROOM_1"]').classList.add('active');
+  document.getElementById('room1Settings').classList.add('active');
+  
+  // Load current values into form
+  devices.forEach(device => {
+    const roomNum = device.split('_')[1];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device] || '';
+    
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device] ? relayNames[device][i-1] : '';
+    }
+  });
+  
+  // Show modal
+  settingsModal.classList.add('show');
+  profileDropdown.classList.remove('show');
+}    
 
-// Open settings modal 2--START----------------------------------------------------------------------------------------
+// Open settings modal_2
 function openSettingsModal2() {
   // Reset to first tab
   settingsTabs.forEach(t => t.classList.remove('active'));
@@ -2038,20 +2147,19 @@ function openSettingsModal2() {
   // Load current values into form
   devices.forEach(device => {
     const roomNum = device.split('_')[1];
-    document.getElementById(`room${roomNum}Name`).value = roomNames[device];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device] || '';
     
     for (let i = 1; i <= 4; i++) {
-      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device][i-1];
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device] ? relayNames[device][i-1] : '';
     }
   });
   
   // Show modal
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
-}
-// Open settings modal 2--END----------------------------------------------------------------------------------------    
-
-// Open settings modal 3--START----------------------------------------------------------------------------------------
+}  
+    
+// Open settings modal_3
 function openSettingsModal3() {
   // Reset to first tab
   settingsTabs.forEach(t => t.classList.remove('active'));
@@ -2063,10 +2171,10 @@ function openSettingsModal3() {
   // Load current values into form
   devices.forEach(device => {
     const roomNum = device.split('_')[1];
-    document.getElementById(`room${roomNum}Name`).value = roomNames[device];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device] || '';
     
     for (let i = 1; i <= 4; i++) {
-      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device][i-1];
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device] ? relayNames[device][i-1] : '';
     }
   });
   
@@ -2074,9 +2182,8 @@ function openSettingsModal3() {
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
 }
-// Open settings modal 3--END----------------------------------------------------------------------------------------    
-    
-// Open settings modal 4--START----------------------------------------------------------------------------------------
+
+// Open settings modal_4
 function openSettingsModal4() {
   // Reset to first tab
   settingsTabs.forEach(t => t.classList.remove('active'));
@@ -2088,22 +2195,19 @@ function openSettingsModal4() {
   // Load current values into form
   devices.forEach(device => {
     const roomNum = device.split('_')[1];
-    document.getElementById(`room${roomNum}Name`).value = roomNames[device];
+    document.getElementById(`room${roomNum}Name`).value = roomNames[device] || '';
     
     for (let i = 1; i <= 4; i++) {
-      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device][i-1];
+      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device] ? relayNames[device][i-1] : '';
     }
   });
   
   // Show modal
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
-}
-// Open settings modal 4--END----------------------------------------------------------------------------------------    
-
+}    
     
-    
-    
+//-------------------------------------------------------------------------------------------------------------------------------------------
 // Close settings modal
 function closeSettingsModal() {
   settingsModal.classList.remove('show');
@@ -2118,18 +2222,19 @@ function saveSettings() {
   devices.forEach(device => {
     const roomNum = device.split('_')[1];
     const roomNameInput = document.getElementById(`room${roomNum}Name`);
-    newRoomNames[device] = roomNameInput.value.trim() || defaultRoomNames[device];
+    newRoomNames[device] = roomNameInput.value.trim() || device.replace('_', '-');
     
+    if (!newRelayNames[device]) newRelayNames[device] = [];
     for (let i = 1; i <= 4; i++) {
       const relayInput = document.getElementById(`room${roomNum}Relay${i}`);
-      newRelayNames[device][i-1] = relayInput.value.trim() || defaultRelayLabels[device][i-1];
+      newRelayNames[device][i-1] = relayInput.value.trim() || `Relay ${i}`;
     }
   });
   
-  // Save to localStorage
+  // Save to Firebase
   roomNames = newRoomNames;
   relayNames = newRelayNames;
-  saveCustomNames(roomNames, relayNames);
+  saveRoomAndRelayNamesToFirebase();
   
   // Update UI
   updateUICustomNames();
@@ -2166,9 +2271,10 @@ function setupSettingsTabs() {
 
 // Event listeners for settings
 settingsBtn.addEventListener('click', openSettingsModal);
+settingsBtn1.addEventListener('click', openSettingsModal1);    
 settingsBtn2.addEventListener('click', openSettingsModal2);
 settingsBtn3.addEventListener('click', openSettingsModal3);
-settingsBtn4.addEventListener('click', openSettingsModal4);
+settingsBtn4.addEventListener('click', openSettingsModal4);    
 closeSettingsBtn.addEventListener('click', closeSettingsModal);
 cancelSettingsBtn.addEventListener('click', closeSettingsModal);
 saveSettingsBtn.addEventListener('click', saveSettings);
@@ -2652,6 +2758,12 @@ function showDashboard(user) {
     dashboardContainer.style.display = 'block';
     
     addLogEntry(`Multi-room dashboard ${DASHBOARD_VERSION} initialized`, 'info');
+    
+    // Initialize default names
+    initializeDefaultNames();
+    
+    // Load room and relay names from Firebase
+    loadRoomAndRelayNames();
     
     // Initialize the current device
     setupDeviceListeners();
