@@ -308,8 +308,8 @@
   .info-main { 
     display:grid; 
     grid-template-columns: 1fr 1fr; 
-    gap:8px; 
-    margin-bottom:12px; 
+    gap:10px; 
+    margin-bottom:20px; 
   }
   .panel { 
     background: rgba(30,41,59,0.9); 
@@ -327,6 +327,30 @@
     letter-spacing: 0.5px;
   }
   .panel .value { 
+    font-weight:700; 
+    font-size:1rem; 
+    color:#f1f5f9; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+    
+    .panel1 { 
+    background: rgba(30,41,59,0.9); 
+    border-radius:10px;
+    width: 188%;
+    padding:20px; 
+    text-align:center; 
+    box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+    border: 1px solid #334155;
+  }
+  .panel .label1 { 
+    font-size:0.65rem; 
+    color:#94a3b8; 
+    margin-bottom:2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .panel .value1 { 
     font-weight:700; 
     font-size:1rem; 
     color:#f1f5f9; 
@@ -1057,6 +1081,10 @@
     <footer class="info-main">
       <div class="panel"><div class="label">Last Update (Human)</div><div id="lastUpdateHuman" class="value">--:--</div></div>
       <div class="panel"><div class="label">Last Update (Timestamp)</div><div id="lastUpdate" class="value">--:--</div></div>
+    </footer>
+      <footer class="info-main">
+      <div class="panel1"><p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> | Md. Jahangir Alam - 01911132254 | All Rights Reserved</p></div>
+      
     </footer>
   </div>
 
@@ -1836,8 +1864,8 @@ irLockSwitch.addEventListener('click', () => {
     .then(() => {
       irLockSwitch.classList.toggle('locked', newIrLockState);
       const statusText = newIrLockState ? 'LOCKED' : 'UNLOCKED';
-      addLogEntry(`IR ${statusText} for ${currentDevice}`, 'info');
-      profileDropdown.classList.remove('show');
+      addLogEntry(`IR ${statusText} for ${currentDevice}`, 'info');9999;
+      profileDropdown.classList.remove('show'); 
     })
     .catch(error => {
       addLogEntry(`Failed to set IR lock state: ${error.message}`, 'error');
@@ -1858,8 +1886,8 @@ buttonLockSwitch.addEventListener('click', () => {
       buttonLockSwitch.classList.toggle('locked', newButtonLockState);
       const statusText = newButtonLockState ? 'LOCKED' : 'UNLOCKED';
       addLogEntry(`Physical Buttons ${statusText} for ${currentDevice}`, 'info');
-      profileDropdown.classList.remove('show');
-    })
+      profileDropdown.classList.remove('show'); 
+    9999;})
     .catch(error => {
       addLogEntry(`Failed to set button lock state: ${error.message}`, 'error');
     });
@@ -2790,6 +2818,9 @@ db.ref('.info/connected').on('value', (snap) => {
     updateStatusDisplay();
 });
 
+        
+    
+    
 // --- INITIALIZATION ---
 
 // Set initial device and initialize
