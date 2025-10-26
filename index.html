@@ -7,6 +7,74 @@
 <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/7733/7733361.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
+    
+ /* ADDED: Branding Header Styles */
+  .branding-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #334155;
+  }
+  
+  .branding-logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0f172a;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  
+  .branding-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #38bdf8;
+    letter-spacing: 0.5px;
+  }
+
+  /* ADDED: Copyright Footer Styles */
+  .copyright-footer {
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 20px;
+    border-top: 1px solid #334155;
+    color: #94a3b8;
+    font-size: 0.8rem;
+  }
+
+  /* UPDATED: Full width panel for last update */
+  .panel-full-width {
+    grid-column: 1 / -1; /* Span across all columns */
+    background: rgba(30,41,59,0.9); 
+    border-radius:10px; 
+    padding:10px; 
+    text-align:center; 
+    box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+    border: 1px solid #334155;
+  }
+  .panel-full-width .label { 
+    font-size:0.65rem; 
+    color:#94a3b8; 
+    margin-bottom:2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .panel-full-width .value { 
+    font-weight:700; 
+    font-size:1rem; 
+    color:#f1f5f9; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
   body {
     margin:0; padding:0; 
@@ -308,8 +376,8 @@
   .info-main { 
     display:grid; 
     grid-template-columns: 1fr 1fr; 
-    gap:10px; 
-    margin-bottom:20px; 
+    gap:8px; 
+    margin-bottom:12px; 
   }
   .panel { 
     background: rgba(30,41,59,0.9); 
@@ -333,24 +401,25 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-    
-    .panel1 { 
+
+  /* UPDATED: Full width panel for last update */
+  .panel-full-width {
+    grid-column: 1 / -1; /* Span across all columns */
     background: rgba(30,41,59,0.9); 
-    border-radius:10px;
-    width: 188%;
-    padding:20px; 
+    border-radius:10px; 
+    padding:10px; 
     text-align:center; 
     box-shadow: 0 3px 5px rgba(0,0,0,0.3);
     border: 1px solid #334155;
   }
-  .panel .label1 { 
+  .panel-full-width .label { 
     font-size:0.65rem; 
     color:#94a3b8; 
     margin-bottom:2px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
-  .panel .value1 { 
+  .panel-full-width .value { 
     font-weight:700; 
     font-size:1rem; 
     color:#f1f5f9; 
@@ -999,6 +1068,12 @@
   </div>
 </div>
 
+    <!-- ADDED: Branding Header -->
+  <div class="branding-header">
+    <div class="branding-logo">JHC</div>
+    <div class="branding-name">Jahangir HomeControl Pro</div>
+  </div>
+
 <div id="dashboardContainer" style="display: none;">
   <header>
     <div class="profile-menu">
@@ -1052,7 +1127,7 @@
       </div>
       
       <div class="version-info-container">
-        <div class="dashboard-version room-1-version" id="versionInfo">Dashboard: v2.0.0</div>
+        <div class="dashboard-version room-1-version" id="versionInfo">Dashboard: v2.1.0</div>
         <div id="status" class="status">Offline</div>
         <div class="firmware-version room-1-firmware" id="firmwareInfo">Firmware: --</div>
       </div>
@@ -1069,6 +1144,12 @@
       <div class="panel"><div class="label">Uptime</div><div id="uptime" class="value">--</div></div>
       <div class="panel"><div class="label">SunRise</div><div id="sunrise" class="value">--:--</div></div>
       <div class="panel"><div class="label">SunSet</div><div id="sunset" class="value">--:--</div></div>
+      
+      <!-- UPDATED: Combined Last Update panel - full width -->
+      <div class="panel-full-width">
+        <div class="label">Last Update</div>
+        <div id="lastUpdateHuman" class="value">--:--</div>
+      </div>
     </div>
 
     <div class="relays">
@@ -1078,14 +1159,7 @@
       <div id="r4" class="relay-btn">DIM-L</div>
     </div>
 
-    <footer class="info-main">
-      <div class="panel"><div class="label">Last Update (Human)</div><div id="lastUpdateHuman" class="value">--:--</div></div>
-      <div class="panel"><div class="label">Last Update (Timestamp)</div><div id="lastUpdate" class="value">--:--</div></div>
-    </footer>
-      <footer class="info-main">
-      <div class="panel1"><p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> | Md. Jahangir Alam - 01911132254 | All Rights Reserved</p></div>
-      
-    </footer>
+    <!-- REMOVED: The old footer with two separate update panels -->
   </div>
 
   <div id="automation" class="tab-content">
@@ -1145,6 +1219,13 @@
   </div>
 </div>
 
+  <!-- ADDED: Copyright Footer -->
+  <div class="copyright-footer">
+    &copy; <span id="currentYear"></span> | Md. Jahangir Alam - 01911132254 | All rights reserved.
+  </div>
+</div>    
+    
+    
 <!-- NEW: Settings Modal -->
 <div class="settings-modal" id="settingsModal">
   <div class="settings-content">
@@ -1260,6 +1341,9 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <script>
+// ADDED: Set current year in copyright
+document.getElementById('currentYear').textContent = new Date().getFullYear();        
+    
 // Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAei8j8RQXq_zspkohtH40g_gvHUfIx-Uw",
@@ -1777,7 +1861,7 @@ function setupDeviceInfoListeners() {
     { path: 'sunrise', key: 'sunrise', element: 'sunrise' },
     { path: 'sunset', key: 'sunset', element: 'sunset' },
     { path: 'lastUpdateHuman', key: 'lastUpdateHuman', element: 'lastUpdateHuman' },
-    { path: 'lastUpdate', key: 'lastUpdate', element: 'lastUpdate' }
+    { path: 'lastUpdate', key: 'lastUpdate', element: null } // Removed from UI
   ];
 
   paths.forEach(({ path, key, element }) => {
@@ -1864,8 +1948,8 @@ irLockSwitch.addEventListener('click', () => {
     .then(() => {
       irLockSwitch.classList.toggle('locked', newIrLockState);
       const statusText = newIrLockState ? 'LOCKED' : 'UNLOCKED';
-      addLogEntry(`IR ${statusText} for ${currentDevice}`, 'info');9999;
-      profileDropdown.classList.remove('show'); 
+      addLogEntry(`IR ${statusText} for ${currentDevice}`, 'info');
+      profileDropdown.classList.remove('show');
     })
     .catch(error => {
       addLogEntry(`Failed to set IR lock state: ${error.message}`, 'error');
@@ -1886,8 +1970,8 @@ buttonLockSwitch.addEventListener('click', () => {
       buttonLockSwitch.classList.toggle('locked', newButtonLockState);
       const statusText = newButtonLockState ? 'LOCKED' : 'UNLOCKED';
       addLogEntry(`Physical Buttons ${statusText} for ${currentDevice}`, 'info');
-      profileDropdown.classList.remove('show'); 
-    9999;})
+      profileDropdown.classList.remove('show');
+    })
     .catch(error => {
       addLogEntry(`Failed to set button lock state: ${error.message}`, 'error');
     });
@@ -2818,9 +2902,6 @@ db.ref('.info/connected').on('value', (snap) => {
     updateStatusDisplay();
 });
 
-        
-    
-    
 // --- INITIALIZATION ---
 
 // Set initial device and initialize
