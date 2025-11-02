@@ -265,9 +265,9 @@
     color: #e2e8f0;
   }
   .device-tab.active-room-1 {
-    background: #f59e0b;
+    background: #10b981; 
     color: #042f2e;
-    border-color: #f59e0b;
+    border-color: #10b981;
   }
   .device-tab.active-room-2 {
     background: #38bdf8;
@@ -275,9 +275,9 @@
     border-color: #38bdf8;
   }
   .device-tab.active-room-3 {
-    background: #10b981;
+    background: #f59e0b;
     color: #0f172a;
-    border-color: #10b981;
+    border-color: #f59e0b;
   }
   .device-tab.active-room-4 {
     background: #8b5cf6;
@@ -309,7 +309,7 @@
   
   /* Room-specific active tab colors */
   .tab-btn.active.room-1-active { 
-    background:#f59e0b; 
+    background: #10b981;
     color:#042f2e; 
   }
   .tab-btn.active.room-2-active { 
@@ -317,7 +317,7 @@
     color:#0f172a; 
   }
   .tab-btn.active.room-3-active { 
-    background:#10b981; 
+    background:#f59e0b;; 
     color:#0f172a; 
   }
   .tab-btn.active.room-4-active { 
@@ -333,8 +333,9 @@
     display:inline-block; 
     padding:4px 10px; 
     border-radius:16px; 
-    background:#ef4444;
-    color:#fff; 
+    background:	#B22222;
+/*        #ef4444;*/
+    color:	#FFFAFA; 
     font-weight:600; 
     font-size:0.75rem; 
     margin-top:10px;
@@ -343,17 +344,16 @@
     text-align: center;
 }
 .status.online { 
-    background:#10b981 !important; 
+    background:#006400 !important; 
 }
 .status.unstable { 
     background: #f59e0b !important;
     color: #0f172a !important;
 }
 .status.connecting { 
-    background: #38bdf8 !important;
+    background: #0000FF !important;
     color: #0f172a !important;
 }
-
   /* Version Info */
   .version-info-container {
     display: flex;
@@ -364,14 +364,14 @@
     margin-top: 5px;
     font-size: 0.7rem;
   }
-  .dashboard-version.room-1-version { color: #f59e0b; }
+  .dashboard-version.room-1-version { color: #10b981; }
   .dashboard-version.room-2-version { color: #38bdf8; }
-  .dashboard-version.room-3-version { color: #10b981; }
+  .dashboard-version.room-3-version { color: #f59e0b; }
   .dashboard-version.room-4-version { color: #8b5cf6; }
   
-  .firmware-version.room-1-firmware { color: #f59e0b; }
+  .firmware-version.room-1-firmware { color: #10b981; }
   .firmware-version.room-2-firmware { color: #38bdf8; }
-  .firmware-version.room-3-firmware { color: #10b981; }
+  .firmware-version.room-3-firmware { color: #f59e0b; }
   .firmware-version.room-4-firmware { color: #8b5cf6; }
 
   .info-main { 
@@ -398,7 +398,8 @@
   .panel .value { 
     font-weight:700; 
     font-size:1rem; 
-    color:#f1f5f9; 
+    color:#94a3b8; 
+/*      #f1f5f9; */
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -423,7 +424,8 @@
   .panel-full-width .value { 
     font-weight:700; 
     font-size:1rem; 
-    color:#f1f5f9; 
+    color:#94a3b8;
+/*        #f1f5f9; */
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -461,9 +463,9 @@
   }
 
   /* Device-specific relay colors */
-  .relay-btn.room-1.on { background: #f59e0b; border-color: #fbbf24; }
+  .relay-btn.room-1.on { background: #f59e0b; border-color: #34d399; }
   .relay-btn.room-2.on { background: #38bdf8; border-color: #7dd3fc; }
-  .relay-btn.room-3.on { background: #10b981; border-color: #34d399; }
+  .relay-btn.room-3.on { background: #10b981; border-color: #fbbf24; }
   .relay-btn.room-4.on { background: #8b5cf6; border-color: #a78bfa; }
 
   /* Switch Styles */
@@ -551,9 +553,9 @@
   }
 
   /* Device-specific theme colors */
-  .room-1-theme { color: #f59e0b; }
+  .room-1-theme { color: #10b981; }
   .room-2-theme { color: #38bdf8; }
-  .room-3-theme { color: #10b981; }
+  .room-3-theme { color: #f59e0b; }
   .room-4-theme { color: #8b5cf6; }
 
   /* Basic styles for other components */
@@ -622,7 +624,7 @@
 
   .schedule-actions {
     display: flex;
-    gap: 8px;
+    gap: 6px;
   }
 
   .schedule-action-btn {
@@ -630,7 +632,7 @@
     border: none;
     color: #94a3b8;
     cursor: pointer;
-    padding: 4px;
+    padding: 12px;
     border-radius: 4px;
     transition: color 0.2s;
   }
@@ -777,7 +779,8 @@
   .weather-tile .value {
     font-weight: 700;
     font-size: 1.5rem;
-    color: #f1f5f9;
+    color:#94a3b8;
+/*        #f1f5f9;*/
   }
   .weather-tile .unit {
     font-size: 0.9rem;
@@ -957,7 +960,8 @@
     background: #38bdf8;
     color: #0f172a;
   }
-  
+
+    
   .settings-panel {
     display: none;
   }
@@ -1050,9 +1054,9 @@
   }
   
   /* Update for room-specific colors in settings */
-  .settings-tab.room-1-color.active { background: #f59e0b; }
+  .settings-tab.room-1-color.active { background: #10b981; }
   .settings-tab.room-2-color.active { background: #38bdf8; }
-  .settings-tab.room-3-color.active { background: #10b981; }
+  .settings-tab.room-3-color.active { background: #f59e0b; }
   .settings-tab.room-4-color.active { background: #8b5cf6; }
 </style>
 </head>
@@ -1072,7 +1076,7 @@
     <!-- ADDED: Branding Header -->
   <div class="branding-header">
     <div class="branding-logo">JHC</div>
-    <div class="branding-name">Jahangir HomeControl Pro</div>
+    <div class="branding-name">Jahangir Home Control Pro</div>
   </div>
 
 <div id="dashboardContainer" style="display: none;">
@@ -1128,7 +1132,7 @@
       </div>
       
       <div class="version-info-container">
-        <div class="dashboard-version room-1-version" id="versionInfo">Dashboard: v2.1.0</div>
+        <div class="dashboard-version room-1-version" id="versionInfo">Dashboard: v3.0.0</div>
         <div id="status" class="status">Offline</div>
         <div class="firmware-version room-1-firmware" id="firmwareInfo">Firmware: --</div>
       </div>
@@ -1232,7 +1236,7 @@
     </div>
       
     <div class="settings-tabs">
-        <button class="tab-btn room-1-color" id="settingsBtn1">ROOM-1</button>
+        <button class="tab-btn room-2-color" id="settingsBtn1">ROOM-1</button>
         <button class="tab-btn room-2-color" id="settingsBtn2">ROOM-2</button>
         <button class="tab-btn room-3-color" id="settingsBtn3">ROOM-3</button>
         <button class="tab-btn room-4-color" id="settingsBtn4">ROOM-4</button>
@@ -1360,7 +1364,7 @@ const auth = firebase.auth();
 
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'multiroom_session_active';
-const DASHBOARD_VERSION = 'v2.1.0';
+const DASHBOARD_VERSION = 'v3.0.0';
 
 // Current device state
 let currentDevice = 'ROOM_1';
@@ -1644,7 +1648,7 @@ function updateThemeColors() {
   });
 
   // Update version info colors
-  //versionInfoEl.className = `dashboard-version room-${roomNum}-version`;
+  versionInfoEl.className = `dashboard-version room-${roomNum}-version`;
   firmwareInfoEl.className = `firmware-version room-${roomNum}-firmware`;
 }
 
@@ -2201,6 +2205,7 @@ function openSettingsModal() {
   // Show modal
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
+  showDashboard(user);    
 }
     
 function openSettingsModal1() {
@@ -2224,6 +2229,7 @@ function openSettingsModal1() {
   // Show modal
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
+  showDashboard(user);    
 }
     
 function openSettingsModal2() {
@@ -2369,8 +2375,9 @@ saveSettingsBtn.addEventListener('click', saveSettings);
 
 // Close modal when clicking outside
 window.addEventListener('click', (event) => {
-  if (event.target === settingsModal) {
-    closeSettingsModal();
+  if (event.target === settingsModal) { showDashboard(user);
+    closeSettingsModal(); 
+      
   }
 });
 
