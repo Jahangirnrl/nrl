@@ -17,6 +17,13 @@
     margin-bottom: 10px;
     border-bottom: 1px solid #334155;
   }
+    
+.all-caps {
+    text-transform: uppercase;
+  }
+  .title-case {
+    text-transform: capitalize;
+  }
   
   .branding-logo {
     width: 40px;
@@ -2811,14 +2818,15 @@ function displaySchedules(schedules) {
         
         // Calculate next execution time for sunrise/sunset schedules
         let nextExecutionHTML = '';
-        if ((schedule.type === 'sunrise' || schedule.type === 'sunset') && schedule.enabled) {
+        //      if ((schedule.type === 'sunrise' || schedule.type === 'sunset') && schedule.enabled) {
+        if (schedule.type === 'sunrise' || schedule.type === 'sunset') {    
             const nextExecution = calculateNextExecutionTime(schedule);
             nextExecutionHTML = `<div class="schedule-trigger"><strong>Next Execution:</strong> <span class="next-execution">${nextExecution}</span></div>`;
         }
         
         card.innerHTML = `
             <div class="schedule-header">
-                <div class="schedule-name">${schedule.id} : ${schedule.name}</div>
+                <div class="schedule-name"><p class="all-caps">${schedule.id} : ${schedule.name}</p></div>
                 <div class="schedule-actions">
                     <button class="schedule-action-btn toggle-btn" data-schedule-id="${schedule.id}" data-current-state="${schedule.enabled}" title="${schedule.enabled ? 'Disable' : 'Enable'}">
                         <i class="fas ${schedule.enabled ? 'fa-pause' : 'fa-play'}"></i>
