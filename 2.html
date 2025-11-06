@@ -42,8 +42,8 @@
   /* ADDED: Copyright Footer Styles */
   .copyright-footer {
     text-align: center;
-    padding: 15px 0;
-    margin-top: 20px;
+    padding: 10px 0;
+    margin-top: 0px;
     border-top: 1px solid #334155;
     color: #94a3b8;
     font-size: 0.8rem;
@@ -265,9 +265,9 @@
     color: #e2e8f0;
   }
   .device-tab.active-room-1 {
-    background: #f59e0b;
+    background: #10b981; 
     color: #042f2e;
-    border-color: #f59e0b;
+    border-color: #10b981;
   }
   .device-tab.active-room-2 {
     background: #38bdf8;
@@ -275,9 +275,9 @@
     border-color: #38bdf8;
   }
   .device-tab.active-room-3 {
-    background: #10b981;
+    background: #f59e0b;
     color: #0f172a;
-    border-color: #10b981;
+    border-color: #f59e0b;
   }
   .device-tab.active-room-4 {
     background: #8b5cf6;
@@ -309,7 +309,7 @@
   
   /* Room-specific active tab colors */
   .tab-btn.active.room-1-active { 
-    background:#f59e0b; 
+    background: #10b981;
     color:#042f2e; 
   }
   .tab-btn.active.room-2-active { 
@@ -317,7 +317,7 @@
     color:#0f172a; 
   }
   .tab-btn.active.room-3-active { 
-    background:#10b981; 
+    background:#f59e0b;; 
     color:#0f172a; 
   }
   .tab-btn.active.room-4-active { 
@@ -333,8 +333,9 @@
     display:inline-block; 
     padding:4px 10px; 
     border-radius:16px; 
-    background:#ef4444;
-    color:#fff; 
+    background:	#B22222;
+/*        #ef4444;*/
+    color:	#FFFAFA; 
     font-weight:600; 
     font-size:0.75rem; 
     margin-top:10px;
@@ -343,34 +344,34 @@
     text-align: center;
 }
 .status.online { 
-    background:#10b981 !important; 
+    background:#006400 !important; 
 }
 .status.unstable { 
     background: #f59e0b !important;
     color: #0f172a !important;
 }
 .status.connecting { 
-    background: #38bdf8 !important;
+    background: #4169E1 !important;
     color: #0f172a !important;
 }
-
   /* Version Info */
   .version-info-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    margin-right: 20px;  
     margin-top: 5px;
     font-size: 0.7rem;
   }
-  .dashboard-version.room-1-version { color: #f59e0b; }
+  .dashboard-version.room-1-version { color: #10b981; }
   .dashboard-version.room-2-version { color: #38bdf8; }
-  .dashboard-version.room-3-version { color: #10b981; }
+  .dashboard-version.room-3-version { color: #f59e0b; }
   .dashboard-version.room-4-version { color: #8b5cf6; }
   
-  .firmware-version.room-1-firmware { color: #f59e0b; }
+  .firmware-version.room-1-firmware { color: #10b981; }
   .firmware-version.room-2-firmware { color: #38bdf8; }
-  .firmware-version.room-3-firmware { color: #10b981; }
+  .firmware-version.room-3-firmware { color: #f59e0b; }
   .firmware-version.room-4-firmware { color: #8b5cf6; }
 
   .info-main { 
@@ -397,7 +398,8 @@
   .panel .value { 
     font-weight:700; 
     font-size:1rem; 
-    color:#f1f5f9; 
+    color:#94a3b8; 
+/*      #f1f5f9; */
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -422,7 +424,8 @@
   .panel-full-width .value { 
     font-weight:700; 
     font-size:1rem; 
-    color:#f1f5f9; 
+    color:#94a3b8;
+/*        #f1f5f9; */
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -430,10 +433,10 @@
   .relays { 
     display:flex; 
     justify-content:center; 
-    gap:16px; 
+    gap:30px; 
     flex-wrap:wrap; 
-    margin-bottom:20px; 
-    padding: 6px 0;
+    margin-bottom:30px; 
+    padding: 15px 0;
   }
   .relay-btn { 
     width:65px; 
@@ -460,9 +463,9 @@
   }
 
   /* Device-specific relay colors */
-  .relay-btn.room-1.on { background: #f59e0b; border-color: #fbbf24; }
+  .relay-btn.room-1.on { background: #34d399; border-color: #34d399; }
   .relay-btn.room-2.on { background: #38bdf8; border-color: #7dd3fc; }
-  .relay-btn.room-3.on { background: #10b981; border-color: #34d399; }
+  .relay-btn.room-3.on { background: #fbbf24; border-color: #fbbf24; }
   .relay-btn.room-4.on { background: #8b5cf6; border-color: #a78bfa; }
 
   /* Switch Styles */
@@ -550,9 +553,9 @@
   }
 
   /* Device-specific theme colors */
-  .room-1-theme { color: #f59e0b; }
+  .room-1-theme { color: #10b981; }
   .room-2-theme { color: #38bdf8; }
-  .room-3-theme { color: #10b981; }
+  .room-3-theme { color: #f59e0b; }
   .room-4-theme { color: #8b5cf6; }
 
   /* Basic styles for other components */
@@ -621,7 +624,7 @@
 
   .schedule-actions {
     display: flex;
-    gap: 8px;
+    gap: 6px;
   }
 
   .schedule-action-btn {
@@ -629,7 +632,7 @@
     border: none;
     color: #94a3b8;
     cursor: pointer;
-    padding: 4px;
+    padding: 12px;
     border-radius: 4px;
     transition: color 0.2s;
   }
@@ -646,6 +649,15 @@
 
   .schedule-trigger, .schedule-action {
     margin-bottom: 5px;
+/*
+    color: #10b981;
+    font-weight: 600;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-top: 5px;
+    display: inline-block;  
+*/
   }
 
   /* NEW: Next Execution Time Styles */
@@ -776,7 +788,8 @@
   .weather-tile .value {
     font-weight: 700;
     font-size: 1.5rem;
-    color: #f1f5f9;
+    color:#94a3b8;
+/*        #f1f5f9;*/
   }
   .weather-tile .unit {
     font-size: 0.9rem;
@@ -956,7 +969,8 @@
     background: #38bdf8;
     color: #0f172a;
   }
-  
+
+    
   .settings-panel {
     display: none;
   }
@@ -1049,9 +1063,9 @@
   }
   
   /* Update for room-specific colors in settings */
-  .settings-tab.room-1-color.active { background: #f59e0b; }
+  .settings-tab.room-1-color.active { background: #10b981; }
   .settings-tab.room-2-color.active { background: #38bdf8; }
-  .settings-tab.room-3-color.active { background: #10b981; }
+  .settings-tab.room-3-color.active { background: #f59e0b; }
   .settings-tab.room-4-color.active { background: #8b5cf6; }
 </style>
 </head>
@@ -1071,7 +1085,7 @@
     <!-- ADDED: Branding Header -->
   <div class="branding-header">
     <div class="branding-logo">JHC</div>
-    <div class="branding-name">Jahangir HomeControl Pro</div>
+    <div class="branding-name">Jahangir Home Control Pro</div>
   </div>
 
 <div id="dashboardContainer" style="display: none;">
@@ -1108,7 +1122,7 @@
     </div>
     
     <div class="header-center-content">
-      <h1><i class="fa-solid fa-house-chimney"></i> Multi-Room Control</h1>
+<!--      <h1><i class="fa-solid fa-house-chimney"></i> Multi-Room Control</h1>-->
       
       <div class="device-tabs">
         <button class="device-tab active-room-1" data-device="ROOM_1">Room-1</button>
@@ -1127,7 +1141,7 @@
       </div>
       
       <div class="version-info-container">
-        <div class="dashboard-version room-1-version" id="versionInfo">Dashboard: v2.1.0</div>
+        <div class="dashboard-version room-1-version" id="versionInfo">Dashboard: v3.0.0</div>
         <div id="status" class="status">Offline</div>
         <div class="firmware-version room-1-firmware" id="firmwareInfo">Firmware: --</div>
       </div>
@@ -1138,11 +1152,11 @@
 
   <div id="dashboard" class="tab-content active">
     <div class="info-main">
-      <div class="panel"><div class="label">IP</div><div id="ip" class="value">--</div></div>
-      <div class="panel"><div class="label">MAC</div><div id="mac" class="value">--</div></div>
       <div class="panel"><div class="label">SSID</div><div id="ssid" class="value">--</div></div>
       <div class="panel"><div class="label">Uptime</div><div id="uptime" class="value">--</div></div>
+      <div class="panel"><div class="label">IP</div><div id="ip" class="value">--</div></div>
       <div class="panel"><div class="label">SunRise</div><div id="sunrise" class="value">--:--</div></div>
+      <div class="panel"><div class="label">MAC</div><div id="mac" class="value">--</div></div>
       <div class="panel"><div class="label">SunSet</div><div id="sunset" class="value">--:--</div></div>
       
       <!-- UPDATED: Combined Last Update panel - full width -->
@@ -1177,40 +1191,36 @@
   </div>
 
   <div id="weather" class="tab-content">
-    <div class="weather-content-wrapper">
-      <div class="weather-location" id="weatherLocation">Loading weather data...</div>
-      
-      <div class="weather-grid">
-        <div class="weather-tile">
-          <div class="icon"><i class="fas fa-thermometer-half"></i></div>
-          <div class="title">Temperature</div>
-          <div class="value"><span id="temperature">--</span><span class="unit">°C</span></div>
-        </div>
-        <div class="weather-tile">
-          <div class="icon"><i class="fas fa-tint"></i></div>
-          <div class="title">Humidity</div>
-          <div class="value"><span id="humidity">--</span><span class="unit">%</span></div>
-        </div>
-        
-        <div class="weather-tile">
-          <div class="icon"><i class="fas fa-wind"></i></div>
-          <div class="title">Wind Speed</div>
-          <div class="value"><span id="windSpeed">--</span><span class="unit">km/h</span></div>
-        </div>
-        <div class="weather-tile">
-          <div class="icon"><i class="fas fa-cloud-rain"></i></div>
-          <div class="title">Rain Status</div>
-          <div class="value"><span id="rainStatus">--</span></div>
-        </div>
-      </div>
-      
-      <button class="weather-refresh-btn" id="weatherRefreshBtn">
-        <i class="fas fa-sync-alt"></i> Refresh Weather Data
-      </button>
-      
-      <div id="weatherSource" class="weather-source"></div>
-    </div>
-  </div>
+              <div class="weather-content-wrapper">
+                <div class="weather-location" id="weatherLocationEl">Loading weather data...</div>
+                <div class="weather-grid">
+                  <div class="weather-tile">
+                    <div class="icon"><i class="fas fa-thermometer-half"></i></div>
+                    <div class="title">Temperature</div>
+                    <div class="value"><span id="temperature">--</span><span class="unit">°C</span></div>
+                  </div>
+                  <div class="weather-tile">
+                    <div class="icon"><i class="fas fa-tint"></i></div>
+                    <div class="title">Humidity</div>
+                    <div class="value"><span id="humidity">--</span><span class="unit">%</span></div>
+                  </div>
+                  <div class="weather-tile">
+                    <div class="icon"><i class="fas fa-wind"></i></div>
+                    <div class="title">Wind Speed</div>
+                    <div class="value"><span id="windSpeed">--</span><span class="unit">km/h</span></div>
+                  </div>
+                  <div class="weather-tile">
+                    <div class="icon"><i class="fas fa-cloud-rain"></i></div>
+                    <div class="title">Rain Status</div>
+                    <div class="value"><span id="rainStatus">--</span></div>
+                  </div>
+                </div>
+                <button class="weather-refresh-btn" id="weatherRefreshBtn">
+                  <i class="fas fa-sync-alt"></i> Refresh Weather Data
+                </button>
+                <div id="weatherSource" class="weather-source"></div>
+              </div>
+            </div>
 
   <div id="logs" class="tab-content">
     <div class="log-viewer" id="logViewer">
@@ -1225,7 +1235,7 @@
   </div>
 </div>    
     
-    
+
 <!-- NEW: Settings Modal -->
 <div class="settings-modal" id="settingsModal">
   <div class="settings-content">
@@ -1234,15 +1244,15 @@
       <button class="close-settings" id="closeSettingsBtn">&times;</button>
     </div>
       
-      <div class="settings-tabs">
-        <button class="tab-btn" id="settingsBtn1">ROOM-1</button>
-        <button class="tab-btn" id="settingsBtn2">ROOM-2</button>
-        <button class="tab-btn" id="settingsBtn3">ROOM-3</button>
-        <button class="tab-btn" id="settingsBtn4">ROOM-4</button>
+    <div class="settings-tabs">
+        <button class="tab-btn room-2-color" id="settingsBtn1">ROOM-1</button>
+        <button class="tab-btn room-2-color" id="settingsBtn2">ROOM-2</button>
+        <button class="tab-btn room-3-color" id="settingsBtn3">ROOM-3</button>
+        <button class="tab-btn room-4-color" id="settingsBtn4">ROOM-4</button>
    
     </div>
-    
-    <div class="settings-tabs">
+      
+      <div class="settings-tabs">
       <button class="settings-tab room-1-color active" data-room="ROOM_1">Room 1</button>
       <button class="settings-tab room-2-color" data-room="ROOM_2">Room 2</button>
       <button class="settings-tab room-3-color" data-room="ROOM_3">Room 3</button>
@@ -1363,7 +1373,7 @@ const auth = firebase.auth();
 
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'multiroom_session_active';
-const DASHBOARD_VERSION = 'v2.0.0';
+const DASHBOARD_VERSION = 'v3.0.0';
 
 // Current device state
 let currentDevice = 'ROOM_1';
@@ -1513,6 +1523,32 @@ function formatTime12Hour(timestamp) {
   return formatter.format(d);
 }
 
+
+// NEW: Function to convert 24-hour time to 12-hour format
+function convertTo12Hour(time24) {
+  if (!time24 || time24 === '--:--') return '--:--';
+  
+  const [hours, minutes] = time24.split(':');
+  const hour = parseInt(hours);
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  const hour12 = hour % 12 || 12;
+  
+  return `${hour12}:${minutes} ${ampm}`;
+}  
+
+// NEW: Function to convert 24-hour time to 12-hour format
+function convertTo12Hour2(time24) {
+  if (!time24 || time24 === '--:--') return '--:--';
+  
+  const [hours, minutes, seconds] = time24.split(':');
+  const hour = parseInt(hours);
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  const hour12 = hour % 12 || 12;
+  
+  return `${hour12}:${minutes}:${seconds} ${ampm}`;
+}    
+
+
 function addLogEntry(message, type = 'info', source = 'client') {
   const time = formatTime12Hour(Date.now());
   const typeClass = `log-entry-type-${type.toLowerCase()}`;
@@ -1594,6 +1630,17 @@ function switchDevice(deviceId) {
 
   // Load schedules for the current device
   loadSchedules();
+    
+              // Check if weather tab is active and load data
+            const weatherTab = document.querySelector('.tab-btn[data-tab="weather"]');
+            if (weatherTab && weatherTab.classList.contains('active')) {
+                loadWeatherData();
+            } else {
+                // If not on weather tab, ensure we update the UI state from stored data to reflect "--" or old data until tab is clicked
+                // This is less critical but good practice, though tab listener handles the load on click.
+                // updateWeatherUI(); // Omitted, as the tab listener will trigger loadWeatherData on switch.
+            }
+    
 
   addLogEntry(`Switched to ${roomNames[deviceId] || deviceId}`, 'info');
 }
@@ -1628,7 +1675,7 @@ function updateThemeColors() {
   firmwareInfoEl.className = `firmware-version room-${roomNum}-firmware`;
 }
 
-function cleanupListeners() {
+    function cleanupListeners() {
   // Remove all existing Firebase listeners
   allListeners.forEach(unsubscribe => {
     if (unsubscribe && typeof unsubscribe === 'function') {
@@ -1776,7 +1823,7 @@ function updateStatusDisplay() {
                 statusEl.classList.add('unstable'); // Yellow/Orange color
                 break;
             case 'offline':
-                statusEl.textContent = "Offline";
+                statusEl.textContent = "Offline ✗";
                 // Falls back to default CSS (Red color)
                 break;
             case 'connecting':
@@ -1995,7 +2042,7 @@ restartBtn.addEventListener('click', () => {
             .catch(error => {
               addLogEntry(`Failed to reset restart flag: ${error.message}`, 'warn');
             });
-        }, 9999);
+        }, 13000); // delay reset wait
       })
       .catch(error => {
         addLogEntry(`Failed to send RESTART command: ${error.message}`, 'error');
@@ -2003,87 +2050,159 @@ restartBtn.addEventListener('click', () => {
   }
 });
 
-// --- WEATHER FUNCTIONS ---
 
-async function fetchWeatherData() {
-  try {
-    addLogEntry('Fetching weather data from Firebase', 'info', 'weather');
-    
-    const snapshot = await db.ref('HOME/weather').once('value');
-    const weatherData = snapshot.val();
-    
-    if (!weatherData) {
-      throw new Error('No weather data found in Firebase');
-    }
-    
-    addLogEntry('Weather data loaded from Firebase', 'info', 'weather');
-    
-    return {
-      temperature: weatherData.temperature || '--',
-      humidity: weatherData.humidity || '--',
-      rain: weatherData.rain || false,
-      windSpeed: weatherData.windSpeed || '--',
-      location: "Weather Station",
-      source: "Firebase Realtime Database"
-    };
-    
-  } catch (error) {
-    addLogEntry(`Failed to fetch weather data from Firebase: ${error.message}`, 'warn', 'weather');
-    return null;
-  }
-}
+        // --- WEATHER FUNCTIONS ---
 
-async function loadWeatherData() {
-  // Disable refresh button during loading
-  weatherRefreshBtn.disabled = true;
-  weatherRefreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-  
-  weatherLocationEl.textContent = 'Loading weather data...';
-  temperatureEl.textContent = '--';
-  humidityEl.textContent = '--';
-  rainStatusEl.textContent = '--';
-  windSpeedEl.textContent = '--';
-  weatherSourceEl.textContent = '';
-  
-  const existingError = document.querySelector('.weather-error');
-  if (existingError) existingError.remove();
+        /**
+         * Fetches weather data from the device-specific path in Firebase.
+         * @param {string} deviceId The ID of the device (e.g., 'ROOM_1').
+         * @returns {Promise<Object|null>} The weather data or a partial object if not found.
+         */
+        async function fetchWeatherData(deviceId) {
+            try {
+                addLogEntry(`Fetching weather data for ${deviceId} from Firebase`, 'info', 'weather');
+                
+                // MODIFIED: Use device-specific path
+                const path = `HOME/${deviceId}/weather`;
+                const snapshot = await db.ref(path).once('value');
+                const weatherData = snapshot.val();
+                
+                if (!weatherData) {
+                    addLogEntry(`No weather data found for ${deviceId} at ${path}`, 'warn', 'weather');
+                    // Return a default structure with location/source info
+                    return {
+                        temperature: '--', humidity: '--', rain: false, windSpeed: '--', 
+                        location: `${roomNames[deviceId] || deviceId} | Weather`, 
+                        source: `${deviceId} | DHT-11`
+                    };
+                }
+                
+                addLogEntry(`Weather data loaded for ${deviceId} from Firebase`, 'info', 'weather');
+                
+                return {
+                    temperature: weatherData.temperature || '--',
+                    humidity: weatherData.humidity || '--',
+                    rain: weatherData.rain || false,
+                    windSpeed: weatherData.windSpeed || '--',
+                    location: weatherData.location || `${roomNames[deviceId] || deviceId} | Weather`,
+                    source: weatherData.source || `${deviceId} | DHT-11`,
+                    pressure: weatherData.pressure || '--', 
+                    sunrise: weatherData.sunrise || '--:--', 
+                    sunset: weatherData.sunset || '--:--', 
+                    lastUpdateHuman: weatherData.lastUpdateHuman || '--:--', 
+                    lastUpdate: weatherData.lastUpdate || '--:--'
+                };
+            } catch (error) {
+                addLogEntry(`Failed to fetch weather data for ${deviceId} from Firebase: ${error.message}`, 'error', 'weather');
+                return null;
+            }
+        }
 
-  try {
-    const weatherData = await fetchWeatherData();
-    
-    if (weatherData) {
-      temperatureEl.textContent = weatherData.temperature;
-      humidityEl.textContent = weatherData.humidity;
-      rainStatusEl.textContent = weatherData.rain ? 'Raining' : 'Not Raining';
-      windSpeedEl.textContent = weatherData.windSpeed;
-      weatherLocationEl.textContent = weatherData.location;
-      weatherSourceEl.textContent = `Source: ${weatherData.source}`;
-      
-      lastWeatherUpdate = Date.now();
-      
-      addLogEntry(`Weather data updated: ${weatherData.temperature}°C, ${weatherData.humidity}% humidity`, 'info', 'weather');
-    } else {
-      throw new Error('No weather data available');
-    }
-    
-  } catch (error) {
-    console.error('Weather loading error:', error);
-    
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'weather-error';
-    errorDiv.textContent = 'Weather service temporarily unavailable.';
-    weatherLocationEl.after(errorDiv);
+        /**
+         * Updates the weather UI elements with data from the current device's state.
+         */
+        function updateWeatherUI() {
+            const deviceId = currentDevice;
+            const weatherData = deviceStates[deviceId].weather;
+            const roomName = roomNames[deviceId] || deviceId;
+            
+            const temperatureEl = document.getElementById('temperature');
+            const humidityEl = document.getElementById('humidity');
+            const rainStatusEl = document.getElementById('rainStatus');
+            const windSpeedEl = document.getElementById('windSpeed');
+            const weatherLocationEl = document.querySelector('.weather-location');
+            const weatherSourceEl = document.getElementById('weatherSource');
+            const weatherRefreshBtn = document.getElementById('weatherRefreshBtn');
+            
+            // Clear any previous error messages
+            const existingError = document.querySelector('.weather-error');
+            if (existingError) existingError.remove();
 
-    addLogEntry(`Weather services failed: ${error.message}`, 'error', 'weather');
-  } finally {
-    // Re-enable refresh button
-    weatherRefreshBtn.disabled = false;
-    weatherRefreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Weather Data';
-  }
-}
+            // Update UI elements
+            temperatureEl.textContent = weatherData.temperature;
+            humidityEl.textContent = weatherData.humidity;
+            
+            // Convert boolean/string rain status to display text
+            rainStatusEl.textContent = weatherData.rain === true || weatherData.rain === 'true' ? 'Raining' : 'Not Raining'; 
+            
+            windSpeedEl.textContent = weatherData.windSpeed;
+            weatherLocationEl.textContent = weatherData.location;
+            weatherSourceEl.textContent = `Source: ${weatherData.source}`;
+            
+            // Update refresh button state
+            weatherRefreshBtn.disabled = false;
+            weatherRefreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Weather Data';
+            
+            addLogEntry(`Weather UI updated for ${roomName}`, 'info', 'weather');
+        }
 
-// Weather Refresh Button Event Listener
-weatherRefreshBtn.addEventListener('click', loadWeatherData);
+        /**
+         * Loads weather data for the current device and updates the UI.
+         */
+        async function loadWeatherData() {
+            // Check if the current tab is 'weather' to avoid unnecessary loading
+            const weatherTab = document.querySelector('.tab-btn[data-tab="weather"]');
+            if (!weatherTab || !weatherTab.classList.contains('active')) {
+                return;
+            }
+            
+            const deviceId = currentDevice; 
+            const roomName = roomNames[deviceId] || deviceId;
+            
+            // Clear UI and set loading state
+            const weatherRefreshBtn = document.getElementById('weatherRefreshBtn');
+            const weatherLocationEl = document.querySelector('.weather-location');
+            const temperatureEl = document.getElementById('temperature');
+            const humidityEl = document.getElementById('humidity');
+            const rainStatusEl = document.getElementById('rainStatus');
+            const windSpeedEl = document.getElementById('windSpeed');
+            const weatherSourceEl = document.getElementById('weatherSource');
+            
+            weatherRefreshBtn.disabled = true;
+            weatherRefreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+            weatherLocationEl.textContent = 'Loading weather data...';
+            temperatureEl.textContent = '--'; 
+            humidityEl.textContent = '--'; 
+            rainStatusEl.textContent = '--'; 
+            windSpeedEl.textContent = '--';
+            weatherSourceEl.textContent = '';
+            
+            // Fetch data for the current device
+            const newWeatherData = await fetchWeatherData(deviceId); 
+
+            if (newWeatherData) {
+                // Save fetched data to deviceState
+                deviceStates[deviceId].weather = { 
+                    ...deviceStates[deviceId].weather, // Keep existing properties not returned by fetchWeatherData
+                    ...newWeatherData 
+                };
+            } else {
+                // If fetch failed, display an error and use default/empty state
+                const errorEl = document.createElement('div');
+                errorEl.className = 'weather-error';
+                errorEl.innerHTML = `Could not load weather data for ${roomName}.<br>Please check Firebase path: <b>HOME/${deviceId}/weather</b>.`;
+                document.querySelector('.weather-content-wrapper').appendChild(errorEl);
+                
+                // Reset device state weather data to empty (to display '--')
+                deviceStates[deviceId].weather = { 
+                    temperature: '--', humidity: '--', rain: false, windSpeed: '--', 
+                    location: `No data for ${roomName}`, source: 'Failed to Load', 
+                    pressure: '--', sunrise: '--:--', sunset: '--:--', 
+                    lastUpdateHuman: '--:--', lastUpdate: '--:--'
+                };
+            }
+            
+            // Update the UI with the final state (either new data or error state)
+            updateWeatherUI();
+        }
+
+        document.getElementById('weatherRefreshBtn').addEventListener('click', () => {
+          loadWeatherData();
+        });    
+    
+    
+    
+    
 
 // --- NEW: SETTINGS FUNCTIONS ---
 
@@ -2109,9 +2228,9 @@ function openSettingsModal() {
   // Show modal
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
+  showDashboard(user);    
 }
     
-// Open settings modal_1
 function openSettingsModal1() {
   // Reset to first tab
   settingsTabs.forEach(t => t.classList.remove('active'));
@@ -2133,9 +2252,9 @@ function openSettingsModal1() {
   // Show modal
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
-}    
-
-// Open settings modal_2
+  showDashboard(user);    
+}
+    
 function openSettingsModal2() {
   // Reset to first tab
   settingsTabs.forEach(t => t.classList.remove('active'));
@@ -2157,9 +2276,8 @@ function openSettingsModal2() {
   // Show modal
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
-}  
+}    
     
-// Open settings modal_3
 function openSettingsModal3() {
   // Reset to first tab
   settingsTabs.forEach(t => t.classList.remove('active'));
@@ -2181,9 +2299,8 @@ function openSettingsModal3() {
   // Show modal
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
-}
+}        
 
-// Open settings modal_4
 function openSettingsModal4() {
   // Reset to first tab
   settingsTabs.forEach(t => t.classList.remove('active'));
@@ -2205,9 +2322,9 @@ function openSettingsModal4() {
   // Show modal
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
-}    
+}        
     
-//-------------------------------------------------------------------------------------------------------------------------------------------
+
 // Close settings modal
 function closeSettingsModal() {
   settingsModal.classList.remove('show');
@@ -2274,15 +2391,16 @@ settingsBtn.addEventListener('click', openSettingsModal);
 settingsBtn1.addEventListener('click', openSettingsModal1);    
 settingsBtn2.addEventListener('click', openSettingsModal2);
 settingsBtn3.addEventListener('click', openSettingsModal3);
-settingsBtn4.addEventListener('click', openSettingsModal4);    
+settingsBtn4.addEventListener('click', openSettingsModal4);        
 closeSettingsBtn.addEventListener('click', closeSettingsModal);
 cancelSettingsBtn.addEventListener('click', closeSettingsModal);
 saveSettingsBtn.addEventListener('click', saveSettings);
 
 // Close modal when clicking outside
 window.addEventListener('click', (event) => {
-  if (event.target === settingsModal) {
-    closeSettingsModal();
+  if (event.target === settingsModal) { showDashboard(user);
+    closeSettingsModal(); 
+      
   }
 });
 
@@ -2313,11 +2431,11 @@ function showScheduleForm(scheduleData = null) {
             <div class="form-group">
                 <label class="form-label">Schedule Type</label>
                 <select id="scheduleType" class="form-select">
-                    <option value="daily" ${isEdit && scheduleData.type === 'daily' ? 'selected' : ''}>Daily Time-based</option>
-                    <option value="weekly" ${isEdit && scheduleData.type === 'weekly' ? 'selected' : ''}>Weekly Time-based</option>
+                    <option value="daily" ${isEdit && scheduleData.type === 'daily' ? 'selected' : ''}>Daily Time</option>
+                    <option value="weekly" ${isEdit && scheduleData.type === 'weekly' ? 'selected' : ''}>Weekly Time</option>
                     <option value="sunrise" ${isEdit && scheduleData.type === 'sunrise' ? 'selected' : ''}>Sunrise with Offset</option>
                     <option value="sunset" ${isEdit && scheduleData.type === 'sunset' ? 'selected' : ''}>Sunset with Offset</option>
-                    <option value="temperature" ${isEdit && scheduleData.type === 'temperature' ? 'selected' : ''}>Temperature-based</option>
+                    <option value="temperature" ${isEdit && scheduleData.type === 'temperature' ? 'selected' : ''}>Temperature</option>
                     <option value="timer" ${isEdit && scheduleData.type === 'timer' ? 'selected' : ''}>Timer</option>
                 </select>
             </div>
@@ -2559,6 +2677,52 @@ function saveSchedule(scheduleId) {
         });
 }
 
+function calculateNextExecutionTime(scheduleData) {
+    // Get current sunrise/sunset times from device state
+    const sunriseTime = deviceStates[currentDevice].sunrise;
+    const sunsetTime = deviceStates[currentDevice].sunset;
+    
+    if ((!sunriseTime || sunriseTime === '--:--') && (!sunsetTime || sunsetTime === '--:--')) {
+        return 'Waiting for sunrise/sunset data';
+    }
+    
+    if (scheduleData.type === 'sunrise') {
+        if (!sunriseTime || sunriseTime === '--:--') {
+            return 'Waiting for sunrise data';
+        }
+        
+        // Convert sunrise time to Date object and apply offset
+        const [sunriseHours, sunriseMinutes] = sunriseTime.split(':');
+        const sunriseDate = new Date();
+        sunriseDate.setHours(parseInt(sunriseHours), parseInt(sunriseMinutes) + scheduleData.offset, 0, 0);
+        
+        // Format to 12-hour time
+        return `Today at ${convertTo12Hour2(sunriseTime)} ${scheduleData.offset >= 0 ? '+ ' : ''}${scheduleData.offset} min ( ${convertTo12Hour2(formatTime(sunriseDate))} )`;
+        
+    } else if (scheduleData.type === 'sunset') {
+        if (!sunsetTime || sunsetTime === '--:--') {
+            return 'Waiting for sunset data';
+        }
+        
+        // Convert sunset time to Date object and apply offset
+        const [sunsetHours, sunsetMinutes] = sunsetTime.split(':');
+        const sunsetDate = new Date();
+        sunsetDate.setHours(parseInt(sunsetHours), parseInt(sunsetMinutes) + scheduleData.offset, 0, 0);
+        
+        // Format to 12-hour time
+        return `Today at ${convertTo12Hour2(sunsetTime)} ${scheduleData.offset >= 0 ? '+' : ''}${scheduleData.offset}min (${convertTo12Hour2(formatTime(sunsetDate))})`;
+    }
+    
+    return 'Will be calculated';
+}
+
+// Helper function to format time as HH:MM
+function formatTime(date) {
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+}
+
 function deleteSchedule(scheduleId) {
     if (!clientConnected) {
         addLogEntry('Cannot delete schedule: Client disconnected from Firebase.', 'error');
@@ -2646,10 +2810,10 @@ function displaySchedules(schedules) {
         let triggerText = '';
         switch(schedule.type) {
             case 'daily':
-                triggerText = `Daily: ON at ${schedule.onTime}, OFF at ${schedule.offTime}`;
+                triggerText = `Daily: ON at ${convertTo12Hour(schedule.onTime)}, OFF at ${convertTo12Hour(schedule.offTime)}`;
                 break;
             case 'weekly':
-                triggerText = `Weekly: ON at ${schedule.onTime}, OFF at ${schedule.offTime} on days ${schedule.days}`;
+                triggerText = `Weekly: ON at ${convertTo12Hour(schedule.onTime)}, OFF at ${convertTo12Hour(schedule.offTime)} on days ${schedule.days}`;
                 break;
             case 'sunrise':
                 triggerText = `Sunrise ${schedule.offset >= 0 ? '+' : ''}${schedule.offset} minutes: ${schedule.action ? 'ON' : 'OFF'}`;
@@ -2670,14 +2834,15 @@ function displaySchedules(schedules) {
         
         // Calculate next execution time for sunrise/sunset schedules
         let nextExecutionHTML = '';
-        if ((schedule.type === 'sunrise' || schedule.type === 'sunset') && schedule.enabled) {
+        //      if ((schedule.type === 'sunrise' || schedule.type === 'sunset') && schedule.enabled) {
+        if (schedule.type === 'sunrise' || schedule.type === 'sunset') {    
             const nextExecution = calculateNextExecutionTime(schedule);
             nextExecutionHTML = `<div class="schedule-trigger"><strong>Next Execution:</strong> <span class="next-execution">${nextExecution}</span></div>`;
         }
         
         card.innerHTML = `
             <div class="schedule-header">
-                <div class="schedule-name">${schedule.name} (Schedule${schedule.id})</div>
+                <div class="schedule-name">${schedule.id} : ${schedule.name}</div>
                 <div class="schedule-actions">
                     <button class="schedule-action-btn toggle-btn" data-schedule-id="${schedule.id}" data-current-state="${schedule.enabled}" title="${schedule.enabled ? 'Disable' : 'Enable'}">
                         <i class="fas ${schedule.enabled ? 'fa-pause' : 'fa-play'}"></i>
@@ -2691,7 +2856,7 @@ function displaySchedules(schedules) {
                 </div>
             </div>
             <div class="schedule-details">
-                <div class="schedule-trigger"><strong>Trigger:</strong> ${triggerText}</div>
+                <div class="schedule-trigger"><strong>Trigger:</strong><span class="next-execution"> ${triggerText}</div>
                 <div class="schedule-action"><strong>Action:</strong> ${relayNames[schedule.relay - 1]} ${actionText}</div>
                 ${nextExecutionHTML}
                 <div class="schedule-status"><strong>Status:</strong> ${schedule.enabled ? 'Enabled' : 'Disabled'}</div>
