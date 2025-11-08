@@ -1076,7 +1076,7 @@
     <input type="password" id="loginPassword" class="login-input" placeholder="Password">
     <button id="loginBtn" class="login-btn">Sign In</button>
     <div id="loginError"></div>
-    <button id="createAccountBtn" class="login-btn" style="margin-top: 10px; background: #94a3b8;">Create Account (New User)</button>
+    <!-- REMOVED: Create Account Button from login screen -->
   </div>
 </div>
 
@@ -1109,6 +1109,11 @@
                 <div class="lock-switch" id="buttonLockSwitch"></div>
             </div>
             
+            <!-- NEW: Create User Button (only shown to admins) -->
+            <button class="dropdown-btn settings-btn" id="createUserBtn" style="display: none;">
+              <i class="fas fa-user-plus"></i> Create New User
+            </button>
+            
             <!-- NEW: Settings Button -->
             <button class="dropdown-btn settings-btn" id="settingsBtn">
               <i class="fas fa-cog"></i> Settings Room
@@ -1139,7 +1144,7 @@
       </div>
       
       <div class="version-info-container">
-        <div class="dashboard-version room-1-version" id="versionInfo">Dashboard: v3.0.0</div>
+        <div class="dashboard-version room-1-version" id="versionInfo">Dashboard: v3.1.0</div>
         <div id="status" class="status">Offline</div>
         <div class="firmware-version room-1-firmware" id="firmwareInfo">Firmware: --</div>
       </div>
@@ -1344,6 +1349,33 @@
   </div>
 </div>
 
+<!-- NEW: Create User Modal -->
+<div class="settings-modal" id="createUserModal">
+  <div class="settings-content">
+    <div class="settings-header">
+      <h3>Create New User</h3>
+      <button class="close-settings" id="closeCreateUserBtn">&times;</button>
+    </div>
+    
+    <div class="settings-form-group">
+      <label class="settings-form-label">Email Address</label>
+      <input type="email" id="newUserEmail" class="settings-form-input" placeholder="Enter email address">
+    </div>
+    
+    <div class="settings-form-group">
+      <label class="settings-form-label">Password</label>
+      <input type="password" id="newUserPassword" class="settings-form-input" placeholder="Enter password">
+    </div>
+    
+    <div id="createUserError" style="color: #ef4444; margin-bottom: 15px; font-size: 0.9rem;"></div>
+    
+    <div class="settings-actions">
+      <button class="cancel-settings-btn" id="cancelCreateUserBtn">Cancel</button>
+      <button class="save-settings-btn" id="saveCreateUserBtn">Create User</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -1351,7 +1383,20 @@
 <script>
 // ADDED: Set current year in copyright
 document.getElementById('currentYear').textContent = new Date().getFullYear();        
-    
+
+// ADDED: Admin email configuration
+const ADMIN_EMAILS = [
+  'jahangir.nrl@gmail.com',
+  'jahangir@example.com'
+  // Add more admin emails as needed
+];
+
+// ADDED: Function to check if current user is admin
+function isAdminUser(user) {
+  if (!user || !user.email) return false;
+  return ADMIN_EMAILS.includes(user.email.toLowerCase());
+}
+
 // Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAei8j8RQXq_zspkohtH40g_gvHUfIx-Uw",
@@ -1388,7 +1433,6 @@ const dashboardContainer = document.getElementById('dashboardContainer');
 const loginEmail = document.getElementById('loginEmail');
 const loginPassword = document.getElementById('loginPassword');
 const loginBtn = document.getElementById('loginBtn');
-const createAccountBtn = document.getElementById('createAccountBtn');
 const loginError = document.getElementById('loginError');
 const profileBtn = document.getElementById('profileBtn');
 const profileDropdown = document.getElementById('profileDropdown');
@@ -1406,6 +1450,16 @@ const logViewer = document.getElementById('logViewer');
 const relayBtns = [document.getElementById('r1'),document.getElementById('r2'),document.getElementById('r3'),document.getElementById('r4')];
 const currentDeviceDisplay = document.getElementById('currentDeviceDisplay');
 const deviceTabs = document.querySelectorAll('.device-tab');
+
+// NEW: Create User elements
+const createUserBtn = document.getElementById('createUserBtn');
+const createUserModal = document.getElementById('createUserModal');
+const closeCreateUserBtn = document.getElementById('closeCreateUserBtn');
+const cancelCreateUserBtn = document.getElementById('cancelCreateUserBtn');
+const saveCreateUserBtn = document.getElementById('saveCreateUserBtn');
+const newUserEmail = document.getElementById('newUserEmail');
+const newUserPassword = document.getElementById('newUserPassword');
+const createUserError = document.getElementById('createUserError');
 
 // Automation elements
 const addScheduleBtn = document.getElementById('addScheduleBtn');
@@ -2186,7 +2240,6 @@ restartBtn.addEventListener('click', () => {
     
     
     
-    
 
 // --- NEW: SETTINGS FUNCTIONS ---
 
@@ -2390,6 +2443,85 @@ window.addEventListener('click', (event) => {
 
 // Initialize settings tabs
 setupSettingsTabs();
+
+// --- NEW: CREATE USER FUNCTIONS ---
+
+// NEW: Open Create User Modal
+function openCreateUserModal() {
+  newUserEmail.value = '';
+  newUserPassword.value = '';
+  createUserError.textContent = '';
+  createUserModal.classList.add('show');
+  profileDropdown.classList.remove('show');
+}
+
+// NEW: Close Create User Modal
+function closeCreateUserModal() {
+  createUserModal.classList.remove('show');
+}
+
+// NEW: Create User Function
+async function createNewUser() {
+  const email = newUserEmail.value;
+  const password = newUserPassword.value;
+  
+  createUserError.textContent = '';
+  
+  if (!email || !password) {
+    createUserError.textContent = 'Please enter both email and password.';
+    return;
+  }
+  
+  if (password.length < 6) {
+    createUserError.textContent = 'Password should be at least 6 characters.';
+    return;
+  }
+  
+  try {
+    saveCreateUserBtn.disabled = true;
+    saveCreateUserBtn.textContent = 'Creating...';
+    
+    await auth.createUserWithEmailAndPassword(email, password);
+    
+    addLogEntry(`Admin created new user account: ${email}`, 'info');
+    closeCreateUserModal();
+    
+    // Show success message
+    alert(`User ${email} created successfully!`);
+    
+  } catch (error) {
+    let errorMessage = error.message.replace('Firebase: ', '');
+    
+    if (error.code === 'auth/email-already-in-use') {
+      errorMessage = 'This email address is already registered.';
+    } else if (error.code === 'auth/invalid-email') {
+      errorMessage = 'Please enter a valid email address.';
+    } else if (error.code === 'auth/operation-not-allowed') {
+      errorMessage = 'Account creation is currently disabled.';
+    } else if (error.code === 'auth/weak-password') {
+      errorMessage = 'Password should be at least 6 characters.';
+    }
+    
+    createUserError.textContent = errorMessage;
+    addLogEntry(`Failed to create user: ${error.message}`, 'error');
+  } finally {
+    saveCreateUserBtn.disabled = false;
+    saveCreateUserBtn.textContent = 'Create User';
+  }
+}
+
+// NEW: Create User event listeners
+createUserBtn.addEventListener('click', openCreateUserModal);
+closeCreateUserBtn.addEventListener('click', closeCreateUserModal);
+cancelCreateUserBtn.addEventListener('click', closeCreateUserModal);
+saveCreateUserBtn.addEventListener('click', createNewUser);
+
+// Close create user modal when clicking outside
+window.addEventListener('click', (event) => {
+  if (event.target === createUserModal) {
+    closeCreateUserModal();
+  }
+});
 
 // --- AUTOMATION SCHEDULE FUNCTIONS ---
 
@@ -2903,6 +3035,12 @@ function showLogin() {
 function showDashboard(user) {
     localStorage.setItem(SESSION_KEY, 'true');
     userEmailDisplay.textContent = user.email;
+    
+    // ADDED: Add admin badge if user is admin
+    if (isAdminUser(user)) {
+        userEmailDisplay.innerHTML = `${user.email} <span style="color: #10b981; font-size: 0.7rem; margin-left: 5px;">(ADMIN)</span>`;
+    }
+    
     loginScreen.style.display = 'none';
     dashboardContainer.style.display = 'block';
     
@@ -2939,13 +3077,25 @@ if (localStorage.getItem(SESSION_KEY) === 'true') {
     showLogin();
 }
 
-// Auth state listener
+// Auth state listener - MODIFIED with admin check
 auth.onAuthStateChanged((user) => {
     if (user) {
+        // NEW: Show Create User button only for admin users
+        if (isAdminUser(user)) {
+            createUserBtn.style.display = 'block';
+            addLogEntry('Admin privileges granted - user creation enabled', 'info');
+        } else {
+            createUserBtn.style.display = 'none';
+            addLogEntry('Standard user - user creation disabled', 'info');
+        }
+        
         showDashboard(user);
         addLogEntry(`User ${user.email} signed in successfully.`, 'info');
-        loadSchedules(); // Load automation schedules
+        loadSchedules();
     } else {
+        // NEW: Hide Create User button when logged out
+        createUserBtn.style.display = 'none';
+        
         if (localStorage.getItem(SESSION_KEY) === 'true') {
             localStorage.removeItem(SESSION_KEY);
             addLogEntry('Session expired. Please log in again.', 'warn');
@@ -2959,20 +3109,6 @@ loginBtn.addEventListener('click', async () => {
     loginError.textContent = '';
     try {
         await auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value);
-    } catch (error) {
-        handleAuthError(error);
-    }
-});
-
-// Create account button event
-createAccountBtn.addEventListener('click', async () => {
-    loginError.textContent = '';
-    if (!loginEmail.value || !loginPassword.value) {
-        loginError.textContent = 'Please enter both email and password.';
-        return;
-    }
-    try {
-        await auth.createUserWithEmailAndPassword(loginEmail.value, loginPassword.value);
     } catch (error) {
         handleAuthError(error);
     }
