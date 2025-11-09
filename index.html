@@ -7,16 +7,16 @@
 <link rel="icon" type="image/x-icon" href="https://jahangirnrl.github.io/nrl/AAT_LOGO2.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
-    
-/*    const DASHBOARD_VERSION = 'v3.3.0';*/
+
+/*  const DASHBOARD_VERSION = 'v3.3.0';*/
     
  /* ADDED: Branding Header Styles */
   .branding-header {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 20px;
-    margin-bottom: 10px;
+    padding: 10px 10px;
+    margin-bottom: 05px;
     border-bottom: 1px solid #334155;
     position: relative;
   }
@@ -160,42 +160,19 @@
   header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     margin-bottom: 12px;
     padding: 0 5px; 
     position: relative; 
   }
-  header h1 {
-    color:#38bdf8; 
-    margin:0; 
-    font-size:1.6rem; 
-    text-align: center;
-  }
-  header h1 i {
-    margin-right: 8px;
-  }
-    
-.branding-logo-img {
-  width: 45px;
-  height: 45px;
-  margin-right: 12px;
-  border-radius: 10px;
-  object-fit: cover;
-  background: #0f172a;
-  border: 2px solid #334155;
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
-}  
-  .header-center-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-  }
+  
+  /* UPDATED: Profile menu positioning */
   .profile-menu {
-    position: relative;
-    z-index: 02;
+    position: absolute;
+    left: 10px;
+    z-index: 2;
   }
+  
   .profile-btn {
     background: transparent;
     border: none;
@@ -282,6 +259,37 @@
     color: #f1f5f9;
   }
   .edit-account-btn:hover { background: #0284c7; }
+
+  /* UPDATED: Header center content */
+  .header-center-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+  }
+  
+  /* UPDATED: Branding header positioning */
+  .branding-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    margin-bottom: 05px;
+    border-bottom: 1px solid #334155;
+    position: relative;
+  }
+  
+  .branding-logo-img {
+    width: 45px;
+    height: 45px;
+    margin-right: 12px;
+    border-radius: 10px;
+    object-fit: cover;
+    background: #0f172a;
+    border: 2px solid #334155;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+  }  
 
   /* Device Selection Tabs */
   .device-tabs {
@@ -883,7 +891,7 @@
   }
 
   .log-viewer {
-    height: 500px; 
+    height: 520px; 
     overflow-y: scroll;
     background: #1e293b;
     border-radius: 8px;
@@ -1195,16 +1203,9 @@
   </div>
 </div>
 
-    <!-- ADDED: Branding Header -->
-<div class="branding-header">
-  <img src="https://jahangirnrl.github.io/nrl/AAT_LOGO2.png"
-       alt="Company Logo"
-       class="branding-logo-img">
-  <div class="branding-name">SMART HOME</div>
-</div>
-
 <div id="dashboardContainer" style="display: none;">
   <header>
+    <!-- UPDATED: Profile menu moved to left corner -->
     <div class="profile-menu">
         <button class="profile-btn" id="profileBtn">
           <span></span>
@@ -1247,34 +1248,41 @@
         </div>
     </div>
     
-    <div class="header-center-content">
-<!--      <h1><i class="fa-solid fa-house-chimney"></i> Multi-Room Control</h1>-->
-      
-      <div class="device-tabs">
-        <button class="device-tab active-room-1" data-device="ROOM_1">Room-1</button>
-        <button class="device-tab" data-device="ROOM_2">Room-2</button>
-        <button class="device-tab" data-device="ROOM_3">Room-3</button>
-        <button class="device-tab" data-device="ROOM_4">Room-4</button>
-      </div>
-      
-      <div class="current-device room-1-theme" id="currentDeviceDisplay">Controlling: ROOM-1</div>
-      
-      <div class="tabs">
-        <button class="tab-btn active room-1-active" data-tab="dashboard"><i class="fas fa-power-off"></i> Dashboard</button>
-        <button class="tab-btn" data-tab="automation"><i class="fas fa-clock"></i> Automation</button>
-        <button class="tab-btn" data-tab="weather"><i class="fas fa-cloud-sun"></i> Weather</button>
-        <button class="tab-btn" data-tab="logs"><i class="fas fa-file-alt"></i> Logs</button>
-      </div>
-      
-      <div class="version-info-container">
-        <div class="dashboard-version room-1-version" id="versionInfo"></div>
-        <div id="status" class="status">Offline</div>
-        <div class="firmware-version room-1-firmware" id="firmwareInfo">Firmware: --</div>
-      </div>
+    <!-- UPDATED: Branding header positioned in center -->
+    <div class="branding-header">
+      <img src="https://jahangirnrl.github.io/nrl/AAT_LOGO2.png"
+           alt="Company Logo"
+           class="branding-logo-img">
+      <div class="branding-name">SMART HOME</div>
     </div>
     
-    <div></div> 
+    <!-- Empty div to maintain flexbox spacing -->
+    <div></div>
   </header>
+
+  <div class="header-center-content">
+    <div class="device-tabs">
+      <button class="device-tab active-room-1" data-device="ROOM_1">Room-1</button>
+      <button class="device-tab" data-device="ROOM_2">Room-2</button>
+      <button class="device-tab" data-device="ROOM_3">Room-3</button>
+      <button class="device-tab" data-device="ROOM_4">Room-4</button>
+    </div>
+    
+    <div class="current-device room-1-theme" id="currentDeviceDisplay">Controlling: ROOM-1</div>
+    
+    <div class="tabs">
+      <button class="tab-btn active room-1-active" data-tab="dashboard"><i class="fas fa-power-off"></i> Dashboard</button>
+      <button class="tab-btn" data-tab="automation"><i class="fas fa-clock"></i> Automation</button>
+      <button class="tab-btn" data-tab="weather"><i class="fas fa-cloud-sun"></i> Weather</button>
+      <button class="tab-btn" data-tab="logs"><i class="fas fa-file-alt"></i> Logs</button>
+    </div>
+    
+    <div class="version-info-container">
+      <div class="dashboard-version room-1-version" id="versionInfo"></div>
+      <div id="status" class="status">Offline</div>
+      <div class="firmware-version room-1-firmware" id="firmwareInfo">Firmware: --</div>
+    </div>
+  </div>
 
   <div id="dashboard" class="tab-content active">
     <div class="info-main">
@@ -1360,7 +1368,6 @@
     &copy; <span id="currentYear"></span> | Md. Jahangir Alam - 01911132254 | All rights reserved.
   </div>
 </div>    
-    
 
 <!-- NEW: Settings Modal -->
 <div class="settings-modal" id="settingsModal">
@@ -1596,7 +1603,7 @@ const auth = firebase.auth();
 
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'multiroom_session_active';
-const DASHBOARD_VERSION = 'v3.3.0';
+const DASHBOARD_VERSION = 'v3.4.0';
 
 // Current device state
 let currentDevice = 'ROOM_1';
@@ -2314,7 +2321,8 @@ restartBtn.addEventListener('click', () => {
                     addLogEntry(`No weather data found for ${deviceId} at ${path}`, 'warn', 'weather');
                     // Return a default structure with location/source info
                     return {
-                        temperature: '--', humidity: '--', rain: false, windSpeed: '--', 
+                        temperature: '--', humidity: '--', 
+//                        rain: false, windSpeed: '--', 
                         location: `${roomNames[deviceId] || deviceId} | Weather`, 
                         source: `${deviceId} | DHT-11`
                     };
@@ -2351,7 +2359,7 @@ restartBtn.addEventListener('click', () => {
             
             const temperatureEl = document.getElementById('temperature');
             const humidityEl = document.getElementById('humidity');
-            const rainStatusEl = document.getElementById('rainStatus');
+//            const rainStatusEl = document.getElementById('rainStatus');
             const windSpeedEl = document.getElementById('windSpeed');
             const weatherLocationEl = document.querySelector('.weather-location');
             const weatherSourceEl = document.getElementById('weatherSource');
@@ -2367,7 +2375,7 @@ restartBtn.addEventListener('click', () => {
             humidityEl.textContent = weatherData.humidity;
             
             // Convert boolean/string rain status to display text
-            rainStatusEl.textContent = weatherData.rain === true || weatherData.rain === 'true' ? 'Raining' : 'Not Raining'; 
+//            rainStatusEl.textContent = weatherData.rain === true || weatherData.rain === 'true' ? 'Raining' : 'Not Raining'; 
             
             windSpeedEl.textContent = weatherData.windSpeed;
             weatherLocationEl.textContent = weatherData.location;
@@ -2380,7 +2388,6 @@ restartBtn.addEventListener('click', () => {
             addLogEntry(`Weather UI updated for ${roomName}`, 'info', 'weather');
         }
     
-
 
         /**
          * Loads weather data for the current device and updates the UI.
@@ -2409,8 +2416,8 @@ restartBtn.addEventListener('click', () => {
             weatherLocationEl.textContent = 'Loading weather data...';
             temperatureEl.textContent = '--'; 
             humidityEl.textContent = '--'; 
-//            rainStatusEl.textContent = '--'; 
-//            windSpeedEl.textContent = '--';
+            rainStatusEl.textContent = '--'; 
+            windSpeedEl.textContent = '--';
             weatherSourceEl.textContent = '';
             
             // Fetch data for the current device
@@ -2445,9 +2452,7 @@ restartBtn.addEventListener('click', () => {
         document.getElementById('weatherRefreshBtn').addEventListener('click', () => {
           loadWeatherData();
         });    
-    
-    
-    
+
 
 // --- NEW: SETTINGS FUNCTIONS ---
 
@@ -2568,7 +2573,6 @@ function openSettingsModal4() {
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
 }        
-    
 
 // Close settings modal
 function closeSettingsModal() {
@@ -3634,6 +3638,94 @@ db.ref('.info/connected').on('value', (snap) => {
 switchDevice('ROOM_1');
 
 addLogEntry('Multi-room dashboard initialized successfully. Ready to control 4 devices.', 'info');
+    
+<!-- Password Toggle Script -->
+
+document.querySelectorAll('input[type="password"]').forEach(input => {
+  // Create the eye icon element
+  const wrapper = document.createElement('div');
+  wrapper.style.position = 'relative';
+  input.parentNode.insertBefore(wrapper, input);
+  wrapper.appendChild(input);
+
+  const icon = document.createElement('i');
+  icon.className = 'fa fa-eye';
+  icon.style.position = 'absolute';
+  icon.style.right = '10px';
+  icon.style.top = '50%';
+  icon.style.transform = 'translateY(-50%)';
+  icon.style.cursor = 'pointer';
+  icon.style.color = '#94a3b8';
+  wrapper.appendChild(icon);
+
+  // Toggle logic
+  icon.addEventListener('click', () => {
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.remove('fa-eye');
+      icon.classList.add('fa-eye-slash');
+    } else {
+      input.type = 'password';
+      icon.classList.remove('fa-eye-slash');
+      icon.classList.add('fa-eye');
+    }
+  });
+});
+    
+    
+// --- WEATHER FETCH & RTDB UPDATE (Open-Meteo) ---
+const WEATHER_LAT = 23.8103; // Dhaka, you can replace with your location
+const WEATHER_LON = 90.4125;
+
+async function loadWeatherData1() {
+  try {
+    addLogEntry("Fetching weather data from Open-Meteo...", "weather");
+
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${WEATHER_LAT}&longitude=${WEATHER_LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    const current = data.current || {};
+    const windSpeed = current.wind_speed_10m || 0;
+    const rainAmount = current.precipitation || 0;
+
+    // Determine rain status
+    const rainStatus = rainAmount > 0 ? "Raining" : "No Rain";
+
+    // Show on UI
+    document.getElementById("windSpeed").textContent = windSpeed.toFixed(1);
+    document.getElementById("rainStatus").textContent = rainStatus;
+
+   // Save to Firebase RTDB
+const now = new Date();
+const formattedTime = now.toLocaleTimeString("en-US", {
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: true
+});
+
+db.ref("HOME/ROOM_1/weather").set({  windSpeed: windSpeed,  rainStatus: rainStatus,  updatedAt: formattedTime});
+db.ref("HOME/ROOM_2/weather").set({  windSpeed: windSpeed,  rainStatus: rainStatus,  updatedAt: formattedTime});
+db.ref("HOME/ROOM_3/weather").set({  windSpeed: windSpeed,  rainStatus: rainStatus,  updatedAt: formattedTime});
+db.ref("HOME/ROOM_4/weather").set({  windSpeed: windSpeed,  rainStatus: rainStatus,  updatedAt: formattedTime});      
+
+    addLogEntry(`Weather updated: Wind ${windSpeed} km/h, ${rainStatus}`, "weather");
+  } catch (error) {
+    console.error("Weather fetch error:", error);
+    addLogEntry("Weather fetch failed", "error", "weather");
+  }
+}
+
+// Refresh button handler
+document.getElementById("weatherRefreshBtn").addEventListener("click",loadWeatherData1,loadWeatherData1);
+
+// Auto-load weather every 10 minutes
+setInterval(loadWeatherData, 10 * 60 * 1000);
+    
+
+    
 
 </script>
 </body>
