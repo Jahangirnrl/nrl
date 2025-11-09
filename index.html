@@ -883,7 +883,7 @@
   }
 
   .log-viewer {
-    height: 350px; 
+    height: 500px; 
     overflow-y: scroll;
     background: #1e293b;
     border-radius: 8px;
@@ -1232,21 +1232,18 @@
             
             <!-- NEW: Create User Button (only shown to admins) -->
             <button class="dropdown-btn settings-btn2" id="createUserBtn" style="display: none;">
-              <i class="fas fa-user-plus"></i> Create New User
-            </button>
+              <i class="fas fa-user-plus"></i> Create New User</button>
             
             <!-- NEW: Edit Account Button -->
             <button class="dropdown-btn edit-account-btn" id="editAccountBtn">
-              <i class="fas fa-user-edit"></i> Edit Account
-            </button>
+              <i class="fas fa-user-edit"></i> Change Password</button>
             
             <!-- NEW: Settings Button -->
             <button class="dropdown-btn settings-btn" id="settingsBtn">
-              <i class="fas fa-cog"></i> Settings Room
-            </button>
+              <i class="fas fa-cog"></i> Settings Room</button>
             
-            <button class="dropdown-btn restart-btn" id="restartBtn">DEVICE RESTART</button>
-            <button class="dropdown-btn logout-btn" id="logoutBtn">Logout</button>
+            <button class="dropdown-btn restart-btn" id="restartBtn"><i class="fa-solid fa-power-off"></i> DEVICE RESTART</button>
+            <button class="dropdown-btn logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </div>
     </div>
     
@@ -1506,7 +1503,7 @@
 <div class="settings-modal" id="editAccountModal">
   <div class="settings-content">
     <div class="settings-header">
-      <h3>Edit Account Information</h3>
+      <h3>Change Account Password</h3>
       <button class="close-settings" id="closeEditAccountBtn">&times;</button>
     </div>
     
