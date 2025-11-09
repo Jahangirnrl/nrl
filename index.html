@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SMART HOME</title>
-<link rel="icon" type="image/x-icon" href="https://jahangirnrl.github.io/nrl/AAT_LOGO.png">
+<link rel="icon" type="image/x-icon" href="https://jahangirnrl.github.io/nrl/AAT_LOGO2.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
     
@@ -1195,7 +1195,7 @@
 
     <!-- ADDED: Branding Header -->
 <div class="branding-header">
-  <img src="https://jahangirnrl.github.io/nrl/AAT_LOGO.png"
+  <img src="https://jahangirnrl.github.io/nrl/AAT_LOGO2.png"
        alt="Company Logo"
        class="branding-logo-img">
   <div class="branding-name">SMART HOME</div>
@@ -1673,6 +1673,7 @@ const windSpeedEl = document.getElementById('windSpeed');
 const weatherLocationEl = document.getElementById('weatherLocation');
 const weatherSourceEl = document.getElementById('weatherSource');
 const weatherRefreshBtn = document.getElementById('weatherRefreshBtn');
+
 
 // NEW: Settings elements
 const settingsModal = document.getElementById('settingsModal');
@@ -2357,6 +2358,7 @@ restartBtn.addEventListener('click', () => {
             const weatherSourceEl = document.getElementById('weatherSource');
             const weatherRefreshBtn = document.getElementById('weatherRefreshBtn');
             
+            
             // Clear any previous error messages
             const existingError = document.querySelector('.weather-error');
             if (existingError) existingError.remove();
@@ -2378,6 +2380,8 @@ restartBtn.addEventListener('click', () => {
             
             addLogEntry(`Weather UI updated for ${roomName}`, 'info', 'weather');
         }
+    
+
 
         /**
          * Loads weather data for the current device and updates the UI.
@@ -2406,8 +2410,8 @@ restartBtn.addEventListener('click', () => {
             weatherLocationEl.textContent = 'Loading weather data...';
             temperatureEl.textContent = '--'; 
             humidityEl.textContent = '--'; 
-            rainStatusEl.textContent = '--'; 
-            windSpeedEl.textContent = '--';
+//            rainStatusEl.textContent = '--'; 
+//            windSpeedEl.textContent = '--';
             weatherSourceEl.textContent = '';
             
             // Fetch data for the current device
