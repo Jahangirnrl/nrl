@@ -172,6 +172,17 @@
   header h1 i {
     margin-right: 8px;
   }
+    
+.branding-logo-img {
+  width: 45px;
+  height: 45px;
+  margin-right: 12px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #0f172a;
+  border: 2px solid #334155;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+}  
   .header-center-content {
       display: flex;
       flex-direction: column;
@@ -279,9 +290,9 @@
     flex-wrap: wrap;
   }
   .device-tab {
-    padding: 2px 1px;
+    padding: 4px 3px;
     border: none;
-    border-radius: 7px;
+    border-radius: 6px;
     background: #1e293b;
     color: #94a3b8;
     cursor: pointer;
@@ -1164,6 +1175,8 @@
   
   .error-ok-btn:hover {
     background: #b91c1c;
+      
+      
   }
 </style>
 </head>
@@ -1181,10 +1194,12 @@
 </div>
 
     <!-- ADDED: Branding Header -->
-  <div class="branding-header">
-    <div class="branding-logo">SM</div>
-    <div class="branding-name">SMART HOME</div>
-  </div>
+<div class="branding-header">
+  <img src="https://jahangirnrl.github.io/nrl/AAT_LOGO.png"
+       alt="Company Logo"
+       class="branding-logo-img">
+  <div class="branding-name">SMART HOME</div>
+</div>
 
 <div id="dashboardContainer" style="display: none;">
   <header>
@@ -1253,7 +1268,7 @@
       </div>
       
       <div class="version-info-container">
-        <div class="dashboard-version room-1-version" id="versionInfo">Dashboard: v3.2.0</div>
+        <div class="dashboard-version room-1-version" id="versionInfo">Dashboard: v3.3.0</div>
         <div id="status" class="status">Offline</div>
         <div class="firmware-version room-1-firmware" id="firmwareInfo">Firmware: --</div>
       </div>
@@ -1582,7 +1597,7 @@ const auth = firebase.auth();
 
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'multiroom_session_active';
-const DASHBOARD_VERSION = 'v3.0.0';
+const DASHBOARD_VERSION = 'v3.3.0';
 
 // Current device state
 let currentDevice = 'ROOM_1';
@@ -2847,7 +2862,44 @@ function isValidEmail(email) {
 editAccountBtn.addEventListener('click', openEditAccountModal);
 closeEditAccountBtn.addEventListener('click', closeEditAccountModal);
 cancelEditAccountBtn.addEventListener('click', closeEditAccountModal);
-saveEditAccountBtn.addEventListener('click', editAccount);
+saveEditAccountBtn.addEventListener('click', async () => {
+  const user = auth.currentUser;
+  const currentPass = currentPassword.value.trim();
+  const newPass = newPassword.value.trim();
+  const confirmPass = confirmPassword.value.trim();
+
+  editAccountError.textContent = ''; // clear previous errors
+
+  if (!currentPass || !newPass || !confirmPass) {
+    editAccountError.textContent = 'Please fill all password fields.';
+    return;
+  }
+
+  if (newPass !== confirmPass) {
+    editAccountError.textContent = 'New passwords do not match.';
+    return;
+  }
+
+  try {
+    const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPass);
+    await user.reauthenticateWithCredential(credential);
+
+    await user.updatePassword(newPass);
+    showErrorModal('Password updated successfully!');
+    editAccountModal.classList.remove('show');
+  } catch (error) {
+    console.error('Edit Account Error:', error);
+
+    if (error.code === 'auth/wrong-password' || error.message.includes('INVALID_LOGIN_CREDENTIALS')) {
+      editAccountError.textContent = '❌ Current password is incorrect.';
+    } else if (error.code === 'auth/weak-password') {
+      editAccountError.textContent = 'Password must be at least 6 characters.';
+    } else {
+      editAccountError.textContent = 'Something went wrong. Please try again.';
+    }
+  }
+});
+
 
 // Close edit account modal when clicking outside
 window.addEventListener('click', (event) => {
