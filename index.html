@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Multi-Room Dashboard</title>
-<link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/7733/7733361.png">
+<title>SMART HOME</title>
+<link rel="icon" type="image/x-icon" href="https://jahangirnrl.github.io/nrl/AAT_LOGO.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
     
@@ -13,10 +13,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 0;
+    padding: 10px 20px;
     margin-bottom: 10px;
     border-bottom: 1px solid #334155;
+    position: relative;
   }
+
     
 .all-caps {
     text-transform: uppercase;
@@ -154,9 +156,9 @@
 
   /* --- HEADER AND PROFILE MENU STYLES --- */
   header {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 12px;
     padding: 0 5px; 
     position: relative; 
@@ -175,12 +177,9 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      grid-column: 2;
       width: 100%;
   }
   .profile-menu {
-    grid-column: 1;
-    justify-self: start;
     position: relative;
     z-index: 02;
   }
@@ -191,6 +190,16 @@
     font-size: 1.5rem;
     cursor: pointer;
     padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .profile-btn span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background-color: #38bdf8;
+    border-radius: 1px;
   }
   .dropdown-content {
     display: none;
@@ -246,19 +255,33 @@
     color: #f1f5f9;
   }
   .settings-btn:hover { background: #7c3aed; }
+    
+    /* NEW: Settings Button */
+  .settings-btn2 {
+    background: #228B22;
+    color: #f1f5f9;
+  }
+  .settings-btn2:hover { background: #006400; }    
+
+  /* NEW: Edit Account Button */
+  .edit-account-btn {
+    background: #0ea5e9;
+    color: #f1f5f9;
+  }
+  .edit-account-btn:hover { background: #0284c7; }
 
   /* Device Selection Tabs */
   .device-tabs {
     display: flex;
-    gap: 6px;
-    margin-top: 6px;
+    gap: 3px;
+    margin-top: 3px;
     justify-content: center;
     flex-wrap: wrap;
   }
   .device-tab {
-    padding: 8px 16px;
+    padding: 2px 1px;
     border: none;
-    border-radius: 6px;
+    border-radius: 7px;
     background: #1e293b;
     color: #94a3b8;
     cursor: pointer;
@@ -296,12 +319,12 @@
   .tabs { 
     display:flex; 
     gap:6px; 
-    margin-top:12px; 
+    margin-top:06px; 
     justify-content: center;
     flex-wrap: wrap;
   }
   .tab-btn { 
-    padding:6px 12px; 
+    padding:4px 06px; 
     border:none; 
     border-radius:6px; 
     background:#1e293b; 
@@ -1065,13 +1088,90 @@
   .settings-tab.room-2-color.active { background: #38bdf8; }
   .settings-tab.room-3-color.active { background: #f59e0b; }
   .settings-tab.room-4-color.active { background: #8b5cf6; }
+
+  /* NEW: Error Message Modal Styles */
+  .error-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .error-modal.show {
+    display: flex;
+  }
+  
+  .error-content {
+    background: #1e293b;
+    border-radius: 12px;
+    padding: 25px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    border: 1px solid #334155;
+    text-align: center;
+  }
+  
+  .error-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #334155;
+  }
+  
+  .error-header h3 {
+    color: #ef4444;
+    margin: 0;
+    font-size: 1.3rem;
+  }
+  
+  .error-icon {
+    font-size: 2rem;
+    color: #ef4444;
+    margin-right: 10px;
+  }
+  
+  .error-message {
+    color: #e2e8f0;
+    margin-bottom: 25px;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  
+  .error-actions {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .error-ok-btn {
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .error-ok-btn:hover {
+    background: #b91c1c;
+  }
 </style>
 </head>
 <body>
 
 <div id="loginScreen">
   <div class="login-card">
-    <h2>Multi-Room Dashboard</h2>
+    <h2>SMART HOME</h2>
     <input type="email" id="loginEmail" class="login-input" placeholder="Email">
     <input type="password" id="loginPassword" class="login-input" placeholder="Password">
     <button id="loginBtn" class="login-btn">Sign In</button>
@@ -1082,14 +1182,18 @@
 
     <!-- ADDED: Branding Header -->
   <div class="branding-header">
-    <div class="branding-logo">JHC</div>
-    <div class="branding-name">Jahangir Home Control Pro</div>
+    <div class="branding-logo">SM</div>
+    <div class="branding-name">SMART HOME</div>
   </div>
 
 <div id="dashboardContainer" style="display: none;">
   <header>
     <div class="profile-menu">
-        <button class="profile-btn" id="profileBtn">⋮</button>
+        <button class="profile-btn" id="profileBtn">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
         <div class="dropdown-content" id="profileDropdown">
             <p>Logged in as:</p>
             <p id="userEmailDisplay">user@gmail.com</p>
@@ -1110,8 +1214,13 @@
             </div>
             
             <!-- NEW: Create User Button (only shown to admins) -->
-            <button class="dropdown-btn settings-btn" id="createUserBtn" style="display: none;">
+            <button class="dropdown-btn settings-btn2" id="createUserBtn" style="display: none;">
               <i class="fas fa-user-plus"></i> Create New User
+            </button>
+            
+            <!-- NEW: Edit Account Button -->
+            <button class="dropdown-btn edit-account-btn" id="editAccountBtn">
+              <i class="fas fa-user-edit"></i> Edit Account
             </button>
             
             <!-- NEW: Settings Button -->
@@ -1137,14 +1246,14 @@
       <div class="current-device room-1-theme" id="currentDeviceDisplay">Controlling: ROOM-1</div>
       
       <div class="tabs">
-        <button class="tab-btn active room-1-active" data-tab="dashboard">Dashboard</button>
-        <button class="tab-btn" data-tab="automation">Automation</button>
-        <button class="tab-btn" data-tab="weather">Weather</button>
-        <button class="tab-btn" data-tab="logs">Logs</button>
+        <button class="tab-btn active room-1-active" data-tab="dashboard"><i class="fas fa-power-off"></i> Dashboard</button>
+        <button class="tab-btn" data-tab="automation"><i class="fas fa-clock"></i> Automation</button>
+        <button class="tab-btn" data-tab="weather"><i class="fas fa-cloud-sun"></i> Weather</button>
+        <button class="tab-btn" data-tab="logs"><i class="fas fa-file-alt"></i> Logs</button>
       </div>
       
       <div class="version-info-container">
-        <div class="dashboard-version room-1-version" id="versionInfo">Dashboard: v3.1.0</div>
+        <div class="dashboard-version room-1-version" id="versionInfo">Dashboard: v3.2.0</div>
         <div id="status" class="status">Offline</div>
         <div class="firmware-version room-1-firmware" id="firmwareInfo">Firmware: --</div>
       </div>
@@ -1376,6 +1485,63 @@
   </div>
 </div>
 
+<!-- NEW: Edit Account Modal -->
+<div class="settings-modal" id="editAccountModal">
+  <div class="settings-content">
+    <div class="settings-header">
+      <h3>Edit Account Information</h3>
+      <button class="close-settings" id="closeEditAccountBtn">&times;</button>
+    </div>
+    
+    <div class="settings-form-group">
+      <label class="settings-form-label">Current Email</label>
+      <input type="email" id="currentEmail" class="settings-form-input" readonly>
+    </div>
+    
+    <div class="settings-form-group">
+<!--      <label class="settings-form-label">New Email (optional)</label>-->
+<!--      <input style="display: none;"id="newEmail" class="settings-form-input;" placeholder="Enter new email address" >-->
+      <input type="email" style="display: none;" id="newEmail" class="settings-form-input" placeholder="Enter new email address">
+    </div>
+    
+    <div class="settings-form-group">
+      <label class="settings-form-label">Current Password</label>
+      <input type="password" id="currentPassword" class="settings-form-input" placeholder="Enter current password">
+    </div>
+    
+    <div class="settings-form-group">
+      <label class="settings-form-label">New Password</label>
+      <input type="password" id="newPassword" class="settings-form-input" placeholder="Enter new password">
+    </div>
+    
+    <div class="settings-form-group">
+      <label class="settings-form-label">Confirm New Password</label>
+      <input type="password" id="confirmPassword" class="settings-form-input" placeholder="Confirm new password">
+    </div>
+    
+    <div id="editAccountError" style="color: #ef4444; margin-bottom: 15px; font-size: 0.9rem;"></div>
+    
+    <div class="settings-actions">
+      <button class="cancel-settings-btn" id="cancelEditAccountBtn">Cancel</button>
+      <button class="save-settings-btn" id="saveEditAccountBtn">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW: Error Message Modal -->
+<div class="error-modal" id="errorModal">
+  <div class="error-content">
+    <div class="error-header">
+      <i class="fas fa-exclamation-triangle error-icon"></i>
+      <h3>Error</h3>
+    </div>
+    <div class="error-message" id="errorMessage">An error has occurred.</div>
+    <div class="error-actions">
+      <button class="error-ok-btn" id="errorOkBtn">OK</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -1460,6 +1626,24 @@ const saveCreateUserBtn = document.getElementById('saveCreateUserBtn');
 const newUserEmail = document.getElementById('newUserEmail');
 const newUserPassword = document.getElementById('newUserPassword');
 const createUserError = document.getElementById('createUserError');
+
+// NEW: Edit Account elements
+const editAccountBtn = document.getElementById('editAccountBtn');
+const editAccountModal = document.getElementById('editAccountModal');
+const closeEditAccountBtn = document.getElementById('closeEditAccountBtn');
+const cancelEditAccountBtn = document.getElementById('cancelEditAccountBtn');
+const saveEditAccountBtn = document.getElementById('saveEditAccountBtn');
+const currentEmail = document.getElementById('currentEmail');
+const newEmail = document.getElementById('newEmail');
+const currentPassword = document.getElementById('currentPassword');
+const newPassword = document.getElementById('newPassword');
+const confirmPassword = document.getElementById('confirmPassword');
+const editAccountError = document.getElementById('editAccountError');
+
+// NEW: Error Modal elements
+const errorModal = document.getElementById('errorModal');
+const errorMessage = document.getElementById('errorMessage');
+const errorOkBtn = document.getElementById('errorOkBtn');
 
 // Automation elements
 const addScheduleBtn = document.getElementById('addScheduleBtn');
@@ -1621,6 +1805,12 @@ function updateUICustomNames() {
       btn.textContent = relayNames[currentDevice][index];
     });
   }
+}
+
+// NEW: Show error message in modal
+function showErrorModal(message) {
+  errorMessage.textContent = message;
+  errorModal.classList.add('show');
 }
 
 // --- DEVICE MANAGEMENT FUNCTIONS ---
@@ -2523,6 +2713,161 @@ window.addEventListener('click', (event) => {
   }
 });
 
+// --- NEW: EDIT ACCOUNT FUNCTIONS ---
+
+// NEW: Open Edit Account Modal
+function openEditAccountModal() {
+  const user = auth.currentUser;
+  if (!user) return;
+  
+  currentEmail.value = user.email;
+  newEmail.value = '';
+  currentPassword.value = '';
+  newPassword.value = '';
+  confirmPassword.value = '';
+  editAccountError.textContent = '';
+  
+  editAccountModal.classList.add('show');
+  profileDropdown.classList.remove('show');
+}
+
+// NEW: Close Edit Account Modal
+function closeEditAccountModal() {
+  editAccountModal.classList.remove('show');
+}
+
+// NEW: Edit Account Function
+async function editAccount() {
+  const user = auth.currentUser;
+  if (!user) return;
+  
+  const newEmailValue = newEmail.value.trim();
+  const currentPasswordValue = currentPassword.value;
+  const newPasswordValue = newPassword.value;
+  const confirmPasswordValue = confirmPassword.value;
+  
+  editAccountError.textContent = '';
+  
+  // Validate inputs
+  if (!currentPasswordValue) {
+    editAccountError.textContent = 'Please enter your current password.';
+    return;
+  }
+  
+  if (newEmailValue && !isValidEmail(newEmailValue)) {
+    editAccountError.textContent = 'Please enter a valid email address.';
+    return;
+  }
+  
+//  if (currentPasswordValue ! currentPasswordvalue) {
+//    editAccountError.textContent = 'Current password not match, Please enter your valid current password';
+//    return;
+//  }
+  
+  if (newPasswordValue && newPasswordValue.length < 6) {
+    editAccountError.textContent = 'New password should be at least 6 characters.';
+    return;
+  }
+  
+  if (newPasswordValue !== confirmPasswordValue) {
+    editAccountError.textContent = 'New passwords do not match.';
+    return;
+  }
+  
+  if (!newEmailValue && !newPasswordValue) {
+    editAccountError.textContent = 'Please enter either a new email or new password.';
+    return;
+  }
+  
+  try {
+    saveEditAccountBtn.disabled = true;
+    saveEditAccountBtn.textContent = 'Saving...';
+    
+    // Reauthenticate user
+    const credential = firebase.auth.EmailAuthProvider.credential(
+      user.email, 
+      currentPasswordValue
+    );
+    
+    await user.reauthenticateWithCredential(credential);
+    
+    // Update email if provided
+    if (newEmailValue) {
+      await user.updateEmail(newEmailValue);
+      addLogEntry(`User email updated to: ${newEmailValue}`, 'info');
+    }
+    
+    // Update password if provided
+    if (newPasswordValue) {
+      await user.updatePassword(newPasswordValue);
+      addLogEntry('User password updated', 'info');
+    }
+    
+    closeEditAccountModal();
+    
+    // Show success message
+    showErrorModal('Account information updated successfully!');
+    
+} catch (error) {
+    let errorMessage = 'An error occurred while updating your account.';
+    
+    // Handle specific Firebase auth errors
+    if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+        errorMessage = 'Current password is incorrect. Please enter your correct current password.';
+    } else if (error.code === 'auth/email-already-in-use') {
+        errorMessage = 'This email address is already in use by another account.';
+    } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Please enter a valid email address.';
+    } else if (error.code === 'auth/weak-password') {
+        errorMessage = 'New password is too weak. Please choose a stronger password.';
+    } else if (error.code === 'auth/requires-recent-login') {
+        errorMessage = 'This operation requires recent authentication. Please log out and log in again.';
+    } else if (error.code === 'auth/network-request-failed') {
+        errorMessage = 'Network error. Please check your internet connection.';
+    } else {
+        // For any other errors, use the Firebase message but clean it up
+        errorMessage = error.message.replace('Firebase: ', '');
+    }
+    
+    editAccountError.textContent = errorMessage;
+    addLogEntry(`Failed to update account: ${error.code} - ${error.message}`, 'error');
+} finally {
+    saveEditAccountBtn.disabled = false;
+    saveEditAccountBtn.textContent = 'Save Changes';
+  }
+}
+
+// NEW: Helper function to validate email
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+// NEW: Edit Account event listeners
+editAccountBtn.addEventListener('click', openEditAccountModal);
+closeEditAccountBtn.addEventListener('click', closeEditAccountModal);
+cancelEditAccountBtn.addEventListener('click', closeEditAccountModal);
+saveEditAccountBtn.addEventListener('click', editAccount);
+
+// Close edit account modal when clicking outside
+window.addEventListener('click', (event) => {
+  if (event.target === editAccountModal) {
+    closeEditAccountModal();
+  }
+});
+
+// NEW: Error Modal event listeners
+errorOkBtn.addEventListener('click', () => {
+  errorModal.classList.remove('show');
+});
+
+// Close error modal when clicking outside
+window.addEventListener('click', (event) => {
+  if (event.target === errorModal) {
+    errorModal.classList.remove('show');
+  }
+});
+
 // --- AUTOMATION SCHEDULE FUNCTIONS ---
 
 function showScheduleForm(scheduleData = null) {
@@ -3065,11 +3410,31 @@ function showDashboard(user) {
     updateUICustomNames();
 }
 
+
 function handleAuthError(error) {
-    loginError.textContent = error.message.replace('Firebase: ', '');
+    let errorMessage = 'Login failed. Please try again.';
+    
+    // Handle different Firebase auth error codes
+    if (error.code === 'auth/wrong-password' || 
+        error.code === 'auth/invalid-credential' ||
+        error.code === 'auth/invalid-email' ||
+        error.code === 'auth/user-not-found') {
+        errorMessage = 'Invalid email or password. Please try again.';
+    } else if (error.code === 'auth/too-many-requests') {
+        errorMessage = 'Too many failed attempts. Please try again later.';
+    } else if (error.code === 'auth/network-request-failed') {
+        errorMessage = 'Network error. Please check your internet connection.';
+    } else if (error.code === 'auth/user-disabled') {
+        errorMessage = 'This account has been disabled.';
+    } else {
+        // For any other errors, show a generic message
+        console.error('Auth error:', error);
+        errorMessage = 'Login failed. !Wrong Email or Password.';
+    }
+    
+    loginError.textContent = errorMessage;
     addLogEntry(`Authentication failed: ${error.code}`, 'error');
 }
-
 // Check for existing session
 if (localStorage.getItem(SESSION_KEY) === 'true') {
     showDashboard({ email: 'Checking session...' }); 
@@ -3104,16 +3469,37 @@ auth.onAuthStateChanged((user) => {
     }
 });
 
-// Login button event
+// Improved login button event listener
 loginBtn.addEventListener('click', async () => {
     loginError.textContent = '';
+    
+    // Basic validation
+    if (!loginEmail.value || !loginPassword.value) {
+        loginError.textContent = 'Please enter both email and password.';
+        return;
+    }
+    
     try {
+        // Show loading state
+        loginBtn.disabled = true;
+        loginBtn.textContent = 'Signing In...';
+        
         await auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value);
+        
+        // Reset button state on success
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Sign In';
+        
     } catch (error) {
+        // Reset button state on error
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Sign In';
+        
         handleAuthError(error);
     }
 });
-
+    
+    
 // Logout button event
 logoutBtn.addEventListener('click', async () => {
     try {
