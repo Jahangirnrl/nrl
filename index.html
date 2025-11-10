@@ -197,7 +197,7 @@
     margin-top: 0;
     right: 0;
     background-color: #1e293b;
-    min-width: 230px;
+    min-width: 250px;
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.4);
     border-radius: 8px;
     z-index: 20;
@@ -230,7 +230,7 @@
   }
   .logout-btn { 
     background: #ef4444;
-    color: #fff;
+    color: #0f172a;
   }
   .logout-btn:hover { background: #b91c1c; }
   .restart-btn {
@@ -242,21 +242,21 @@
   /* NEW: Settings Button */
   .settings-btn {
     background: #8b5cf6;
-    color: #f1f5f9;
+    color: #0f172a;
   }
   .settings-btn:hover { background: #7c3aed; }
     
     /* NEW: Settings Button */
   .settings-btn2 {
     background: #228B22;
-    color: #f1f5f9;
+    color: #0f172a;
   }
   .settings-btn2:hover { background: #006400; }    
 
   /* NEW: Edit Account Button */
   .edit-account-btn {
     background: #0ea5e9;
-    color: #f1f5f9;
+    color: #0f172a;
   }
   .edit-account-btn:hover { background: #0284c7; }
 
@@ -2407,8 +2407,8 @@ restartBtn.addEventListener('click', () => {
             const weatherLocationEl = document.querySelector('.weather-location');
             const temperatureEl = document.getElementById('temperature');
             const humidityEl = document.getElementById('humidity');
-            const rainStatusEl = document.getElementById('rainStatus');
-            const windSpeedEl = document.getElementById('windSpeed');
+//            const rainStatusEl = document.getElementById('rainStatus');
+//            const windSpeedEl = document.getElementById('windSpeed');
             const weatherSourceEl = document.getElementById('weatherSource');
             
             weatherRefreshBtn.disabled = true;
@@ -2416,8 +2416,8 @@ restartBtn.addEventListener('click', () => {
             weatherLocationEl.textContent = 'Loading weather data...';
             temperatureEl.textContent = '--'; 
             humidityEl.textContent = '--'; 
-            rainStatusEl.textContent = '--'; 
-            windSpeedEl.textContent = '--';
+//            rainStatusEl.textContent = '--'; 
+//            windSpeedEl.textContent = '--';
             weatherSourceEl.textContent = '';
             
             // Fetch data for the current device
@@ -2438,7 +2438,8 @@ restartBtn.addEventListener('click', () => {
                 
                 // Reset device state weather data to empty (to display '--')
                 deviceStates[deviceId].weather = { 
-                    temperature: '--', humidity: '--', rain: false, windSpeed: '--', 
+                    temperature: '--', humidity: '--', 
+//                    rain: false, windSpeed: '--', 
                     location: `No data for ${roomName}`, source: 'Failed to Load', 
                     pressure: '--', sunrise: '--:--', sunset: '--:--', 
                     lastUpdateHuman: '--:--', lastUpdate: '--:--'
@@ -2450,7 +2451,7 @@ restartBtn.addEventListener('click', () => {
         }
 
         document.getElementById('weatherRefreshBtn').addEventListener('click', () => {
-          loadWeatherData();
+          loadWeatherData1(); loadWeatherData();
         });    
 
 
@@ -3611,7 +3612,7 @@ tabs.forEach(btn => {
     
     // Load weather when switching to weather tab
     if (btn.dataset.tab === 'weather') {
-        loadWeatherData();
+        loadWeatherData(); loadWeatherData1();
     }
   });
 });
@@ -3637,7 +3638,7 @@ db.ref('.info/connected').on('value', (snap) => {
 // Set initial device and initialize
 switchDevice('ROOM_1');
 
-addLogEntry('Multi-room dashboard initialized successfully. Ready to control 4 devices.', 'info');
+addLogEntry('Smart Home initialized successfully. Ready to control 4 devices.', 'info');
     
 <!-- Password Toggle Script -->
 
@@ -3681,7 +3682,7 @@ async function loadWeatherData1() {
   try {
     addLogEntry("Fetching weather data from Open-Meteo...", "weather");
 
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${WEATHER_LAT}&longitude=${WEATHER_LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${WEATHER_LAT}&longitude=${WEATHER_LON}&current=wind_speed_10m,precipitation`;
 
     const response = await fetch(url);
     const data = await response.json();
@@ -3706,10 +3707,10 @@ const formattedTime = now.toLocaleTimeString("en-US", {
   hour12: true
 });
 
-db.ref("HOME/ROOM_1/weather").set({  windSpeed: windSpeed,  rainStatus: rainStatus,  updatedAt: formattedTime});
-db.ref("HOME/ROOM_2/weather").set({  windSpeed: windSpeed,  rainStatus: rainStatus,  updatedAt: formattedTime});
-db.ref("HOME/ROOM_3/weather").set({  windSpeed: windSpeed,  rainStatus: rainStatus,  updatedAt: formattedTime});
-db.ref("HOME/ROOM_4/weather").set({  windSpeed: windSpeed,  rainStatus: rainStatus,  updatedAt: formattedTime});      
+db.ref("HOME/ROOM_1/weather").update({  windSpeed: windSpeed,  rainStatus: rainStatus,  updatedAt: formattedTime});
+db.ref("HOME/ROOM_2/weather").update({  windSpeed: windSpeed,  rainStatus: rainStatus,  updatedAt: formattedTime});
+db.ref("HOME/ROOM_3/weather").update({  windSpeed: windSpeed,  rainStatus: rainStatus,  updatedAt: formattedTime});
+db.ref("HOME/ROOM_4/weather").update({  windSpeed: windSpeed,  rainStatus: rainStatus,  updatedAt: formattedTime});      
 
     addLogEntry(`Weather updated: Wind ${windSpeed} km/h, ${rainStatus}`, "weather");
   } catch (error) {
@@ -3719,10 +3720,10 @@ db.ref("HOME/ROOM_4/weather").set({  windSpeed: windSpeed,  rainStatus: rainStat
 }
 
 // Refresh button handler
-document.getElementById("weatherRefreshBtn").addEventListener("click",loadWeatherData1,loadWeatherData1);
+document.getElementById("weatherRefreshBtn").addEventListener("click",loadWeatherData1, loadWeatherData1);
 
 // Auto-load weather every 10 minutes
-setInterval(loadWeatherData, 10 * 60 * 1000);
+setInterval(loadWeatherData1, 10 * 60 * 1000);
     
 
     
