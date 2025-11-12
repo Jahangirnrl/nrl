@@ -7,7 +7,6 @@
 <link rel="icon" type="image/x-icon" href="https://jahangirnrl.github.io/nrl/AAT_LOGO2.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
-
 /*  const DASHBOARD_VERSION = 'v3.3.0';*/
     
  /* ADDED: Branding Header Styles */
@@ -1188,6 +1187,195 @@
       
       
   }
+
+  /* ADDED: Firmware Update Badge Styles */
+  .firmware-badge-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+  }
+
+  .firmware-badge {
+    position: relative;
+    background: #ef4444;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+  }
+
+  .firmware-badge:hover {
+    transform: scale(1.1);
+  }
+
+  .firmware-badge.room-1-badge { background: #10b981; }
+  .firmware-badge.room-2-badge { background: #38bdf8; }
+  .firmware-badge.room-3-badge { background: #f59e0b; }
+  .firmware-badge.room-4-badge { background: #8b5cf6; }
+
+  /* ADDED: Firmware Update Modal Styles */
+  .firmware-update-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .firmware-update-modal.show {
+    display: flex;
+  }
+
+  .firmware-update-content {
+    background: #1e293b;
+    border-radius: 12px;
+    padding: 25px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    border: 1px solid #334155;
+  }
+
+  .firmware-update-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #334155;
+  }
+
+  .firmware-update-header h3 {
+    color: #38bdf8;
+    margin: 0;
+    font-size: 1.3rem;
+  }
+
+  .close-firmware-update {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+  }
+
+  .close-firmware-update:hover {
+    color: #e2e8f0;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .firmware-room-card {
+    background: rgba(30, 41, 59, 0.9);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+  }
+
+  .firmware-room-card.room-1-card { border-left-color: #10b981; }
+  .firmware-room-card.room-2-card { border-left-color: #38bdf8; }
+  .firmware-room-card.room-3-card { border-left-color: #f59e0b; }
+  .firmware-room-card.room-4-card { border-left-color: #8b5cf6; }
+
+  .firmware-room-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .firmware-room-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  .firmware-room-name.room-1-name { color: #10b981; }
+  .firmware-room-name.room-2-name { color: #38bdf8; }
+  .firmware-room-name.room-3-name { color: #f59e0b; }
+  .firmware-room-name.room-4-name { color: #8b5cf6; }
+
+  .firmware-version-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .firmware-version-item {
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    background: rgba(15, 23, 42, 0.7);
+  }
+
+  .firmware-version-label {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-bottom: 5px;
+  }
+
+  .firmware-version-value {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .firmware-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  .firmware-action-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .firmware-update-btn {
+    background: #10b981;
+    color: #042f2e;
+  }
+
+  .firmware-update-btn:hover {
+    background: #059669;
+  }
+
+  .firmware-skip-btn {
+    background: #64748b;
+    color: #f1f5f9;
+  }
+
+  .firmware-skip-btn:hover {
+    background: #475569;
+  }
+
+  .firmware-no-updates {
+    text-align: center;
+    padding: 30px;
+    color: #94a3b8;
+  }
 </style>
 </head>
 <body>
@@ -1205,6 +1393,13 @@
 
 <div id="dashboardContainer" style="display: none;">
   <header>
+    <!-- ADDED: Firmware Update Badge -->
+    <div class="firmware-badge-container">
+      <div class="firmware-badge" id="firmwareBadge" style="display: none;">
+        <span id="firmwareBadgeCount">0</span>
+      </div>
+    </div>
+    
     <!-- UPDATED: Profile menu moved to left corner -->
     <div class="profile-menu">
         <button class="profile-btn" id="profileBtn">
@@ -1563,6 +1758,25 @@
   </div>
 </div>
 
+<!-- ADDED: Firmware Update Modal -->
+<div class="firmware-update-modal" id="firmwareUpdateModal">
+  <div class="firmware-update-content">
+    <div class="firmware-update-header">
+      <h3>Firmware Updates Available</h3>
+      <button class="close-firmware-update" id="closeFirmwareUpdateBtn">&times;</button>
+    </div>
+    
+    <div id="firmwareUpdateList">
+      <!-- Room update cards will be inserted here -->
+    </div>
+    
+    <div id="noFirmwareUpdates" class="firmware-no-updates" style="display: none;">
+      <i class="fas fa-check-circle" style="font-size: 2rem; color: #10b981; margin-bottom: 10px;"></i>
+      <p>All devices are up to date!</p>
+    </div>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -1690,6 +1904,14 @@ const saveSettingsBtn = document.getElementById('saveSettingsBtn');
 const settingsTabs = document.querySelectorAll('.settings-tab');
 const settingsPanels = document.querySelectorAll('.settings-panel');
 
+// ADDED: Firmware Update elements
+const firmwareBadge = document.getElementById('firmwareBadge');
+const firmwareBadgeCount = document.getElementById('firmwareBadgeCount');
+const firmwareUpdateModal = document.getElementById('firmwareUpdateModal');
+const closeFirmwareUpdateBtn = document.getElementById('closeFirmwareUpdateBtn');
+const firmwareUpdateList = document.getElementById('firmwareUpdateList');
+const noFirmwareUpdates = document.getElementById('noFirmwareUpdates');
+
 // Device-specific state
 const deviceStates = {};
 devices.forEach(device => {
@@ -1722,6 +1944,14 @@ let lastWeatherUpdate = 0;
 // NEW: Room and Relay Names Management
 let roomNames = {};
 let relayNames = {};
+
+// ADDED: Firmware Update State Management
+let firmwareUpdates = {
+  ROOM_1: { available: false, current: '', latest: '' },
+  ROOM_2: { available: false, current: '', latest: '' },
+  ROOM_3: { available: false, current: '', latest: '' },
+  ROOM_4: { available: false, current: '', latest: '' }
+};
 
 // Initialize default names
 function initializeDefaultNames() {
@@ -3468,6 +3698,9 @@ function showDashboard(user) {
     
     // Initialize custom names
     updateUICustomNames();
+    
+    // ADDED: Initialize firmware checks
+    initializeFirmwareChecks();
 }
 
 
@@ -3726,7 +3959,212 @@ document.getElementById("weatherRefreshBtn").addEventListener("click",loadWeathe
 setInterval(loadWeatherData1, 10 * 60 * 1000);
     
 
+// ADDED: Event Listeners for Firmware Updates
+firmwareBadge.addEventListener('click', showFirmwareUpdateModal);
+closeFirmwareUpdateBtn.addEventListener('click', closeFirmwareUpdateModal);
+
+// ADDED: Function to Update Firmware Badge
+function updateFirmwareBadge() {
+  const updateCount = Object.values(firmwareUpdates).filter(room => room.available).length;
+  
+  if (updateCount > 0) {
+    firmwareBadge.style.display = 'flex';
+    firmwareBadgeCount.textContent = updateCount;
+  } else {
+    firmwareBadge.style.display = 'none';
+  }
+}
+
+// ADDED: Function to Show Firmware Update Modal
+function showFirmwareUpdateModal() {
+  const updateCount = Object.values(firmwareUpdates).filter(room => room.available).length;
+  
+  if (updateCount === 0) {
+    firmwareUpdateList.style.display = 'none';
+    noFirmwareUpdates.style.display = 'block';
+  } else {
+    firmwareUpdateList.style.display = 'block';
+    noFirmwareUpdates.style.display = 'none';
     
+    // Clear existing list
+    firmwareUpdateList.innerHTML = '';
+    
+    // Add room update cards
+    devices.forEach(device => {
+      if (firmwareUpdates[device].available) {
+        const roomNum = device.split('_')[1];
+        const roomName = roomNames[device] || device;
+        
+        const card = document.createElement('div');
+        card.className = `firmware-room-card room-${roomNum}-card`;
+        
+        card.innerHTML = `
+          <div class="firmware-room-header">
+            <div class="firmware-room-name room-${roomNum}-name">${roomName}</div>
+          </div>
+          <div class="firmware-version-info">
+            <div class="firmware-version-item">
+              <div class="firmware-version-label">Current Version</div>
+              <div class="firmware-version-value">${firmwareUpdates[device].current}</div>
+            </div>
+            <div class="firmware-version-item">
+              <div class="firmware-version-label">Latest Version</div>
+              <div class="firmware-version-value">${firmwareUpdates[device].latest}</div>
+            </div>
+          </div>
+          <div class="firmware-actions">
+            <button class="firmware-action-btn firmware-skip-btn" data-device="${device}">
+              Skip
+            </button>
+            <button class="firmware-action-btn firmware-update-btn" data-device="${device}">
+              Update Now
+            </button>
+          </div>
+        `;
+        
+        firmwareUpdateList.appendChild(card);
+      }
+    });
+    
+    // Add event listeners to buttons
+    document.querySelectorAll('.firmware-skip-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const device = e.target.getAttribute('data-device');
+        skipFirmwareUpdate(device);
+      });
+    });
+    
+    document.querySelectorAll('.firmware-update-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const device = e.target.getAttribute('data-device');
+        applyFirmwareUpdate(device);
+      });
+    });
+  }
+  
+  firmwareUpdateModal.classList.add('show');
+}
+
+// ADDED: Function to Close Firmware Update Modal
+function closeFirmwareUpdateModal() {
+  firmwareUpdateModal.classList.remove('show');
+}
+
+// ADDED: Function to Skip Firmware Update
+function skipFirmwareUpdate(device) {
+  firmwareUpdates[device].available = false;
+  updateFirmwareBadge();
+  
+  // Update the modal content
+  showFirmwareUpdateModal();
+  
+  addLogEntry(`Firmware update skipped for ${roomNames[device] || device}`, 'info');
+}
+
+// ADDED: Function to Apply Firmware Update
+async function applyFirmwareUpdate(device) {
+  try {
+    await db.ref(`HOME/${device}/updateRequest`).set(true);
+    await db.ref(`HOME/${device}/updateStatus`).set('requested');
+    
+    firmwareUpdates[device].available = false;
+    updateFirmwareBadge();
+    
+    // Update the modal content
+    showFirmwareUpdateModal();
+    
+    addLogEntry(`Firmware update requested for ${roomNames[device] || device} (v${firmwareUpdates[device].current} -> v${firmwareUpdates[device].latest})`, 'info');
+    
+    // Show success message
+    showErrorModal(`Update requested for ${roomNames[device] || device}. The device will update shortly.`);
+    
+  } catch (error) {
+    addLogEntry(`Failed to request firmware update for ${device}: ${error.message}`, 'error');
+    showErrorModal('Failed to send update request. Please try again.');
+  }
+}
+
+// MODIFIED: Firmware Check Function
+async function checkRoomFirmwareUpdate(room) {
+  try {
+    const versionURL = "https://jahangirnrl.github.io/nrl/firmware/version.txt";
+    
+    // Fetch latest version
+    const resp = await fetch(versionURL, {cache: "no-store"});
+    if (!resp.ok) throw new Error('Failed to fetch version info');
+    const latestVersion = (await resp.text()).trim();
+
+    // Try possible RTDB paths for firmware version
+    const pathCandidates = [
+      `HOME/${room}/device/firmwareVersion`,
+      `HOME/${room}/device/firmware`,
+      `HOME/${room}/firmwareVersion`,
+      `HOME/${room}/firmware`,
+      `HOME/${room}/device/firmware_version`
+    ];
+
+    let currentVersion = null;
+    for (const p of pathCandidates) {
+      const snap = await db.ref(p).get();
+      if (snap && snap.exists()) {
+        currentVersion = snap.val();
+        break;
+      }
+    }
+    if (currentVersion === null) currentVersion = '--';
+
+    // Compare versions
+    if (latestVersion && currentVersion !== latestVersion) {
+      // Update available
+      firmwareUpdates[room] = {
+        available: true,
+        current: currentVersion,
+        latest: latestVersion
+      };
+      
+      addLogEntry(`Firmware update available for ${roomNames[room] || room}: ${currentVersion} -> ${latestVersion}`, 'info');
+    } else {
+      // Up to date
+      firmwareUpdates[room] = {
+        available: false,
+        current: currentVersion,
+        latest: latestVersion
+      };
+      
+      await db.ref(`HOME/${room}/updateRequest`).set(false);
+      await db.ref(`HOME/${room}/updateStatus`).set('up_to_date');
+    }
+    
+    // Update the badge
+    updateFirmwareBadge();
+    
+  } catch (err) {
+    console.error('checkRoomFirmwareUpdate error:', err);
+    addLogEntry('Firmware check failed: ' + err.message, 'error');
+  }
+}
+
+// MODIFIED: Initialize firmware checks for all devices
+function initializeFirmwareChecks() {
+  // Check firmware for all devices on startup
+  devices.forEach(device => {
+    checkRoomFirmwareUpdate(device);
+  });
+  
+  // Set up periodic checks (every 30 minutes)
+  setInterval(() => {
+    devices.forEach(device => {
+      checkRoomFirmwareUpdate(device);
+    });
+  }, 30 * 60 * 1000);
+}
+
+// Close firmware modal when clicking outside
+window.addEventListener('click', (event) => {
+  if (event.target === firmwareUpdateModal) {
+    closeFirmwareUpdateModal();
+  }
+});
 
 </script>
 </body>
