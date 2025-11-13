@@ -13,10 +13,10 @@
     top: 210px;
     left: 50%;
     transform: translateX(-50%);
-    padding: 3px 35px;
+    padding: 4px 35px;
     border-radius: 25px;
     font-size: 0.8rem;
-    font-weight: 600;
+    font-weight: 300;
     z-index: 1000;
     box-shadow: 0 2px 10px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
@@ -1780,10 +1780,10 @@ function updateConnectionStatus(connected) {
     }
 
     if (connected) {
-        connectionStatusEl.textContent = '🟢 Online';
-        connectionStatusEl.style.backgroundColor = '#10b981';
-        connectionStatusEl.style.color = '#042f2e';
-        connectionStatusEl.style.display = 'block';
+//        connectionStatusEl.textContent = '🟢 Online';
+//        connectionStatusEl.style.backgroundColor = '#10b981';
+//        connectionStatusEl.style.color = '#042f2e';
+//        connectionStatusEl.style.display = 'block';
         // Hide after 3 seconds if online
         setTimeout(() => {
             connectionStatusEl.style.opacity = '0';
@@ -1793,7 +1793,7 @@ function updateConnectionStatus(connected) {
             }, 200);
         }, 1500);
     } else {
-        connectionStatusEl.textContent = '🔴 Check Internet Connecton';
+        connectionStatusEl.textContent = '🔴 Check Internet..';
         connectionStatusEl.style.backgroundColor = '#DC143C';
         connectionStatusEl.style.color = '#fef2f2';
         connectionStatusEl.style.display = 'block';
