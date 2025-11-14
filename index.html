@@ -3818,6 +3818,302 @@ async function checkRoomFirmwareUpdate(room) {
   }
 }
 
+   
+    
+    
+// Update swipe event variables to include vertical swipe
+let touchStartX = 0;
+let touchEndX = 0;
+let touchStartY = 0;
+let touchEndY = 0;
+let mouseStartX = 0;
+let mouseEndX = 0;
+let mouseStartY = 0;
+let mouseEndY = 0;
+let isMouseDown = false;
+const SWIPE_THRESHOLD = 50; // Minimum distance for a swipe
+const VERTICAL_THRESHOLD = 30; // Maximum horizontal movement to still count as vertical swipe
+
+// Touch event handlers
+function handleTouchStart(event) {
+  touchStartX = event.changedTouches[0].screenX;
+  touchStartY = event.changedTouches[0].screenY;
+}
+
+function handleTouchEnd(event) {
+  touchEndX = event.changedTouches[0].screenX;
+  touchEndY = event.changedTouches[0].screenY;
+  handleSwipeWithFeedback(touchStartX, touchEndX, touchStartY, touchEndY, false);
+}
+
+// Mouse event handlers
+function handleMouseDown(event) {
+  isMouseDown = true;
+  mouseStartX = event.screenX;
+  mouseStartY = event.screenY;
+}
+
+function handleMouseUp(event) {
+  if (!isMouseDown) return;
+  
+  isMouseDown = false;
+  mouseEndX = event.screenX;
+  mouseEndY = event.screenY;
+  handleSwipeWithFeedback(mouseStartX, mouseEndX, mouseStartY, mouseEndY, true);
+}
+
+function handleMouseLeave() {
+  isMouseDown = false;
+}
+
+// Enhanced swipe handler with BOTH horizontal and vertical swipe support
+function handleSwipeWithFeedback(startX, endX, startY, endY, isMouse = false) {
+  const swipeDistanceX = endX - startX;
+  const swipeDistanceY = endY - startY;
+  
+  // Check if it's primarily a horizontal swipe
+  if (Math.abs(swipeDistanceX) > Math.abs(swipeDistanceY)) {
+    // HORIZONTAL SWIPE - Device tab switching
+    if (Math.abs(swipeDistanceX) < SWIPE_THRESHOLD) {
+      return; // Not a significant horizontal swipe
+    }
+    
+    // Get current device index
+    const currentIndex = devices.indexOf(currentDevice);
+    let newIndex;
+    let direction;
+    
+    // CORRECTED SWIPE DIRECTION LOGIC:
+    if (swipeDistanceX < 0) {
+      // SWIPE LEFT → Move to RIGHT TAB (next device)
+      newIndex = currentIndex < devices.length - 1 ? currentIndex + 1 : 0;
+      direction = 'swipe-left';
+    } else {
+      // SWIPE RIGHT → Move to LEFT TAB (previous device)  
+      newIndex = currentIndex > 0 ? currentIndex - 1 : devices.length - 1;
+      direction = 'swipe-right';
+    }
+    
+    // Show visual feedback
+    showSwipeFeedback(direction);
+    
+    // Switch to the new device immediately with slight delay for smooth animation
+    setTimeout(() => {
+      switchDeviceImmediately(devices[newIndex]);
+      hideSwipeFeedback();
+    }, 150);
+    
+    // Log the swipe action
+    addLogEntry(`${isMouse ? 'Mouse' : 'Touch'} swipe ${direction === 'swipe-left' ? 'left' : 'right'} - switching to ${roomNames[devices[newIndex]] || devices[newIndex]}`, 'info');
+    
+  } else {
+    // VERTICAL SWIPE - Main tab switching
+    if (Math.abs(swipeDistanceY) < SWIPE_THRESHOLD) {
+      return; // Not a significant vertical swipe
+    }
+    
+    // Get current main tab
+    const currentTab = document.querySelector('.tab-btn.active').dataset.tab;
+    const tabOrder = ['dashboard', 'automation', 'weather', 'logs'];
+    const currentTabIndex = tabOrder.indexOf(currentTab);
+    let newTabIndex;
+    let direction;
+    
+    if (swipeDistanceY < 0) {
+      // SWIPE UP → Move to NEXT TAB (down the list)
+      newTabIndex = currentTabIndex < tabOrder.length - 1 ? currentTabIndex + 1 : 0;
+      direction = 'swipe-up';
+    } else {
+      // SWIPE DOWN → Move to PREVIOUS TAB (up the list)
+      newTabIndex = currentTabIndex > 0 ? currentTabIndex - 1 : tabOrder.length - 1;
+      direction = 'swipe-down';
+    }
+    
+    // Show visual feedback
+    showSwipeFeedback(direction);
+    
+    // Switch to the new tab with slight delay for smooth animation
+    setTimeout(() => {
+      switchMainTab(tabOrder[newTabIndex]);
+      hideSwipeFeedback();
+    }, 150);
+    
+    // Log the swipe action
+    addLogEntry(`${isMouse ? 'Mouse' : 'Touch'} swipe ${direction === 'swipe-up' ? 'up' : 'down'} - switching to ${tabOrder[newTabIndex]}`, 'info');
+  }
+}
+
+// NEW: Function to switch main tabs
+function switchMainTab(tabName) {
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+  
+  // Remove active class from all tabs and contents
+  tabBtns.forEach(btn => btn.classList.remove('active'));
+  tabContents.forEach(content => content.classList.remove('active'));
+  
+  // Add active class to target tab and content
+  const targetTab = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
+  const targetContent = document.getElementById(tabName);
+  
+  if (targetTab && targetContent) {
+    targetTab.classList.add('active');
+    targetContent.classList.add('active');
+    
+    // Update tab theme colors
+    updateThemeColors();
+    
+    // Load specific content based on tab
+    switch(tabName) {
+      case 'automation':
+        loadSchedules();
+        break;
+      case 'weather':
+        loadWeatherData();
+        break;
+      case 'logs':
+        // Logs are automatically updated
+        break;
+    }
+  }
+}
+
+// NEW: Immediate device switching that works regardless of online status
+function switchDeviceImmediately(deviceId) {
+  if (!devices.includes(deviceId)) return;
+  
+  console.log(`Immediate switch to device: ${deviceId}`);
+  
+  // Clean up existing listeners
+  cleanupListeners();
+  
+  // Update current device
+  currentDevice = deviceId;
+  
+  // Update UI with custom names
+  updateUICustomNames();
+  
+  // Update device tabs styling
+  deviceTabs.forEach(tab => {
+    tab.classList.remove('active-room-1', 'active-room-2', 'active-room-3', 'active-room-4');
+    if (tab.dataset.device === deviceId) {
+      const roomNum = deviceId.split('_')[1];
+      tab.classList.add(`active-room-${roomNum}`);
+    }
+  });
+  
+  const roomNum = deviceId.split('_')[1];
+  currentDeviceDisplay.className = `current-device room-${roomNum}-theme`;
+  
+  // Update theme for relays
+  updateDeviceTheme();
+  
+  // Update theme for main tabs, status, and version info
+  updateThemeColors();
+  
+  // Setup new listeners for the current device (will work even if device is offline)
+  setupDeviceListeners();
+  
+  // Load schedules for the current device
+  loadSchedules();
+  
+  // Check if weather tab is active and load data
+  const weatherTab = document.querySelector('.tab-btn[data-tab="weather"]');
+  if (weatherTab && weatherTab.classList.contains('active')) {
+    loadWeatherData();
+  }
+  
+  addLogEntry(`Switched to ${roomNames[deviceId] || deviceId}`, 'info');
+}
+
+// Enhanced visual feedback functions for both horizontal and vertical swipes
+function showSwipeFeedback(direction) {
+  let feedback = document.getElementById('swipe-feedback');
+  if (!feedback) {
+    feedback = document.createElement('div');
+    feedback.id = 'swipe-feedback';
+    feedback.className = 'swipe-feedback';
+    document.body.appendChild(feedback);
+  }
+  
+  feedback.className = `swipe-feedback ${direction}`;
+  setTimeout(() => {
+    feedback.classList.add('active');
+  }, 10);
+}
+
+function hideSwipeFeedback() {
+  const feedback = document.getElementById('swipe-feedback');
+  if (feedback) {
+    feedback.classList.remove('active');
+    setTimeout(() => {
+      if (feedback.parentNode) {
+        feedback.parentNode.removeChild(feedback);
+      }
+    }, 200);
+  }
+}
+
+// Add event listeners for both touch and mouse events
+document.addEventListener('DOMContentLoaded', function() {
+  // Touch events (for mobile devices)
+  document.addEventListener('touchstart', handleTouchStart, { passive: true });
+  document.addEventListener('touchend', handleTouchEnd, { passive: true });
+  
+  // Mouse events (for desktop devices)
+  document.addEventListener('mousedown', handleMouseDown);
+  document.addEventListener('mouseup', handleMouseUp);
+  document.addEventListener('mouseleave', handleMouseLeave);
+  
+  console.log('Enhanced swipe navigation enabled:');
+  console.log('- Horizontal: Switch between devices');
+  console.log('- Vertical: Switch between main tabs');
+});
+
+// Enhanced visual feedback CSS with vertical swipe support
+const swipeStyle = document.createElement('style');
+swipeStyle.textContent = `
+  .swipe-feedback {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  
+  .swipe-feedback.active {
+    opacity: 1;
+  }
+  
+  /* Horizontal swipe feedback */
+  .swipe-feedback.swipe-left {
+    background: linear-gradient(to right, rgba(16, 185, 129, 0.15), transparent);
+  }
+  
+  .swipe-feedback.swipe-right {
+    background: linear-gradient(to left, rgba(56, 189, 248, 0.15), transparent);
+  }
+  
+  /* Vertical swipe feedback */
+  .swipe-feedback.swipe-up {
+    background: linear-gradient(to bottom, rgba(139, 92, 246, 0.15), transparent);
+  }
+  
+  .swipe-feedback.swipe-down {
+    background: linear-gradient(to top, rgba(245, 158, 11, 0.15), transparent);
+  }
+`;
+document.head.appendChild(swipeStyle);
+    
+    
+    
+    
+    
+    
 // MODIFIED: Initialize firmware checks for all devices
 function initializeFirmwareChecks() {
   // Check firmware for all devices on startup
@@ -3838,6 +4134,9 @@ window.addEventListener('click', (event) => {
     closeFirmwareUpdateModal();
   }
 });
+    
+   
+    
 </script>
 </body>
 </html>
