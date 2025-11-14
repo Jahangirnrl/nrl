@@ -2191,7 +2191,7 @@ function updateStatusDisplay() {
     const deviceState = deviceStates[currentDevice];
     // Clear all status classes and ensure default style
     statusEl.classList.remove('online', 'unstable', 'connecting');
-    statusEl.style.cssText = ''; // Reset inline styles (like background/color)
+    statusEl.style.cssText = ''; // Reset inline styles (like background/color) 
     if (!clientConnected) {
         statusEl.textContent = "Client Disconnected";
         statusEl.style.backgroundColor = '#fbbf24';
@@ -3698,15 +3698,18 @@ async function applyFirmwareUpdate(device) {
     showErrorModal('Failed to send update request. Please try again.');
   }
 }
-// MODIFIED: Individual Firmware Check Function per Room
+
+// FIXED: Individual Firmware Check Function per Room with proper version comparison
 async function checkRoomFirmwareUpdate(room) {
   try {
     // Dynamic version file per room
     const versionURL = `https://jahangirnrl.github.io/nrl/firmware/${room}/version.txt`;
+    
     // Fetch latest version from each room's specific file
     const resp = await fetch(versionURL, { cache: "no-store" });
     if (!resp.ok) throw new Error(`Failed to fetch version info for ${room}`);
     const latestVersion = (await resp.text()).trim();
+
     // Try possible RTDB paths for current firmware version
     const pathCandidates = [
       `HOME/${room}/device/firmwareVersion`,
@@ -3715,6 +3718,7 @@ async function checkRoomFirmwareUpdate(room) {
       `HOME/${room}/firmware`,
       `HOME/${room}/device/firmware_version`
     ];
+    
     let currentVersion = null;
     for (const p of pathCandidates) {
       const snap = await db.ref(p).get();
@@ -3723,21 +3727,74 @@ async function checkRoomFirmwareUpdate(room) {
         break;
       }
     }
+    
     if (currentVersion === null) currentVersion = '--';
-    // Compare versions
-    if (latestVersion && currentVersion !== latestVersion) {
-      // Update available
-      firmwareUpdates[room] = {
-        available: true,
-        current: currentVersion,
-        latest: latestVersion
-      };
-      addLogEntry(
-        `Firmware update available for ${roomNames[room] || room}: ${currentVersion} → ${latestVersion}`,
-        'info'
-      );
+
+    // FIXED: Proper version comparison - only show update if current < latest
+    if (latestVersion && currentVersion !== '--' && currentVersion !== latestVersion) {
+      // Parse versions for proper comparison (handle semantic versioning)
+      const isUpdateAvailable = (() => {
+        try {
+          // Handle different version formats (v1.2.3, 1.2.3, etc.)
+          const cleanCurrent = currentVersion.replace(/^v/, '').trim();
+          const cleanLatest = latestVersion.replace(/^v/, '').trim();
+          
+          const currentParts = cleanCurrent.split('.').map(part => {
+            const num = parseInt(part, 10);
+            return isNaN(num) ? part : num;
+          });
+          
+          const latestParts = cleanLatest.split('.').map(part => {
+            const num = parseInt(part, 10);
+            return isNaN(num) ? part : num;
+          });
+          
+          // Compare each part
+          for (let i = 0; i < Math.max(currentParts.length, latestParts.length); i++) {
+            const currentPart = currentParts[i] || 0;
+            const latestPart = latestParts[i] || 0;
+            
+            if (currentPart < latestPart) return true; // Update needed
+            if (currentPart > latestPart) return false; // Current is newer
+          }
+          
+          return false; // Versions are equal
+        } catch (error) {
+          // Fallback: simple string comparison if parsing fails
+          console.warn('Version comparison failed, using string comparison:', error);
+          const cleanCurrent = currentVersion.replace(/^v/, '').trim();
+          const cleanLatest = latestVersion.replace(/^v/, '').trim();
+          return cleanCurrent !== cleanLatest;
+        }
+      })();
+      
+      if (isUpdateAvailable) {
+        // Update available (current < latest)
+        firmwareUpdates[room] = {
+          available: true,
+          current: currentVersion,
+          latest: latestVersion
+        };
+        addLogEntry(
+          `Firmware update available for ${roomNames[room] || room}: ${currentVersion} → ${latestVersion}`,
+          'info'
+        );
+      } else {
+        // Current version is newer or equal to latest version
+        firmwareUpdates[room] = {
+          available: false,
+          current: currentVersion,
+          latest: latestVersion
+        };
+        await db.ref(`HOME/${room}/updateRequest`).set(false);
+        await db.ref(`HOME/${room}/updateStatus`).set('up_to_date');
+        addLogEntry(
+          `Firmware is up to date for ${roomNames[room] || room}: ${currentVersion} (latest: ${latestVersion})`,
+          'info'
+        );
+      }
     } else {
-      // Up to date
+      // No update needed - versions are the same or current version is unknown
       firmwareUpdates[room] = {
         available: false,
         current: currentVersion,
@@ -3745,7 +3802,14 @@ async function checkRoomFirmwareUpdate(room) {
       };
       await db.ref(`HOME/${room}/updateRequest`).set(false);
       await db.ref(`HOME/${room}/updateStatus`).set('up_to_date');
+      
+      if (currentVersion === '--') {
+        addLogEntry(`Firmware version unknown for ${roomNames[room] || room}`, 'warn');
+      } else if (currentVersion === latestVersion) {
+        addLogEntry(`Firmware is up to date for ${roomNames[room] || room}: ${currentVersion}`, 'info');
+      }
     }
+
     // Update badge display
     updateFirmwareBadge();
   } catch (err) {
@@ -3753,6 +3817,7 @@ async function checkRoomFirmwareUpdate(room) {
     addLogEntry(`Firmware check failed for ${room}: ${err.message}`, 'error');
   }
 }
+
 // MODIFIED: Initialize firmware checks for all devices
 function initializeFirmwareChecks() {
   // Check firmware for all devices on startup
@@ -3766,6 +3831,7 @@ function initializeFirmwareChecks() {
     });
   }, 30 * 60 * 1000);
 }
+
 // Close firmware modal when clicking outside
 window.addEventListener('click', (event) => {
   if (event.target === firmwareUpdateModal) {
