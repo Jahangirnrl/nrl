@@ -633,17 +633,16 @@ margin-top: 10px;
   .lock-switch.locked::after {
     transform: translateX(26px);
   }
-  /* Current Device Indicator */
-  .current-device {
-    text-align: center;
-    margin: 8px 0;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #38bdf8;
-/*    position: fixed;*/
-    right: 50%;
-    transform: translateX(-10%);
-  }
+/* Current Device Indicator - Flexbox Solution */
+.current-device {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 8px 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #38bdf8;
+}
   /* Device-specific theme colors */
   .room-1-theme { color: #10b981; }
   .room-2-theme { color: #38bdf8; }
@@ -1730,7 +1729,7 @@ const db = firebase.database();
 const auth = firebase.auth();
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'multiroom_session_active';
-const DASHBOARD_VERSION = 'v3.9.0';
+const DASHBOARD_VERSION = 'v4.0.0';
 // Current device state
 let currentDevice = 'ROOM_1';
 const devices = ['ROOM_1', 'ROOM_2', 'ROOM_3', 'ROOM_4'];
