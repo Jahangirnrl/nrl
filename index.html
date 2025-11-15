@@ -1744,7 +1744,7 @@ const db = firebase.database();
 const auth = firebase.auth();
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'multiroom_session_active';
-const DASHBOARD_VERSION = 'v4.1.0';
+const DASHBOARD_VERSION = 'v3.8.0';
 // Current device state
 let currentDevice = 'ROOM_1';
 const devices = ['ROOM_1', 'ROOM_2', 'ROOM_3', 'ROOM_4'];
@@ -3903,7 +3903,9 @@ async function checkRoomFirmwareUpdate(room) {
     
     
     
-    
+// SWIPE FUNCTIONALITY - FULL CORRECTED VERSION
+console.log('SWIPE: Initializing swipe functionality...');
+
 // Update swipe event variables
 let touchStartX = 0;
 let touchEndX = 0;
@@ -3914,41 +3916,82 @@ let mouseEndX = 0;
 let mouseStartY = 0;
 let mouseEndY = 0;
 let isMouseDown = false;
+let isMultiTouch = false;
 const SWIPE_THRESHOLD = 50;
-const VERTICAL_THRESHOLD = 30;
+
+// Function to check if any modal is open
+function isAnyModalOpen() {
+  const modals = [
+    settingsModal, createUserModal, editAccountModal, errorModal, firmwareUpdateModal
+  ];
+  return modals.some(modal => modal.classList.contains('show'));
+}
 
 // Touch event handlers
 function handleTouchStart(event) {
-  touchStartX = event.changedTouches[0].screenX;
-  touchStartY = event.changedTouches[0].screenY;
+  console.log('SWIPE: Touch start - fingers:', event.touches.length);
+  isMultiTouch = event.touches.length > 1;
+  
+  if (!isMultiTouch) {
+    touchStartX = event.changedTouches[0].screenX;
+    touchStartY = event.changedTouches[0].screenY;
+    console.log('SWIPE: Start position:', touchStartX, touchStartY);
+  }
 }
 
 function handleTouchEnd(event) {
+  console.log('SWIPE: Touch end');
+  
+  if (isAnyModalOpen()) {
+    console.log('SWIPE: Ignored - modal open');
+    return;
+  }
+  
+  if (isMultiTouch) {
+    console.log('SWIPE: Ignored - multi-touch');
+    isMultiTouch = false;
+    return;
+  }
+  
   touchEndX = event.changedTouches[0].screenX;
   touchEndY = event.changedTouches[0].screenY;
   
-  // Check if the touch was in a scrollable area
+  console.log('SWIPE: End position:', touchEndX, touchEndY);
+  
   const target = event.target;
   const isInScrollableArea = isElementScrollable(target) || isInsideScrollableArea(target) || isInAutomationScrollArea(target);
+  
+  console.log('SWIPE: In scrollable area:', isInScrollableArea);
   
   handleSwipeWithFeedback(touchStartX, touchEndX, touchStartY, touchEndY, false, isInScrollableArea);
 }
 
+function handleTouchMove(event) {
+  isMultiTouch = event.touches.length > 1;
+}
+
 // Mouse event handlers
 function handleMouseDown(event) {
+  console.log('SWIPE: Mouse down');
   isMouseDown = true;
   mouseStartX = event.screenX;
   mouseStartY = event.screenY;
 }
 
 function handleMouseUp(event) {
+  console.log('SWIPE: Mouse up');
   if (!isMouseDown) return;
+  
+  if (isAnyModalOpen()) {
+    console.log('SWIPE: Ignored - modal open');
+    isMouseDown = false;
+    return;
+  }
   
   isMouseDown = false;
   mouseEndX = event.screenX;
   mouseEndY = event.screenY;
   
-  // Check if the click was in a scrollable area
   const target = event.target;
   const isInScrollableArea = isElementScrollable(target) || isInsideScrollableArea(target) || isInAutomationScrollArea(target);
   
@@ -3959,7 +4002,108 @@ function handleMouseLeave() {
   isMouseDown = false;
 }
 
-// Check if element is scrollable
+// Enhanced swipe handler
+function handleSwipeWithFeedback(startX, endX, startY, endY, isMouse = false, isInScrollableArea = false) {
+  console.log('SWIPE: Processing swipe...');
+  
+  if (isAnyModalOpen()) {
+    console.log('SWIPE: Ignored - modal open');
+    return;
+  }
+  
+  if (!isMouse && isMultiTouch) {
+    console.log('SWIPE: Ignored - multi-touch');
+    return;
+  }
+  
+  const swipeDistanceX = endX - startX;
+  const swipeDistanceY = endY - startY;
+  
+  console.log('SWIPE: Distances - X:', swipeDistanceX, 'Y:', swipeDistanceY);
+  
+  // Check if it's primarily a horizontal swipe
+  if (Math.abs(swipeDistanceX) > Math.abs(swipeDistanceY)) {
+    console.log('SWIPE: Horizontal swipe detected');
+    
+    if (Math.abs(swipeDistanceX) < SWIPE_THRESHOLD) {
+      console.log('SWIPE: Too short - ignored');
+      return;
+    }
+    
+    const currentIndex = devices.indexOf(currentDevice);
+    let newIndex;
+    let direction;
+    
+    if (swipeDistanceX < 0) {
+      newIndex = currentIndex < devices.length - 1 ? currentIndex + 1 : 0;
+      direction = 'swipe-left';
+      console.log('SWIPE: Left -> Next device');
+    } else {
+      newIndex = currentIndex > 0 ? currentIndex - 1 : devices.length - 1;
+      direction = 'swipe-right';
+      console.log('SWIPE: Right -> Previous device');
+    }
+    
+    console.log('SWIPE: Switching from', currentDevice, 'to', devices[newIndex]);
+    showSwipeFeedback(direction);
+    
+    setTimeout(() => {
+      switchDeviceImmediately(devices[newIndex]);
+      hideSwipeFeedback();
+    }, 150);
+    
+  } else {
+    console.log('SWIPE: Vertical swipe detected');
+    
+    if (isInScrollableArea) {
+      console.log('SWIPE: In scrollable area - ignored');
+      return;
+    }
+    
+    if (Math.abs(swipeDistanceY) < SWIPE_THRESHOLD) {
+      console.log('SWIPE: Too short - ignored');
+      return;
+    }
+    
+    const currentTab = document.querySelector('.tab-btn.active');
+    if (!currentTab) {
+      console.log('SWIPE: No active tab found');
+      return;
+    }
+    
+    const tabName = currentTab.dataset.tab;
+    const tabOrder = ['dashboard', 'automation', 'weather', 'logs'];
+    const currentTabIndex = tabOrder.indexOf(tabName);
+    
+    if (currentTabIndex === -1) {
+      console.log('SWIPE: Current tab not found in order');
+      return;
+    }
+    
+    let newTabIndex;
+    let direction;
+    
+    if (swipeDistanceY < 0) {
+      newTabIndex = currentTabIndex < tabOrder.length - 1 ? currentTabIndex + 1 : 0;
+      direction = 'swipe-up';
+      console.log('SWIPE: Up -> Next tab');
+    } else {
+      newTabIndex = currentTabIndex > 0 ? currentTabIndex - 1 : tabOrder.length - 1;
+      direction = 'swipe-down';
+      console.log('SWIPE: Down -> Previous tab');
+    }
+    
+    console.log('SWIPE: Switching from', tabName, 'to', tabOrder[newTabIndex]);
+    showSwipeFeedback(direction);
+    
+    setTimeout(() => {
+      switchMainTab(tabOrder[newTabIndex]);
+      hideSwipeFeedback();
+    }, 150);
+  }
+}
+
+// Helper functions for scroll detection
 function isElementScrollable(element) {
   if (!element) return false;
   
@@ -3976,7 +4120,6 @@ function isElementScrollable(element) {
   return isScrollable && hasScrollableContent;
 }
 
-// Check if element is inside a scrollable area
 function isInsideScrollableArea(element) {
   let currentElement = element;
   while (currentElement && currentElement !== document.body) {
@@ -3988,27 +4131,18 @@ function isInsideScrollableArea(element) {
   return false;
 }
 
-// NEW: Special detection for automation scroll areas
 function isInAutomationScrollArea(element) {
   if (!element) return false;
   
-  // Check if element is inside automation schedule cards or lists
   let currentElement = element;
   while (currentElement && currentElement !== document.body) {
-    // Automation schedule cards and their content
     if (currentElement.classList && (
         currentElement.classList.contains('schedule-card') ||
         currentElement.classList.contains('schedule-header') ||
         currentElement.classList.contains('schedule-details') ||
         currentElement.classList.contains('schedule-actions') ||
         currentElement.classList.contains('schedulesList') ||
-        currentElement.id === 'schedulesList'
-    )) {
-      return true;
-    }
-    
-    // Automation form elements
-    if (currentElement.classList && (
+        currentElement.id === 'schedulesList' ||
         currentElement.classList.contains('schedule-form') ||
         currentElement.classList.contains('form-group') ||
         currentElement.classList.contains('form-input') ||
@@ -4019,14 +4153,12 @@ function isInAutomationScrollArea(element) {
       return true;
     }
     
-    // Automation content wrapper
     if (currentElement.classList && currentElement.classList.contains('automation-content-wrapper')) {
-      // Only allow vertical swipe in the header area, not in the content area
       const automationHeader = currentElement.querySelector('.automation-header');
       if (automationHeader && automationHeader.contains(element)) {
-        return false; // Allow swipe in header
+        return false;
       }
-      return true; // Block swipe in content area
+      return true;
     }
     
     currentElement = currentElement.parentElement;
@@ -4034,84 +4166,69 @@ function isInAutomationScrollArea(element) {
   return false;
 }
 
-// Enhanced swipe handler - SMART VERTICAL SWIPE DETECTION
-function handleSwipeWithFeedback(startX, endX, startY, endY, isMouse = false, isInScrollableArea = false) {
-  const swipeDistanceX = endX - startX;
-  const swipeDistanceY = endY - startY;
+// CORRECTED: Device switching function
+function switchDeviceImmediately(deviceId) {
+  console.log('SWIPE: Switching to device:', deviceId);
   
-  // Check if it's primarily a horizontal swipe
-  if (Math.abs(swipeDistanceX) > Math.abs(swipeDistanceY)) {
-    // HORIZONTAL SWIPE - Device tab switching (ALWAYS WORKS)
-    if (Math.abs(swipeDistanceX) < SWIPE_THRESHOLD) {
-      return;
-    }
-    
-    // Get current device index
-    const currentIndex = devices.indexOf(currentDevice);
-    let newIndex;
-    let direction;
-    
-    if (swipeDistanceX < 0) {
-      // SWIPE LEFT → Move to RIGHT TAB (next device)
-      newIndex = currentIndex < devices.length - 1 ? currentIndex + 1 : 0;
-      direction = 'swipe-left';
-    } else {
-      // SWIPE RIGHT → Move to LEFT TAB (previous device)  
-      newIndex = currentIndex > 0 ? currentIndex - 1 : devices.length - 1;
-      direction = 'swipe-right';
-    }
-    
-    showSwipeFeedback(direction);
-    
-    setTimeout(() => {
-      switchDeviceImmediately(devices[newIndex]);
-      hideSwipeFeedback();
-    }, 150);
-    
-    addLogEntry(`${isMouse ? 'Mouse' : 'Touch'} swipe ${direction === 'swipe-left' ? 'left' : 'right'} - switching to ${roomNames[devices[newIndex]] || devices[newIndex]}`, 'info');
-    
-  } else {
-    // VERTICAL SWIPE - Main tab switching (SMART DETECTION)
-    
-    // If in scrollable area, allow normal scrolling - don't switch tabs
-    if (isInScrollableArea) {
-      return;
-    }
-    
-    if (Math.abs(swipeDistanceY) < SWIPE_THRESHOLD) {
-      return;
-    }
-    
-    // Get current main tab
-    const currentTab = document.querySelector('.tab-btn.active').dataset.tab;
-    const tabOrder = ['dashboard', 'automation', 'weather', 'logs'];
-    const currentTabIndex = tabOrder.indexOf(currentTab);
-    let newTabIndex;
-    let direction;
-    
-    if (swipeDistanceY < 0) {
-      // SWIPE UP → Move to NEXT TAB (down the list)
-      newTabIndex = currentTabIndex < tabOrder.length - 1 ? currentTabIndex + 1 : 0;
-      direction = 'swipe-up';
-    } else {
-      // SWIPE DOWN → Move to PREVIOUS TAB (up the list)
-      newTabIndex = currentTabIndex > 0 ? currentTabIndex - 1 : tabOrder.length - 1;
-      direction = 'swipe-down';
-    }
-    
-    showSwipeFeedback(direction);
-    
-    setTimeout(() => {
-      switchMainTab(tabOrder[newTabIndex]);
-      hideSwipeFeedback();
-    }, 150);
-    
-    addLogEntry(`${isMouse ? 'Mouse' : 'Touch'} swipe ${direction === 'swipe-up' ? 'up' : 'down'} - switching to ${tabOrder[newTabIndex]}`, 'info');
+  if (!devices.includes(deviceId)) {
+    console.log('SWIPE: Invalid device ID');
+    return;
   }
+  
+  // Clean up existing listeners
+  cleanupListeners();
+  currentDevice = deviceId;
+  
+  // Reset connection stability for the new device
+  deviceStates[currentDevice].connectionStability = 'unknown'; 
+  deviceStates[currentDevice].lastHeartbeat = null;
+  
+  // Update UI with custom names
+  updateUICustomNames();
+  
+  // Update device tabs styling
+  deviceTabs.forEach(tab => {
+    // Remove all active classes
+    tab.classList.remove('active-room-1', 'active-room-2', 'active-room-3', 'active-room-4');
+    
+    if (tab.dataset.device === deviceId) {
+      const roomNum = deviceId.split('_')[1];
+      tab.classList.add(`active-room-${roomNum}`);
+      console.log('SWIPE: Added active class to tab:', `active-room-${roomNum}`);
+    }
+  });
+  
+  // Update current device display
+  const roomNum = deviceId.split('_')[1];
+  currentDeviceDisplay.className = `current-device room-${roomNum}-theme`;
+  currentDeviceDisplay.textContent = `Controlling: ${roomNames[deviceId] || deviceId.replace('_', '-')}`;
+  
+  // Update theme for relays
+  updateDeviceTheme();
+  
+  // Update theme for main tabs, status, and version info
+  updateThemeColors();
+  
+  // Setup new listeners for the current device
+  setupDeviceListeners();
+  
+  // Load schedules for the current device
+  loadSchedules();
+  
+  // Check if weather tab is active and load data
+  const weatherTab = document.querySelector('.tab-btn[data-tab="weather"]');
+  if (weatherTab && weatherTab.classList.contains('active')) {
+    loadWeatherData();
+  }
+  
+  addLogEntry(`Switched to ${roomNames[deviceId] || deviceId}`, 'info');
+  console.log('SWIPE: Device switch completed successfully');
 }
 
 // Function to switch main tabs
 function switchMainTab(tabName) {
+  console.log('SWIPE: Switching to tab:', tabName);
+  
   const tabBtns = document.querySelectorAll('.tab-btn');
   const tabContents = document.querySelectorAll('.tab-content');
   
@@ -4135,43 +4252,84 @@ function switchMainTab(tabName) {
         loadWeatherData();
         break;
     }
+    
+    console.log('SWIPE: Tab switch successful');
+  } else {
+    console.log('SWIPE: Tab switch failed - target not found');
   }
 }
 
-// Immediate device switching
-function switchDeviceImmediately(deviceId) {
-  if (!devices.includes(deviceId)) return;
+// UI update functions
+function updateUICustomNames() {
+  console.log('SWIPE: Updating UI custom names for:', currentDevice);
   
-  cleanupListeners();
-  currentDevice = deviceId;
-  updateUICustomNames();
-  
+  // Update device tabs
   deviceTabs.forEach(tab => {
-    tab.classList.remove('active-room-1', 'active-room-2', 'active-room-3', 'active-room-4');
-    if (tab.dataset.device === deviceId) {
-      const roomNum = deviceId.split('_')[1];
-      tab.classList.add(`active-room-${roomNum}`);
+    const device = tab.dataset.device;
+    if (roomNames[device]) {
+      tab.textContent = roomNames[device];
     }
   });
   
-  const roomNum = deviceId.split('_')[1];
-  currentDeviceDisplay.className = `current-device room-${roomNum}-theme`;
-  
-  updateDeviceTheme();
-  updateThemeColors();
-  setupDeviceListeners();
-  loadSchedules();
-  
-  const weatherTab = document.querySelector('.tab-btn[data-tab="weather"]');
-  if (weatherTab && weatherTab.classList.contains('active')) {
-    loadWeatherData();
+  // Update current device display
+  if (roomNames[currentDevice]) {
+    currentDeviceDisplay.textContent = `Controlling: ${roomNames[currentDevice]}`;
   }
   
-  addLogEntry(`Switched to ${roomNames[deviceId] || deviceId}`, 'info');
+  // Update relay buttons
+  if (relayNames[currentDevice]) {
+    relayBtns.forEach((btn, index) => {
+      btn.textContent = relayNames[currentDevice][index];
+    });
+  }
+  
+  console.log('SWIPE: UI custom names updated');
+}
+
+function updateDeviceTheme() {
+  console.log('SWIPE: Updating device theme for:', currentDevice);
+  
+  // Update relay buttons theme
+  relayBtns.forEach(btn => {
+    // Remove all room classes
+    btn.className = btn.className.replace(/\broom-\d\b/g, '');
+    
+    const roomNum = currentDevice.split('_')[1];
+    if (btn.classList.contains('on')) {
+      btn.classList.add(`room-${roomNum}`);
+    }
+  });
+  
+  console.log('SWIPE: Device theme updated');
+}
+
+function updateThemeColors() {
+  console.log('SWIPE: Updating theme colors for:', currentDevice);
+  
+  const roomNum = currentDevice.split('_')[1];
+  
+  // Update main tabs
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  tabBtns.forEach(btn => {
+    // Remove all room-specific active classes
+    btn.classList.remove('room-1-active', 'room-2-active', 'room-3-active', 'room-4-active');
+    
+    // Add the current room's active class to active tabs
+    if (btn.classList.contains('active')) {
+      btn.classList.add(`room-${roomNum}-active`);
+    }
+  });
+  
+  // Update version info colors
+  versionInfoEl.className = `dashboard-version room-${roomNum}-version`;
+  firmwareInfoEl.className = `firmware-version room-${roomNum}-firmware`;
+  
+  console.log('SWIPE: Theme colors updated');
 }
 
 // Visual feedback functions
 function showSwipeFeedback(direction) {
+  console.log('SWIPE: Showing feedback:', direction);
   let feedback = document.getElementById('swipe-feedback');
   if (!feedback) {
     feedback = document.createElement('div');
@@ -4198,55 +4356,82 @@ function hideSwipeFeedback() {
   }
 }
 
-// Add event listeners
-document.addEventListener('DOMContentLoaded', function() {
+// Initialize swipe functionality
+function initializeSwipe() {
+  console.log('SWIPE: Initializing event listeners...');
+  
+  // Remove existing listeners
+  document.removeEventListener('touchstart', handleTouchStart);
+  document.removeEventListener('touchmove', handleTouchMove);
+  document.removeEventListener('touchend', handleTouchEnd);
+  document.removeEventListener('mousedown', handleMouseDown);
+  document.removeEventListener('mouseup', handleMouseUp);
+  document.removeEventListener('mouseleave', handleMouseLeave);
+  
+  // Add new listeners
   document.addEventListener('touchstart', handleTouchStart, { passive: true });
+  document.addEventListener('touchmove', handleTouchMove, { passive: true });
   document.addEventListener('touchend', handleTouchEnd, { passive: true });
   document.addEventListener('mousedown', handleMouseDown);
   document.addEventListener('mouseup', handleMouseUp);
   document.addEventListener('mouseleave', handleMouseLeave);
   
-  console.log('Smart swipe navigation enabled:');
-  console.log('- Horizontal: Always switch devices');
-  console.log('- Vertical: Smart tab switching (respects scrollable areas)');
-});
+  console.log('SWIPE: Event listeners initialized');
+  
+  // Add CSS for swipe feedback
+  if (!document.getElementById('swipe-feedback-style')) {
+    const swipeStyle = document.createElement('style');
+    swipeStyle.id = 'swipe-feedback-style';
+    swipeStyle.textContent = `
+      .swipe-feedback {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 9999;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      
+      .swipe-feedback.active {
+        opacity: 1;
+      }
+      
+      .swipe-feedback.swipe-left {
+        background: linear-gradient(to right, rgba(16, 185, 129, 0.15), transparent);
+      }
+      
+      .swipe-feedback.swipe-right {
+        background: linear-gradient(to left, rgba(56, 189, 248, 0.15), transparent);
+      }
+      
+      .swipe-feedback.swipe-up {
+        background: linear-gradient(to bottom, rgba(139, 92, 246, 0.15), transparent);
+      }
+      
+      .swipe-feedback.swipe-down {
+        background: linear-gradient(to top, rgba(245, 158, 11, 0.15), transparent);
+      }
+    `;
+    document.head.appendChild(swipeStyle);
+    console.log('SWIPE: CSS styles added');
+  }
+}
 
-// Visual feedback CSS
-const swipeStyle = document.createElement('style');
-swipeStyle.textContent = `
-  .swipe-feedback {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 9999;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  
-  .swipe-feedback.active {
-    opacity: 1;
-  }
-  
-  .swipe-feedback.swipe-left {
-    background: linear-gradient(to right, rgba(16, 185, 129, 0.15), transparent);
-  }
-  
-  .swipe-feedback.swipe-right {
-    background: linear-gradient(to left, rgba(56, 189, 248, 0.15), transparent);
-  }
-  
-  .swipe-feedback.swipe-up {
-    background: linear-gradient(to bottom, rgba(139, 92, 246, 0.15), transparent);
-  }
-  
-  .swipe-feedback.swipe-down {
-    background: linear-gradient(to top, rgba(245, 158, 11, 0.15), transparent);
-  }
-`;
-document.head.appendChild(swipeStyle);
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeSwipe);
+} else {
+  initializeSwipe();
+}
+
+// Also re-initialize after a short delay to ensure everything is loaded
+setTimeout(initializeSwipe, 1000);
+
+console.log('SWIPE: Setup complete - check browser console for debug messages');
+
         
     
     
