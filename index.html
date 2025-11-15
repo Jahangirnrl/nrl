@@ -288,62 +288,88 @@
     border: 2px solid #334155;
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
   }  
-  /* Device Selection Tabs */
-  .device-tabs {
-    display: flex;
-    gap: 07px;
-    margin-top: 3px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .device-tab {
-    padding: 4px 3px;
-    border: none;
-    border-radius: 6px;
-    background: #1e293b;
-    color: #94a3b8;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s;
-    font-size: 0.85rem;
-    border: 2px solid transparent;
-  }
-  .device-tab:hover {
-    background: #334155;
-    color: #e2e8f0;
-  }
-  .device-tab.active-room-1 {
-    background: #10b981; 
-    color: #042f2e;
-    border-color: #10b981;
-  }
-  .device-tab.active-room-2 {
-    background: #38bdf8;
-    color: #0f172a;
-    border-color: #38bdf8;
-  }
-  .device-tab.active-room-3 {
-    background: #f59e0b;
-    color: #0f172a;
-    border-color: #f59e0b;
-  }
-  .device-tab.active-room-4 {
-    background: #8b5cf6;
-    color: #f1f5f9;
-    border-color: #8b5cf6;
-  }
-  /* Main Tabs */
+  /* Updated Device Selection Tabs */
+.device-tabs {
+  display: flex;
+  gap: 0px;
+  margin-top: 3px;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.device-tab {
+  flex: 1 0 24%;
+  max-width: 24%;
+  padding: 4px 6px;
+  border: none;
+  border-radius: 6px 6px 0 0;
+  background: #1e293b;
+  color: #94a3b8;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  position: relative;
+  z-index: 2;
+}
+
+.device-tab:hover {
+  background: #334155;
+  color: #e2e8f0;
+}
+
+/* Device tab active states - matching main tab colors */
+.device-tab.active-room-1 { 
+  background: #10b981;
+  color: #042f2e;
+}
+
+.device-tab.active-room-2 { 
+  background: #38bdf8;
+  color: #0f172a;
+}
+
+.device-tab.active-room-3 { 
+  background: #f59e0b;
+  color: #0f172a;
+}
+
+.device-tab.active-room-4 { 
+  background: #8b5cf6;
+  color: #f1f5f9;
+}
+
+/* NEW: Device tab bottom line */
+.device-tab-bottom-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: #334155;
+  z-index: 1;
+}
+    
+    
+  /* Main Tabs - MODIFIED: 100% width, 24% for each button */
   .tabs { 
     display:flex; 
-    gap:6px; 
+    width: 100%;
     margin-top:06px; 
     justify-content: center;
     flex-wrap: wrap;
+    position: relative;
   }
   .tab-btn { 
+    flex: 1 0 24%;
+    max-width: 24%;
     padding:4px 06px; 
     border:none; 
-    border-radius:6px; 
+    border-radius:6px 6px 0 0; 
     background:#1e293b; 
     color:#94a3b8; 
     cursor:pointer; 
@@ -351,6 +377,8 @@
     transition: background 0.2s, color 0.2s;
     font-size:0.8rem; 
     white-space: nowrap;
+    position: relative;
+    z-index: 2;
   }
   .tab-btn:hover { background:#334155; }
   /* Room-specific active tab colors */
@@ -370,6 +398,28 @@
     background:#8b5cf6; 
     color:#f1f5f9; 
   }
+  
+  /* NEW: Tab slider indicator */
+  .tab-slider {
+    position: absolute;
+    bottom: 0;
+    height: 2px;
+    background: #38bdf8;
+    transition: left 0.3s ease, width 0.3s ease;
+    z-index: 3;
+  }
+  
+  /* NEW: Tab bottom line */
+  .tab-bottom-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #334155;
+    z-index: 1;
+  }
+  
   .tab-content { display:none; padding-top: 6px; }
   .tab-content.active { display:block; }
 /* Status styles */
@@ -944,7 +994,16 @@ margin-top: 10px;
     color: #e2e8f0;
     background: rgba(255, 255, 255, 0.1);
   }
+    
   .settings-tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #334155;
+    padding-bottom: 10px;
+  }
+    
+ .settings-tabs1 {
     display: flex;
     gap: 5px;
     margin-bottom: 20px;
@@ -976,6 +1035,11 @@ margin-top: 10px;
   .settings-panel.active {
     display: block;
   }
+    
+/* Hide settings tabs */
+.settings-tabs {
+  display: none !important;
+}    
   .room-settings {
     margin-bottom: 20px;
   }
@@ -1350,15 +1414,18 @@ margin-top: 10px;
     <!-- Empty div to maintain flexbox spacing -->
     <div></div>
   </header>
-  <div class="header-center-content">
-    <div class="device-tabs">
-      <button class="device-tab active-room-1" data-device="ROOM_1">Room-1</button>
-      <button class="device-tab" data-device="ROOM_2">Room-2</button>
-      <button class="device-tab" data-device="ROOM_3">Room-3</button>
-      <button class="device-tab" data-device="ROOM_4">Room-4</button>
-    </div>
+  <div class="device-tabs">
+  <button class="device-tab active-room-1" data-device="ROOM_1">Room-1</button>
+  <button class="device-tab" data-device="ROOM_2">Room-2</button>
+  <button class="device-tab" data-device="ROOM_3">Room-3</button>
+  <button class="device-tab" data-device="ROOM_4">Room-4</button>
+  <!-- ADD THIS LINE -->
+  <div class="device-tab-bottom-line"></div>
+</div>
     <div class="current-device room-1-theme" id="currentDeviceDisplay">Controlling: ROOM-1</div>
     <div class="tabs">
+      <div class="tab-bottom-line"></div>
+      <div class="tab-slider"></div>
       <button class="tab-btn active room-1-active" data-tab="dashboard"><i class="fas fa-power-off"></i> Dashboard</button>
       <button class="tab-btn" data-tab="automation"><i class="fas fa-clock"></i> Automation</button>
       <button class="tab-btn" data-tab="weather"><i class="fas fa-cloud-sun"></i> Weather</button>
@@ -1453,7 +1520,7 @@ margin-top: 10px;
       <h3>Device Settings</h3>
       <button class="close-settings" id="closeSettingsBtn">&times;</button>
     </div>
-    <div class="settings-tabs">
+    <div class="settings-tabs1">
         <button class="tab-btn room-2-color" id="settingsBtn1">ROOM-1</button>
         <button class="tab-btn room-2-color" id="settingsBtn2">ROOM-2</button>
         <button class="tab-btn room-3-color" id="settingsBtn3">ROOM-3</button>
@@ -1663,7 +1730,7 @@ const db = firebase.database();
 const auth = firebase.auth();
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'multiroom_session_active';
-const DASHBOARD_VERSION = 'v3.8.0';
+const DASHBOARD_VERSION = 'v3.9.0';
 // Current device state
 let currentDevice = 'ROOM_1';
 const devices = ['ROOM_1', 'ROOM_2', 'ROOM_3', 'ROOM_4'];
@@ -2409,13 +2476,13 @@ restartBtn.addEventListener('click', () => {
          */
         async function fetchWeatherData(deviceId) {
             try {
-                addLogEntry(`Fetching weather data for ${deviceId} from Firebase`, 'info', 'weather');
+                addLogEntry("Fetching weather data for ${deviceId} from Firebase", "info", "weather");
                 // MODIFIED: Use device-specific path
                 const path = `HOME/${deviceId}/weather`;
                 const snapshot = await db.ref(path).once('value');
                 const weatherData = snapshot.val();
                 if (!weatherData) {
-                    addLogEntry(`No weather data found for ${deviceId} at ${path}`, 'warn', 'weather');
+                    addLogEntry(`No weather data found for ${deviceId} at ${path}`, "warn", "weather");
                     // Return a default structure with location/source info
                     return {
                         temperature: '--', humidity: '--', 
@@ -2424,7 +2491,7 @@ restartBtn.addEventListener('click', () => {
                         source: `${deviceId} | DHT-11`
                     };
                 }
-                addLogEntry(`Weather data loaded for ${deviceId} from Firebase`, 'info', 'weather');
+                addLogEntry(`Weather data loaded for ${deviceId} from Firebase`, "info", "weather");
                 return {
                     temperature: weatherData.temperature || '--',
                     humidity: weatherData.humidity || '--',
@@ -2439,7 +2506,7 @@ restartBtn.addEventListener('click', () => {
                     lastUpdate: weatherData.lastUpdate || '--:--'
                 };
             } catch (error) {
-                addLogEntry(`Failed to fetch weather data for ${deviceId} from Firebase: ${error.message}`, 'error', 'weather');
+                addLogEntry(`Failed to fetch weather data for ${deviceId} from Firebase: ${error.message}`, "error", "weather");
                 return null;
             }
         }
@@ -2471,7 +2538,7 @@ restartBtn.addEventListener('click', () => {
             // Update refresh button state
             weatherRefreshBtn.disabled = false;
             weatherRefreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Weather Data';
-            addLogEntry(`Weather UI updated for ${roomName}`, 'info', 'weather');
+            addLogEntry(`Weather UI updated for ${roomName}`, "info", "weather");
         }
         /**
          * Loads weather data for the current device and updates the UI.
@@ -3818,10 +3885,14 @@ async function checkRoomFirmwareUpdate(room) {
   }
 }
 
-   
+
     
     
-// Update swipe event variables
+    
+    
+    
+    
+// Update swipe event variables to include vertical swipe
 let touchStartX = 0;
 let touchEndX = 0;
 let touchStartY = 0;
@@ -3831,8 +3902,8 @@ let mouseEndX = 0;
 let mouseStartY = 0;
 let mouseEndY = 0;
 let isMouseDown = false;
-const SWIPE_THRESHOLD = 50;
-const VERTICAL_THRESHOLD = 30;
+const SWIPE_THRESHOLD = 50; // Minimum distance for a swipe
+const VERTICAL_THRESHOLD = 30; // Maximum horizontal movement to still count as vertical swipe
 
 // Touch event handlers
 function handleTouchStart(event) {
@@ -3843,12 +3914,7 @@ function handleTouchStart(event) {
 function handleTouchEnd(event) {
   touchEndX = event.changedTouches[0].screenX;
   touchEndY = event.changedTouches[0].screenY;
-  
-  // Check if the touch was in a scrollable area
-  const target = event.target;
-  const isInScrollableArea = isElementScrollable(target) || isInsideScrollableArea(target) || isInAutomationScrollArea(target);
-  
-  handleSwipeWithFeedback(touchStartX, touchEndX, touchStartY, touchEndY, false, isInScrollableArea);
+  handleSwipeWithFeedback(touchStartX, touchEndX, touchStartY, touchEndY, false);
 }
 
 // Mouse event handlers
@@ -3864,103 +3930,23 @@ function handleMouseUp(event) {
   isMouseDown = false;
   mouseEndX = event.screenX;
   mouseEndY = event.screenY;
-  
-  // Check if the click was in a scrollable area
-  const target = event.target;
-  const isInScrollableArea = isElementScrollable(target) || isInsideScrollableArea(target) || isInAutomationScrollArea(target);
-  
-  handleSwipeWithFeedback(mouseStartX, mouseEndX, mouseStartY, mouseEndY, true, isInScrollableArea);
+  handleSwipeWithFeedback(mouseStartX, mouseEndX, mouseStartY, mouseEndY, true);
 }
 
 function handleMouseLeave() {
   isMouseDown = false;
 }
 
-// Check if element is scrollable
-function isElementScrollable(element) {
-  if (!element) return false;
-  
-  const style = window.getComputedStyle(element);
-  const isScrollable = (
-    style.overflow === 'auto' ||
-    style.overflow === 'scroll' ||
-    style.overflowY === 'auto' ||
-    style.overflowY === 'scroll'
-  );
-  
-  const hasScrollableContent = element.scrollHeight > element.clientHeight;
-  
-  return isScrollable && hasScrollableContent;
-}
-
-// Check if element is inside a scrollable area
-function isInsideScrollableArea(element) {
-  let currentElement = element;
-  while (currentElement && currentElement !== document.body) {
-    if (isElementScrollable(currentElement)) {
-      return true;
-    }
-    currentElement = currentElement.parentElement;
-  }
-  return false;
-}
-
-// NEW: Special detection for automation scroll areas
-function isInAutomationScrollArea(element) {
-  if (!element) return false;
-  
-  // Check if element is inside automation schedule cards or lists
-  let currentElement = element;
-  while (currentElement && currentElement !== document.body) {
-    // Automation schedule cards and their content
-    if (currentElement.classList && (
-        currentElement.classList.contains('schedule-card') ||
-        currentElement.classList.contains('schedule-header') ||
-        currentElement.classList.contains('schedule-details') ||
-        currentElement.classList.contains('schedule-actions') ||
-        currentElement.classList.contains('schedulesList') ||
-        currentElement.id === 'schedulesList'
-    )) {
-      return true;
-    }
-    
-    // Automation form elements
-    if (currentElement.classList && (
-        currentElement.classList.contains('schedule-form') ||
-        currentElement.classList.contains('form-group') ||
-        currentElement.classList.contains('form-input') ||
-        currentElement.classList.contains('form-select') ||
-        currentElement.classList.contains('trigger-fields') ||
-        currentElement.id === 'scheduleFormContainer'
-    )) {
-      return true;
-    }
-    
-    // Automation content wrapper
-    if (currentElement.classList && currentElement.classList.contains('automation-content-wrapper')) {
-      // Only allow vertical swipe in the header area, not in the content area
-      const automationHeader = currentElement.querySelector('.automation-header');
-      if (automationHeader && automationHeader.contains(element)) {
-        return false; // Allow swipe in header
-      }
-      return true; // Block swipe in content area
-    }
-    
-    currentElement = currentElement.parentElement;
-  }
-  return false;
-}
-
-// Enhanced swipe handler - SMART VERTICAL SWIPE DETECTION
-function handleSwipeWithFeedback(startX, endX, startY, endY, isMouse = false, isInScrollableArea = false) {
+// Enhanced swipe handler with BOTH horizontal and vertical swipe support
+function handleSwipeWithFeedback(startX, endX, startY, endY, isMouse = false) {
   const swipeDistanceX = endX - startX;
   const swipeDistanceY = endY - startY;
   
   // Check if it's primarily a horizontal swipe
   if (Math.abs(swipeDistanceX) > Math.abs(swipeDistanceY)) {
-    // HORIZONTAL SWIPE - Device tab switching (ALWAYS WORKS)
+    // HORIZONTAL SWIPE - Device tab switching
     if (Math.abs(swipeDistanceX) < SWIPE_THRESHOLD) {
-      return;
+      return; // Not a significant horizontal swipe
     }
     
     // Get current device index
@@ -3968,6 +3954,7 @@ function handleSwipeWithFeedback(startX, endX, startY, endY, isMouse = false, is
     let newIndex;
     let direction;
     
+    // CORRECTED SWIPE DIRECTION LOGIC:
     if (swipeDistanceX < 0) {
       // SWIPE LEFT → Move to RIGHT TAB (next device)
       newIndex = currentIndex < devices.length - 1 ? currentIndex + 1 : 0;
@@ -3978,25 +3965,22 @@ function handleSwipeWithFeedback(startX, endX, startY, endY, isMouse = false, is
       direction = 'swipe-right';
     }
     
+    // Show visual feedback
     showSwipeFeedback(direction);
     
+    // Switch to the new device immediately with slight delay for smooth animation
     setTimeout(() => {
       switchDeviceImmediately(devices[newIndex]);
       hideSwipeFeedback();
     }, 150);
     
+    // Log the swipe action
     addLogEntry(`${isMouse ? 'Mouse' : 'Touch'} swipe ${direction === 'swipe-left' ? 'left' : 'right'} - switching to ${roomNames[devices[newIndex]] || devices[newIndex]}`, 'info');
     
   } else {
-    // VERTICAL SWIPE - Main tab switching (SMART DETECTION)
-    
-    // If in scrollable area, allow normal scrolling - don't switch tabs
-    if (isInScrollableArea) {
-      return;
-    }
-    
+    // VERTICAL SWIPE - Main tab switching
     if (Math.abs(swipeDistanceY) < SWIPE_THRESHOLD) {
-      return;
+      return; // Not a significant vertical swipe
     }
     
     // Get current main tab
@@ -4016,25 +4000,30 @@ function handleSwipeWithFeedback(startX, endX, startY, endY, isMouse = false, is
       direction = 'swipe-down';
     }
     
+    // Show visual feedback
     showSwipeFeedback(direction);
     
+    // Switch to the new tab with slight delay for smooth animation
     setTimeout(() => {
       switchMainTab(tabOrder[newTabIndex]);
       hideSwipeFeedback();
     }, 150);
     
+    // Log the swipe action
     addLogEntry(`${isMouse ? 'Mouse' : 'Touch'} swipe ${direction === 'swipe-up' ? 'up' : 'down'} - switching to ${tabOrder[newTabIndex]}`, 'info');
   }
 }
 
-// Function to switch main tabs
+// NEW: Function to switch main tabs
 function switchMainTab(tabName) {
   const tabBtns = document.querySelectorAll('.tab-btn');
   const tabContents = document.querySelectorAll('.tab-content');
   
+  // Remove active class from all tabs and contents
   tabBtns.forEach(btn => btn.classList.remove('active'));
   tabContents.forEach(content => content.classList.remove('active'));
   
+  // Add active class to target tab and content
   const targetTab = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
   const targetContent = document.getElementById(tabName);
   
@@ -4042,8 +4031,10 @@ function switchMainTab(tabName) {
     targetTab.classList.add('active');
     targetContent.classList.add('active');
     
+    // Update tab theme colors
     updateThemeColors();
     
+    // Load specific content based on tab
     switch(tabName) {
       case 'automation':
         loadSchedules();
@@ -4051,18 +4042,29 @@ function switchMainTab(tabName) {
       case 'weather':
         loadWeatherData();
         break;
+      case 'logs':
+        // Logs are automatically updated
+        break;
     }
   }
 }
 
-// Immediate device switching
+// NEW: Immediate device switching that works regardless of online status
 function switchDeviceImmediately(deviceId) {
   if (!devices.includes(deviceId)) return;
   
+  console.log(`Immediate switch to device: ${deviceId}`);
+  
+  // Clean up existing listeners
   cleanupListeners();
+  
+  // Update current device
   currentDevice = deviceId;
+  
+  // Update UI with custom names
   updateUICustomNames();
   
+  // Update device tabs styling
   deviceTabs.forEach(tab => {
     tab.classList.remove('active-room-1', 'active-room-2', 'active-room-3', 'active-room-4');
     if (tab.dataset.device === deviceId) {
@@ -4074,11 +4076,19 @@ function switchDeviceImmediately(deviceId) {
   const roomNum = deviceId.split('_')[1];
   currentDeviceDisplay.className = `current-device room-${roomNum}-theme`;
   
+  // Update theme for relays
   updateDeviceTheme();
+  
+  // Update theme for main tabs, status, and version info
   updateThemeColors();
+  
+  // Setup new listeners for the current device (will work even if device is offline)
   setupDeviceListeners();
+  
+  // Load schedules for the current device
   loadSchedules();
   
+  // Check if weather tab is active and load data
   const weatherTab = document.querySelector('.tab-btn[data-tab="weather"]');
   if (weatherTab && weatherTab.classList.contains('active')) {
     loadWeatherData();
@@ -4087,7 +4097,7 @@ function switchDeviceImmediately(deviceId) {
   addLogEntry(`Switched to ${roomNames[deviceId] || deviceId}`, 'info');
 }
 
-// Visual feedback functions
+// Enhanced visual feedback functions for both horizontal and vertical swipes
 function showSwipeFeedback(direction) {
   let feedback = document.getElementById('swipe-feedback');
   if (!feedback) {
@@ -4115,20 +4125,23 @@ function hideSwipeFeedback() {
   }
 }
 
-// Add event listeners
+// Add event listeners for both touch and mouse events
 document.addEventListener('DOMContentLoaded', function() {
+  // Touch events (for mobile devices)
   document.addEventListener('touchstart', handleTouchStart, { passive: true });
   document.addEventListener('touchend', handleTouchEnd, { passive: true });
+  
+  // Mouse events (for desktop devices)
   document.addEventListener('mousedown', handleMouseDown);
   document.addEventListener('mouseup', handleMouseUp);
   document.addEventListener('mouseleave', handleMouseLeave);
   
-  console.log('Smart swipe navigation enabled:');
-  console.log('- Horizontal: Always switch devices');
-  console.log('- Vertical: Smart tab switching (respects scrollable areas)');
+  console.log('Enhanced swipe navigation enabled:');
+  console.log('- Horizontal: Switch between devices');
+  console.log('- Vertical: Switch between main tabs');
 });
 
-// Visual feedback CSS
+// Enhanced visual feedback CSS with vertical swipe support
 const swipeStyle = document.createElement('style');
 swipeStyle.textContent = `
   .swipe-feedback {
@@ -4147,6 +4160,7 @@ swipeStyle.textContent = `
     opacity: 1;
   }
   
+  /* Horizontal swipe feedback */
   .swipe-feedback.swipe-left {
     background: linear-gradient(to right, rgba(16, 185, 129, 0.15), transparent);
   }
@@ -4155,6 +4169,7 @@ swipeStyle.textContent = `
     background: linear-gradient(to left, rgba(56, 189, 248, 0.15), transparent);
   }
   
+  /* Vertical swipe feedback */
   .swipe-feedback.swipe-up {
     background: linear-gradient(to bottom, rgba(139, 92, 246, 0.15), transparent);
   }
@@ -4163,8 +4178,7 @@ swipeStyle.textContent = `
     background: linear-gradient(to top, rgba(245, 158, 11, 0.15), transparent);
   }
 `;
-document.head.appendChild(swipeStyle);
-    
+document.head.appendChild(swipeStyle);    
     
     
     
