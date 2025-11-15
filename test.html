@@ -101,9 +101,12 @@ body {
     color:#e2e8f0;
     line-height:1.4;
     font-size: 0.95rem; 
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    touch-action: pan-y; /* Default touch action */
 }
 #dashboardContainer {
     padding: 10px;
+    touch-action: pan-y; /* Default touch action for container */
 }
 /* --- LOGIN SCREEN STYLES --- */
 #loginScreen {
@@ -297,6 +300,7 @@ header {
     position: relative;
     overflow: hidden;
     width: 100%;
+    touch-action: pan-y; /* Allow vertical scrolling */
 }
 
 .tab-item {
@@ -305,7 +309,7 @@ header {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 4px 4px;
+    padding: 12px 8px;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -315,7 +319,7 @@ header {
     font-weight: 600;
     font-size: 0.85rem;
     text-align: center;
-    min-height: 15px;
+    min-height: 20px;
 }
 
 .tab-item i {
@@ -405,6 +409,7 @@ header {
     overflow: hidden;
     width: 100%;
     gap: 8px;
+    touch-action: pan-x; /* Allow horizontal scrolling */
 }
 
 .device-tab {
@@ -412,7 +417,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 04px 4px;
+    padding: 04px 8px;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -424,7 +429,7 @@ header {
     text-align: center;
     border: none;
     background: transparent;
-    min-height: 15px;
+    min-height: 50px;
 }
 
 .device-tab:hover {
@@ -502,7 +507,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 4px 4px;
+    padding: 12px 8px;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -514,7 +519,7 @@ header {
     text-align: center;
     border: none;
     background: transparent;
-    min-height: 15px;
+    min-height: 50px;
 }
 
 .settings-tab:hover {
@@ -575,9 +580,9 @@ header {
     .tab-item,
     .device-tab,
     .settings-tab {
-        padding: 05px 3px;
+        padding: 10px 6px;
         font-size: 0.8rem;
-        min-height: 25px;
+        min-height: 45px;
     }
     
     .tab-item i,
@@ -1439,9 +1444,66 @@ margin-top: 15px;
     padding: 30px;
     color: #94a3b8;
 }
+
+/* NEW: Swipe Feedback Styles */
+.swipe-feedback {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.swipe-feedback.show {
+    opacity: 1;
+}
+
+.swipe-feedback-content {
+    background: rgba(30, 41, 59, 0.9);
+    color: #e2e8f0;
+    padding: 15px 25px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid #334155;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.swipe-feedback-icon {
+    font-size: 1.3rem;
+}
+
+/* NEW: Scrollable areas that should not trigger swipe */
+.scrollable-content {
+    overflow-y: auto;
+    touch-action: pan-y;
+}
+
+/* NEW: Prevent swipe on interactive elements */
+.no-swipe {
+    touch-action: auto;
+}
 </style>
 </head>
 <body>
+<!-- NEW: Swipe Feedback Element -->
+<div class="swipe-feedback" id="swipeFeedback">
+    <div class="swipe-feedback-content">
+        <i class="swipe-feedback-icon" id="swipeFeedbackIcon"></i>
+        <span id="swipeFeedbackText"></span>
+    </div>
+</div>
+
 <!-- Internet Connection Status Indicator -->
 <div id="connectionStatus" style="display: none;"></div>
 
@@ -1572,7 +1634,7 @@ margin-top: 15px;
   </div>
   
   <div id="automation" class="tab-content">
-    <div class="automation-content-wrapper">
+    <div class="automation-content-wrapper scrollable-content">
       <div class="automation-header">
         <h3 style="color: #38bdf8; margin: 0;">Automation Schedules</h3>
         <button class="add-schedule-btn" id="addScheduleBtn">
@@ -1585,7 +1647,7 @@ margin-top: 15px;
   </div>
   
   <div id="weather" class="tab-content">
-    <div class="weather-content-wrapper">
+    <div class="weather-content-wrapper scrollable-content">
       <div class="weather-location" id="weatherLocationEl">Loading weather data...</div>
       <div class="weather-grid">
         <div class="weather-tile">
@@ -1617,7 +1679,7 @@ margin-top: 15px;
   </div>
   
   <div id="logs" class="tab-content">
-    <div class="log-viewer" id="logViewer">
+    <div class="log-viewer scrollable-content" id="logViewer">
       <div class="log-entry"><span class="log-entry-time">--:--:--</span><span class="log-entry-type-info">INFO:</span> Dashboard initialized. Please login.</div>
     </div>
   </div>
@@ -1926,6 +1988,10 @@ const firmwareUpdateModal = document.getElementById('firmwareUpdateModal');
 const closeFirmwareUpdateBtn = document.getElementById('closeFirmwareUpdateBtn');
 const firmwareUpdateList = document.getElementById('firmwareUpdateList');
 const noFirmwareUpdates = document.getElementById('noFirmwareUpdates');
+// NEW: Swipe elements
+const swipeFeedback = document.getElementById('swipeFeedback');
+const swipeFeedbackIcon = document.getElementById('swipeFeedbackIcon');
+const swipeFeedbackText = document.getElementById('swipeFeedbackText');
 
 // --- INTERNET CONNECTION CHECKING ---
 let isOnline = navigator.onLine;
@@ -2170,6 +2236,16 @@ function updateUICustomNames() {
 function showErrorModal(message) {
   errorMessage.textContent = message;
   errorModal.classList.add('show');
+}
+// NEW: Show swipe feedback
+function showSwipeFeedback(message, iconClass) {
+  swipeFeedbackText.textContent = message;
+  swipeFeedbackIcon.className = `swipe-feedback-icon ${iconClass}`;
+  swipeFeedback.classList.add('show');
+  
+  setTimeout(() => {
+    swipeFeedback.classList.remove('show');
+  }, 1000);
 }
 // --- DEVICE MANAGEMENT FUNCTIONS ---
 function getDevicePath(path) {
@@ -3854,32 +3930,6 @@ async function checkRoomFirmwareUpdate(room) {
   }
 }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
 // MODIFIED: Initialize firmware checks for all devices
 function initializeFirmwareChecks() {
   devices.forEach(device => {
@@ -3897,6 +3947,218 @@ window.addEventListener('click', (event) => {
   if (event.target === firmwareUpdateModal) {
     closeFirmwareUpdateModal();
   }
+});
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+// --- NEW: SWIPE GESTURE IMPLEMENTATION (TOUCH + MOUSE) ---
+let startX = 0;
+let startY = 0;
+let endX = 0;
+let endY = 0;
+let isSwiping = false;
+let isMouseDown = false;
+let swipeThreshold = 50; // Minimum distance for a swipe to be registered
+
+// Function to handle touch/mouse start
+function handleSwipeStart(e) {
+    // Don't handle swipe if user is interacting with form elements or buttons
+    if (e.target.tagName === 'INPUT' || 
+        e.target.tagName === 'TEXTAREA' || 
+        e.target.tagName === 'SELECT' ||
+        e.target.closest('.no-swipe') ||
+        e.target.closest('.scrollable-content') && e.target.closest('.scrollable-content').scrollHeight > e.target.closest('.scrollable-content').clientHeight) {
+        return;
+    }
+    
+    const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+    const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+    
+    startX = clientX;
+    startY = clientY;
+    isSwiping = true;
+    
+    if (e.type.includes('mouse')) {
+        isMouseDown = true;
+    }
+}
+
+// Function to handle touch/mouse move
+function handleSwipeMove(e) {
+    if (!isSwiping) return;
+    
+    const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+    const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+    
+    endX = clientX;
+    endY = clientY;
+    
+    // Prevent text selection while swiping with mouse
+    if (e.type.includes('mouse') && isMouseDown) {
+        e.preventDefault();
+    }
+}
+
+// Function to handle touch/mouse end
+function handleSwipeEnd(e) {
+    if (!isSwiping) return;
+    
+    isSwiping = false;
+    isMouseDown = false;
+    
+    const diffX = endX - startX;
+    const diffY = endY - startY;
+    
+    // Determine if it's a horizontal or vertical swipe
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+        // Horizontal swipe
+        if (Math.abs(diffX) > swipeThreshold) {
+            if (diffX > 0) {
+                // Swipe right - switch to previous device
+                handleHorizontalSwipe('right');
+            } else {
+                // Swipe left - switch to next device
+                handleHorizontalSwipe('left');
+            }
+        }
+    } else {
+        // Vertical swipe
+        if (Math.abs(diffY) > swipeThreshold) {
+            if (diffY > 0) {
+                // Swipe down - switch to previous tab
+                handleVerticalSwipe('down');
+            } else {
+                // Swipe up - switch to next tab
+                handleVerticalSwipe('up');
+            }
+        }
+    }
+}
+
+// Function to handle horizontal swipe for device switching
+function handleHorizontalSwipe(direction) {
+    const currentIndex = devices.indexOf(currentDevice);
+    let newIndex;
+    
+    if (direction === 'left') {
+        // Swipe left - next device
+        newIndex = (currentIndex + 1) % devices.length;
+        showSwipeFeedback(`Switched to ${roomNames[devices[newIndex]] || devices[newIndex]}`, 'fas fa-chevron-right');
+    } else {
+        // Swipe right - previous device
+        newIndex = (currentIndex - 1 + devices.length) % devices.length;
+        showSwipeFeedback(`Switched to ${roomNames[devices[newIndex]] || devices[newIndex]}`, 'fas fa-chevron-left');
+    }
+    
+    switchDevice(devices[newIndex]);
+}
+
+// Function to handle vertical swipe for tab switching
+function handleVerticalSwipe(direction) {
+    const tabItems = document.querySelectorAll('#facebookTabs .tab-item');
+    const currentTab = document.querySelector('#facebookTabs .tab-item.active');
+    const currentIndex = Array.from(tabItems).indexOf(currentTab);
+    let newIndex;
+    
+    if (direction === 'up') {
+        // Swipe up - next tab
+        newIndex = (currentIndex + 1) % tabItems.length;
+        showSwipeFeedback(`Switched to ${tabItems[newIndex].querySelector('span').textContent}`, 'fas fa-chevron-up');
+    } else {
+        // Swipe down - previous tab
+        newIndex = (currentIndex - 1 + tabItems.length) % tabItems.length;
+        showSwipeFeedback(`Switched to ${tabItems[newIndex].querySelector('span').textContent}`, 'fas fa-chevron-down');
+    }
+    
+    // Trigger click on the new tab
+    tabItems[newIndex].click();
+}
+
+// Function to show swipe feedback
+function showSwipeFeedback(message, iconClass) {
+    swipeFeedbackText.textContent = message;
+    swipeFeedbackIcon.className = `swipe-feedback-icon ${iconClass}`;
+    swipeFeedback.classList.add('show');
+    
+    setTimeout(() => {
+        swipeFeedback.classList.remove('show');
+    }, 1000);
+}
+
+// Add event listeners for both touch and mouse
+function initializeSwipeGestures() {
+    // Touch events
+    dashboardContainer.addEventListener('touchstart', handleSwipeStart, { passive: true });
+    dashboardContainer.addEventListener('touchmove', handleSwipeMove, { passive: true });
+    dashboardContainer.addEventListener('touchend', handleSwipeEnd, { passive: true });
+    
+    // Mouse events
+    dashboardContainer.addEventListener('mousedown', handleSwipeStart);
+    dashboardContainer.addEventListener('mousemove', handleSwipeMove);
+    dashboardContainer.addEventListener('mouseup', handleSwipeEnd);
+    dashboardContainer.addEventListener('mouseleave', handleSwipeEnd); // Handle case when mouse leaves element
+    
+    // Prevent text selection during mouse swipe
+    dashboardContainer.addEventListener('selectstart', (e) => {
+        if (isMouseDown) {
+            e.preventDefault();
+        }
+    });
+}
+
+// Prevent swipe on specific elements
+function initializeSwipeExclusions() {
+    document.querySelectorAll('input, textarea, select, button, .relay-btn, .switch, .lock-switch, .dropdown-content, .settings-content, .error-content, .firmware-update-content').forEach(el => {
+        el.classList.add('no-swipe');
+    });
+}
+
+// Initialize swipe gestures when dashboard is shown
+const originalShowDashboard = showDashboard;
+showDashboard = function(user) {
+    originalShowDashboard(user);
+    setTimeout(() => {
+        initializeSwipeGestures();
+        initializeSwipeExclusions();
+    }, 100);
+};
+
+// Also initialize when DOM is ready (for page refresh)
+document.addEventListener('DOMContentLoaded', function() {
+    if (dashboardContainer.style.display !== 'none') {
+        setTimeout(() => {
+            initializeSwipeGestures();
+            initializeSwipeExclusions();
+        }, 500);
+    }
+});
+
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+// Add touch event listeners to the dashboard container
+dashboardContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
+dashboardContainer.addEventListener('touchmove', handleTouchMove, { passive: true });
+dashboardContainer.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+// Prevent swipe on specific elements
+document.querySelectorAll('input, textarea, select, button, .relay-btn, .switch, .lock-switch').forEach(el => {
+    el.classList.add('no-swipe');
 });
 </script>
 </body>
