@@ -1384,7 +1384,7 @@ margin-top: 10px;
         <span id="firmwareBadgeCount">0</span>
       </div>
     </div>
-    <!-- UPDATED: Profile menu moved to left corner -->
+    <!-- UPDATED: Profile menu moved to Right corner -->
     <div class="profile-menu">
         <button class="profile-btn" id="profileBtn">
           <span></span>
@@ -1405,6 +1405,16 @@ margin-top: 10px;
             <div class="switch-container">
                 <span class="switch-label">BUTTON LOCK</span>
                 <div class="lock-switch" id="buttonLockSwitch"></div>
+            </div>
+            <!-- NEW: Swipe Control Switch -->
+            <div class="switch-container">
+                <span class="switch-label">SWIPE CONTROL</span>
+                <div class="switch" id="swipeControlSwitch"></div>
+            </div>
+            <!-- NEW: Swipe Feedback Switch -->
+            <div class="switch-container">
+                <span class="switch-label">SWIPE FEEDBACK</span>
+                <div class="switch" id="swipeFeedbackSwitch"></div>
             </div>
             <!-- NEW: Create User Button (only shown to admins) -->
             <button class="dropdown-btn settings-btn2" id="createUserBtn" style="display: none;">
@@ -1744,7 +1754,7 @@ const db = firebase.database();
 const auth = firebase.auth();
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'multiroom_session_active';
-const DASHBOARD_VERSION = 'v3.8.0';
+const DASHBOARD_VERSION = 'v4.2.0';
 // Current device state
 let currentDevice = 'ROOM_1';
 const devices = ['ROOM_1', 'ROOM_2', 'ROOM_3', 'ROOM_4'];
@@ -1827,6 +1837,9 @@ const firmwareUpdateModal = document.getElementById('firmwareUpdateModal');
 const closeFirmwareUpdateBtn = document.getElementById('closeFirmwareUpdateBtn');
 const firmwareUpdateList = document.getElementById('firmwareUpdateList');
 const noFirmwareUpdates = document.getElementById('noFirmwareUpdates');
+// NEW: Swipe Control elements
+const swipeControlSwitch = document.getElementById('swipeControlSwitch');
+const swipeFeedbackSwitch = document.getElementById('swipeFeedbackSwitch');
 
 // --- INTERNET CONNECTION CHECKING ---
 let isOnline = navigator.onLine;
@@ -1878,10 +1891,10 @@ function updateConnectionStatus(connected) {
         }, 1500);
     } else {
         connectionStatusEl.textContent = '🔴 Check Internet..';
-        connectionStatusEl.style.backgroundColor = '#DC143C';
-        connectionStatusEl.style.color = '#334155';
+        connectionStatusEl.style.backgroundColor = '#FFFF00';
+        connectionStatusEl.style.color = '#000000';
         connectionStatusEl.style.display = 'block';
-        connectionStatusEl.style.opacity = '3';
+        connectionStatusEl.style.opacity = '4';
     }
 }
 
@@ -1996,6 +2009,10 @@ let firmwareUpdates = {
   ROOM_3: { available: false, current: '', latest: '' },
   ROOM_4: { available: false, current: '', latest: '' }
 };
+// NEW: Swipe Control State Management
+let swipeControlEnabled = true;
+let swipeFeedbackEnabled = true;
+
 // Initialize default names
 function initializeDefaultNames() {
   devices.forEach(device => {
@@ -2417,7 +2434,7 @@ beepSwitch.addEventListener('click', () => {
       beepSwitch.classList.toggle('on', newBeepState);
       const statusText = newBeepState ? 'ENABLED' : 'DISABLED';
       addLogEntry(`BEEP ${statusText} for ${currentDevice}`, 'info');
-      profileDropdown.classList.remove('show');
+//      profileDropdown.classList.remove('show');
     })
     .catch(error => {
       addLogEntry(`Failed to set BEEP state: ${error.message}`, 'error');
@@ -2435,7 +2452,7 @@ irLockSwitch.addEventListener('click', () => {
       irLockSwitch.classList.toggle('locked', newIrLockState);
       const statusText = newIrLockState ? 'LOCKED' : 'UNLOCKED';
       addLogEntry(`IR ${statusText} for ${currentDevice}`, 'info');
-      profileDropdown.classList.remove('show');
+//      profileDropdown.classList.remove('show');
     })
     .catch(error => {
       addLogEntry(`Failed to set IR lock state: ${error.message}`, 'error');
@@ -2453,7 +2470,7 @@ buttonLockSwitch.addEventListener('click', () => {
       buttonLockSwitch.classList.toggle('locked', newButtonLockState);
       const statusText = newButtonLockState ? 'LOCKED' : 'UNLOCKED';
       addLogEntry(`Physical Buttons ${statusText} for ${currentDevice}`, 'info');
-      profileDropdown.classList.remove('show');
+//      profileDropdown.classList.remove('show');
     })
     .catch(error => {
       addLogEntry(`Failed to set button lock state: ${error.message}`, 'error');
@@ -3453,6 +3470,8 @@ function showDashboard(user) {
     updateUICustomNames();
     // ADDED: Initialize firmware checks
     initializeFirmwareChecks();
+    // NEW: Initialize swipe control settings
+    loadSwipeControlSettings();
 }
 function handleAuthError(error) {
     let errorMessage = 'Login failed. Please try again.';
@@ -3923,6 +3942,21 @@ let multiTouchCooldown = false;
 let cooldownTimeout = null;
 const SWIPE_THRESHOLD = 50;
 const MULTI_TOUCH_COOLDOWN_MS = 800;
+    
+    
+function updateLandscapeMode() {
+    window.landscapeSwipeBlocked = window.innerWidth > window.innerHeight;
+    console.log(
+      "Orientation:", 
+      window.landscapeSwipeBlocked ? "LANDSCAPE (blocked)" : "PORTRAIT (enabled)"
+    );
+}
+
+window.addEventListener("resize", updateLandscapeMode);
+window.addEventListener("orientationchange", updateLandscapeMode);
+updateLandscapeMode();
+
+
 
 // Function to check if any modal is open (INCLUDES PROFILE MENU)
 function isAnyModalOpen() {
@@ -3938,6 +3972,12 @@ function isAnyModalOpen() {
 
 // TOUCH HANDLERS
 function handleTouchStart(event) {
+  // Check if swipe control is disabled
+  if (!swipeControlEnabled) {
+    console.log('SWIPE: Swipe control disabled - ignoring touch');
+    return;
+  }
+  
   touchCount = event.touches.length;
   isMultiTouch = touchCount > 1;
   
@@ -3963,6 +4003,9 @@ function handleTouchStart(event) {
 }
 
 function handleTouchMove(event) {
+  // Check if swipe control is disabled
+  if (!swipeControlEnabled) return;
+  
   // Continuously check for multi-touch during movement
   const currentTouchCount = event.touches.length;
   if (currentTouchCount > 1 && allowSwipe && !multiTouchCooldown) {
@@ -3973,6 +4016,18 @@ function handleTouchMove(event) {
 }
 
 function handleTouchEnd(event) {
+  // Check if swipe control is disabled
+  if (!swipeControlEnabled) {
+    console.log('SWIPE: Swipe control disabled - ignoring touch end');
+    return;
+  }
+    
+    // Block in landscape mode
+if (window.landscapeSwipeBlocked) {
+    console.log("SWIPE: Touch ignored in landscape");
+    return;
+}
+  
   const isProfileOpen = profileDropdown.classList.contains('show');
   console.log('SWIPE: Touch end - allowSwipe:', allowSwipe, 'isMultiTouch:', isMultiTouch, 'cooldown:', multiTouchCooldown, 'profile-open:', isProfileOpen);
   
@@ -4044,6 +4099,9 @@ function startMultiTouchCooldown() {
 
 // Mouse event handlers
 function handleMouseDown(event) {
+  // Check if swipe control is disabled
+  if (!swipeControlEnabled) return;
+  
   isMouseDown = true;
   mouseStartX = event.screenX;
   mouseStartY = event.screenY;
@@ -4074,6 +4132,9 @@ function handleMouseLeave() {
 // Enhanced swipe handler
 function handleSwipeWithFeedback(startX, endX, startY, endY, isMouse = false, isInScrollableArea = false) {
   const isProfileOpen = profileDropdown.classList.contains('show');
+    
+    
+
   
   // Check if profile menu is open
   if (isProfileOpen) {
@@ -4292,6 +4353,9 @@ function switchMainTab(tabName) {
 
 // Visual feedback functions
 function showSwipeFeedback(direction) {
+  // Check if swipe feedback is disabled
+  if (!swipeFeedbackEnabled) return;
+  
   let feedback = document.getElementById('swipe-feedback');
   if (!feedback) {
     feedback = document.createElement('div');
@@ -4387,6 +4451,94 @@ if (document.readyState === 'loading') {
 setTimeout(initializeSwipe, 1000);
 console.log('SWIPE: Setup complete');
     
+    
+    
+
+// NEW: Swipe Control Switch Functionality
+function loadSwipeControlSettings() {
+    // Load swipe control setting from localStorage
+    const savedSwipeControl = localStorage.getItem('swipeControlEnabled');
+    if (savedSwipeControl !== null) {
+        swipeControlEnabled = savedSwipeControl === 'true';
+    }
+    swipeControlSwitch.classList.toggle('on', swipeControlEnabled);
+    
+    // Load swipe feedback setting from localStorage
+    const savedSwipeFeedback = localStorage.getItem('swipeFeedbackEnabled');
+    if (savedSwipeFeedback !== null) {
+        swipeFeedbackEnabled = savedSwipeFeedback === 'true';
+    }
+    swipeFeedbackSwitch.classList.toggle('on', swipeFeedbackEnabled);
+
+}
+
+function saveSwipeControlSettings() {
+    localStorage.setItem('swipeControlEnabled', swipeControlEnabled.toString());
+    localStorage.setItem('swipeFeedbackEnabled', swipeFeedbackEnabled.toString());
+}
+
+// Swipe Control Switch event listener
+swipeControlSwitch.addEventListener('click', () => {
+    if (!clientConnected) {
+        addLogEntry('Cannot toggle swipe control: Client disconnected from Firebase.', 'error');
+        return;
+    }
+    
+    swipeControlEnabled = !swipeControlEnabled;
+    swipeControlSwitch.classList.toggle('on', swipeControlEnabled);
+    saveSwipeControlSettings();
+    
+    
+    const statusText = swipeControlEnabled ? 'ENABLED' : 'DISABLED';
+    addLogEntry(`Swipe control ${statusText} for all devices`, 'info');
+//    profileDropdown.classList.remove('show');
+});
+
+// Swipe Feedback Switch event listener
+swipeFeedbackSwitch.addEventListener('click', () => {
+    if (!clientConnected) {
+        addLogEntry('Cannot toggle swipe feedback: Client disconnected from Firebase.', 'error');
+        return;
+    }
+    
+    swipeFeedbackEnabled = !swipeFeedbackEnabled;
+    swipeFeedbackSwitch.classList.toggle('on', swipeFeedbackEnabled);
+    saveSwipeControlSettings();
+    
+    const statusText = swipeFeedbackEnabled ? 'ENABLED' : 'DISABLED';
+    addLogEntry(`Swipe feedback ${statusText} for all devices`, 'info');
+//    profileDropdown.classList.remove('show');
+});
+    
+// --- AUTO BLOCK SWIPE IN LANDSCAPE MODE ---
+function isLandscape() {
+    return window.innerWidth > window.innerHeight;
+}
+
+    
+    
+function updateSwipeForOrientation() {
+    if (isLandscape()) {
+        window.landscapeSwipeBlocked = true;
+        console.log("SWIPE: Blocked due to landscape mode");
+    } else {
+        window.landscapeSwipeBlocked = false;
+        console.log("SWIPE: Enabled (portrait mode)");
+    }
+}
+
+window.addEventListener("resize", updateSwipeForOrientation);
+window.addEventListener("orientationchange", updateSwipeForOrientation);
+
+    
+// Run once on load
+updateSwipeForOrientation();
+    
+    
+// Prevent menu from closing when clicking inside settings
+menuPanel.addEventListener("click", function(e) {
+    e.stopPropagation();
+});
     
     
     
