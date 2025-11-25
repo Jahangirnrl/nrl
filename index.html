@@ -1416,6 +1416,11 @@ margin-top: 10px;
                 <span class="switch-label">SWIPE FEEDBACK</span>
                 <div class="switch" id="swipeFeedbackSwitch"></div>
             </div>
+            <!-- NEW: Serial Print Control Switch (Admin Only) -->
+            <div class="switch-container" id="serialSwitchContainer" style="display: none;">
+                <span class="switch-label">SERIAL PRINT</span>
+                <div class="switch" id="serialSwitch"></div>
+            </div>
             <!-- NEW: Create User Button (only shown to admins) -->
             <button class="dropdown-btn settings-btn2" id="createUserBtn" style="display: none;">
               <i class="fas fa-user-plus"></i> Create New User</button>
@@ -1755,7 +1760,7 @@ const db = firebase.database();
 const auth = firebase.auth();
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'multiroom_session_active';
-const DASHBOARD_VERSION = 'v4.2.0';
+const DASHBOARD_VERSION = 'v4.3.0';
 // Current device state
 let currentDevice = 'ROOM_1';
 const devices = ['ROOM_1', 'ROOM_2', 'ROOM_3', 'ROOM_4'];
@@ -1841,6 +1846,9 @@ const noFirmwareUpdates = document.getElementById('noFirmwareUpdates');
 // NEW: Swipe Control elements
 const swipeControlSwitch = document.getElementById('swipeControlSwitch');
 const swipeFeedbackSwitch = document.getElementById('swipeFeedbackSwitch');
+// NEW: Serial Print Control elements
+const serialSwitch = document.getElementById('serialSwitch');
+const serialSwitchContainer = document.getElementById('serialSwitchContainer');
 
 // --- INTERNET CONNECTION CHECKING ---
 let isOnline = navigator.onLine;
@@ -2422,6 +2430,12 @@ function setupSwitchListeners() {
     buttonLockSwitch.classList.toggle('locked', buttonLockState === true);
   });
   allListeners.push(() => db.ref(getDevicePath('settings/button_lock')).off('value', buttonLockUnsubscribe));
+  // SERIAL PRINT state
+  const serialUnsubscribe = db.ref(getDevicePath('settings/serialEnabled')).on('value', (snapshot) => {
+    const serialState = snapshot.val();
+    serialSwitch.classList.toggle('on', serialState === true);
+  });
+  allListeners.push(() => db.ref(getDevicePath('settings/serialEnabled')).off('value', serialUnsubscribe));
 }
 // BEEP Switch
 beepSwitch.addEventListener('click', () => {
@@ -2475,6 +2489,23 @@ buttonLockSwitch.addEventListener('click', () => {
     })
     .catch(error => {
       addLogEntry(`Failed to set button lock state: ${error.message}`, 'error');
+    });
+});
+// Serial Print Switch
+serialSwitch.addEventListener('click', () => {
+  if (!clientConnected) {
+    addLogEntry('Cannot toggle SERIAL PRINT: Client disconnected from Firebase.', 'error');
+    return;
+  }
+  const newSerialState = !serialSwitch.classList.contains('on');
+  db.ref(getDevicePath('settings/serialEnabled')).set(newSerialState)
+    .then(() => {
+      serialSwitch.classList.toggle('on', newSerialState);
+      const statusText = newSerialState ? 'ENABLED' : 'DISABLED';
+      addLogEntry(`SERIAL PRINT ${statusText} for ${currentDevice}`, 'info');
+    })
+    .catch(error => {
+      addLogEntry(`Failed to set SERIAL PRINT state: ${error.message}`, 'error');
     });
 });
 // Restart Button
@@ -3506,20 +3537,23 @@ if (localStorage.getItem(SESSION_KEY) === 'true') {
 // Auth state listener - MODIFIED with admin check and internet connection
 auth.onAuthStateChanged((user) => {
     if (user) {
-        // NEW: Show Create User button only for admin users
+        // NEW: Show Create User button and Serial Switch only for admin users
         if (isAdminUser(user)) {
             createUserBtn.style.display = 'block';
-            addLogEntry('Admin privileges granted - user creation enabled', 'info');
+            serialSwitchContainer.style.display = 'flex'; // Show serial switch
+            addLogEntry('Admin privileges granted - user creation and serial control enabled', 'info');
         } else {
             createUserBtn.style.display = 'none';
-            addLogEntry('Standard user - user creation disabled', 'info');
+            serialSwitchContainer.style.display = 'none'; // Hide serial switch
+            addLogEntry('Standard user - user creation and serial control disabled', 'info');
         }
         showDashboard(user);
         addLogEntry(`User ${user.email} signed in successfully.`, 'info');
         loadSchedules();
     } else {
-        // NEW: Hide Create User button when logged out
+        // NEW: Hide Create User button and Serial Switch when logged out
         createUserBtn.style.display = 'none';
+        serialSwitchContainer.style.display = 'none';
         if (localStorage.getItem(SESSION_KEY) === 'true') {
             localStorage.removeItem(SESSION_KEY);
             addLogEntry('Session expired. Please log in again.', 'warn');
@@ -4540,7 +4574,6 @@ updateSwipeForOrientation();
 menuPanel.addEventListener("click", function(e) {
     e.stopPropagation();
 });
-    
     
     
     
