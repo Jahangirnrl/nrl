@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 Distance Monitor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Main Dashboard Container */
+        .dashboard {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            color: #4cc9f0;
+        }
+
+        .header p {
+            color: #a0a0c0;
+            font-size: 0.9rem;
+        }
+
+        /* Main Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #90e0ef;
+            font-size: 1.1rem;
+        }
+
+        /* Distance Display */
+        .distance-display {
+            text-align: center;
+        }
+
+        .distance-value {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+            color: white;
+            text-shadow: 0 0 15px rgba(76, 201, 240, 0.5);
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .distance-unit {
+            color: #a0a0c0;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            background: rgba(76, 201, 240, 0.2);
+            border: 1px solid #4cc9f0;
+        }
+
+        /* Status Grid */
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+        }
+
+        .status-icon {
+            font-size: 1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .status-content {
+            flex: 1;
+        }
+
+        .status-label {
+            font-size: 0.75rem;
+            color: #a0a0c0;
+        }
+
+        .status-value {
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        /* Status Colors */
+        .connected { color: #4cc9f0; }
+        .disconnected { color: #f72585; }
+        .active { color: #38b000; }
+        .inactive { color: #a0a0c0; }
+
+        /* Threshold Control */
+        .threshold-display {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .threshold-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #ff9e00;
+            margin: 5px 0;
+        }
+
+        .threshold-label {
+            color: #a0a0c0;
+            font-size: 0.85rem;
+        }
+
+        /* Slider */
+        .slider-container {
+            margin: 15px 0;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            background: linear-gradient(to right, #38b000, #ff9e00, #f72585);
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid #ff9e00;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #a0a0c0;
+            margin-top: 5px;
+        }
+
+        /* Input & Button */
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .threshold-input {
+            flex: 1;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .threshold-input:focus {
+            outline: none;
+            border-color: #4cc9f0;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            background: linear-gradient(45deg, #00b4d8, #0077b6);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Preset Buttons */
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .preset-btn {
+            padding: 8px;
+            background: rgba(0, 180, 216, 0.1);
+            border: 1px solid rgba(0, 180, 216, 0.3);
+            border-radius: 6px;
+            color: #90e0ef;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .preset-btn:hover {
+            background: rgba(0, 180, 216, 0.2);
+        }
+
+        /* Control Buttons */
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .control-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-start { background: #38b000; color: white; }
+        .btn-stop { background: #f72585; color: white; }
+        .btn-test { background: #ff9e00; color: white; }
+        .btn-reset { background: #7209b7; color: white; }
+        .btn-refresh { background: #4361ee; color: white; }
+        .btn-clear { background: #6c757d; color: white; }
+
+        /* Connection Status */
+        .connection-status {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+        }
+
+        .connection-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #f72585;
+        }
+
+        .connection-dot.connected {
+            background: #38b000;
+            animation: pulse 2s infinite;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s ease;
+            max-width: 300px;
+            border-left: 4px solid #00b4d8;
+        }
+
+        .toast-success { border-left-color: #38b000; }
+        .toast-error { border-left-color: #f72585; }
+        .toast-warning { border-left-color: #ff9e00; }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .pulse {
+            animation: pulse 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <!-- Connection Status -->
+    <div class="connection-status">
+        <div class="connection-dot" id="connectionDot"></div>
+        <span id="connectionText">Connecting...</span>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-satellite-dish"></i> ESP32 Distance Monitor</h1>
+            <p>Real-time monitoring with configurable threshold</p>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Left: Distance Monitoring -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-ruler-combined"></i>
+                    <span>Distance Monitoring</span>
+                </div>
+                
+                <div class="distance-display">
+                    <div class="distance-value" id="distanceValue">--</div>
+                    <div class="distance-unit" id="distanceUnit">feet</div>
+                    <div class="status-badge" id="distanceStatus">MEASURING</div>
+                    
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <div class="status-icon">
+                                <i class="fas fa-bell" id="buzzerIcon"></i>
+                            </div>
+                            <div class="status-content">
+                                <div class="status-label">Buzzer</div>
+                                <div class="status-value" id="buzzerStatus">--</div>
+                            </div>
+                        </div>
+                        
+                        <div class="status-item">
+                            <div class="status-icon">
+                                <i class="fas fa-wifi" id="wifiIcon"></i>
+                            </div>
+                            <div class="status-content">
+                                <div class="status-label">WiFi</div>
+                                <div class="status-value" id="wifiStatus">DISCONNECTED</div>
+                            </div>
+                        </div>
+                        
+                        <div class="status-item">
+                            <div class="status-icon">
+                                <i class="fas fa-microchip"></i>
+                            </div>
+                            <div class="status-content">
+                                <div class="status-label">System</div>
+                                <div class="status-value" id="systemStatus">ACTIVE</div>
+                            </div>
+                        </div>
+                        
+                        <div class="status-item">
+                            <div class="status-icon">
+                                <i class="fas fa-database" id="firebaseIcon"></i>
+                            </div>
+                            <div class="status-content">
+                                <div class="status-label">Firebase</div>
+                                <div class="status-value" id="firebaseStatus">DISCONNECTED</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Threshold Control -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Threshold Control</span>
+                </div>
+                
+                <div class="threshold-display">
+                    <div class="threshold-label">Current Threshold</div>
+                    <div class="threshold-value" id="currentThreshold">6.0</div>
+                    <div class="threshold-unit">feet</div>
+                </div>
+                
+                <div class="slider-container">
+                    <input type="range" 
+                           class="slider" 
+                           id="thresholdSlider" 
+                           min="1" 
+                           max="15" 
+                           step="0.1" 
+                           value="6.0">
+                    <div class="slider-labels">
+                        <span>1 ft</span>
+                        <span>8 ft</span>
+                        <span>15 ft</span>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <input type="number" 
+                           class="threshold-input" 
+                           id="thresholdInput" 
+                           min="1" 
+                           max="15" 
+                           step="0.1" 
+                           placeholder="Enter value (1-15 ft)"
+                           value="6.0">
+                    <button class="btn" id="updateThresholdBtn">
+                        <i class="fas fa-paper-plane"></i> Update
+                    </button>
+                </div>
+                
+                <div class="preset-grid">
+                    <button class="preset-btn" data-threshold="3">3 ft</button>
+                    <button class="preset-btn" data-threshold="6">6 ft (Default)</button>
+                    <button class="preset-btn" data-threshold="9">9 ft</button>
+                    <button class="preset-btn" data-threshold="12">12 ft</button>
+                    <button class="preset-btn" data-threshold="15">15 ft</button>
+                    <button class="preset-btn" id="useCurrentBtn">Use Current</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="control-grid">
+            <button class="control-btn btn-start" id="startBtn">
+                <i class="fas fa-play"></i> Start
+            </button>
+            <button class="control-btn btn-stop" id="stopBtn">
+                <i class="fas fa-stop"></i> Stop
+            </button>
+            <button class="control-btn btn-test" id="testBuzzerBtn">
+                <i class="fas fa-volume-up"></i> Test
+            </button>
+            <button class="control-btn btn-reset" id="resetBtn">
+                <i class="fas fa-undo"></i> Reset
+            </button>
+            <button class="control-btn btn-refresh" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+            <button class="control-btn btn-clear" id="clearBtn">
+                <i class="fas fa-trash"></i> Clear
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration (Update with your credentials)
+        const firebaseConfig = {
+  apiKey: "AIzaSyAei8j8RQXq_zspkohtH40g_gvHUfIx-Uw",
+  authDomain: "home-control-df716.firebaseapp.com",
+  databaseURL: "https://home-control-df716-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "home-control-df716",
+  storageBucket: "home-control-df716.firebasestorage.app",
+  messagingSenderId: "956714070689",
+  appId: "1:956714070689:web:414179e22a04601349b6e0",
+  measurementId: "G-LEHP8KM47D"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Application State
+        const state = {
+            distance: null,
+            threshold: 6.0,
+            systemActive: true,
+            buzzerActive: false,
+            connected: false,
+            lastUpdate: null
+        };
+
+        // DOM Elements
+        const elements = {
+            // Distance display
+            distanceValue: document.getElementById('distanceValue'),
+            distanceStatus: document.getElementById('distanceStatus'),
+            
+            // Status indicators
+            buzzerStatus: document.getElementById('buzzerStatus'),
+            buzzerIcon: document.getElementById('buzzerIcon'),
+            systemStatus: document.getElementById('systemStatus'),
+            wifiStatus: document.getElementById('wifiStatus'),
+            wifiIcon: document.getElementById('wifiIcon'),
+            firebaseStatus: document.getElementById('firebaseStatus'),
+            firebaseIcon: document.getElementById('firebaseIcon'),
+            
+            // Threshold controls
+            currentThreshold: document.getElementById('currentThreshold'),
+            thresholdSlider: document.getElementById('thresholdSlider'),
+            thresholdInput: document.getElementById('thresholdInput'),
+            updateThresholdBtn: document.getElementById('updateThresholdBtn'),
+            
+            // Control buttons
+            startBtn: document.getElementById('startBtn'),
+            stopBtn: document.getElementById('stopBtn'),
+            testBuzzerBtn: document.getElementById('testBuzzerBtn'),
+            resetBtn: document.getElementById('resetBtn'),
+            refreshBtn: document.getElementById('refreshBtn'),
+            clearBtn: document.getElementById('clearBtn'),
+            useCurrentBtn: document.getElementById('useCurrentBtn'),
+            
+            // Connection status
+            connectionDot: document.getElementById('connectionDot'),
+            connectionText: document.getElementById('connectionText'),
+            
+            // Toast container
+            toastContainer: document.getElementById('toastContainer')
+        };
+
+        // Initialize the application
+        init();
+
+        function init() {
+            // Set up Firebase listeners
+            setupFirebaseListeners();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Update UI with initial state
+            updateUI();
+            
+            // Show welcome message
+            showToast('System initialized. Waiting for data...', 'info');
+        }
+
+        function setupFirebaseListeners() {
+            // Monitor Firebase connection
+            const connectedRef = database.ref(".info/connected");
+            connectedRef.on("value", (snap) => {
+                const isConnected = snap.val() === true;
+                updateConnectionStatus(isConnected);
+            });
+
+            // Listen for distance updates
+            database.ref('/HOME/esp32/distance/feet').on('value', (snapshot) => {
+                const distance = snapshot.val();
+                if (distance !== null) {
+                    state.distance = distance;
+                    updateDistanceDisplay();
+                }
+            });
+
+            // Listen for threshold updates
+            database.ref('/HOME/esp32/threshold/current').on('value', (snapshot) => {
+                const threshold = snapshot.val();
+                if (threshold !== null && threshold > 0) {
+                    state.threshold = threshold;
+                    updateThresholdDisplay();
+                }
+            });
+
+            // Listen for buzzer status
+            database.ref('/HOME/esp32/buzzer').on('value', (snapshot) => {
+                const buzzerActive = snapshot.val();
+                if (buzzerActive !== null) {
+                    state.buzzerActive = buzzerActive;
+                    updateBuzzerStatus(buzzerActive);
+                }
+            });
+
+            // Listen for system status
+            database.ref('/HOME/esp32/systemActive').on('value', (snapshot) => {
+                const active = snapshot.val();
+                if (active !== null) {
+                    state.systemActive = active;
+                    updateSystemControls();
+                }
+            });
+
+            // Listen for WiFi status
+            database.ref('/HOME/esp32/status/connected').on('value', (snapshot) => {
+                const wifiConnected = snapshot.val();
+                updateWifiStatus(wifiConnected);
+            });
+        }
+
+        function setupEventListeners() {
+            // Threshold slider
+            elements.thresholdSlider.addEventListener('input', (e) => {
+                const value = parseFloat(e.target.value);
+                elements.thresholdInput.value = value.toFixed(1);
+            });
+
+            // Threshold input
+            elements.thresholdInput.addEventListener('input', (e) => {
+                const value = parseFloat(e.target.value);
+                if (!isNaN(value) && value >= 1 && value <= 15) {
+                    elements.thresholdSlider.value = value;
+                }
+            });
+
+            // Update threshold button
+            elements.updateThresholdBtn.addEventListener('click', updateThreshold);
+
+            // Enter key for threshold input
+            elements.thresholdInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    updateThreshold();
+                }
+            });
+
+            // Preset buttons
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    if (e.target.id === 'useCurrentBtn') {
+                        if (state.distance !== null) {
+                            const currentDistance = Math.max(1, Math.min(15, state.distance));
+                            elements.thresholdInput.value = currentDistance.toFixed(1);
+                            elements.thresholdSlider.value = currentDistance;
+                            showToast(`Set threshold to current distance: ${currentDistance.toFixed(1)} ft`, 'info');
+                        } else {
+                            showToast('No distance data available', 'warning');
+                        }
+                    } else {
+                        const threshold = parseFloat(e.target.dataset.threshold);
+                        elements.thresholdSlider.value = threshold;
+                        elements.thresholdInput.value = threshold.toFixed(1);
+                    }
+                });
+            });
+
+            // Control buttons
+            elements.startBtn.addEventListener('click', () => sendCommand('start'));
+            elements.stopBtn.addEventListener('click', () => sendCommand('stop'));
+            elements.testBuzzerBtn.addEventListener('click', testBuzzer);
+            elements.resetBtn.addEventListener('click', resetSystem);
+            elements.refreshBtn.addEventListener('click', refreshData);
+            elements.clearBtn.addEventListener('click', clearInput);
+        }
+
+        function updateThreshold() {
+            const newThreshold = parseFloat(elements.thresholdInput.value);
+            
+            if (isNaN(newThreshold) || newThreshold < 1 || newThreshold > 15) {
+                showToast('Please enter a value between 1 and 15 feet', 'error');
+                return;
+            }
+
+            // Update local state immediately for better UX
+            state.threshold = newThreshold;
+            updateThresholdDisplay();
+
+            // Send to Firebase
+            database.ref('/HOME/esp32/threshold/new').set(newThreshold)
+                .then(() => {
+                    showToast(`Threshold updated to ${newThreshold.toFixed(1)} feet`, 'success');
+                })
+                .catch((error) => {
+                    showToast(`Failed to update threshold: ${error.message}`, 'error');
+                    // Revert local state if Firebase fails
+                    updateThresholdDisplay();
+                });
+        }
+
+        function sendCommand(command) {
+            const commandData = command === 'stop' ? true : false;
+            
+            database.ref('/HOME/esp32/commands/stop').set(commandData)
+                .then(() => {
+                    showToast(`System ${command} command sent`, 'success');
+                })
+                .catch((error) => {
+                    showToast(`Failed to send command: ${error.message}`, 'error');
+                });
+        }
+
+        function testBuzzer() {
+            database.ref('/HOME/esp32/commands/testBuzzer').set(true)
+                .then(() => {
+                    showToast('Buzzer test command sent', 'success');
+                })
+                .catch((error) => {
+                    showToast(`Failed to test buzzer: ${error.message}`, 'error');
+                });
+        }
+
+        function resetSystem() {
+            if (confirm('Reset threshold to default (6 feet)?')) {
+                database.ref('/HOME/esp32/threshold/new').set(6.0)
+                    .then(() => {
+                        showToast('Threshold reset to default', 'success');
+                    })
+                    .catch((error) => {
+                        showToast(`Reset failed: ${error.message}`, 'error');
+                    });
+            }
+        }
+
+        function refreshData() {
+            // Force refresh all data
+            database.ref('esp32').once('value')
+                .then(() => {
+                    showToast('Data refreshed', 'success');
+                })
+                .catch((error) => {
+                    showToast(`Refresh failed: ${error.message}`, 'error');
+                });
+        }
+
+        function clearInput() {
+            elements.thresholdInput.value = '';
+            showToast('Input cleared', 'info');
+        }
+
+        function updateDistanceDisplay() {
+            if (state.distance !== null) {
+                elements.distanceValue.textContent = state.distance.toFixed(2);
+                
+                // Update status based on threshold
+                if (state.distance > state.threshold) {
+                    elements.distanceStatus.textContent = 'ABOVE THRESHOLD';
+                    elements.distanceStatus.style.background = 'rgba(247, 37, 133, 0.2)';
+                    elements.distanceStatus.style.borderColor = '#f72585';
+                    elements.distanceValue.classList.add('pulse');
+                } else {
+                    elements.distanceStatus.textContent = 'BELOW THRESHOLD';
+                    elements.distanceStatus.style.background = 'rgba(56, 176, 0, 0.2)';
+                    elements.distanceStatus.style.borderColor = '#38b000';
+                    elements.distanceValue.classList.remove('pulse');
+                }
+            } else {
+                elements.distanceValue.textContent = '--';
+                elements.distanceStatus.textContent = 'NO DATA';
+            }
+        }
+
+        function updateThresholdDisplay() {
+            elements.currentThreshold.textContent = state.threshold.toFixed(1);
+            elements.thresholdSlider.value = state.threshold;
+            elements.thresholdInput.value = state.threshold.toFixed(1);
+        }
+
+        function updateBuzzerStatus(active) {
+            if (active) {
+                elements.buzzerStatus.textContent = 'ACTIVE';
+                elements.buzzerStatus.className = 'status-value active';
+                elements.buzzerIcon.className = 'fas fa-bell active';
+            } else {
+                elements.buzzerStatus.textContent = 'INACTIVE';
+                elements.buzzerStatus.className = 'status-value inactive';
+                elements.buzzerIcon.className = 'fas fa-bell inactive';
+            }
+        }
+
+        function updateWifiStatus(connected) {
+            if (connected) {
+                elements.wifiStatus.textContent = 'CONNECTED';
+                elements.wifiStatus.className = 'status-value connected';
+                elements.wifiIcon.className = 'fas fa-wifi connected';
+            } else {
+                elements.wifiStatus.textContent = 'DISCONNECTED';
+                elements.wifiStatus.className = 'status-value disconnected';
+                elements.wifiIcon.className = 'fas fa-wifi disconnected';
+            }
+        }
+
+        function updateSystemControls() {
+            if (state.systemActive) {
+                elements.systemStatus.textContent = 'ACTIVE';
+                elements.systemStatus.className = 'status-value active';
+                elements.startBtn.disabled = true;
+                elements.stopBtn.disabled = false;
+            } else {
+                elements.systemStatus.textContent = 'STOPPED';
+                elements.systemStatus.className = 'status-value inactive';
+                elements.startBtn.disabled = false;
+                elements.stopBtn.disabled = true;
+            }
+        }
+
+        function updateConnectionStatus(isConnected) {
+            state.connected = isConnected;
+            
+            if (isConnected) {
+                elements.connectionDot.className = 'connection-dot connected';
+                elements.connectionText.textContent = 'Connected';
+                
+                elements.firebaseStatus.textContent = 'CONNECTED';
+                elements.firebaseStatus.className = 'status-value connected';
+                elements.firebaseIcon.className = 'fas fa-database connected';
+            } else {
+                elements.connectionDot.className = 'connection-dot';
+                elements.connectionText.textContent = 'Disconnected';
+                
+                elements.firebaseStatus.textContent = 'DISCONNECTED';
+                elements.firebaseStatus.className = 'status-value disconnected';
+                elements.firebaseIcon.className = 'fas fa-database disconnected';
+            }
+        }
+
+        function updateUI() {
+            updateDistanceDisplay();
+            updateThresholdDisplay();
+            updateSystemControls();
+            updateConnectionStatus(state.connected);
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            
+            let icon = 'fas fa-info-circle';
+            switch(type) {
+                case 'success': icon = 'fas fa-check-circle'; break;
+                case 'error': icon = 'fas fa-times-circle'; break;
+                case 'warning': icon = 'fas fa-exclamation-triangle'; break;
+            }
+            
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            toast.innerHTML = `
+                <i class="${icon}"></i>
+                <div style="flex: 1; font-size: 0.85rem;">${message}</div>
+                <div style="font-size: 0.7rem; color: #666;">${time}</div>
+            `;
+            
+            elements.toastContainer.appendChild(toast);
+            
+            // Auto remove after 4 seconds
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100%)';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 4000);
+            
+            // Limit to 3 toasts
+            const toasts = elements.toastContainer.querySelectorAll('.toast');
+            if (toasts.length > 3) {
+                toasts[0].remove();
+            }
+        }
+
+        // Initialize with default values
+        updateUI();
+    </script>
+</body>
+</html>
