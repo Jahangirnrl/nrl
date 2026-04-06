@@ -23,12 +23,6 @@
     font-family: "Inter", sans-serif;
     letter-spacing: 0.5px;
 }
-
-    
-    
-    
-    
-    
     
     
 /* Updated Fan Speed Control Styles - Room-specific slider colors for the bar */
@@ -264,16 +258,7 @@
 .fan-speed-slider.room-4-slider::-webkit-slider-runnable-track {
     box-shadow: 0 0 5px rgba(139, 92, 246, 0.3);
 }    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
+      
 
 /* Rest of your existing CSS remains the same */
 .branding-header {
@@ -313,7 +298,7 @@
   .copyright-footer {
     text-align: center;
     padding: 10px 0;
-    margin-top: 100px;
+    margin-top: 02px;
     border-top: 1px solid #334155;
     color: #94a3b8;
     font-size: 0.8rem;
@@ -330,7 +315,7 @@
   .panel-full-width .label { 
     font-size:0.65rem; 
     color:#94a3b8; 
-    margin-bottom:2px;
+    margin-bottom:1px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -588,7 +573,7 @@
   .tab-btn { 
     flex: 1 0 24%;
     max-width: 24%;
-    padding:4px 06px; 
+    padding:2px 06px; 
     border:none; 
     border-radius:6px 6px 0 0; 
     background:#1e293b; 
@@ -643,9 +628,9 @@
 position: absolute;
   left: 50%;
   transform: translateX(-50%);
-margin-top: 10px;
+margin-top: 05px;
     display:inline-block; 
-    padding:4px 10px; 
+    padding:2px 10px; 
     border-radius:16px; 
     background:    #B22222;
     color:    #FFFAFA; 
@@ -1705,10 +1690,10 @@ margin-top: 10px;
       <div id="r2" class="relay-btn">LIGHT</div>
       <div id="r3" class="relay-btn">FAN-2</div>
       <div id="r4" class="relay-btn">DIM-L</div>
-	  <div id="r5" class="relay-btn">TV</div>
-	  <div id="r6" class="relay-btn">SOCKET</div>
-	  <div id="r7" class="relay-btn">PC</div>
-	  <div id="r8" class="relay-btn">TABLE</div>
+      <div id="r5" class="relay-btn">TV</div>
+      <div id="r6" class="relay-btn">SOCKET</div>
+      <div id="r7" class="relay-btn">PC</div>
+      <div id="r8" class="relay-btn">TABLE</div>
     </div>
     
     <!-- Fan Speed Control Slider - Positioned under the relay buttons -->
@@ -1823,6 +1808,10 @@ margin-top: 10px;
             <input type="text" id="room1Relay2" class="settings-form-input" placeholder="Relay 2 Name">
             <input type="text" id="room1Relay3" class="settings-form-input" placeholder="Relay 3 Name">
             <input type="text" id="room1Relay4" class="settings-form-input" placeholder="Relay 4 Name">
+            <input type="text" id="room1Relay5" class="settings-form-input" placeholder="Relay 5 Name">
+            <input type="text" id="room1Relay6" class="settings-form-input" placeholder="Relay 6 Name">
+            <input type="text" id="room1Relay7" class="settings-form-input" placeholder="Relay 7 Name">
+            <input type="text" id="room1Relay8" class="settings-form-input" placeholder="Relay 8 Name">
           </div>
         </div>
       </div>
@@ -1841,6 +1830,10 @@ margin-top: 10px;
             <input type="text" id="room2Relay2" class="settings-form-input" placeholder="Relay 2 Name">
             <input type="text" id="room2Relay3" class="settings-form-input" placeholder="Relay 3 Name">
             <input type="text" id="room2Relay4" class="settings-form-input" placeholder="Relay 4 Name">
+            <input type="text" id="room4Relay5" class="settings-form-input" placeholder="Relay 5 Name">
+            <input type="text" id="room4Relay6" class="settings-form-input" placeholder="Relay 6 Name">
+            <input type="text" id="room4Relay7" class="settings-form-input" placeholder="Relay 7 Name">
+            <input type="text" id="room4Relay8" class="settings-form-input" placeholder="Relay 8 Name">
           </div>
         </div>
       </div>
@@ -1859,6 +1852,10 @@ margin-top: 10px;
             <input type="text" id="room3Relay2" class="settings-form-input" placeholder="Relay 2 Name">
             <input type="text" id="room3Relay3" class="settings-form-input" placeholder="Relay 3 Name">
             <input type="text" id="room3Relay4" class="settings-form-input" placeholder="Relay 4 Name">
+            <input type="text" id="room4Relay5" class="settings-form-input" placeholder="Relay 5 Name">
+            <input type="text" id="room4Relay6" class="settings-form-input" placeholder="Relay 6 Name">
+            <input type="text" id="room4Relay7" class="settings-form-input" placeholder="Relay 7 Name">
+            <input type="text" id="room4Relay8" class="settings-form-input" placeholder="Relay 8 Name">
           </div>
         </div>
       </div>
@@ -1877,6 +1874,10 @@ margin-top: 10px;
             <input type="text" id="room4Relay2" class="settings-form-input" placeholder="Relay 2 Name">
             <input type="text" id="room4Relay3" class="settings-form-input" placeholder="Relay 3 Name">
             <input type="text" id="room4Relay4" class="settings-form-input" placeholder="Relay 4 Name">
+            <input type="text" id="room4Relay5" class="settings-form-input" placeholder="Relay 5 Name">
+            <input type="text" id="room4Relay6" class="settings-form-input" placeholder="Relay 6 Name">
+            <input type="text" id="room4Relay7" class="settings-form-input" placeholder="Relay 7 Name">
+            <input type="text" id="room4Relay8" class="settings-form-input" placeholder="Relay 8 Name">
           </div>
         </div>
       </div>
@@ -2069,7 +2070,7 @@ const versionInfoEl = document.getElementById('versionInfo');
 const firmwareInfoEl = document.getElementById('firmwareInfo');
 const uptimeEl = document.getElementById('uptime');
 const logViewer = document.getElementById('logViewer');
-const relayBtns = [document.getElementById('r1'),document.getElementById('r2'),document.getElementById('r3'),document.getElementById('r4')];
+const relayBtns = [document.getElementById('r1'),document.getElementById('r2'),document.getElementById('r3'),document.getElementById('r4'),document.getElementById('r5'),document.getElementById('r6'),document.getElementById('r7'),document.getElementById('r8')];
 const currentDeviceDisplay = document.getElementById('currentDeviceDisplay');
 const deviceTabs = document.querySelectorAll('.device-tab');
 
@@ -2320,7 +2321,7 @@ let swipeFeedbackEnabled = true;
 function initializeDefaultNames() {
   devices.forEach(device => {
     roomNames[device] = device.replace('_', '-');
-    relayNames[device] = ['FAN', 'LIGHT', 'FAN-2', 'DIM-L'];
+    relayNames[device] = ['FAN', 'LIGHT', 'FAN-2', 'DIM-L','PC', 'TV', 'SOCKET', 'TABLE'];
   });
 }
 
@@ -2333,7 +2334,7 @@ function loadRoomAndRelayNames() {
         updateUICustomNames();
       }
     });
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= 8; i++) {
       db.ref(`HOME/${device}/R_B_NAME/relay${i}`).on('value', (snapshot) => {
         if (snapshot.exists()) {
           if (!relayNames[device]) relayNames[device] = [];
@@ -2349,7 +2350,7 @@ function loadRoomAndRelayNames() {
 function saveRoomAndRelayNamesToFirebase() {
   devices.forEach(device => {
     db.ref(`HOME/${device}/R_B_NAME/roomName`).set(roomNames[device]);
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= 8; i++) {
       db.ref(`HOME/${device}/R_B_NAME/relay${i}`).set(relayNames[device][i-1]);
     }
   });
@@ -2740,7 +2741,7 @@ function setupRelayListeners() {
     btn.addEventListener('click', () => toggleRelay(i));
   });
   
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 8; i++) {
     const relayPath = getDevicePath(`relay${i+1}`);
     console.log(`Listening to relay path: ${relayPath}`);
     const unsubscribe = db.ref(relayPath).on('value', snap => {
