@@ -28,8 +28,8 @@
 /* Updated Fan Speed Control Styles - Room-specific slider colors for the bar */
 
 .fan-speed-container {
-    margin: 15px 0 10px 0;
-    padding: 12px 15px;
+    margin: 02px 0 05px 0;
+    padding: 2px 5px;
     background: rgba(30,41,59,0.9);
     border-radius: 12px;
     border: 1px solid #334155;
@@ -41,17 +41,17 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 03px;
 }
 
 .fan-speed-header h4 {
     color: #38bdf8;
     margin: 0;
     font-size: 0.95rem;
-    font-weight: 600;
+    font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 3px;
 }
 
 .fan-speed-header h4 i {
@@ -62,7 +62,7 @@
 .fan-speed-value {
     background: #0f172a;
     font-weight: 700;
-    padding: 4px 12px;
+    padding: 2px 08px;
     border-radius: 20px;
     font-size: 0.85rem;
     border: 1px solid #334155;
@@ -139,8 +139,8 @@
 .fan-speed-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 15px;
-    height: 15px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     cursor: pointer;
     border: 2px solid;
@@ -158,8 +158,8 @@
 
 /* Slider thumb - Firefox */
 .fan-speed-slider::-moz-range-thumb {
-    width: 15px;
-    height: 15px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     cursor: pointer;
     border: 2px solid;
@@ -240,7 +240,7 @@
 .fan-speed-slider-wrapper {
     width: 100%;
     position: relative;
-    min-height: 30px;
+    min-height: 20px;
     display: flex;
     align-items: center;
 }
@@ -658,7 +658,7 @@ margin-top: 05px;
     align-items: center;
     width: 98%;
     margin-right: 02px;  
-    margin-top: 17px;
+    margin-top: 15px;
     font-size: 0.7rem;
   }
   .dashboard-version.room-1-version { color: #10b981; }
@@ -672,13 +672,13 @@ margin-top: 05px;
   .info-main { 
     display:grid; 
     grid-template-columns: 1fr 1fr; 
-    gap:8px; 
-    margin-top:17px; 
+    gap:5px; 
+    margin-top:08px; 
   }
   .panel { 
     background: rgba(30,41,59,0.9); 
     border-radius:10px; 
-    padding:10px; 
+    padding:02px; 
     text-align:center; 
     box-shadow: 0 3px 5px rgba(0,0,0,0.3);
     border: 1px solid #334155;
@@ -701,7 +701,7 @@ margin-top: 05px;
     grid-column: 1 / -1;
     background: rgba(30,41,59,0.9); 
     border-radius:10px; 
-    padding:10px; 
+    padding:05px; 
     text-align:center; 
     box-shadow: 0 3px 5px rgba(0,0,0,0.3);
     border: 1px solid #334155;
@@ -723,14 +723,14 @@ margin-top: 05px;
   .relays { 
     display:flex; 
     justify-content:center; 
-    gap:30px; 
+    gap:35px; 
     flex-wrap:wrap; 
-    margin-bottom:5px; 
+    margin-bottom:2px; 
     padding: 15px 0 5px 0;
   }
   .relay-btn { 
-    width:65px; 
-    height:65px; 
+    width:62px; 
+    height:62px; 
     border-radius:50%; 
     border:3px solid #475569; 
     display:flex; 
@@ -755,6 +755,7 @@ margin-top: 05px;
   .relay-btn.room-2.on { background: #38bdf8; border-color: #7dd3fc; }
   .relay-btn.room-3.on { background: #fbbf24; border-color: #fbbf24; }
   .relay-btn.room-4.on { background: #8b5cf6; border-color: #a78bfa; }
+
   .switch-container {
     display: flex;
     align-items: center;
@@ -767,13 +768,13 @@ margin-top: 05px;
   }
   .switch-label {
     color: #94a3b8;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 0.9rem;
   }
   .switch {
-    width: 50px;
-    height: 24px;
-    border-radius: 12px;
+    width: 40px;
+    height: 20px;
+    border-radius: 10px;
     background: #ef4444;
     position: relative;
     cursor: pointer;
@@ -1775,6 +1776,13 @@ margin-top: 05px;
   &copy; <span id="currentYear"></span> | Md. Jahangir Alam - 01911132254 | All rights reserved.
 </div>
 
+
+
+
+
+
+
+
 <!-- Settings Modal -->
 <div class="settings-modal" id="settingsModal">
   <div class="settings-content">
@@ -1783,7 +1791,7 @@ margin-top: 05px;
       <button class="close-settings" id="closeSettingsBtn">&times;</button>
     </div>
     <div class="settings-tabs1">
-        <button class="tab-btn room-2-color" id="settingsBtn1">ROOM-1</button>
+        <button class="tab-btn room-1-color" id="settingsBtn1">ROOM-1</button>
         <button class="tab-btn room-2-color" id="settingsBtn2">ROOM-2</button>
         <button class="tab-btn room-3-color" id="settingsBtn3">ROOM-3</button>
         <button class="tab-btn room-4-color" id="settingsBtn4">ROOM-4</button>
@@ -1794,6 +1802,8 @@ margin-top: 05px;
       <button class="settings-tab room-3-color" data-room="ROOM_3">Room 3</button>
       <button class="settings-tab room-4-color" data-room="ROOM_4">Room 4</button>
     </div>  
+    
+    <!-- Room 1 Settings -->
     <div id="room1Settings" class="settings-panel active">
       <div class="room-settings">
         <h4>Room 1 Settings</h4>
@@ -1804,7 +1814,7 @@ margin-top: 05px;
         <div class="settings-form-group">
           <label class="settings-form-label">Relay Labels</label>
           <div class="relay-settings-grid">
-            <input type="text" id="room1Relay1" class="settings-form-input" placeholder="Relay 1 Name (Fan)">
+            <input type="text" id="room1Relay1" class="settings-form-input" placeholder="Relay 1 Name">
             <input type="text" id="room1Relay2" class="settings-form-input" placeholder="Relay 2 Name">
             <input type="text" id="room1Relay3" class="settings-form-input" placeholder="Relay 3 Name">
             <input type="text" id="room1Relay4" class="settings-form-input" placeholder="Relay 4 Name">
@@ -1816,6 +1826,8 @@ margin-top: 05px;
         </div>
       </div>
     </div>
+    
+    <!-- Room 2 Settings -->
     <div id="room2Settings" class="settings-panel">
       <div class="room-settings">
         <h4>Room 2 Settings</h4>
@@ -1826,18 +1838,20 @@ margin-top: 05px;
         <div class="settings-form-group">
           <label class="settings-form-label">Relay Labels</label>
           <div class="relay-settings-grid">
-            <input type="text" id="room2Relay1" class="settings-form-input" placeholder="Relay 1 Name (Fan)">
+            <input type="text" id="room2Relay1" class="settings-form-input" placeholder="Relay 1 Name">
             <input type="text" id="room2Relay2" class="settings-form-input" placeholder="Relay 2 Name">
             <input type="text" id="room2Relay3" class="settings-form-input" placeholder="Relay 3 Name">
             <input type="text" id="room2Relay4" class="settings-form-input" placeholder="Relay 4 Name">
-            <input type="text" id="room4Relay5" class="settings-form-input" placeholder="Relay 5 Name">
-            <input type="text" id="room4Relay6" class="settings-form-input" placeholder="Relay 6 Name">
-            <input type="text" id="room4Relay7" class="settings-form-input" placeholder="Relay 7 Name">
-            <input type="text" id="room4Relay8" class="settings-form-input" placeholder="Relay 8 Name">
+            <input type="text" id="room2Relay5" class="settings-form-input" placeholder="Relay 5 Name">
+            <input type="text" id="room2Relay6" class="settings-form-input" placeholder="Relay 6 Name">
+            <input type="text" id="room2Relay7" class="settings-form-input" placeholder="Relay 7 Name">
+            <input type="text" id="room2Relay8" class="settings-form-input" placeholder="Relay 8 Name">
           </div>
         </div>
       </div>
     </div>
+    
+    <!-- Room 3 Settings -->
     <div id="room3Settings" class="settings-panel">
       <div class="room-settings">
         <h4>Room 3 Settings</h4>
@@ -1848,18 +1862,20 @@ margin-top: 05px;
         <div class="settings-form-group">
           <label class="settings-form-label">Relay Labels</label>
           <div class="relay-settings-grid">
-            <input type="text" id="room3Relay1" class="settings-form-input" placeholder="Relay 1 Name (Fan)">
+            <input type="text" id="room3Relay1" class="settings-form-input" placeholder="Relay 1 Name">
             <input type="text" id="room3Relay2" class="settings-form-input" placeholder="Relay 2 Name">
             <input type="text" id="room3Relay3" class="settings-form-input" placeholder="Relay 3 Name">
             <input type="text" id="room3Relay4" class="settings-form-input" placeholder="Relay 4 Name">
-            <input type="text" id="room4Relay5" class="settings-form-input" placeholder="Relay 5 Name">
-            <input type="text" id="room4Relay6" class="settings-form-input" placeholder="Relay 6 Name">
-            <input type="text" id="room4Relay7" class="settings-form-input" placeholder="Relay 7 Name">
-            <input type="text" id="room4Relay8" class="settings-form-input" placeholder="Relay 8 Name">
+            <input type="text" id="room3Relay5" class="settings-form-input" placeholder="Relay 5 Name">
+            <input type="text" id="room3Relay6" class="settings-form-input" placeholder="Relay 6 Name">
+            <input type="text" id="room3Relay7" class="settings-form-input" placeholder="Relay 7 Name">
+            <input type="text" id="room3Relay8" class="settings-form-input" placeholder="Relay 8 Name">
           </div>
         </div>
       </div>
     </div>
+    
+    <!-- Room 4 Settings -->
     <div id="room4Settings" class="settings-panel">
       <div class="room-settings">
         <h4>Room 4 Settings</h4>
@@ -1870,7 +1886,7 @@ margin-top: 05px;
         <div class="settings-form-group">
           <label class="settings-form-label">Relay Labels</label>
           <div class="relay-settings-grid">
-            <input type="text" id="room4Relay1" class="settings-form-input" placeholder="Relay 1 Name (Fan)">
+            <input type="text" id="room4Relay1" class="settings-form-input" placeholder="Relay 1 Name">
             <input type="text" id="room4Relay2" class="settings-form-input" placeholder="Relay 2 Name">
             <input type="text" id="room4Relay3" class="settings-form-input" placeholder="Relay 3 Name">
             <input type="text" id="room4Relay4" class="settings-form-input" placeholder="Relay 4 Name">
@@ -1882,12 +1898,21 @@ margin-top: 05px;
         </div>
       </div>
     </div>
+    
     <div class="settings-actions">
       <button class="cancel-settings-btn" id="cancelSettingsBtn">Cancel</button>
       <button class="save-settings-btn" id="saveSettingsBtn">Save Settings</button>
     </div>
   </div>
 </div>
+
+
+
+
+
+
+
+
 
 <!-- Create User Modal -->
 <div class="settings-modal" id="createUserModal">
@@ -3044,7 +3069,11 @@ document.getElementById('weatherRefreshBtn').addEventListener('click', () => {
   loadWeatherData1(); loadWeatherData();
 });
 
-// --- SETTINGS FUNCTIONS ---
+
+
+
+
+
 function openSettingsModal() {
   settingsTabs.forEach(t => t.classList.remove('active'));
   settingsPanels.forEach(p => p.classList.remove('active'));
@@ -3054,8 +3083,11 @@ function openSettingsModal() {
   devices.forEach(device => {
     const roomNum = device.split('_')[1];
     document.getElementById(`room${roomNum}Name`).value = roomNames[device] || '';
-    for (let i = 1; i <= 4; i++) {
-      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device] ? relayNames[device][i-1] : '';
+    for (let i = 1; i <= 8; i++) {
+      const input = document.getElementById(`room${roomNum}Relay${i}`);
+      if (input) {
+        input.value = relayNames[device] ? relayNames[device][i-1] : '';
+      }
     }
   });
   
@@ -3072,8 +3104,11 @@ function openSettingsModal1() {
   devices.forEach(device => {
     const roomNum = device.split('_')[1];
     document.getElementById(`room${roomNum}Name`).value = roomNames[device] || '';
-    for (let i = 1; i <= 4; i++) {
-      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device] ? relayNames[device][i-1] : '';
+    for (let i = 1; i <= 8; i++) {
+      const input = document.getElementById(`room${roomNum}Relay${i}`);
+      if (input) {
+        input.value = relayNames[device] ? relayNames[device][i-1] : '';
+      }
     }
   });
   
@@ -3090,8 +3125,11 @@ function openSettingsModal2() {
   devices.forEach(device => {
     const roomNum = device.split('_')[1];
     document.getElementById(`room${roomNum}Name`).value = roomNames[device] || '';
-    for (let i = 1; i <= 4; i++) {
-      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device] ? relayNames[device][i-1] : '';
+    for (let i = 1; i <= 8; i++) {
+      const input = document.getElementById(`room${roomNum}Relay${i}`);
+      if (input) {
+        input.value = relayNames[device] ? relayNames[device][i-1] : '';
+      }
     }
   });
   
@@ -3108,8 +3146,11 @@ function openSettingsModal3() {
   devices.forEach(device => {
     const roomNum = device.split('_')[1];
     document.getElementById(`room${roomNum}Name`).value = roomNames[device] || '';
-    for (let i = 1; i <= 4; i++) {
-      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device] ? relayNames[device][i-1] : '';
+    for (let i = 1; i <= 8; i++) {
+      const input = document.getElementById(`room${roomNum}Relay${i}`);
+      if (input) {
+        input.value = relayNames[device] ? relayNames[device][i-1] : '';
+      }
     }
   });
   
@@ -3126,14 +3167,22 @@ function openSettingsModal4() {
   devices.forEach(device => {
     const roomNum = device.split('_')[1];
     document.getElementById(`room${roomNum}Name`).value = roomNames[device] || '';
-    for (let i = 1; i <= 4; i++) {
-      document.getElementById(`room${roomNum}Relay${i}`).value = relayNames[device] ? relayNames[device][i-1] : '';
+    for (let i = 1; i <= 8; i++) {
+      const input = document.getElementById(`room${roomNum}Relay${i}`);
+      if (input) {
+        input.value = relayNames[device] ? relayNames[device][i-1] : '';
+      }
     }
   });
   
   settingsModal.classList.add('show');
   profileDropdown.classList.remove('show');
-}        
+}
+
+
+
+
+       
 
 function closeSettingsModal() {
   settingsModal.classList.remove('show');
@@ -3149,7 +3198,7 @@ function saveSettings() {
     newRoomNames[device] = roomNameInput.value.trim() || device.replace('_', '-');
     
     if (!newRelayNames[device]) newRelayNames[device] = [];
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= 8; i++) { // DEFAULT 4
       const relayInput = document.getElementById(`room${roomNum}Relay${i}`);
       newRelayNames[device][i-1] = relayInput.value.trim() || `Relay ${i}`;
     }
@@ -3187,6 +3236,7 @@ document.getElementById('settingsBtn1').addEventListener('click', openSettingsMo
 document.getElementById('settingsBtn2').addEventListener('click', openSettingsModal2);
 document.getElementById('settingsBtn3').addEventListener('click', openSettingsModal3);
 document.getElementById('settingsBtn4').addEventListener('click', openSettingsModal4);        
+
 closeSettingsBtn.addEventListener('click', closeSettingsModal);
 cancelSettingsBtn.addEventListener('click', closeSettingsModal);
 saveSettingsBtn.addEventListener('click', saveSettings);
