@@ -3008,7 +3008,7 @@ function setupSSIDListener() {
     allListeners.push(() => db.ref(path).off('value', unsub));
 }
 
-// NEW FUNCTION - Shows RSSI number with smaller font size
+// NEW FUNCTION - Gradual font size reduction for all parts (SSID also reduced)
 function updateSSIDWithSignal(ssidValue, rssiDisplay, rssiText) {
     const ssidEl = document.getElementById('ssid');
     if (!ssidEl) return;
@@ -3027,8 +3027,11 @@ function updateSSIDWithSignal(ssidValue, rssiDisplay, rssiText) {
                 rssiNumber = match[0];
             }
         }
-        // Display: "jahangir_net 📶 Fair" with small RSSI number
-        ssidEl.innerHTML = `${ssidValue} ${rssiText} <span style="font-size:0.7rem; opacity:0.8;">(${rssiNumber})</span>`;
+        // Gradual font reduction all parts:
+        // SSID: 0.85rem
+        // Signal description: 0.75rem
+        // RSSI number: 0.6rem
+        ssidEl.innerHTML = `<span style="font-size:0.85rem;">${ssidValue}</span> <span style="font-size:0.75rem; opacity:0.85;">${rssiText}</span> <span style="font-size:0.6rem; opacity:0.6;">(${rssiNumber})</span>`;
     } else if (rssiDisplay && rssiDisplay !== '--') {
         let rssiNumber = rssiDisplay;
         if (typeof rssiDisplay === 'string') {
@@ -3037,9 +3040,9 @@ function updateSSIDWithSignal(ssidValue, rssiDisplay, rssiText) {
                 rssiNumber = match[0];
             }
         }
-        ssidEl.innerHTML = `${ssidValue} <span style="font-size:0.7rem; opacity:0.8;">(${rssiNumber})</span>`;
+        ssidEl.innerHTML = `<span style="font-size:0.85rem;">${ssidValue}</span> <span style="font-size:0.6rem; opacity:0.6;">(${rssiNumber})</span>`;
     } else {
-        ssidEl.textContent = ssidValue;
+        ssidEl.innerHTML = `<span style="font-size:0.85rem;">${ssidValue}</span>`;
     }
 }
 
