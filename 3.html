@@ -25,6 +25,39 @@
 }
     
     
+/* Device Status Button */
+.device-status-btn {
+    background: #1e293b !important;
+    color: #38bdf8 !important;
+    border: 1px solid #38bdf8 !important;
+}
+.device-status-btn:hover {
+    background: #38bdf8 !important;
+    color: #0f172a !important;
+}
+
+/* Status badges */
+.status-badge-online {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    font-weight: 600;
+}
+.status-badge-offline {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    font-weight: 600;
+}
+
+
+
+
+
 /* Updated Fan Speed Control Styles - Room-specific slider colors for the bar */
 
 .fan-speed-container {
@@ -1574,6 +1607,23 @@ margin-top: 05px;
   .swipe-feedback.swipe-down {
     background: linear-gradient(to top, rgba(245, 158, 11, 0.15), transparent);
   }
+
+
+  /* RSSI Display Styles */
+#ssid {
+    line-height: 1.3;
+    white-space: normal;
+    word-break: break-word;
+}
+#ssid span {
+    font-size: 0.65rem;
+    color: #94a3b8;
+    display: inline-block;
+    margin-top: 2px;
+}
+
+
+  
 </style>
 </head>
 <body>
@@ -1610,6 +1660,10 @@ margin-top: 05px;
                 <span class="switch-label">MUTE / UNMUTE</span>
                 <div class="switch" id="beepSwitch"></div>
             </div>
+
+
+
+
             <div class="switch-container">
                 <span class="switch-label">IR LOCK</span>
                 <div class="lock-switch" id="irLockSwitch"></div>
@@ -1630,6 +1684,12 @@ margin-top: 05px;
                 <span class="switch-label">SERIAL PRINT</span>
                 <div class="switch" id="serialSwitch"></div>
             </div>
+
+            <!-- NEW: Device Status Button -->
+            <button class="dropdown-btn device-status-btn" id="deviceStatusBtn" style="background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8;">
+            <i class="fas fa-chart-line"></i> Device Status & History
+            </button>
+
             <button class="dropdown-btn settings-btn2" id="createUserBtn" style="display: none;">
               <i class="fas fa-user-plus"></i> Create New User</button>
             <button class="dropdown-btn edit-account-btn" id="editAccountBtn">
@@ -2020,6 +2080,64 @@ margin-top: 05px;
       <button class="cancel-settings-btn" id="cancelRestartBtn" style="margin-right: 10px;">No, Cancel</button>
       <button class="dropdown-btn restart-btn" id="confirmRestartBtn" style="margin: 0;">
         <i class="fa-solid fa-power-off"></i> Yes, Restart
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Device Status Modal -->
+<div class="settings-modal" id="deviceStatusModal">
+  <div class="settings-content" style="max-width: 600px; max-height: 85vh;">
+    <div class="settings-header">
+      <h3><i class="fas fa-chart-line"></i> Device Status & History</h3>
+      <button class="close-settings" id="closeDeviceStatusBtn">&times;</button>
+    </div>
+    
+    <div style="overflow-y: auto; max-height: calc(85vh - 80px);">
+
+
+
+    <!-- ADD THIS ROOM SELECTOR -->
+      <div style="background: rgba(30,41,59,0.9); border-radius: 10px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155;">
+        <h4 style="color: #38bdf8; margin: 0 0 10px 0;"><i class="fas fa-door-open"></i> Select Room</h4>
+        <select id="statusRoomSelector" style="width: 100%; padding: 10px; background: #0f172a; color: #f1f5f9; border: 1px solid #334155; border-radius: 8px; font-size: 1rem;">
+          <option value="ROOM_1">Room 1</option>
+          <option value="ROOM_2">Room 2</option>
+          <option value="ROOM_3">Room 3</option>
+          <option value="ROOM_4">Room 4</option>
+        </select>
+      </div>
+
+
+
+      <!-- Current Status -->
+      <div style="background: rgba(30,41,59,0.9); border-radius: 10px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155;">
+        <h4 style="color: #38bdf8; margin: 0 0 10px 0;"><i class="fas fa-circle"></i> Current Status</h4>
+        <div id="statusCurrentInfo" style="font-size: 1rem;">Loading...</div>
+      </div>
+      
+      <!-- Today's Stats -->
+      <div style="background: rgba(30,41,59,0.9); border-radius: 10px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155;">
+        <h4 style="color: #38bdf8; margin: 0 0 10px 0;"><i class="fas fa-calendar-day"></i> Today's Statistics</h4>
+        <div id="statusTodayStats" style="font-size: 0.9rem;">Loading...</div>
+      </div>
+      
+      <!-- Last 7 Days History -->
+      <div style="background: rgba(30,41,59,0.9); border-radius: 10px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155;">
+        <h4 style="color: #38bdf8; margin: 0 0 10px 0;"><i class="fas fa-history"></i> Last 7 Days</h4>
+        <div id="statusHistoryTable" style="font-size: 0.75rem; max-height: 250px; overflow-y: auto;">Loading...</div>
+      </div>
+      
+      <!-- Recent Events -->
+      <div style="background: rgba(30,41,59,0.9); border-radius: 10px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155;">
+        <h4 style="color: #38bdf8; margin: 0 0 10px 0;"><i class="fas fa-list"></i> Recent Events (Today)</h4>
+        <div id="statusEventsList" style="font-size: 0.8rem; max-height: 200px; overflow-y: auto;">Loading...</div>
+      </div>
+      
+      <!-- Refresh Button -->
+      <button id="refreshStatusBtn" style="width: 100%; padding: 10px; background: #38bdf8; color: #0f172a; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 10px;">
+        <i class="fas fa-sync-alt"></i> Refresh Data
       </button>
     </div>
   </div>
@@ -2496,32 +2614,57 @@ function setFanSpeed(speed) {
 
 // NEW FUNCTION - Listens to HOME/ROOM_X/device/signalStrength
 function setupSignalStrengthListener() {
-    const path = `HOME/${currentDevice}/device/signalStrength`;  // <-- FIXED: Uses currentDevice
+    const path = `HOME/${currentDevice}/device/signalStrength`;
     const unsub = db.ref(path).on('value', (snap) => {
         let rawSignal = snap.val();
-        let percent = '--';
+        let rssiDisplay = '--';
+        let rssiText = '';
+        
         if (rawSignal !== null && rawSignal !== undefined && rawSignal !== '--') {
             if (typeof rawSignal === 'number') {
-                // Convert RSSI (-100 to -30) to percentage
                 let rssi = rawSignal;
-                let perc = 0;
-                if (rssi <= -100) perc = 0;
-                else if (rssi >= -30) perc = 100;
-                else perc = Math.round((rssi + 100) * (100 / 70));
-                percent = Math.min(100, Math.max(0, perc));
+                // Convert RSSI (-100 to -30) to descriptive text
+                if (rssi >= -50) {
+                    rssiText = '📶 Excellent';
+                } else if (rssi >= -60) {
+                    rssiText = '📶 Good';
+                } else if (rssi >= -70) {
+                    rssiText = '📶 Fair';
+                } else if (rssi >= -85) {
+                    rssiText = '📶 Poor';
+                } else {
+                    rssiText = '❌ No Signal';
+                }
+                rssiDisplay = `${rssi} dBm`;
             } else if (typeof rawSignal === 'string') {
-                let match = rawSignal.match(/\d+/);
-                if (match) percent = parseInt(match[0]);
-                else percent = rawSignal;
+                let match = rawSignal.match(/-?\d+/);
+                if (match) {
+                    let rssi = parseInt(match[0]);
+                    if (rssi >= -50) rssiText = '📶 Excellent';
+                    else if (rssi >= -60) rssiText = '📶 Good';
+                    else if (rssi >= -70) rssiText = '📶 Fair';
+                    else if (rssi >= -85) rssiText = '📶 Poor';
+                    else rssiText = '❌ No Signal';
+                    rssiDisplay = `${rssi} dBm`;
+                } else {
+                    rssiDisplay = rawSignal;
+                    rssiText = '📶 Unknown';
+                }
             } else {
-                percent = rawSignal;
+                rssiDisplay = rawSignal;
+                rssiText = '📶 Unknown';
             }
-            if (isNaN(percent)) percent = '--';
+            if (isNaN(parseInt(rssiDisplay))) rssiDisplay = '--';
+        } else {
+            rssiText = '📶 Unknown';
         }
-        // Store and update display
-        window.deviceStates[currentDevice].signalStrength = percent;
+        
+        // Store RSSI info
+        window.deviceStates[currentDevice].signalStrength = rssiDisplay;
+        window.deviceStates[currentDevice].signalText = rssiText;
+        
         let currentSSID = window.deviceStates[currentDevice].ssid || '--';
-        updateSSIDWithSignal(currentSSID, percent);
+        updateSSIDWithSignal(currentSSID, rssiDisplay, rssiText);
     });
     allListeners.push(() => db.ref(path).off('value', unsub));
 }
@@ -2859,26 +3002,46 @@ function setupSSIDListener() {
         let ssid = snap.val() || '--';
         window.deviceStates[currentDevice].ssid = ssid;
         let signal = window.deviceStates[currentDevice].signalStrength || '--';
-        updateSSIDWithSignal(ssid, signal);
+        let signalText = window.deviceStates[currentDevice].signalText || '📶 Unknown';
+        updateSSIDWithSignal(ssid, signal, signalText);
     });
     allListeners.push(() => db.ref(path).off('value', unsub));
 }
 
-// NEW FUNCTION - Combines SSID and signal percentage
-function updateSSIDWithSignal(ssidValue, signalPercent) {
-    const ssidEl = document.getElementById('ssid');  // <-- ADD THIS LINE
+// NEW FUNCTION - Shows RSSI number with smaller font size
+function updateSSIDWithSignal(ssidValue, rssiDisplay, rssiText) {
+    const ssidEl = document.getElementById('ssid');
     if (!ssidEl) return;
+    
     if (!ssidValue || ssidValue === '--') {
         ssidEl.textContent = '--';
         return;
     }
-    if (signalPercent && signalPercent !== '--') {
-        ssidEl.textContent = `${ssidValue} | ${signalPercent}%`;
+    
+    if (rssiDisplay && rssiDisplay !== '--' && rssiText) {
+        // Extract just the number from "-69 dBm" or similar format
+        let rssiNumber = rssiDisplay;
+        if (typeof rssiDisplay === 'string') {
+            const match = rssiDisplay.match(/-?\d+/);
+            if (match) {
+                rssiNumber = match[0];
+            }
+        }
+        // Display: "jahangir_net 📶 Fair" with small RSSI number
+        ssidEl.innerHTML = `${ssidValue} ${rssiText} <span style="font-size:0.7rem; opacity:0.8;">(${rssiNumber})</span>`;
+    } else if (rssiDisplay && rssiDisplay !== '--') {
+        let rssiNumber = rssiDisplay;
+        if (typeof rssiDisplay === 'string') {
+            const match = rssiDisplay.match(/-?\d+/);
+            if (match) {
+                rssiNumber = match[0];
+            }
+        }
+        ssidEl.innerHTML = `${ssidValue} <span style="font-size:0.7rem; opacity:0.8;">(${rssiNumber})</span>`;
     } else {
         ssidEl.textContent = ssidValue;
     }
 }
-
 
 // --- SWITCH CONTROL FUNCTIONS ---
 function setupSwitchListeners() {
@@ -4057,11 +4220,302 @@ async function displaySchedules(schedules) {
 
 
 
+// DOM Elements for Device Status Modal
+const deviceStatusBtn = document.getElementById('deviceStatusBtn');
+const deviceStatusModal = document.getElementById('deviceStatusModal');
+const closeDeviceStatusBtn = document.getElementById('closeDeviceStatusBtn');
+const refreshStatusBtn = document.getElementById('refreshStatusBtn');
+const statusRoomSelector = document.getElementById('statusRoomSelector');
+
+// Variable to track which room we're viewing
+let statusViewingDevice = currentDevice;
+
+// Open Device Status Modal
+function openDeviceStatusModal() {
+    // Update room selector options with custom room names
+    if (statusRoomSelector) {
+        for (let i = 0; i < statusRoomSelector.options.length; i++) {
+            const roomValue = statusRoomSelector.options[i].value;
+            if (roomNames[roomValue]) {
+                statusRoomSelector.options[i].text = roomNames[roomValue];
+            }
+        }
+        statusRoomSelector.value = currentDevice;
+        statusViewingDevice = currentDevice;
+    }
+    deviceStatusModal.classList.add('show');
+    loadDeviceStatusData();
+    profileDropdown.classList.remove('show');
+}
+
+// Close Device Status Modal
+function closeDeviceStatusModal() {
+    deviceStatusModal.classList.remove('show');
+}
+
+// Load all device status data for modal
+async function loadDeviceStatusData() {
+    try {
+        const device = statusViewingDevice;
+        const roomDisplayName = roomNames[device] || device.replace('_', '-');
+        
+        // Update modal header to show current room
+        const modalHeader = document.querySelector('#deviceStatusModal .settings-header h3');
+        if (modalHeader) {
+            modalHeader.innerHTML = `<i class="fas fa-chart-line"></i> Device Status - ${roomDisplayName}`;
+        }
+        
+        // 1. Load Current Status
+        const statusSnapshot = await db.ref(`HOME/${device}/status/current`).once('value');
+        const status = statusSnapshot.val();
+        
+        const currentInfoEl = document.getElementById('statusCurrentInfo');
+        if (status && status.status) {
+            const isOnline = status.status === 'online';
+            const badge = isOnline ? 
+                '<span class="status-badge-online"><i class="fas fa-circle"></i> ONLINE</span>' : 
+                '<span class="status-badge-offline"><i class="fas fa-circle"></i> OFFLINE</span>';
+            
+            currentInfoEl.innerHTML = `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span>Status:</span>
+                    <span>${badge}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span>Last Online:</span>
+                    <span style="color: #10b981;">${status.lastOnlineTime || '--'}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Last Offline:</span>
+                    <span style="color: #ef4444;">${status.lastOfflineTime || '--'}</span>
+                </div>
+            `;
+        } else {
+            currentInfoEl.innerHTML = '<span style="color: #94a3b8;">No status data available for this device</span>';
+        }
+        
+        // 2. Load Today's Stats
+        const today = new Date().toISOString().split('T')[0];
+        const statsSnapshot = await db.ref(`HOME/${device}/status/history/${today}`).once('value');
+        const stats = statsSnapshot.val();
+        
+        const todayStatsEl = document.getElementById('statusTodayStats');
+        if (stats) {
+            const onlineHours = stats.online_hours || 0;
+            const offlineHours = stats.offline_hours || 0;
+            const uptimePercent = stats.uptime_percentage || 0;
+            
+            let uptimeColor = '#10b981';
+            if (uptimePercent < 95) uptimeColor = '#f59e0b';
+            if (uptimePercent < 80) uptimeColor = '#ef4444';
+            
+            todayStatsEl.innerHTML = `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span><i class="fas fa-charging-station"></i> Online:</span>
+                    <span style="color: #10b981; font-weight: bold;">${onlineHours.toFixed(1)} hours</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span><i class="fas fa-power-off"></i> Offline:</span>
+                    <span style="color: #ef4444; font-weight: bold;">${offlineHours.toFixed(1)} hours</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span><i class="fas fa-chart-line"></i> Uptime:</span>
+                    <span style="color: ${uptimeColor}; font-weight: bold;">${uptimePercent.toFixed(1)}%</span>
+                </div>
+            `;
+        } else {
+            todayStatsEl.innerHTML = '<span style="color: #94a3b8;">No data recorded for this device yet</span>';
+        }
+        
+        // 3. Load Last 7 Days History
+        const historySnapshot = await db.ref(`HOME/${device}/status/history`).once('value');
+        const history = historySnapshot.val();
+        
+        const historyTableEl = document.getElementById('statusHistoryTable');
+        if (history) {
+            const dates = Object.keys(history).sort().reverse().slice(0, 7);
+            
+            if (dates.length > 0) {
+                let tableHtml = '<table style="width:100%; border-collapse: collapse;">';
+                tableHtml += `<tr style="border-bottom: 1px solid #334155;">
+                                <th style="text-align:left; padding:5px;">Date</th>
+                                <th style="text-align:center; padding:5px;">Online</th>
+                                <th style="text-align:center; padding:5px;">Offline</th>
+                                <th style="text-align:center; padding:5px;">Uptime</th>
+                               </tr>`;
+                
+                for (const date of dates) {
+                    const day = history[date];
+                    const onlineHours = day.online_hours || 0;
+                    const offlineHours = day.offline_hours || 0;
+                    const uptime = day.uptime_percentage || 0;
+                    
+                    let uptimeColor = '#10b981';
+                    if (uptime < 95) uptimeColor = '#f59e0b';
+                    if (uptime < 80) uptimeColor = '#ef4444';
+                    
+                    const formattedDate = date.substring(5); // MM-DD
+                    
+                    tableHtml += `<tr style="border-bottom: 1px solid #334155;">
+                                    <td style="padding:5px;">${formattedDate}</td>
+                                    <td style="text-align:center; padding:5px; color:#10b981;">${onlineHours.toFixed(1)}h</td>
+                                    <td style="text-align:center; padding:5px; color:#ef4444;">${offlineHours.toFixed(1)}h</td>
+                                    <td style="text-align:center; padding:5px; color:${uptimeColor}; font-weight:bold;">${uptime.toFixed(1)}%</td>
+                                   </tr>`;
+                }
+                tableHtml += '</table>';
+                historyTableEl.innerHTML = tableHtml;
+            } else {
+                historyTableEl.innerHTML = '<span style="color: #94a3b8;">No history data available</span>';
+            }
+        } else {
+            historyTableEl.innerHTML = '<span style="color: #94a3b8;">No history data available</span>';
+        }
+        
+        // 4. Load Recent Events
+        const eventsSnapshot = await db.ref(`HOME/${device}/status/history/${today}/events`).once('value');
+        const events = eventsSnapshot.val();
+        
+        const eventsListEl = document.getElementById('statusEventsList');
+        if (events) {
+            let eventsArray = [];
+            for (let key in events) {
+                if (events.hasOwnProperty(key)) {
+                    eventsArray.push({ id: key, ...events[key] });
+                }
+            }
+            
+            eventsArray.sort((a, b) => {
+                if (a.time > b.time) return -1;
+                if (a.time < b.time) return 1;
+                return 0;
+            });
+            
+            const recentEvents = eventsArray.slice(0, 15);
+            
+            if (recentEvents.length > 0) {
+                let eventsHtml = '';
+                for (const event of recentEvents) {
+                    const isOnline = event.type === 'online';
+                    const icon = isOnline ? '🟢' : '🔴';
+                    const color = isOnline ? '#10b981' : '#ef4444';
+                    const status = isOnline ? 'ONLINE' : 'OFFLINE';
+                    
+                    eventsHtml += `<div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #334155;">
+                                    <span style="color: ${color};">${icon} ${status}</span>
+                                    <span style="color: #94a3b8;">${event.time || '--'}</span>
+                                   </div>`;
+                }
+                eventsListEl.innerHTML = eventsHtml;
+            } else {
+                eventsListEl.innerHTML = '<span style="color: #94a3b8;">No events today</span>';
+            }
+        } else {
+            eventsListEl.innerHTML = '<span style="color: #94a3b8;">No events recorded yet</span>';
+        }
+        
+    } catch (error) {
+        console.error('Error loading device status:', error);
+        const errorMsg = '<span style="color: #ef4444;">Error loading data. Please try again.</span>';
+        document.getElementById('statusCurrentInfo').innerHTML = errorMsg;
+        document.getElementById('statusTodayStats').innerHTML = errorMsg;
+    }
+}
+
+// Add event listeners
+if (deviceStatusBtn) {
+    deviceStatusBtn.addEventListener('click', openDeviceStatusModal);
+}
+if (closeDeviceStatusBtn) {
+    closeDeviceStatusBtn.addEventListener('click', closeDeviceStatusModal);
+}
+if (refreshStatusBtn) {
+    refreshStatusBtn.addEventListener('click', loadDeviceStatusData);
+}
+
+// Room selector change event
+if (statusRoomSelector) {
+    statusRoomSelector.addEventListener('change', (e) => {
+        statusViewingDevice = e.target.value;
+        loadDeviceStatusData();
+    });
+}
+
+// Close modal when clicking outside
+window.addEventListener('click', (event) => {
+    if (event.target === deviceStatusModal) {
+        closeDeviceStatusModal();
+    }
+});
 
 
-
-
-
+// Calculate daily stats from events if aggregated stats don't exist
+async function calculateStatsFromEvents(device, date) {
+    const eventsPath = `HOME/${device}/status/history/${date}/events`;
+    const snapshot = await db.ref(eventsPath).once('value');
+    const events = snapshot.val();
+    
+    if (!events) return null;
+    
+    // Get all events
+    let eventsList = [];
+    for (let key in events) {
+        if (events.hasOwnProperty(key)) {
+            eventsList.push(events[key]);
+        }
+    }
+    
+    if (eventsList.length === 0) return null;
+    
+    // Sort by time
+    eventsList.sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+    
+    // Calculate online/offline minutes
+    let onlineMinutes = 0;
+    let offlineMinutes = 0;
+    let lastStatus = null;
+    let lastTime = null;
+    
+    // Get start of day
+    const dayStart = new Date(date);
+    dayStart.setHours(0, 0, 0, 0);
+    
+    for (const event of eventsList) {
+        const [hours, minutes, seconds] = (event.time || '00:00:00').split(':');
+        const eventTime = new Date(date);
+        eventTime.setHours(parseInt(hours), parseInt(minutes), parseInt(seconds), 0);
+        
+        if (lastStatus && lastTime) {
+            const diffMinutes = (eventTime - lastTime) / 60000;
+            if (lastStatus === 'online') {
+                onlineMinutes += diffMinutes;
+            } else {
+                offlineMinutes += diffMinutes;
+            }
+        }
+        
+        lastStatus = event.type;
+        lastTime = eventTime;
+    }
+    
+    // Add time from last event to now (if last event is online)
+    if (lastStatus === 'online') {
+        const now = new Date();
+        const diffMinutes = (now - lastTime) / 60000;
+        onlineMinutes += diffMinutes;
+    }
+    
+    const totalMinutes = onlineMinutes + offlineMinutes;
+    const uptimePercent = totalMinutes > 0 ? (onlineMinutes / totalMinutes) * 100 : 0;
+    
+    return {
+        online_hours: onlineMinutes / 60,
+        offline_hours: offlineMinutes / 60,
+        online_minutes: onlineMinutes,
+        offline_minutes: offlineMinutes,
+        uptime_percentage: uptimePercent
+    };
+}
 
 
 
