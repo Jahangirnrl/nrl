@@ -23,7 +23,20 @@
     font-family: "Inter", sans-serif;
     letter-spacing: 0.5px;
 }
-    
+
+/* Change antenna icon color */
+#ssid span:first-child i, 
+.fa-signal, 
+.fa-wifi {
+    color: #38bdf8 !important;  /* Change to your desired color */
+}
+
+/* Or different colors based on signal strength */
+.signal-icon-excellent { color: #10b981; }
+.signal-icon-good { color: #34d399; }
+.signal-icon-fair { color: #fbbf24; }
+.signal-icon-poor { color: #f97316; }
+.signal-icon-no { color: #ef4444; }    
     
 /* Device Status Button */
 .device-status-btn {
