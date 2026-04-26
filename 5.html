@@ -2996,6 +2996,7 @@ function setupDeviceInfoListeners() {
     });
     allListeners.push(() => db.ref(fullPath).off('value', unsubscribe));
   });
+    setupSignalStrengthListener(); // <-- ADD THIS FOR SHOW SSID SIGNAL STRENTH
 }
 
 // UPDATED - Now stores SSID and triggers combined display
