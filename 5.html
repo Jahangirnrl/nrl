@@ -2188,10 +2188,15 @@ const DASHBOARD_VERSION = 'v4.5.0';
 let currentDevice = 'ROOM_1';
 const devices = ['ROOM_1', 'ROOM_2', 'ROOM_3', 'ROOM_4'];
 
+// //OLD Heartbeat Constants
+// const STABLE_MAX_MS = 15000;
+// const UNSTABLE_MAX_MS = 59000;
+// const HEARTBEAT_CHECK_INTERVAL_MS = 5000;
+
 // New Heartbeat Constants
-const STABLE_MAX_MS = 15000;
-const UNSTABLE_MAX_MS = 59000;
-const HEARTBEAT_CHECK_INTERVAL_MS = 5000;
+const STABLE_MAX_MS = 7200;
+const UNSTABLE_MAX_MS = 2000;
+const HEARTBEAT_CHECK_INTERVAL_MS = 6200;    
 
 // UI Elements
 const loginScreen = document.getElementById('loginScreen');
