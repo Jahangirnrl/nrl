@@ -63,6 +63,49 @@
     font-weight: 600;
 }
 
+/* Boot Navigation - Mobile Single Line Fix */
+@media (max-width: 600px) {
+    .boot-nav {
+        flex-wrap: nowrap !important;
+        gap: 6px !important;
+    }
+    
+    .nav-btn {
+        padding: 6px 10px !important;
+        font-size: 0.7rem !important;
+        white-space: nowrap !important;
+    }
+    
+    .nav-btn i {
+        margin-right: 4px !important;
+    }
+    
+    /* Hide icon text on very small screens to save space */
+    @media (max-width: 400px) {
+        .nav-btn span {
+            display: none !important;
+        }
+        .nav-btn i {
+            margin-right: 0 !important;
+        }
+        .nav-btn {
+            padding: 6px 8px !important;
+        }
+    }
+    
+    .date-indicator {
+        font-size: 0.7rem !important;
+        padding: 6px 8px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    
+    .date-indicator i {
+        margin-right: 4px !important;
+    }
+}
+
 /* Boot History Styles */
 .boot-history-container {
     background: rgba(30, 41, 59, 0.9);
@@ -1341,9 +1384,6 @@ header {
     background: #38bdf8;
     color: #0f172a;
 }
-.settings-tabs {
-    display: none !important;
-}
 .settings-panel {
     display: none;
 }
@@ -2112,7 +2152,7 @@ header {
   </div>
 </div>
 
-<!-- Device Status Modal -->
+<!-- Device Status Modal (Current Status and Today's Statistics removed) -->
 <div class="settings-modal" id="deviceStatusModal">
   <div class="settings-content" style="max-width: 650px; max-height: 85vh;">
     <div class="settings-header">
@@ -2130,25 +2170,10 @@ header {
           <option value="ROOM_4">Room 4</option>
         </select>
       </div>
-      <!-- Current Status -->
+      <!-- Today's Boots Only (Simple counter) -->
       <div style="background: rgba(30,41,59,0.9); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155;">
-        <h4 style="color: #38bdf8; margin: 0 0 10px 0;"><i class="fas fa-circle"></i> Current Status</h4>
-        <div id="statusCurrentInfo" style="font-size: 0.9rem;">Loading...</div>
-      </div>
-      <!-- Today's Stats -->
-      <div style="background: rgba(30,41,59,0.9); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155;">
-        <h4 style="color: #38bdf8; margin: 0 0 10px 0;"><i class="fas fa-calendar-day"></i> Today's Statistics</h4>
-        <div id="statusTodayStats" style="font-size: 0.85rem;">Loading...</div>
-      </div>
-      <!-- Last 7 Days History -->
-      <div style="background: rgba(30,41,59,0.9); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155;">
-        <h4 style="color: #38bdf8; margin: 0 0 10px 0;"><i class="fas fa-history"></i> Last 7 Days</h4>
-        <div id="statusHistoryTable" style="font-size: 0.7rem; max-height: 250px; overflow-y: auto;">Loading...</div>
-      </div>
-      <!-- Recent Events -->
-      <div style="background: rgba(30,41,59,0.9); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155;">
-        <h4 style="color: #38bdf8; margin: 0 0 10px 0;"><i class="fas fa-list"></i> Recent Events (Today)</h4>
-        <div id="statusEventsList" style="font-size: 0.75rem; max-height: 200px; overflow-y: auto;">Loading...</div>
+        <h4 style="color: #38bdf8; margin: 0 0 10px 0;"><i class="fas fa-power-off"></i> Today's Boot Count</h4>
+        <div id="statusTodayStats" style="font-size: 1.2rem; text-align: center; color: #f59e0b; font-weight: bold;">Loading...</div>
       </div>
       <!-- Beautiful Boot History Section -->
       <div class="boot-history-container">
@@ -2455,7 +2480,6 @@ devices.forEach(device => {
     lastUpdateHuman: '--:--',
     lastUpdate: '--:--',
     fanSpeed: 0,
-    // ADD THIS LINE:
     weather: { temperature: '--', humidity: '--', windSpeed: '--', location: '', source: '' }
   };
 });
@@ -4166,13 +4190,6 @@ document.querySelectorAll('input[type="password"]').forEach(input => {
   });
 });
 
-
-
-
-
-
-
-
 const WEATHER_LAT = 23.8103;
 const WEATHER_LON = 90.4125;
 
@@ -4227,8 +4244,6 @@ async function loadWeatherData1() {
     addLogEntry("Weather fetch failed", "error", "weather");
   }
 }
-
-
 document.getElementById("weatherRefreshBtn").addEventListener("click", function() {
     loadWeatherData();    // Refresh temperature and humidity from Firebase
     loadWeatherData1();   // Refresh wind speed and rain status from API
@@ -4592,7 +4607,7 @@ function setupBootNavigation() {
     }
 }
 
-// Device Status Modal
+// Device Status Modal (Simplified - removed Current Status and Today's detailed stats)
 const deviceStatusBtn = document.getElementById('deviceStatusBtn');
 const deviceStatusModal = document.getElementById('deviceStatusModal');
 const closeDeviceStatusBtn = document.getElementById('closeDeviceStatusBtn');
@@ -4628,120 +4643,24 @@ async function loadDeviceStatusData() {
         if (modalHeader) {
             modalHeader.innerHTML = `<i class="fas fa-chart-line"></i> Device Status - ${roomDisplayName}`;
         }
-        const statusSnapshot = await db.ref(`HOME/${device}/status/current`).once('value');
-        const status = statusSnapshot.val();
-        const currentInfoEl = document.getElementById('statusCurrentInfo');
-        if (status && status.status) {
-            const isOnline = status.status === 'online';
-            const badge = isOnline ? '<span class="status-badge-online"><i class="fas fa-circle"></i> ONLINE</span>' : '<span class="status-badge-offline"><i class="fas fa-circle"></i> OFFLINE</span>';
-            currentInfoEl.innerHTML = `
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Status:</span><span>${badge}</span></div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Last Online:</span><span style="color: #10b981;">${status.lastOnlineTime || '--'}</span></div>
-                <div style="display: flex; justify-content: space-between;"><span>Last Offline:</span><span style="color: #ef4444;">${status.lastOfflineTime || '--'}</span></div>
-            `;
-        } else {
-            currentInfoEl.innerHTML = '<span style="color: #94a3b8;">No status data available for this device</span>';
-        }
+        
+        // Today's Boots Only (Simple counter)
         const today = new Date().toISOString().split('T')[0].split('-').reverse().join('-');
         const statsSnapshot = await db.ref(`HOME/${device}/status/history/${today}`).once('value');
         const stats = statsSnapshot.val();
         const todayStatsEl = document.getElementById('statusTodayStats');
-        if (stats) {
-            const onlineMinutes = stats.online_minutes || 0;
-            const offlineMinutes = stats.offline_minutes || 0;
-            const totalMinutes = onlineMinutes + offlineMinutes;
-            const uptimePercent = totalMinutes > 0 ? (onlineMinutes / totalMinutes) * 100 : 0;
-            let uptimeColor = '#10b981';
-            if (uptimePercent < 95) uptimeColor = '#f59e0b';
-            if (uptimePercent < 80) uptimeColor = '#ef4444';
-            
-            // Convert online minutes to HH:MM:SS
-            const onlineHours = Math.floor(onlineMinutes / 60);
-            const onlineMins = Math.floor(onlineMinutes % 60);
-            const onlineSecs = Math.floor((onlineMinutes * 60) % 60);
-            const onlineFormatted = `${String(onlineHours).padStart(2, '0')}:${String(onlineMins).padStart(2, '0')}:${String(onlineSecs).padStart(2, '0')}`;
-            
-            const offlineHours = Math.floor(offlineMinutes / 60);
-            const offlineMins = Math.floor(offlineMinutes % 60);
-            const offlineFormatted = `${String(offlineHours).padStart(2, '0')}:${String(offlineMins).padStart(2, '0')}:00`;
-            
-            todayStatsEl.innerHTML = `
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span><i class="fas fa-charging-station"></i> Online:</span><span style="color: #10b981; font-weight: bold;">${onlineFormatted}</span></div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span><i class="fas fa-power-off"></i> Offline:</span><span style="color: #ef4444; font-weight: bold;">${offlineFormatted}</span></div>
-                <div style="display: flex; justify-content: space-between;"><span><i class="fas fa-chart-line"></i> Uptime:</span><span style="color: ${uptimeColor}; font-weight: bold;">${uptimePercent.toFixed(1)}%</span></div>
-                <div style="display: flex; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 1px solid #334155;"><span><i class="fas fa-power-off"></i> Today's Boots:</span><span style="color: #f59e0b; font-weight: bold;">${stats.boot_count || 0}</span></div>
-            `;
+        if (stats && stats.boot_count !== undefined) {
+            todayStatsEl.innerHTML = `<span style="font-size: 1rem;"><i class="fas fa-power-off"></i> Boot Count: <span style="color: #f59e0b;">${stats.boot_count}</span></span>`;
         } else {
             todayStatsEl.innerHTML = '<span style="color: #94a3b8;">No data recorded for this device yet</span>';
         }
-        const historySnapshot = await db.ref(`HOME/${device}/status/history`).once('value');
-        const history = historySnapshot.val();
-        const historyTableEl = document.getElementById('statusHistoryTable');
-        if (history) {
-            const dates = Object.keys(history).sort().reverse().slice(0, 7);
-            if (dates.length > 0) {
-                let tableHtml = '<table style="width:100%; border-collapse: collapse;"><tr style="border-bottom: 1px solid #334155;"><th style="text-align:left; padding:5px;">Date</th><th style="text-align:center; padding:5px;">Online</th><th style="text-align:center; padding:5px;">Offline</th><th style="text-align:center; padding:5px;">Boots</th><th style="text-align:center; padding:5px;">Uptime</th></tr>';
-                for (const date of dates) {
-                    const day = history[date];
-                    const onlineMinutes = day.online_minutes || 0;
-                    const offlineMinutes = day.offline_minutes || 0;
-                    const totalMinutes = onlineMinutes + offlineMinutes;
-                    const uptime = totalMinutes > 0 ? (onlineMinutes / totalMinutes) * 100 : 0;
-                    const bootCount = day.boot_count || 0;
-                    
-                    const onlineHours = Math.floor(onlineMinutes / 60);
-                    const onlineMins = Math.floor(onlineMinutes % 60);
-                    const onlineFormatted = `${String(onlineHours).padStart(2, '0')}:${String(onlineMins).padStart(2, '0')}:00`;
-                    
-                    const offlineHours = Math.floor(offlineMinutes / 60);
-                    const offlineMins = Math.floor(offlineMinutes % 60);
-                    const offlineFormatted = `${String(offlineHours).padStart(2, '0')}:${String(offlineMins).padStart(2, '0')}:00`;
-                    
-                    let uptimeColor = '#10b981';
-                    if (uptime < 95) uptimeColor = '#f59e0b';
-                    if (uptime < 80) uptimeColor = '#ef4444';
-                    
-                    tableHtml += `<tr style="border-bottom: 1px solid #334155;"><td style="padding:5px;">${date}</td><td style="text-align:center; padding:5px; color:#10b981;">${onlineFormatted}</td><td style="text-align:center; padding:5px; color:#ef4444;">${offlineFormatted}</td><td style="text-align:center; padding:5px; color:#f59e0b;">${bootCount}</td><td style="text-align:center; padding:5px; color:${uptimeColor}; font-weight:bold;">${uptime.toFixed(1)}%</td></tr>`;
-                }
-                tableHtml += '</table>';
-                historyTableEl.innerHTML = tableHtml;
-            } else {
-                historyTableEl.innerHTML = '<span style="color: #94a3b8;">No history data available</span>';
-            }
-        } else {
-            historyTableEl.innerHTML = '<span style="color: #94a3b8;">No history data available</span>';
-        }
-        const todayDate = new Date().toISOString().split('T')[0].split('-').reverse().join('-');
-        const eventsSnapshot = await db.ref(`HOME/${device}/status/history/${todayDate}/events`).once('value');
-        const events = eventsSnapshot.val();
-        const eventsListEl = document.getElementById('statusEventsList');
-        if (events) {
-            let eventsArray = [];
-            for (let key in events) { if (events.hasOwnProperty(key)) { eventsArray.push({ id: key, ...events[key] }); } }
-            eventsArray.sort((a, b) => { if (a.time > b.time) return -1; if (a.time < b.time) return 1; return 0; });
-            const recentEvents = eventsArray.slice(0, 15);
-            if (recentEvents.length > 0) {
-                let eventsHtml = '';
-                for (const event of recentEvents) {
-                    const isOnline = event.type === 'online';
-                    const icon = isOnline ? '🟢' : '🔴';
-                    const color = isOnline ? '#10b981' : '#ef4444';
-                    const status = isOnline ? 'ONLINE' : 'OFFLINE';
-                    eventsHtml += `<div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #334155;"><span style="color: ${color};">${icon} ${status}</span><span style="color: #94a3b8;">${event.time || '--'}</span></div>`;
-                }
-                eventsListEl.innerHTML = eventsHtml;
-            } else {
-                eventsListEl.innerHTML = '<span style="color: #94a3b8;">No events today</span>';
-            }
-        } else {
-            eventsListEl.innerHTML = '<span style="color: #94a3b8;">No events recorded yet</span>';
-        }
+        
+        // Load Boot History
         await loadBootHistory(device);
         setupBootNavigation();
     } catch (error) {
         console.error('Error loading device status:', error);
         const errorMsg = '<span style="color: #ef4444;">Error loading data. Please try again.</span>';
-        document.getElementById('statusCurrentInfo').innerHTML = errorMsg;
         document.getElementById('statusTodayStats').innerHTML = errorMsg;
     }
 }
