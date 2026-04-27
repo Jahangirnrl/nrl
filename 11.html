@@ -4637,7 +4637,7 @@ async function loadDeviceStatusData() {
         const roomDisplayName = roomNames[device] || device.replace('_', '-');
         const modalHeader = document.querySelector('#deviceStatusModal .settings-header h3');
         if (modalHeader) {
-            modalHeader.innerHTML = `<i class="fas fa-microchip"></i> Device Boot History - ${roomDisplayName}`;
+            modalHeader.innerHTML = `<i class="fas fa-microchip"></i> Device Boot Records - ${roomDisplayName}`;
         }
         
         // Today's Boot Count panel has been REMOVED completely
