@@ -110,8 +110,8 @@
 .boot-history-container {
     background: rgba(30, 41, 59, 0.9);
     border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 15px;
+    padding: 10px;
+    margin-bottom: 10px;
     border: 1px solid #334155;
 }
 
@@ -119,8 +119,8 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #334155;
 }
 
@@ -193,13 +193,13 @@
 .boot-list {
     max-height: 350px;
     overflow-y: auto;
-    margin-top: 10px;
+    margin-top: 05px;
 }
 
 .boot-day-summary {
     background: rgba(15, 23, 42, 0.7);
     border-radius: 12px;
-    padding: 15px;
+    padding: 10px;
     border-left: 3px solid #38bdf8;
 }
 
@@ -207,9 +207,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 06px;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 06px;
 }
 
 .date-badge {
@@ -232,21 +232,21 @@
 .total-online {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 06px;
     border-bottom: 1px dashed #334155;
     font-size: 0.8rem;
 }
 
 .boots-list {
-    margin-top: 10px;
+    margin-top: 06px;
 }
 
 .boots-title {
     background: #0f172a;
     padding: 8px 12px;
     border-radius: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 08px;
     font-size: 0.7rem;
     color: #94a3b8;
 }
@@ -291,7 +291,7 @@
 
 .empty-state {
     text-align: center;
-    padding: 40px;
+    padding: 30px;
     color: #94a3b8;
 }
 
@@ -2238,7 +2238,7 @@ const auth = firebase.auth();
 
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'multiroom_session_active';
-const DASHBOARD_VERSION = 'v4.6.0';
+const DASHBOARD_VERSION = 'v4.7.0';
 let currentDevice = 'ROOM_1';
 const devices = ['ROOM_1', 'ROOM_2', 'ROOM_3', 'ROOM_4'];
 
@@ -4528,8 +4528,8 @@ async function loadBootHistoryForDate(device, date) {
                 html += `
                     <div class="boot-item">
                         <div class="boot-number">#${bootNum}</div>
-                        <div class="boot-datetime"><i class="far fa-clock"></i> ${boot.boot_datetime}</div>
-                        <div class="boot-duration"><i class="fas fa-hourglass-half"></i> ${onlineDuration}</div>
+                        <div class="boot-datetime">${boot.boot_datetime}</div>
+                        <div class="boot-duration">${onlineDuration}</div>
                     </div>
                 `;
             }
