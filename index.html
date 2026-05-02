@@ -1,3 +1,4 @@
+//  const DASHBOARD_VERSION = 'v4.7.1';
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2238,7 +2239,7 @@ const auth = firebase.auth();
 
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'multiroom_session_active';
-const DASHBOARD_VERSION = 'v4.7.0';
+const DASHBOARD_VERSION = 'v4.7.1';
 let currentDevice = 'ROOM_1';
 const devices = ['ROOM_1', 'ROOM_2', 'ROOM_3', 'ROOM_4'];
 
@@ -2374,6 +2375,44 @@ function checkInternetConnection() {
         .catch(() => resolve(false));
     });
 }
+
+
+
+
+
+
+function parseDateToTimestamp(dateStr) {
+    // সাপোর্ট করবে: "2026-05-02", "2026-5-2", "02-05-2026"等各种格式
+    let year, month, day;
+    
+    // যদি YYYY-MM-DD format হয়
+    if (dateStr.includes('-') && dateStr.split('-')[0].length === 4) {
+        [year, month, day] = dateStr.split('-');
+    } 
+    // যদি DD-MM-YYYY format হয় (আপনার ক্ষেত্রে এটা)
+    else if (dateStr.includes('-')) {
+        const parts = dateStr.split('-');
+        if (parts[2].length === 4) {
+            [day, month, year] = parts;
+        } else {
+            [year, month, day] = parts;
+        }
+    }
+    
+    return new Date(parseInt(year), parseInt(month) - 1, parseInt(day)).getTime();
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 function updateConnectionStatus(connected) {
     isOnline = connected;
@@ -4454,22 +4493,34 @@ function formatSecondsToDHMS(seconds) {
     }
 }
 
+// FIXED: সঠিক chronological order এ sort করবে
 async function loadBootHistoryDates(device) {
     try {
         const historyPath = `HOME/${device}/status/history`;
         const snapshot = await db.ref(historyPath).once('value');
         const history = snapshot.val();
+        
         if (!history) {
             bootHistoryDates = [];
             return [];
         }
+        
         const datesWithBoots = [];
         for (const date in history) {
             if (history[date].boot_count && history[date].boot_count > 0) {
                 datesWithBoots.push(date);
             }
         }
-        bootHistoryDates = datesWithBoots.sort().reverse();
+        
+        // CRITICAL FIX: তারিখগুলোকে সঠিকভাবে sort করা (DESCENDING - newest first)
+        // মানে আজকের তারিখ (02-05-2026) সবচেয়ে উপরে থাকবে
+        bootHistoryDates = datesWithBoots.sort((a, b) => {
+            const timeA = parseDateToTimestamp(a);
+            const timeB = parseDateToTimestamp(b);
+            return timeB - timeA; // নতুন থেকে পুরনো (descending)
+        });
+        
+        console.log('Sorted boot history dates (newest first):', bootHistoryDates);
         return bootHistoryDates;
     } catch (error) {
         console.error('Error loading boot history dates:', error);
@@ -4544,15 +4595,22 @@ async function loadBootHistoryForDate(device, date) {
     }
 }
 
+
 function updateBootNavButtons() {
     const prevBtn = document.getElementById('prevBootDayBtn');
     const nextBtn = document.getElementById('nextBootDayBtn');
     if (!prevBtn || !nextBtn) return;
+    
+    // bootHistoryDates sorted newest first (index 0 = newest)
+    // Previous Day যায় পুরনো দিকে (index বাড়ে)
     prevBtn.disabled = (currentBootIndex >= bootHistoryDates.length - 1);
+    // Next Day যায় নতুন দিকে (index কমে)
     nextBtn.disabled = (currentBootIndex <= 0);
 }
 
+
 async function gotoPreviousBootDay() {
+    // Previous Day মানে আরও পুরনো তারিখ (index বাড়বে, কারণ newest index 0 এ আছে)
     if (currentBootIndex < bootHistoryDates.length - 1) {
         currentBootIndex++;
         await loadBootHistoryForDate(currentBootDevice, bootHistoryDates[currentBootIndex]);
@@ -4560,6 +4618,7 @@ async function gotoPreviousBootDay() {
 }
 
 async function gotoNextBootDay() {
+    // Next Day মানে নতুন তারিখ (index কমবে)
     if (currentBootIndex > 0) {
         currentBootIndex--;
         await loadBootHistoryForDate(currentBootDevice, bootHistoryDates[currentBootIndex]);
