@@ -1,3 +1,4 @@
+<!-- const DASHBOARD_VERSION = 'v4.7.1'; -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,8 +111,8 @@
 .boot-history-container {
     background: rgba(30, 41, 59, 0.9);
     border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 15px;
+    padding: 10px;
+    margin-bottom: 10px;
     border: 1px solid #334155;
 }
 
@@ -119,8 +120,8 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #334155;
 }
 
@@ -193,13 +194,13 @@
 .boot-list {
     max-height: 350px;
     overflow-y: auto;
-    margin-top: 10px;
+    margin-top: 05px;
 }
 
 .boot-day-summary {
     background: rgba(15, 23, 42, 0.7);
     border-radius: 12px;
-    padding: 15px;
+    padding: 10px;
     border-left: 3px solid #38bdf8;
 }
 
@@ -207,9 +208,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 06px;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 06px;
 }
 
 .date-badge {
@@ -232,21 +233,21 @@
 .total-online {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 06px;
     border-bottom: 1px dashed #334155;
     font-size: 0.8rem;
 }
 
 .boots-list {
-    margin-top: 10px;
+    margin-top: 06px;
 }
 
 .boots-title {
     background: #0f172a;
     padding: 8px 12px;
     border-radius: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 08px;
     font-size: 0.7rem;
     color: #94a3b8;
 }
@@ -257,7 +258,30 @@
     align-items: center;
     padding: 10px 0;
     border-bottom: 1px dashed #334155;
+    flex-wrap: wrap;
+    gap: 8px;
 }
+
+.boot-offline-time {
+    display: grid;
+    grid-template-columns: 55px 1fr 100px 120px;
+    color: #f97316;
+    font-size: 0.7rem;
+    font-weight: 500;
+    min-width: 110px;
+    text-align: right;
+    background: rgba(249, 115, 22, 0.15);
+    padding: 4px 8px;
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: border-left;
+    gap: 4px;
+}
+
+.boot-offline-time i {
+    font-size: 0.65rem;
+}
+
 
 .boot-item:last-child {
     border-bottom: none;
@@ -291,7 +315,7 @@
 
 .empty-state {
     text-align: center;
-    padding: 40px;
+    padding: 30px;
     color: #94a3b8;
 }
 
@@ -1727,6 +1751,275 @@ header {
     display: inline-block;
     margin-top: 2px;
 }
+
+/* Boot Table Header Styles - Using CSS Grid for perfect alignment */
+.boot-table-header {
+    display: grid;
+    grid-template-columns: 55px 1fr 100px 120px;
+    align-items: center;
+    padding: 10px 0;
+    margin: 10px 0 8px 0;
+    background: rgba(56, 189, 248, 0.12);
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #38bdf8;
+    border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+/* Add negative margin to shift DURATION and OFFLINE @ columns 10px left */
+.header-duration {
+    text-align: center;
+    grid-column: 3;
+    position: relative;
+    left: -10px;
+}
+
+.header-offline {
+    text-align: center;
+    grid-column: 4;
+    position: relative;
+    left: -10px;
+}
+
+.header-boot {
+       width: 60px;
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.header-datetime {
+    text-align: left;
+    padding-left: 30px;
+    grid-column: 2;
+}
+
+.header-duration {
+    text-align: center;
+    grid-column: 3;
+}
+
+.header-offline {
+    text-align: center;
+    grid-column: 4;
+}
+
+/* Boot items - using same CSS Grid for perfect alignment */
+.boot-item {
+    display: grid;
+    grid-template-columns: 55px 1fr 100px 120px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px dashed #334155;
+}
+
+
+/* Shift DURATION values 10px left */
+.boot-item .boot-duration {
+    position: relative;
+    left: -10px;
+}
+
+/* Shift OFFLINE @ values 10px left */
+.boot-item .boot-offline-time {
+    position: relative;
+    left: -10px;
+}
+
+.boot-number {
+    background: #f59e0b;
+    color: #0f172a;
+    font-weight: bold;
+    width: 38px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 0.8rem;
+    margin: 0 auto;
+    grid-column: 1;
+}
+
+.boot-datetime {
+    color: #e2e8f0;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-align: left;
+    padding-left: 8px;
+    grid-column: 2;
+}
+
+.boot-duration {
+    color: #10b981;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-align: center;
+    font-family: monospace;
+    grid-column: 3;
+}
+
+.boot-offline-time {
+    color: #f97316;
+    font-size: 0.7rem;
+    font-weight: 450;
+    text-align: center;
+    background: rgba(149, 100, 15, 0.04);
+    padding: 1px 2px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    width: fit-content;
+    margin: 0 auto;
+    grid-column: 4;
+}
+
+.boot-offline-time i {
+    font-size: 0.65rem;
+    opacity: 0.9;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .boot-table-header,
+    .boot-item {
+        grid-template-columns: 45px 1fr 80px 95px;
+    }
+    
+    .boot-number {
+        width: 32px;
+        height: 28px;
+        font-size: 0.7rem;
+    }
+    
+    .boot-datetime {
+        font-size: 0.65rem;
+        padding-left: 5px;
+    }
+    
+    .boot-duration {
+        font-size: 0.6rem;
+    }
+    
+    .boot-offline-time {
+        font-size: 0.6rem;
+        padding: 3px 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    .boot-table-header,
+    .boot-item {
+        grid-template-columns: 40px 1fr 70px 80px;
+    }
+    
+    .boot-number {
+        width: 28px;
+        height: 26px;
+        font-size: 0.65rem;
+    }
+    
+    .boot-duration {
+        font-size: 0.55rem;
+    }
+    
+    .boot-offline-time {
+        font-size: 0.55rem;
+        padding: 2px 2px;
+    }
+}
+
+@media (max-width: 600px) {
+    .boot-table-header,
+    .boot-item {
+        grid-template-columns: 45px 1fr 80px 95px;
+    }
+    
+    .header-duration,
+    .header-offline,
+    .boot-item .boot-duration,
+    .boot-item .boot-offline-time {
+        left: -8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .boot-table-header,
+    .boot-item {
+        grid-template-columns: 40px 1fr 70px 80px;
+    }
+    
+    .header-duration,
+    .header-offline,
+    .boot-item .boot-duration,
+    .boot-item .boot-offline-time {
+        left: -6px;
+    }
+}
+
+/* Hover effect */
+.boot-item:hover {
+    background: rgba(56, 189, 248, 0.05);
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+
+
+/* Optional: Add hover effect on rows */
+.boot-item:hover {
+    background: rgba(56, 189, 248, 0.05);
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+/* Status Modal Room Tabs */
+.status-room-tab {
+    transition: all 0.2s ease;
+}
+
+.status-room-tab:hover {
+    background: #334155 !important;
+    color: #e2e8f0 !important;
+    transform: translateY(-2px);
+}
+
+.status-room-tab.active {
+    background: #38bdf8 !important;
+    color: #0f172a !important;
+    box-shadow: 0 2px 8px rgba(56, 189, 248, 0.3);
+}
+
+.status-room-tab.active i {
+    color: #0f172a;
+}
+
+/* Room tab color variants when active */
+.status-room-tab.active[data-status-room="ROOM_1"] {
+    background: #10b981 !important;
+}
+.status-room-tab.active[data-status-room="ROOM_2"] {
+    background: #38bdf8 !important;
+}
+.status-room-tab.active[data-status-room="ROOM_3"] {
+    background: #f59e0b !important;
+}
+.status-room-tab.active[data-status-room="ROOM_4"] {
+    background: #8b5cf6 !important;
+}
+
+/* Signal strength colors */
+.signal-excellent { color: #10b981; }
+.signal-good { color: #34d399; }
+.signal-fair { color: #fbbf24; }
+.signal-poor { color: #f97316; }
+.signal-none { color: #ef4444; }
+
+
 </style>
 </head>
 <body>
@@ -1811,14 +2104,15 @@ header {
       <div class="tab-bottom-line"></div>    
     </div>
     <div class="current-device room-1-theme" id="currentDeviceDisplay">Controlling: ROOM-1</div>
-    <div class="tabs">
-      <div class="tab-bottom-line"></div>
-      <div class="tab-slider"></div>
-      <button class="tab-btn active room-1-active" data-tab="dashboard"><i class="fas fa-power-off"></i> Dashboard</button>
-      <button class="tab-btn" data-tab="automation"><i class="fas fa-clock"></i> Automation</button>
-      <button class="tab-btn" data-tab="weather"><i class="fas fa-cloud-sun"></i> Weather</button>
-      <button class="tab-btn" data-tab="logs"><i class="fas fa-file-alt"></i> Logs</button>
-    </div>
+  <div class="tabs">
+  <div class="tab-bottom-line"></div>
+  <div class="tab-slider"></div>
+  
+  <button class="tab-btn active room-1-active" data-tab="dashboard"><i class="fas fa-power-off" style="color: #ef4444;"></i> Dashboard</button>
+  <button class="tab-btn" data-tab="automation"><i class="fas fa-clock" style="color: #8b5cf6;"></i> Automation</button>
+  <button class="tab-btn" data-tab="weather"><i class="fas fa-cloud-sun" style="color: #fbbf24;"></i> Weather</button>
+  <button class="tab-btn" data-tab="logs"><i class="fas fa-file-alt" style="color: #ec4899;"></i> Logs</button>
+  </div>
     <div class="version-info-container">
       <div class="dashboard-version room-1-version" id="versionInfo"></div>
       <div id="status" class="status">Offline</div>
@@ -1828,16 +2122,15 @@ header {
   
   <div id="dashboard" class="tab-content active">
     <div class="info-main">
-      <div class="panel"><div class="label">SSID + Signal</div><div id="ssid" class="value">--</div></div>
-      <div class="panel"><div class="label">Uptime</div><div id="uptime" class="value">--</div></div>
-      <div class="panel"><div class="label">IP</div><div id="ip" class="value">--</div></div>
-      <div class="panel"><div class="label">SunRise</div><div id="sunrise" class="value">--:--</div></div>
-      <div class="panel"><div class="label">MAC</div><div id="mac" class="value">--</div></div>
-      <div class="panel"><div class="label">SunSet</div><div id="sunset" class="value">--:--</div></div>
-      <div class="panel-full-width">
-        <div class="label">Last Update</div>
-        <div id="lastUpdateHuman" class="value">--:--</div>
-      </div>
+<div class="panel"><div class="label"><i class="fas fa-wifi" style="margin-right: 6px;"></i> SSID + Signal</div><div id="ssid" class="value">--</div></div>
+<div class="panel"><div class="label"><i class="fas fa-clock" style="margin-right: 6px; color: #10b981;"></i> Uptime</div><div id="uptime" class="value">--</div></div>
+<div class="panel"><div class="label"><i class="fas fa-network-wired" style="margin-right: 6px; color: #38bdf8;"></i> IP Address</div><div id="ip" class="value">--</div></div>
+<div class="panel"><div class="label"><i class="fas fa-sun" style="margin-right: 4px; color: #fbbf24;"></i> 
+                                      <i class="fas fa-arrow-up" style="font-size: 0.7rem; color: #f59e0b;"></i> Sunrise</div><div id="sunrise" class="value">--:--</div></div>
+<div class="panel"><div class="label"><i class="fas fa-microchip" style="margin-right: 6px; color: #8b5cf6;"></i> MAC</div><div id="mac" class="value">--</div></div>
+<div class="panel"><div class="label"><i class="fas fa-moon" style="margin-right: 4px; color: #a855f7;"></i> 
+                                      <i class="fas fa-arrow-down" style="font-size: 0.7rem; color: #f59e0b;"></i> Sunset</div><div id="sunset" class="value">--:--</div></div>
+<div class="panel-full-width"><div class="label"><i class="fas fa-sync-alt" style="margin-right: 6px; color: #38bdf8;"></i> Last Update</div><div id="lastUpdateHuman" class="value">--:--</div></div>
     </div>
     
     <div class="relays">
@@ -2152,35 +2445,34 @@ header {
   </div>
 </div>
 
-<!-- Device Status Modal (Current Status and Today's Statistics removed) -->
+<!-- Device Status Modal -->
 <div class="settings-modal" id="deviceStatusModal">
-  <div class="settings-content" style="max-width: 650px; max-height: 85vh;">
+  <div class="settings-content" style="max-width: 750px; max-height: 85vh;">
     <div class="settings-header">
       <h3><i class="fas fa-chart-line"></i> Device Status & History</h3>
       <button class="close-settings" id="closeDeviceStatusBtn">&times;</button>
     </div>
     <div style="overflow-y: auto; max-height: calc(85vh - 80px);">
-      <!-- Room Selector -->
-      <div style="background: rgba(30,41,59,0.9); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155;">
-        <h4 style="color: #38bdf8; margin: 0 0 10px 0;"><i class="fas fa-door-open"></i> Select Room</h4>
-        <select id="statusRoomSelector" style="width: 100%; padding: 10px; background: #0f172a; color: #f1f5f9; border: 1px solid #334155; border-radius: 8px; font-size: 1rem;">
-          <option value="ROOM_1">Room 1</option>
-          <option value="ROOM_2">Room 2</option>
-          <option value="ROOM_3">Room 3</option>
-          <option value="ROOM_4">Room 4</option>
-        </select>
-      </div>
-      <!-- Today's Boots Only (Simple counter) -->
-      <div style="background: rgba(30,41,59,0.9); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155;">
-        <h4 style="color: #38bdf8; margin: 0 0 10px 0;"><i class="fas fa-power-off"></i> Today's Boot Count</h4>
-        <div id="statusTodayStats" style="font-size: 1.2rem; text-align: center; color: #f59e0b; font-weight: bold;">Loading...</div>
-      </div>
-      <!-- Beautiful Boot History Section -->
-      <div class="boot-history-container">
-        <div class="boot-history-header">
-          <i class="fas fa-microchip"></i>
-          <h4>Boot History</h4>
+      <!-- Room Selection Tabs - Same style as dashboard -->
+      <div style="background: rgba(30,41,59,0.9); border-radius: 12px; padding: 10px; margin-bottom: 15px; border: 1px solid #334155;">
+        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+          <button class="status-room-tab active" data-status-room="ROOM_1" style="flex: 1; min-width: 80px; padding: 8px 12px; border: none; border-radius: 8px; background: #1e293b; color: #94a3b8; cursor: pointer; font-weight: 600; transition: all 0.2s; font-size: 0.85rem;">
+            <i class="fas fa-bed"></i> <span id="statusRoomName1">Room 1</span>
+          </button>
+          <button class="status-room-tab" data-status-room="ROOM_2" style="flex: 1; min-width: 80px; padding: 8px 12px; border: none; border-radius: 8px; background: #1e293b; color: #94a3b8; cursor: pointer; font-weight: 600; transition: all 0.2s; font-size: 0.85rem;">
+            <i class="fas fa-couch"></i> <span id="statusRoomName2">Room 2</span>
+          </button>
+          <button class="status-room-tab" data-status-room="ROOM_3" style="flex: 1; min-width: 80px; padding: 8px 12px; border: none; border-radius: 8px; background: #1e293b; color: #94a3b8; cursor: pointer; font-weight: 600; transition: all 0.2s; font-size: 0.85rem;">
+            <i class="fas fa-utensils"></i> <span id="statusRoomName3">Room 3</span>
+          </button>
+          <button class="status-room-tab" data-status-room="ROOM_4" style="flex: 1; min-width: 80px; padding: 8px 12px; border: none; border-radius: 8px; background: #1e293b; color: #94a3b8; cursor: pointer; font-weight: 600; transition: all 0.2s; font-size: 0.85rem;">
+            <i class="fas fa-bath"></i> <span id="statusRoomName4">Room 4</span>
+          </button>
         </div>
+      </div>
+      
+      <!-- Boot History Section -->
+      <div class="boot-history-container">
         <div class="boot-nav">
           <button class="nav-btn" id="prevBootDayBtn">
             <i class="fas fa-chevron-left"></i> Previous Day
@@ -2199,6 +2491,7 @@ header {
           </div>
         </div>
       </div>
+      
       <!-- Refresh Button -->
       <button id="refreshStatusBtn" style="width: 100%; padding: 10px; background: #38bdf8; color: #0f172a; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 10px;">
         <i class="fas fa-sync-alt"></i> Refresh Data
@@ -2242,7 +2535,7 @@ const auth = firebase.auth();
 
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'multiroom_session_active';
-const DASHBOARD_VERSION = 'v4.5.0';
+const DASHBOARD_VERSION = 'v4.8.2';
 let currentDevice = 'ROOM_1';
 const devices = ['ROOM_1', 'ROOM_2', 'ROOM_3', 'ROOM_4'];
 
@@ -2378,6 +2671,33 @@ function checkInternetConnection() {
         .catch(() => resolve(false));
     });
 }
+
+
+
+
+
+
+function parseDateToTimestamp(dateStr) {
+    // সাপোর্ট করবে: "2026-05-02", "2026-5-2", "02-05-2026"等各种格式
+    let year, month, day;
+    
+    // যদি YYYY-MM-DD format হয়
+    if (dateStr.includes('-') && dateStr.split('-')[0].length === 4) {
+        [year, month, day] = dateStr.split('-');
+    } 
+    // যদি DD-MM-YYYY format হয় (আপনার ক্ষেত্রে এটা)
+    else if (dateStr.includes('-')) {
+        const parts = dateStr.split('-');
+        if (parts[2].length === 4) {
+            [day, month, year] = parts;
+        } else {
+            [year, month, day] = parts;
+        }
+    }
+    
+    return new Date(parseInt(year), parseInt(month) - 1, parseInt(day)).getTime();
+}
+
 
 function updateConnectionStatus(connected) {
     isOnline = connected;
@@ -2648,33 +2968,33 @@ function setupSignalStrengthListener() {
         if (rawSignal !== null && rawSignal !== undefined && rawSignal !== '--') {
             if (typeof rawSignal === 'number') {
                 let rssi = rawSignal;
-                if (rssi >= -50) { rssiText = '📶 Excellent'; } 
-                else if (rssi >= -60) { rssiText = '📶 Good'; } 
-                else if (rssi >= -70) { rssiText = '📶 Fair'; } 
-                else if (rssi >= -85) { rssiText = '📶 Poor'; } 
-                else { rssiText = '❌ No Signal'; } 
+                if (rssi >= -50) { rssiText = 'Excellent'; } 
+                else if (rssi >= -60) { rssiText = 'Good'; } 
+                else if (rssi >= -70) { rssiText = 'Fair'; } 
+                else if (rssi >= -85) { rssiText = 'Poor'; } 
+                else { rssiText = 'No Signal'; } 
                 rssiDisplay = `${rssi} dBm`;
             } else if (typeof rawSignal === 'string') {
                 let match = rawSignal.match(/-?\d+/);
                 if (match) {
                     let rssi = parseInt(match[0]);
-                    if (rssi >= -50) rssiText = '📶 Excellent';
-                    else if (rssi >= -60) rssiText = '📶 Good';
-                    else if (rssi >= -70) rssiText = '📶 Fair';
-                    else if (rssi >= -85) rssiText = '📶 Poor';
-                    else rssiText = '❌ No Signal';
+                    if (rssi >= -50) rssiText = 'Excellent';
+                    else if (rssi >= -60) rssiText = 'Good';
+                    else if (rssi >= -70) rssiText = 'Fair';
+                    else if (rssi >= -85) rssiText = 'Poor';
+                    else rssiText = 'No Signal';
                     rssiDisplay = `${rssi} dBm`;
                 } else {
                     rssiDisplay = rawSignal;
-                    rssiText = '📶 Unknown';
+                    rssiText = 'Unknown';
                 }
             } else {
                 rssiDisplay = rawSignal;
-                rssiText = '📶 Unknown';
+                rssiText = 'Unknown';
             }
             if (isNaN(parseInt(rssiDisplay))) rssiDisplay = '--';
         } else {
-            rssiText = '📶 Unknown';
+            rssiText = 'Unknown';
         }
         window.deviceStates[currentDevice].signalStrength = rssiDisplay;
         window.deviceStates[currentDevice].signalText = rssiText;
@@ -2683,7 +3003,6 @@ function setupSignalStrengthListener() {
     });
     allListeners.push(() => db.ref(path).off('value', unsub));
 }
-
 function setupFanSpeedListener() {
   const fanSpeedPath = `HOME/${currentDevice}/fanSpeed`;
   const unsubscribe = db.ref(fanSpeedPath).on('value', (snapshot) => {
@@ -2891,7 +3210,14 @@ function updateStatusDisplay() {
                 statusEl.classList.add('connecting');
         }
     }
+    
+    // Refresh SSID display when status changes
+    const currentSSID = deviceStates[currentDevice]?.ssid || '--';
+    const signalStrength = deviceStates[currentDevice]?.signalStrength || '--';
+    const signalText = deviceStates[currentDevice]?.signalText || '📶 Unknown';
+    updateSSIDWithSignal(currentSSID, signalStrength, signalText);
 }
+
 
 function toggleRelay(index){ 
   if (!clientConnected) {
@@ -2945,23 +3271,63 @@ function setupRelayListeners() {
   }
 }
 
+// function setupDeviceInfoListeners() {
+//   const paths = [
+//     { path: 'device/ip', key: 'ip', element: 'ip' },
+//     { path: 'device/mac', key: 'mac', element: 'mac' },
+//     { path: 'device/ssid', key: 'ssid', element: 'ssid' },
+//     { path: 'device/firmwareVersion', key: 'firmware', element: null },
+//     { path: 'uptime', key: 'uptime', element: 'uptime' },
+//     { path: 'sunrise', key: 'sunrise', element: 'sunrise' },
+//     { path: 'sunset', key: 'sunset', element: 'sunset' },
+//     { path: 'lastUpdateHuman', key: 'lastUpdateHuman', element: 'lastUpdateHuman' },
+//     { path: 'lastUpdate', key: 'lastUpdate', element: null }
+//   ];
+//   paths.forEach(({ path, key, element }) => {
+//     const fullPath = getDevicePath(path);
+//     console.log(`Listening to device info: ${fullPath}`);
+//     const unsubscribe = db.ref(fullPath).on('value', (snap) => {
+//       const value = snap.val() || '--';
+//       deviceStates[currentDevice][key] = value;
+//       if (element && document.getElementById(element)) {
+//         document.getElementById(element).textContent = value;
+//       }
+//       if (key === 'firmware') {
+//         firmwareInfoEl.textContent = `Firmware: ${value}`;
+//       }
+//     }, error => {
+//       console.error(`Error listening to ${path}:`, error);
+//     });
+//     allListeners.push(() => db.ref(fullPath).off('value', unsubscribe));
+//   });
+//   setupSignalStrengthListener();
+// }
+
+
 function setupDeviceInfoListeners() {
   const paths = [
-    { path: 'device/ip', key: 'ip', element: 'ip' },
-    { path: 'device/mac', key: 'mac', element: 'mac' },
-    { path: 'device/ssid', key: 'ssid', element: 'ssid' },
-    { path: 'device/firmwareVersion', key: 'firmware', element: null },
-    { path: 'uptime', key: 'uptime', element: 'uptime' },
-    { path: 'sunrise', key: 'sunrise', element: 'sunrise' },
-    { path: 'sunset', key: 'sunset', element: 'sunset' },
-    { path: 'lastUpdateHuman', key: 'lastUpdateHuman', element: 'lastUpdateHuman' },
-    { path: 'lastUpdate', key: 'lastUpdate', element: null }
+    { path: 'device/ip', key: 'ip', element: 'ip', format12h: false },
+    { path: 'device/mac', key: 'mac', element: 'mac', format12h: false },
+    { path: 'device/ssid', key: 'ssid', element: 'ssid', format12h: false },
+    { path: 'device/firmwareVersion', key: 'firmware', element: null, format12h: false },
+    { path: 'uptime', key: 'uptime', element: 'uptime', format12h: false },
+    { path: 'sunrise', key: 'sunrise', element: 'sunrise', format12h: true },
+    { path: 'sunset', key: 'sunset', element: 'sunset', format12h: true },
+    { path: 'lastUpdateHuman', key: 'lastUpdateHuman', element: 'lastUpdateHuman', format12h: false },
+    { path: 'lastUpdate', key: 'lastUpdate', element: null, format12h: false }
   ];
-  paths.forEach(({ path, key, element }) => {
+  
+  paths.forEach(({ path, key, element, format12h }) => {
     const fullPath = getDevicePath(path);
     console.log(`Listening to device info: ${fullPath}`);
     const unsubscribe = db.ref(fullPath).on('value', (snap) => {
-      const value = snap.val() || '--';
+      let value = snap.val() || '--';
+      
+      // Convert to 12-hour format only for sunrise and sunset
+      if (format12h && value !== '--') {
+        value = convertTo12HourTime(value);
+      }
+      
       deviceStates[currentDevice][key] = value;
       if (element && document.getElementById(element)) {
         document.getElementById(element).textContent = value;
@@ -2976,6 +3342,36 @@ function setupDeviceInfoListeners() {
   });
   setupSignalStrengthListener();
 }
+
+
+
+// Convert 24-hour time to 12-hour format with AM/PM
+function convertTo12HourTime(time24) {
+    if (!time24 || time24 === '--:--' || time24 === '--:--:--') return time24;
+    
+    const parts = time24.split(':');
+    let hours = parseInt(parts[0]);
+    let minutes = parts[1];
+    let seconds = parts[2] || '00';
+    
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    let hour12 = hours % 12;
+    if (hour12 === 0) hour12 = 12;
+    
+    return `${hour12.toString().padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 function setupSSIDListener() {
     const path = `HOME/${currentDevice}/device/ssid`;
@@ -2992,10 +3388,22 @@ function setupSSIDListener() {
 function updateSSIDWithSignal(ssidValue, rssiDisplay, rssiText) {
     const ssidEl = document.getElementById('ssid');
     if (!ssidEl) return;
+    
+    // Check if device is offline
+    const deviceState = deviceStates[currentDevice];
+    const isOffline = deviceState && (deviceState.connectionStability === 'offline' || deviceState.online === false);
+    
+    if (isOffline) {
+        ssidEl.innerHTML = `<span style="font-size:0.85rem; color:#e2e8f0;">${ssidValue || '--'}</span> 
+            <span style="font-size:0.7rem; color:#ef4444;">❌ No Signal</span>`;
+        return;
+    }
+    
     if (!ssidValue || ssidValue === '--') {
         ssidEl.textContent = '--';
         return;
     }
+    
     if (rssiDisplay && rssiDisplay !== '--' && rssiText) {
         let rssiNumber = rssiDisplay;
         if (typeof rssiDisplay === 'string') {
@@ -3004,20 +3412,38 @@ function updateSSIDWithSignal(ssidValue, rssiDisplay, rssiText) {
                 rssiNumber = match[0];
             }
         }
-        ssidEl.innerHTML = `<span style="font-size:0.85rem;">${ssidValue}</span> <span style="font-size:0.75rem; opacity:0.85;">${rssiText}</span> <span style="font-size:0.6rem; opacity:0.6;">(${rssiNumber})</span>`;
-    } else if (rssiDisplay && rssiDisplay !== '--') {
-        let rssiNumber = rssiDisplay;
-        if (typeof rssiDisplay === 'string') {
-            const match = rssiDisplay.match(/-?\d+/);
-            if (match) {
-                rssiNumber = match[0];
-            }
+        
+        // Determine color and icon based on signal strength
+        let signalColor = '';
+        let signalIcon = '';
+        let rssiValue = parseInt(rssiNumber);
+        
+        if (rssiValue >= -50) {
+            signalColor = '#10b981';
+            signalIcon = '📶';
+        } else if (rssiValue >= -60) {
+            signalColor = '#34d399';
+            signalIcon = '📶';
+        } else if (rssiValue >= -70) {
+            signalColor = '#fbbf24';
+            signalIcon = '📶';
+        } else if (rssiValue >= -85) {
+            signalColor = '#f97316';
+            signalIcon = '📶';
+        } else {
+            signalColor = '#ef4444';
+            signalIcon = '❌';
         }
-        ssidEl.innerHTML = `<span style="font-size:0.85rem;">${ssidValue}</span> <span style="font-size:0.6rem; opacity:0.6;">(${rssiNumber})</span>`;
+        
+        // Single line with no double icon
+        ssidEl.innerHTML = `<span style="font-size:0.85rem; color:#e2e8f0;">${ssidValue}</span> 
+            <span style="font-size:0.7rem; color:${signalColor};">${signalIcon} ${rssiText}</span>
+            <span style="font-size:0.55rem; opacity:0.7; color:${signalColor};">(${rssiNumber})</span>`;
     } else {
-        ssidEl.innerHTML = `<span style="font-size:0.85rem;">${ssidValue}</span>`;
+        ssidEl.innerHTML = `<span style="font-size:0.85rem; color:#e2e8f0;">${ssidValue}</span>`;
     }
 }
+
 
 function setupSwitchListeners() {
   const beepUnsubscribe = db.ref(getDevicePath('settings/beepEnabled')).on('value', (snapshot) => {
@@ -4458,22 +4884,34 @@ function formatSecondsToDHMS(seconds) {
     }
 }
 
+// FIXED: সঠিক chronological order এ sort করবে
 async function loadBootHistoryDates(device) {
     try {
         const historyPath = `HOME/${device}/status/history`;
         const snapshot = await db.ref(historyPath).once('value');
         const history = snapshot.val();
+        
         if (!history) {
             bootHistoryDates = [];
             return [];
         }
+        
         const datesWithBoots = [];
         for (const date in history) {
             if (history[date].boot_count && history[date].boot_count > 0) {
                 datesWithBoots.push(date);
             }
         }
-        bootHistoryDates = datesWithBoots.sort().reverse();
+        
+        // CRITICAL FIX: তারিখগুলোকে সঠিকভাবে sort করা (DESCENDING - newest first)
+        // মানে আজকের তারিখ (02-05-2026) সবচেয়ে উপরে থাকবে
+        bootHistoryDates = datesWithBoots.sort((a, b) => {
+            const timeA = parseDateToTimestamp(a);
+            const timeB = parseDateToTimestamp(b);
+            return timeB - timeA; // নতুন থেকে পুরনো (descending)
+        });
+        
+        console.log('Sorted boot history dates (newest first):', bootHistoryDates);
         return bootHistoryDates;
     } catch (error) {
         console.error('Error loading boot history dates:', error);
@@ -4481,6 +4919,65 @@ async function loadBootHistoryDates(device) {
         return [];
     }
 }
+
+// Calculate Offline Time = boot_datetime + online_duration
+// Returns formatted time like "08:25:20 PM"
+function calculateOfflineTime(bootDateTime, onlineDuration) {
+    if (!bootDateTime || !onlineDuration) return '--:--:-- --';
+    
+    // Parse boot time (format: "01:14:39 AM" or "01:14:39")
+    let hours = 0, minutes = 0, seconds = 0;
+    let isPM = false;
+    
+    const timeMatch = bootDateTime.match(/(\d{1,2}):(\d{2}):(\d{2})\s*(AM|PM)?/i);
+    if (timeMatch) {
+        hours = parseInt(timeMatch[1]);
+        minutes = parseInt(timeMatch[2]);
+        seconds = parseInt(timeMatch[3]);
+        if (timeMatch[4]) {
+            isPM = timeMatch[4].toUpperCase() === 'PM';
+        }
+    } else {
+        return bootDateTime;
+    }
+    
+    // Convert to 24-hour format for calculation
+    if (isPM && hours !== 12) hours += 12;
+    if (!isPM && hours === 12) hours = 0;
+    
+    // Parse duration (HH:MM:SS or D HH:MM:SS)
+    let durationSeconds = 0;
+    let durHours = 0, durMinutes = 0, durSeconds = 0;
+    let durDays = 0;
+    
+    const dayMatch = onlineDuration.match(/(\d+)\s+day/);
+    if (dayMatch) durDays = parseInt(dayMatch[1]);
+    
+    const durMatch = onlineDuration.match(/(\d{2}):(\d{2}):(\d{2})/);
+    if (durMatch) {
+        durHours = parseInt(durMatch[1]);
+        durMinutes = parseInt(durMatch[2]);
+        durSeconds = parseInt(durMatch[3]);
+    }
+    durationSeconds = (durDays * 86400) + (durHours * 3600) + (durMinutes * 60) + durSeconds;
+    
+    // Create date object and add duration
+    let bootDate = new Date();
+    bootDate.setHours(hours, minutes, seconds, 0);
+    const offlineDate = new Date(bootDate.getTime() + (durationSeconds * 1000));
+    
+    // Format to 12-hour with AM/PM
+    let offlineHours = offlineDate.getHours();
+    const offlineMinutes = offlineDate.getMinutes();
+    const offlineSeconds = offlineDate.getSeconds();
+    const ampm = offlineHours >= 12 ? 'PM' : 'AM';
+    let hour12 = offlineHours % 12;
+    if (hour12 === 0) hour12 = 12;
+    
+    return `${hour12.toString().padStart(2, '0')}:${offlineMinutes.toString().padStart(2, '0')}:${offlineSeconds.toString().padStart(2, '0')} ${ampm}`;
+}
+
+
 
 async function loadBootHistoryForDate(device, date) {
     const bootHistoryEl = document.getElementById('bootHistoryList');
@@ -4521,20 +5018,30 @@ async function loadBootHistoryForDate(device, date) {
                     <span><i class="fas fa-clock"></i> Total Online Today:</span>
                     <span style="color: #10b981; font-weight: bold;">${totalOnlineDuration}</span>
                 </div>
+                <!-- TABLE HEADER ROW -->
+                <div class="boot-table-header">
+                    <span class="header-boot">BOOT #</span>
+                    <span class="header-datetime">BOOT TIME</span>
+                    <span class="header-duration">DURATION</span>
+                    <span class="header-offline">OFFLINE @</span>
+                </div>
                 <div class="boots-list">
-                    <div class="boots-title"><i class="fas fa-list"></i> All Boots on ${date}</div>
         `;
         
         for (const bootNum of bootNumbers) {
             const boot = boots[bootNum];
             if (boot && boot.boot_datetime) {
                 const onlineDuration = boot.online_duration || '00:00:00';
+                // Calculate offline time = boot_datetime + online_duration
+                const offlineTimeFormatted = calculateOfflineTime(boot.boot_datetime, onlineDuration);
+                
                 html += `
                     <div class="boot-item">
-                        <div class="boot-number">#${bootNum}</div>
-                        <div class="boot-datetime"><i class="far fa-clock"></i> ${boot.boot_datetime}</div>
-                        <div class="boot-duration"><i class="fas fa-hourglass-half"></i> ${onlineDuration}</div>
-                    </div>
+                    <div class="boot-number">#${bootNum}</div>
+                    <div class="boot-datetime">${boot.boot_datetime}</div>
+                    <div class="boot-duration">${onlineDuration}</div>
+                    <div class="boot-offline-time"><i class="fas fa-power-off" style="color: red;"></i> ${offlineTimeFormatted}</div>
+                </div>
                 `;
             }
         }
@@ -4548,15 +5055,22 @@ async function loadBootHistoryForDate(device, date) {
     }
 }
 
+
 function updateBootNavButtons() {
     const prevBtn = document.getElementById('prevBootDayBtn');
     const nextBtn = document.getElementById('nextBootDayBtn');
     if (!prevBtn || !nextBtn) return;
+    
+    // bootHistoryDates sorted newest first (index 0 = newest)
+    // Previous Day যায় পুরনো দিকে (index বাড়ে)
     prevBtn.disabled = (currentBootIndex >= bootHistoryDates.length - 1);
+    // Next Day যায় নতুন দিকে (index কমে)
     nextBtn.disabled = (currentBootIndex <= 0);
 }
 
+
 async function gotoPreviousBootDay() {
+    // Previous Day মানে আরও পুরনো তারিখ (index বাড়বে, কারণ newest index 0 এ আছে)
     if (currentBootIndex < bootHistoryDates.length - 1) {
         currentBootIndex++;
         await loadBootHistoryForDate(currentBootDevice, bootHistoryDates[currentBootIndex]);
@@ -4564,6 +5078,7 @@ async function gotoPreviousBootDay() {
 }
 
 async function gotoNextBootDay() {
+    // Next Day মানে নতুন তারিখ (index কমবে)
     if (currentBootIndex > 0) {
         currentBootIndex--;
         await loadBootHistoryForDate(currentBootDevice, bootHistoryDates[currentBootIndex]);
@@ -4607,25 +5122,40 @@ function setupBootNavigation() {
     }
 }
 
-// Device Status Modal (Simplified - removed Current Status and Today's detailed stats)
+// Device Status Modal with Room Tabs
 const deviceStatusBtn = document.getElementById('deviceStatusBtn');
 const deviceStatusModal = document.getElementById('deviceStatusModal');
 const closeDeviceStatusBtn = document.getElementById('closeDeviceStatusBtn');
 const refreshStatusBtn = document.getElementById('refreshStatusBtn');
-const statusRoomSelector = document.getElementById('statusRoomSelector');
+const statusRoomTabs = document.querySelectorAll('.status-room-tab');
 let statusViewingDevice = currentDevice;
 
-function openDeviceStatusModal() {
-    if (statusRoomSelector) {
-        for (let i = 0; i < statusRoomSelector.options.length; i++) {
-            const roomValue = statusRoomSelector.options[i].value;
-            if (roomNames[roomValue]) {
-                statusRoomSelector.options[i].text = roomNames[roomValue];
-            }
+function updateStatusRoomTabNames() {
+    // Update tab names with custom room names
+    const room1Tab = document.getElementById('statusRoomName1');
+    const room2Tab = document.getElementById('statusRoomName2');
+    const room3Tab = document.getElementById('statusRoomName3');
+    const room4Tab = document.getElementById('statusRoomName4');
+    
+    if (room1Tab) room1Tab.textContent = roomNames['ROOM_1'] || 'Room 1';
+    if (room2Tab) room2Tab.textContent = roomNames['ROOM_2'] || 'Room 2';
+    if (room3Tab) room3Tab.textContent = roomNames['ROOM_3'] || 'Room 3';
+    if (room4Tab) room4Tab.textContent = roomNames['ROOM_4'] || 'Room 4';
+}
+
+
+function setActiveStatusRoomTab(deviceId) {
+    statusRoomTabs.forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.getAttribute('data-status-room') === deviceId) {
+            tab.classList.add('active');
         }
-        statusRoomSelector.value = currentDevice;
-        statusViewingDevice = currentDevice;
-    }
+    });
+}
+
+function openDeviceStatusModal() {
+    updateStatusRoomTabNames();
+    setActiveStatusRoomTab(statusViewingDevice);
     deviceStatusModal.classList.add('show');
     loadDeviceStatusData();
     profileDropdown.classList.remove('show');
@@ -4635,41 +5165,62 @@ function closeDeviceStatusModal() {
     deviceStatusModal.classList.remove('show');
 }
 
+
+
+
 async function loadDeviceStatusData() {
     try {
         const device = statusViewingDevice;
         const roomDisplayName = roomNames[device] || device.replace('_', '-');
         const modalHeader = document.querySelector('#deviceStatusModal .settings-header h3');
         if (modalHeader) {
-            modalHeader.innerHTML = `<i class="fas fa-chart-line"></i> Device Status - ${roomDisplayName}`;
+            modalHeader.innerHTML = `<i class="fas fa-microchip"></i> Device Boot Records - ${roomDisplayName}`;
         }
         
-        // Today's Boots Only (Simple counter)
-        const today = new Date().toISOString().split('T')[0].split('-').reverse().join('-');
-        const statsSnapshot = await db.ref(`HOME/${device}/status/history/${today}`).once('value');
-        const stats = statsSnapshot.val();
-        const todayStatsEl = document.getElementById('statusTodayStats');
-        if (stats && stats.boot_count !== undefined) {
-            todayStatsEl.innerHTML = `<span style="font-size: 1rem;"><i class="fas fa-power-off"></i> Boot Count: <span style="color: #f59e0b;">${stats.boot_count}</span></span>`;
-        } else {
-            todayStatsEl.innerHTML = '<span style="color: #94a3b8;">No data recorded for this device yet</span>';
-        }
-        
-        // Load Boot History
+        // Load Boot History only
         await loadBootHistory(device);
         setupBootNavigation();
     } catch (error) {
         console.error('Error loading device status:', error);
-        const errorMsg = '<span style="color: #ef4444;">Error loading data. Please try again.</span>';
-        document.getElementById('statusTodayStats').innerHTML = errorMsg;
     }
 }
+
+// Room tab click handlers
+statusRoomTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        const selectedDevice = tab.getAttribute('data-status-room');
+        statusViewingDevice = selectedDevice;
+        setActiveStatusRoomTab(selectedDevice);
+        loadDeviceStatusData();
+    });
+});
+
+// Modal close handlers
+if (deviceStatusBtn) { 
+    deviceStatusBtn.addEventListener('click', openDeviceStatusModal); 
+}
+if (closeDeviceStatusBtn) { 
+    closeDeviceStatusBtn.addEventListener('click', closeDeviceStatusModal); 
+}
+if (refreshStatusBtn) { 
+    refreshStatusBtn.addEventListener('click', () => { 
+        loadDeviceStatusData(); 
+    }); 
+}
+
+// Close modal when clicking outside
+window.addEventListener('click', (event) => { 
+    if (event.target === deviceStatusModal) { 
+        closeDeviceStatusModal(); 
+    } 
+});
 
 if (deviceStatusBtn) { deviceStatusBtn.addEventListener('click', openDeviceStatusModal); }
 if (closeDeviceStatusBtn) { closeDeviceStatusBtn.addEventListener('click', closeDeviceStatusModal); }
 if (refreshStatusBtn) { refreshStatusBtn.addEventListener('click', () => { loadDeviceStatusData(); }); }
-if (statusRoomSelector) { statusRoomSelector.addEventListener('change', (e) => { statusViewingDevice = e.target.value; loadDeviceStatusData(); }); }
 window.addEventListener('click', (event) => { if (event.target === deviceStatusModal) { closeDeviceStatusModal(); } });
+
+
 
 // SWIPE FUNCTIONALITY (simplified - keep your existing working swipe code)
 let touchStartX = 0, touchEndX = 0, touchStartY = 0, touchEndY = 0;
