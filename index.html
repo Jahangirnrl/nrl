@@ -1,4 +1,4 @@
-<!-- const DASHBOARD_VERSION = 'v4.7.1'; -->
+<!-- const DASHBOARD_VERSION = 'v4.8.2'; -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -263,8 +263,10 @@
 }
 
 .boot-offline-time {
+    display: grid;
+    grid-template-columns: 55px 1fr 100px 120px;
     color: #f97316;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     font-weight: 500;
     min-width: 110px;
     text-align: right;
@@ -277,7 +279,7 @@
 }
 
 .boot-offline-time i {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
 }
 
 
@@ -1767,6 +1769,21 @@ header {
     border-bottom: 1px solid rgba(56, 189, 248, 0.3);
 }
 
+/* Add negative margin to shift DURATION and OFFLINE @ columns 10px left */
+.header-duration {
+    text-align: center;
+    grid-column: 3;
+    position: relative;
+    left: -10px;
+}
+
+.header-offline {
+    text-align: center;
+    grid-column: 4;
+    position: relative;
+    left: -10px;
+}
+
 .header-boot {
        width: 60px;
     flex-shrink: 0;
@@ -1796,6 +1813,19 @@ header {
     align-items: center;
     padding: 12px 0;
     border-bottom: 1px dashed #334155;
+}
+
+
+/* Shift DURATION values 10px left */
+.boot-item .boot-duration {
+    position: relative;
+    left: -10px;
+}
+
+/* Shift OFFLINE @ values 10px left */
+.boot-item .boot-offline-time {
+    position: relative;
+    left: -10px;
 }
 
 .boot-number {
@@ -1900,6 +1930,34 @@ header {
     .boot-offline-time {
         font-size: 0.55rem;
         padding: 2px 2px;
+    }
+}
+
+@media (max-width: 600px) {
+    .boot-table-header,
+    .boot-item {
+        grid-template-columns: 45px 1fr 80px 95px;
+    }
+    
+    .header-duration,
+    .header-offline,
+    .boot-item .boot-duration,
+    .boot-item .boot-offline-time {
+        left: -12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .boot-table-header,
+    .boot-item {
+        grid-template-columns: 40px 1fr 70px 80px;
+    }
+    
+    .header-duration,
+    .header-offline,
+    .boot-item .boot-duration,
+    .boot-item .boot-offline-time {
+        left: -12px;
     }
 }
 
