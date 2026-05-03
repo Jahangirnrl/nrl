@@ -272,7 +272,7 @@
     padding: 4px 8px;
     border-radius: 16px;
     display: inline-flex;
-    align-items: center;
+    align-items: border-left;
     gap: 4px;
 }
 
@@ -1834,15 +1834,15 @@ header {
 .boot-offline-time {
     color: #f97316;
     font-size: 0.7rem;
-    font-weight: 500;
+    font-weight: 450;
     text-align: center;
-    background: rgba(249, 115, 22, 0.12);
-    padding: 5px 8px;
+    background: rgba(149, 100, 15, 0.04);
+    padding: 1px 2px;
     border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
+    gap: 2px;
     width: fit-content;
     margin: 0 auto;
     grid-column: 4;
@@ -1850,7 +1850,7 @@ header {
 
 .boot-offline-time i {
     font-size: 0.65rem;
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
 /* Responsive adjustments */
@@ -1877,7 +1877,7 @@ header {
     
     .boot-offline-time {
         font-size: 0.6rem;
-        padding: 3px 5px;
+        padding: 3px 3px;
     }
 }
 
@@ -1899,7 +1899,7 @@ header {
     
     .boot-offline-time {
         font-size: 0.55rem;
-        padding: 2px 4px;
+        padding: 2px 2px;
     }
 }
 
@@ -2477,7 +2477,7 @@ const auth = firebase.auth();
 
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'multiroom_session_active';
-const DASHBOARD_VERSION = 'v4.8.1';
+const DASHBOARD_VERSION = 'v4.8.2';
 let currentDevice = 'ROOM_1';
 const devices = ['ROOM_1', 'ROOM_2', 'ROOM_3', 'ROOM_4'];
 
@@ -4965,7 +4965,7 @@ async function loadBootHistoryForDate(device, date) {
                     <span class="header-boot">BOOT #</span>
                     <span class="header-datetime">BOOT TIME</span>
                     <span class="header-duration">DURATION</span>
-                    <span class="header-offline">OFFLINE TIME</span>
+                    <span class="header-offline">OFFLINE @</span>
                 </div>
                 <div class="boots-list">
         `;
@@ -4982,7 +4982,7 @@ async function loadBootHistoryForDate(device, date) {
                     <div class="boot-number">#${bootNum}</div>
                     <div class="boot-datetime">${boot.boot_datetime}</div>
                     <div class="boot-duration">${onlineDuration}</div>
-                    <div class="boot-offline-time"><i class="fas fa-power-off"></i> ${offlineTimeFormatted}</div>
+                    <div class="boot-offline-time"><i class="fas fa-power-off" style="color: red;"></i> ${offlineTimeFormatted}</div>
                 </div>
                 `;
             }
