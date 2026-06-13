@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>EIM | Electronics Inventory Manager</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234facfe'%3E%3Cpath d='M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 2h1.5v3h-1.5V6zm0 4h1.5v3h-1.5v-3zm0 4h1.5v3h-1.5v-3zM7 6h1.5v3H7V6zm0 4h1.5v3H7v-3zm0 4h1.5v3H7v-3zm8 0h1.5v3H15v-3zm0-4h1.5v3H15v-3zm0-4h1.5v3H15V6z'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        body { background: #f5f7fb; min-height: 100vh; overflow-x: hidden; }
+        
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 9999;
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: 32px;
+            padding: 40px 32px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        
+        .auth-card .logo-icon { font-size: 56px; color: #4facfe; margin-bottom: 16px; }
+        .auth-card h2 { margin-bottom: 8px; color: #1e2f4e; }
+        .auth-card p { color: #6c757d; font-size: 13px; margin-bottom: 28px; }
+        .auth-input { width: 100%; padding: 14px 16px; margin: 10px 0; border-radius: 28px; border: 1px solid #ddd; font-size: 14px; }
+        .auth-btn { background: linear-gradient(95deg, #4facfe, #00f2fe); border: none; padding: 12px; border-radius: 40px; font-weight: bold; color: #1e2f4e; cursor: pointer; width: 100%; margin-top: 12px; font-size: 16px; }
+        .auth-switch { margin-top: 20px; font-size: 13px; color: #4facfe; cursor: pointer; }
+        .error-msg { color: #e74c3c; font-size: 12px; margin-top: 8px; }
+        .admin-badge { background: #e67e22; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; display: inline-block; }
+        
+        .remember-me { display: flex; align-items: center; gap: 8px; margin: 10px 0; font-size: 13px; color: #555; }
+        .remember-me input { width: 16px; height: 16px; cursor: pointer; }
+        .app-wrapper { display: none; width: 100%; min-height: 100vh; }
+        
+        .sidebar-desktop {
+            width: 280px;
+            background: rgba(18, 25, 45, 0.96);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 10;
+        }
+        
+        .logo { padding: 28px 20px; border-bottom: 1px solid rgba(255,255,255,0.15); text-align: center; }
+        .logo i { font-size: 48px; color: #4facfe; }
+        .logo h2 { margin-top: 12px; font-weight: 600; }
+        
+        .nav-desktop { flex: 1; padding: 25px 0; }
+        .nav-btn-desktop {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 14px 24px;
+            text-align: left;
+            font-size: 16px;
+            font-weight: 500;
+            color: #e0e4f0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .nav-btn-desktop:hover { background: #2a3a5e; }
+        .nav-btn-desktop.active { background: linear-gradient(95deg, #4facfe, #00f2fe); color: #1a2a3a; font-weight: 600; }
+        
+        .user-card { padding: 20px; border-top: 1px solid rgba(255,255,255,0.15); text-align: center; }
+        .user-email { font-size: 13px; background: #1e2a44; padding: 6px 10px; border-radius: 30px; margin: 10px 0; word-break: break-all; }
+        .logout-btn { background: #d9534f; border: none; color: white; padding: 8px 16px; border-radius: 40px; cursor: pointer; width: 100%; font-weight: bold; }
+        
+        .bottom-nav-mobile {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(18, 25, 45, 0.98);
+            display: none;
+            justify-content: space-around;
+            padding: 8px 12px;
+            z-index: 100;
+        }
+        
+        .nav-btn-mobile {
+            background: transparent;
+            border: none;
+            padding: 8px 12px;
+            text-align: center;
+            font-size: 12px;
+            color: #a0a8c0;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            border-radius: 12px;
+            flex: 1;
+        }
+        .nav-btn-mobile.active { background: linear-gradient(95deg, #4facfe, #00f2fe); color: #1a2a3a; font-weight: 600; }
+        
+        .main-panel { flex: 1; padding: 20px 24px; width: 100%; }
+        body.desktop-mode .main-panel { margin-left: 280px; width: calc(100% - 280px); }
+        body.mobile-mode .main-panel { margin-left: 0; padding-bottom: 80px; }
+        body.mobile-mode .bottom-nav-mobile { display: flex; }
+        
+        .view { display: none; animation: fade 0.3s ease; }
+        .view.active { display: block; }
+        @keyframes fade { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
+        
+        h1 { font-size: 24px; margin-bottom: 20px; color: #1e2f4e; display: flex; align-items: center; gap: 10px; }
+        
+        .search-bar {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .search-input, .filter-select { flex: 1; padding: 12px 16px; border-radius: 40px; border: 1px solid #ddd; background: #f9fafb; }
+        .reset-btn { background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 40px; cursor: pointer; }
+        
+        .table-wrapper { background: white; border-radius: 20px; overflow-x: auto; }
+        table { width: 100%; min-width: 600px; border-collapse: collapse; }
+        th { background: #1e2f4e; color: white; padding: 14px 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #e9ecef; }
+        
+        .edit-btn, .delete-btn { border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; margin: 0 3px; }
+        .edit-btn { background: #27ae60; color: white; }
+        .delete-btn { background: #e74c3c; color: white; }
+        
+        .form-card { background: white; border-radius: 24px; padding: 24px; max-width: 800px; }
+        .form-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px; }
+        .form-group { flex: 1; margin-bottom: 15px; }
+        .form-group label { font-weight: 600; margin-bottom: 6px; display: block; font-size: 13px; }
+        
+        input, select, textarea { width: 100%; padding: 12px; border-radius: 16px; border: 1px solid #ced4da; }
+        .btn-primary { background: linear-gradient(95deg, #4facfe, #00f2fe); border: none; padding: 12px 24px; border-radius: 40px; font-weight: bold; cursor: pointer; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; border-radius: 28px; padding: 24px; width: 90%; max-width: 500px; }
+        
+        .connection-status { position: fixed; bottom: 20px; right: 20px; background: #f0ad4e; color: white; padding: 6px 14px; border-radius: 20px; font-size: 11px; z-index: 1000; }
+        .toast-notify { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(100px); background: #27ae60; color: white; padding: 10px 20px; border-radius: 50px; z-index: 2000; opacity: 0; transition: all 0.3s ease; pointer-events: none; }
+        .toast-notify.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        
+        .locations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+        .location-card { background: white; padding: 16px; border-radius: 20px; border-left: 4px solid #4facfe; }
+        
+        .report-container { background: white; border-radius: 20px; overflow-x: auto; }
+        .report-header { background: linear-gradient(135deg, #1e2f4e, #2c3e66); color: white; padding: 24px; border-radius: 20px 20px 0 0; }
+        
+        /* Single row stats container */
+        .report-stats-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 24px;
+            background: #f8f9fa;
+            flex-wrap: wrap;
+        }
+        .report-stat-item {
+            flex: 1;
+            min-width: 180px;
+            background: white;
+            padding: 20px 16px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .report-stat-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .report-stat-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6c757d;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .report-stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1e2f4e;
+        }
+        .report-stat-unit {
+            font-size: 12px;
+            color: #6c757d;
+            margin-left: 4px;
+            font-weight: normal;
+        }
+        .low-stock-value {
+            color: #e74c3c;
+        }
+        
+        .stock-badge-report { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .stock-ok { background: #d4edda; color: #155724; }
+        .stock-low { background: #fff3cd; color: #856404; }
+        
+        .auto-id-preview { background: #e8f0fe; border-radius: 12px; padding: 10px 15px; margin-top: 8px; font-size: 13px; border-left: 3px solid #4facfe; }
+        .auto-id-preview i { margin-right: 8px; color: #4facfe; }
+        .auto-id-preview strong { font-family: monospace; font-size: 14px; background: white; padding: 2px 8px; border-radius: 20px; margin-left: 8px; }
+        
+        .comp-id-input:read-only { background: #e9ecef; cursor: not-allowed; }
+        
+        .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+        .edit-user-btn, .delete-user-btn { border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; }
+        .edit-user-btn { background: #4facfe; color: white; }
+        .delete-user-btn { background: #e74c3c; color: white; }
+        
+        @media (max-width: 768px) {
+            .sidebar-desktop { display: none; }
+            body.desktop-mode .main-panel { margin-left: 0; }
+            .main-panel { padding: 16px; }
+            .report-stat-item { min-width: 140px; padding: 12px; }
+            .report-stat-value { font-size: 24px; }
+        }
+        @media (min-width: 769px) { .bottom-nav-mobile { display: none; } }
+    </style>
+</head>
+<body>
+
+<div id="authContainer" class="auth-container">
+    <div class="auth-card">
+        <i class="fas fa-microchip logo-icon"></i>
+        <h2>EIM</h2>
+        <p>Electronics Inventory Manager</p>
+        <form id="authForm" autocomplete="off">
+            <input type="email" id="authEmail" class="auth-input" placeholder="Email address" autocomplete="off" required>
+            <input type="password" id="authPassword" class="auth-input" placeholder="Password" autocomplete="new-password" required>
+            <div class="remember-me"><input type="checkbox" id="rememberMeCheckbox"><label>Keep me logged in</label></div>
+            <button type="submit" class="auth-btn" id="authSubmitBtn">Login</button>
+        </form>
+        <div id="authError" class="error-msg"></div>
+        <div class="auth-switch" id="toggleAuthMode">Don't have an account? <strong>Register</strong></div>
+        <div style="margin-top: 16px; font-size: 11px; background: #f8f9fa; padding: 8px; border-radius: 12px;">
+            <strong>Admin:</strong> jahangir.nrl@gmail.com / admin123<br>
+            <strong>User:</strong> user@example.com / user123
+        </div>
+    </div>
+</div>
+
+<div class="app-wrapper" id="appWrapper">
+    <div class="sidebar-desktop">
+        <div class="logo"><i class="fas fa-microchip"></i><h2>EIM</h2><p style="font-size:11px;">Electronics Inventory</p></div>
+        <div class="nav-desktop">
+            <button class="nav-btn-desktop" data-view="reports"><i class="fas fa-chart-line"></i><span> Reports</span></button>
+            <button class="nav-btn-desktop" data-view="components"><i class="fas fa-microchip"></i><span> Components</span></button>
+            <button class="nav-btn-desktop" data-view="add"><i class="fas fa-plus-circle"></i><span> Add Part</span></button>
+            <button class="nav-btn-desktop" data-view="locations"><i class="fas fa-map-marker-alt"></i><span> Locations</span></button>
+            <button class="nav-btn-desktop" id="adminNavBtn" data-view="admin" style="display:none;"><i class="fas fa-users-cog"></i><span> User Admin</span></button>
+        </div>
+        <div class="user-card">
+            <i class="fas fa-user-astronaut"></i>
+            <div class="user-email" id="userEmailDisplay">electronics@eim</div>
+            <div id="userRoleDisplay" style="font-size:11px;"></div>
+            <button id="logoutBtnGlobal" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </div>
+    
+    <div class="bottom-nav-mobile">
+        <button class="nav-btn-mobile" data-view="reports"><i class="fas fa-chart-line"></i><span>Reports</span></button>
+        <button class="nav-btn-mobile" data-view="components"><i class="fas fa-microchip"></i><span>Parts</span></button>
+        <button class="nav-btn-mobile" data-view="add"><i class="fas fa-plus-circle"></i><span>Add</span></button>
+        <button class="nav-btn-mobile" data-view="locations"><i class="fas fa-map-marker-alt"></i><span>Loc</span></button>
+        <button class="nav-btn-mobile" id="adminNavBtnMobile" data-view="admin" style="display:none;"><i class="fas fa-users-cog"></i><span>Admin</span></button>
+    </div>
+    
+    <div class="main-panel">
+        <div id="reports-view" class="view active">
+            <h1><i class="fas fa-chart-line"></i> Stock Reports</h1>
+            <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+                <button id="exportCSVBtn" class="btn-primary"><i class="fas fa-file-csv"></i> Export CSV</button>
+                <button id="printReportBtn" class="btn-primary" style="background:#2c3e66;"><i class="fas fa-print"></i> Print / PDF</button>
+            </div>
+            <div id="reportContainer" class="report-container">
+                <div class="report-header"><h2>Loading Report...</h2></div>
+            </div>
+        </div>
+        
+        <div id="components-view" class="view">
+            <h1><i class="fas fa-microchip"></i> Components Inventory</h1>
+            <div class="search-bar">
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search...">
+                <select id="categoryFilter" class="filter-select"><option value="">All Categories</option></select>
+                <button id="resetFiltersBtn" class="reset-btn">Reset</button>
+            </div>
+            <div class="table-wrapper">
+                <table id="componentsTable">
+                    <thead><tr><th>Component ID</th><th>Name</th><th>Category</th><th>Value</th><th>Stock</th><th>Location</th><th>Actions</th></tr></thead>
+                    <tbody id="componentsTableBody"><tr><td colspan="7">Loading components...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="add-view" class="view">
+            <h1><i class="fas fa-plus-circle"></i> Add New Component</h1>
+            <div class="form-card">
+                <form id="addComponentForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Component ID (Auto-Generated) *</label>
+                            <input type="text" id="compId" class="comp-id-input" readonly placeholder="Will be auto-generated" style="background:#e9ecef;">
+                            <div id="autoIdPreview" class="auto-id-preview"><i class="fas fa-magic"></i> Enter Category and Value to auto-generate ID</div>
+                        </div>
+                        <div class="form-group"><label>Component Name *</label><input type="text" id="compName" required></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Category *</label><input type="text" id="compCategory" required placeholder="e.g., Resistor, Capacitor, IC"></div>
+                        <div class="form-group"><label>Value/Specs *</label><input type="text" id="compValue" required placeholder="e.g., 10kΩ, 100µF"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Package Type</label><select id="compPackage"><option>Through-hole</option><option>SMD</option><option>SOP</option><option>QFP</option><option>BGA</option></select></div>
+                        <div class="form-group"><label>Stock Quantity *</label><input type="number" id="compQuantity" min="0" value="0"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Min Stock Alert</label><input type="number" id="compMinStock" value="10"></div>
+                        <div class="form-group"><label>Storage Location</label><input type="text" id="locFull" placeholder="e.g., Cabinet A - Drawer 3"></div>
+                    </div>
+                    <div class="form-group"><label>Description</label><textarea id="compDescription" rows="2"></textarea></div>
+                    <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Save Component</button>
+                </form>
+            </div>
+        </div>
+        
+        <div id="locations-view" class="view">
+            <h1><i class="fas fa-map-marker-alt"></i> Storage Locations</h1>
+            <div id="locationsGrid" class="locations-grid">Loading...</div>
+        </div>
+        
+        <div id="admin-view" class="view">
+            <h1><i class="fas fa-users-cog"></i> User Management <span class="admin-badge">Admin Only</span></h1>
+            <div class="form-card" style="margin-bottom:20px;">
+                <h3>➕ Add New User</h3>
+                <form id="addUserForm" autocomplete="off">
+                    <div class="form-row">
+                        <div class="form-group"><label>Email</label><input type="email" id="newUserEmail" required></div>
+                        <div class="form-group"><label>Password</label><input type="password" id="newUserPassword" required></div>
+                        <div class="form-group"><label>Role</label><select id="newUserRole"><option value="user">User</option><option value="admin">Admin</option></select></div>
+                    </div>
+                    <button type="submit" class="btn-primary"><i class="fas fa-user-plus"></i> Create User</button>
+                </form>
+            </div>
+            <div class="table-wrapper">
+                <h3>📋 Registered Users</h3>
+                <table><thead><tr><th>Email</th><th>Role</th><th>Created Date</th><th>Actions</th> </tr></thead><tbody id="usersTableBody"><tr><td colspan="4">Loading...</td></tr></tbody></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span style="float:right;cursor:pointer;font-size:24px;" id="closeModalBtn">&times;</span>
+        <h3>Edit Component</h3>
+        <form id="editForm">
+            <input type="hidden" id="editKey">
+            <div class="form-group"><label>Component ID</label><input type="text" id="editCompId" readonly></div>
+            <div class="form-group"><label>Name</label><input type="text" id="editName" required></div>
+            <div class="form-group"><label>Category</label><input type="text" id="editCategory" required></div>
+            <div class="form-group"><label>Value</label><input type="text" id="editValue"></div>
+            <div class="form-group"><label>Package</label><select id="editPackage"><option>Through-hole</option><option>SMD</option><option>SOP</option><option>QFP</option><option>BGA</option></select></div>
+            <div class="form-group"><label>Min Stock</label><input type="number" id="editMinStock"></div>
+            <div class="form-group"><label>Current Stock</label><input type="number" id="editQuantity" required></div>
+            <div class="form-group"><label>Location</label><input type="text" id="editLocation"></div>
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button type="submit" class="edit-btn" style="flex:1;">Update</button>
+                <button type="button" id="confirmDeleteBtn" class="delete-btn" style="flex:1;">Delete</button>
+                <button type="button" id="cancelEditBtn" style="flex:1; background:#6c757d; color:white; border:none; border-radius:20px;">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="editUserModal" class="modal">
+    <div class="modal-content">
+        <span style="float:right;cursor:pointer;font-size:24px;" onclick="closeEditUserModal()">&times;</span>
+        <h3>Edit User</h3>
+        <form id="editUserForm">
+            <input type="hidden" id="editUserId">
+            <div class="form-group"><label>Email</label><input type="email" id="editUserEmail" required></div>
+            <div class="form-group"><label>Role</label><select id="editUserRole"><option value="user">User</option><option value="admin">Admin</option></select></div>
+            <div class="form-group"><label>New Password (optional)</label><input type="password" id="editUserPassword" placeholder="Leave blank to keep current"></div>
+            <button type="submit" class="edit-btn" style="width:100%;">Update User</button>
+        </form>
+    </div>
+</div>
+
+<div id="toastMessage" class="toast-notify"><i class="fas fa-check-circle"></i><span id="toastText"></span></div>
+<div class="connection-status" id="connectionStatus"><i class="fas fa-spinner fa-pulse"></i> Connecting...</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyA77524v09FOTq2b5XgFynCXYTsvkNfpr8",
+        authDomain: "jah-ent.firebaseapp.com",
+        projectId: "jah-ent",
+        storageBucket: "jah-ent.firebasestorage.app",
+        messagingSenderId: "174655901840",
+        appId: "1:174655901840:web:fc79e57931797ab2df8815",
+        databaseURL: "https://jah-ent-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+    
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    
+    const componentsRef = db.ref('EIM/Components');
+    const usersRef = db.ref('EIM/Users');
+    
+    let allComponents = [];
+    let currentUser = null;
+    let currentUserRole = 'user';
+    
+    function saveLastAdminEmail(email) { if (email) localStorage.setItem('lastEimAdminEmail', email); }
+    function getLastAdminEmail() { return localStorage.getItem('lastEimAdminEmail') || ''; }
+    
+    function getCodePrefix(str) {
+        if (!str) return 'GEN';
+        let cleaned = str.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+        if (cleaned.length >= 3) return cleaned.substring(0, 3);
+        return (cleaned + 'XXX').substring(0, 3);
+    }
+    
+    function generateAutoComponentId(category, value) {
+        if (!category || !value) return '';
+        const catCode = getCodePrefix(category);
+        const valCode = getCodePrefix(value);
+        const baseId = `${catCode}-${valCode}`;
+        let maxNumber = 0;
+        allComponents.forEach(comp => {
+            if (comp.componentId && comp.componentId.startsWith(baseId + '-')) {
+                const parts = comp.componentId.split('-');
+                const num = parseInt(parts[parts.length - 1], 10);
+                if (!isNaN(num) && num > maxNumber) maxNumber = num;
+            }
+        });
+        return `${baseId}-${(maxNumber + 1).toString().padStart(3, '0')}`;
+    }
+    
+    function updateAutoIdPreview() {
+        const category = document.getElementById('compCategory').value.trim();
+        const value = document.getElementById('compValue').value.trim();
+        if (category && value) {
+            const generatedId = generateAutoComponentId(category, value);
+            document.getElementById('compId').value = generatedId;
+            document.getElementById('autoIdPreview').innerHTML = `<i class="fas fa-check-circle"></i> Generated ID: <strong>${escapeHtml(generatedId)}</strong> <span style="font-size:11px;">(auto-incremented)</span>`;
+            document.getElementById('autoIdPreview').style.background = '#d4edda';
+        } else {
+            document.getElementById('compId').value = '';
+            document.getElementById('autoIdPreview').innerHTML = `<i class="fas fa-info-circle"></i> Enter Category and Value to auto-generate ID`;
+            document.getElementById('autoIdPreview').style.background = '#e8f0fe';
+        }
+    }
+    
+    function showToast(msg, isError = false) {
+        const toast = document.getElementById('toastMessage');
+        document.getElementById('toastText').textContent = msg;
+        toast.style.background = isError ? '#e74c3c' : '#27ae60';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+    
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
+    function formatDate(dateStr) { if (!dateStr) return 'N/A'; try { return new Date(dateStr).toLocaleString(); } catch(e) { return dateStr; } }
+    function isAdmin() { return currentUserRole === 'admin'; }
+    
+    function detectDevice() {
+        if (window.innerWidth <= 768) { document.body.classList.remove('desktop-mode'); document.body.classList.add('mobile-mode'); }
+        else { document.body.classList.remove('mobile-mode'); document.body.classList.add('desktop-mode'); }
+    }
+    window.addEventListener('resize', detectDevice);
+    detectDevice();
+    
+    function updateAdminUI() {
+        const adminBtns = [document.getElementById('adminNavBtn'), document.getElementById('adminNavBtnMobile')];
+        if (isAdmin()) {
+            adminBtns.forEach(btn => { if(btn) btn.style.display = 'flex'; });
+            document.getElementById('userRoleDisplay').innerHTML = '<span class="admin-badge">Administrator</span>';
+        } else {
+            adminBtns.forEach(btn => { if(btn) btn.style.display = 'none'; });
+            document.getElementById('userRoleDisplay').innerHTML = '<span style="background:#4facfe; padding:2px 10px; border-radius:20px;">User</span>';
+            if (document.getElementById('admin-view')?.classList.contains('active')) switchToView('reports');
+        }
+    }
+    
+    function loadComponents() {
+        componentsRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            allComponents = [];
+            if (data) {
+                Object.keys(data).forEach(key => {
+                    const comp = data[key];
+                    allComponents.push({
+                        firebaseKey: key,
+                        componentId: comp.componentId || key,
+                        name: comp.name || 'Unnamed',
+                        category: comp.category || '',
+                        value: comp.value || '',
+                        package: comp.package || 'Through-hole',
+                        quantity: comp.quantity !== undefined ? comp.quantity : 0,
+                        minStockLevel: comp.minStockLevel !== undefined ? comp.minStockLevel : 10,
+                        location: comp.location || 'Not specified',
+                        description: comp.description || ''
+                    });
+                });
+            }
+            document.getElementById('connectionStatus').innerHTML = '<i class="fas fa-check-circle"></i> Connected';
+            document.getElementById('connectionStatus').style.background = '#28a745';
+            refreshUI();
+            updateAutoIdPreview();
+        }, (error) => { showToast("Firebase error: " + error.message, true); });
+    }
+    
+    function refreshUI() {
+        renderComponentsTable();
+        populateFilters();
+        renderLocations();
+        generateReport();
+        if (isAdmin()) loadUsersList();
+    }
+    
+    function renderComponentsTable() {
+        const search = document.getElementById("searchInput")?.value.toLowerCase() || "";
+        const catFilter = document.getElementById("categoryFilter")?.value || "";
+        let filtered = allComponents.filter(c => {
+            const matchSearch = (c.componentId || "").toLowerCase().includes(search) || 
+                              (c.name || "").toLowerCase().includes(search) || 
+                              (c.value || "").toLowerCase().includes(search) || 
+                              (c.category || "").toLowerCase().includes(search);
+            return matchSearch && (!catFilter || c.category === catFilter);
+        });
+        const tbody = document.getElementById("componentsTableBody");
+        if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No components found</td></tr>'; return; }
+        tbody.innerHTML = filtered.map(c => {
+            const isLow = (c.quantity || 0) <= (c.minStockLevel || 0);
+            return `<tr>
+                <td><strong>${escapeHtml(c.componentId)}</strong></td>
+                <td>${escapeHtml(c.name)}</td>
+                <td>${escapeHtml(c.category) || '-'}</td>
+                <td>${escapeHtml(c.value) || '-'}</td>
+                <td><span style="background:${isLow ? '#fee2e2' : '#d1fae5'}; padding:4px 10px; border-radius:20px;">${c.quantity || 0} pcs</span></td>
+                <td>${escapeHtml(c.location) || '-'}</td>
+                <td><button class="edit-btn" onclick="editComponent('${c.firebaseKey}')">Edit</button><button class="delete-btn" onclick="deleteComponent('${c.firebaseKey}')">Delete</button></td>
+            </tr>`;
+        }).join('');
+    }
+    
+    function populateFilters() {
+        const cats = [...new Set(allComponents.map(c => c.category).filter(Boolean))];
+        const catSel = document.getElementById("categoryFilter");
+        if (catSel) catSel.innerHTML = '<option value="">All Categories</option>' + cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    }
+    
+    function renderLocations() {
+        const locMap = new Map();
+        allComponents.forEach(c => {
+            if (c.location && c.location !== 'Not specified') {
+                if (!locMap.has(c.location)) locMap.set(c.location, []);
+                locMap.get(c.location).push(c);
+            }
+        });
+        const grid = document.getElementById("locationsGrid");
+        if (locMap.size === 0) { grid.innerHTML = '<div class="location-card">No locations yet.</div>'; return; }
+        grid.innerHTML = Array.from(locMap.entries()).map(([loc, parts]) => {
+            const totalQty = parts.reduce((a,b) => a + (b.quantity||0), 0);
+            return `<div class="location-card"><i class="fas fa-box"></i><h3>📦 ${escapeHtml(loc)}</h3><p>${parts.length} types | Total: ${totalQty} pcs</p><small>${parts.slice(0,3).map(p => `${escapeHtml(p.name)} (${p.quantity||0})`).join(', ')}${parts.length>3 ? '...' : ''}</small></div>`;
+        }).join('');
+    }
+    
+    window.editComponent = (firebaseKey) => {
+        const comp = allComponents.find(c => c.firebaseKey === firebaseKey);
+        if (!comp) return;
+        document.getElementById("editKey").value = firebaseKey;
+        document.getElementById("editCompId").value = comp.componentId;
+        document.getElementById("editName").value = comp.name;
+        document.getElementById("editCategory").value = comp.category;
+        document.getElementById("editValue").value = comp.value;
+        document.getElementById("editPackage").value = comp.package;
+        document.getElementById("editQuantity").value = comp.quantity;
+        document.getElementById("editMinStock").value = comp.minStockLevel;
+        document.getElementById("editLocation").value = comp.location;
+        document.getElementById("editModal").style.display = "flex";
+    };
+    
+    window.deleteComponent = async (firebaseKey) => {
+        if (confirm("Delete this component permanently?")) {
+            try { await componentsRef.child(firebaseKey).remove(); showToast("Component deleted"); } 
+            catch(e) { showToast(e.message, true); }
+        }
+    };
+    
+    document.getElementById("editForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const key = document.getElementById("editKey").value;
+        const updated = {
+            componentId: document.getElementById("editCompId").value,
+            name: document.getElementById("editName").value,
+            category: document.getElementById("editCategory").value,
+            value: document.getElementById("editValue").value,
+            package: document.getElementById("editPackage").value,
+            quantity: parseInt(document.getElementById("editQuantity").value) || 0,
+            minStockLevel: parseInt(document.getElementById("editMinStock").value) || 10,
+            location: document.getElementById("editLocation").value || "Not specified",
+            updatedAt: new Date().toISOString()
+        };
+        try {
+            await componentsRef.child(key).update(updated);
+            document.getElementById("editModal").style.display = "none";
+            showToast("Component updated");
+        } catch(e) { showToast(e.message, true); }
+    });
+    
+    document.getElementById("confirmDeleteBtn")?.addEventListener("click", async () => {
+        const key = document.getElementById("editKey").value;
+        if (confirm("Delete permanently?")) {
+            await componentsRef.child(key).remove();
+            document.getElementById("editModal").style.display = "none";
+            showToast("Deleted");
+        }
+    });
+    
+    document.getElementById("closeModalBtn")?.addEventListener("click", () => document.getElementById("editModal").style.display = "none");
+    document.getElementById("cancelEditBtn")?.addEventListener("click", () => document.getElementById("editModal").style.display = "none");
+    document.getElementById("resetFiltersBtn")?.addEventListener("click", () => {
+        document.getElementById("searchInput").value = "";
+        document.getElementById("categoryFilter").value = "";
+        renderComponentsTable();
+    });
+    
+    document.getElementById("addComponentForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const id = document.getElementById("compId").value.trim();
+        const name = document.getElementById("compName").value.trim();
+        const category = document.getElementById("compCategory").value.trim();
+        const value = document.getElementById("compValue").value.trim();
+        const pkg = document.getElementById("compPackage").value;
+        const quantity = parseInt(document.getElementById("compQuantity").value) || 0;
+        const minStock = parseInt(document.getElementById("compMinStock").value) || 10;
+        const location = document.getElementById("locFull").value.trim() || "Not specified";
+        const description = document.getElementById("compDescription").value;
+        
+        if (!id || !name || !category || !value) { showToast("Please fill all required fields", true); return; }
+        if (allComponents.some(c => c.componentId === id)) { showToast("Component ID already exists!", true); return; }
+        
+        const newComp = { componentId: id, name, category, value, package: pkg, quantity, minStockLevel: minStock, location, description, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+        try {
+            await componentsRef.child(id).set(newComp);
+            showToast(`✓ ${id} added successfully`);
+            document.getElementById("addComponentForm").reset();
+            document.getElementById('compId').value = '';
+            document.getElementById('autoIdPreview').innerHTML = `<i class="fas fa-info-circle"></i> Enter Category and Value to auto-generate ID`;
+            switchToView('components');
+        } catch(err) { showToast(err.message, true); }
+    });
+    
+    document.getElementById("compCategory")?.addEventListener('input', updateAutoIdPreview);
+    document.getElementById("compValue")?.addEventListener('input', updateAutoIdPreview);
+    
+    async function loadUsersList() {
+        if (!isAdmin()) return;
+        const snapshot = await usersRef.once('value');
+        const users = snapshot.val();
+        const tbody = document.getElementById('usersTableBody');
+        if (!users || Object.keys(users).length === 0) { tbody.innerHTML = '<tr><td colspan="4">No users found</td></tr>'; return; }
+        tbody.innerHTML = '';
+        for (const [uid, userData] of Object.entries(users)) {
+            const row = tbody.insertRow();
+            row.insertCell(0).innerHTML = `<strong>${escapeHtml(userData.email)}</strong><br><small>${uid.substring(0,12)}...</small>`;
+            row.insertCell(1).innerHTML = `<span style="background:${userData.role === 'admin' ? '#e67e22' : '#4facfe'}; color:white; padding:4px 12px; border-radius:20px;">${userData.role === 'admin' ? 'Admin' : 'User'}</span>`;
+            row.insertCell(2).innerHTML = formatDate(userData.createdAt);
+            const actions = row.insertCell(3);
+            if (uid !== currentUser?.uid) {
+                actions.innerHTML = `<div class="action-buttons"><button class="edit-user-btn" onclick="openEditUserModal('${uid}', '${escapeHtml(userData.email)}', '${userData.role}')">Edit</button><button class="delete-user-btn" onclick="deleteUser('${uid}')">Delete</button></div>`;
+            } else {
+                actions.innerHTML = '<span style="color:#6c757d;"><i class="fas fa-user-shield"></i> You</span>';
+            }
+        }
+    }
+    
+    window.deleteUser = async function(uid) {
+        if (!isAdmin() || uid === currentUser?.uid) { showToast("Cannot delete", true); return; }
+        if (confirm("Delete this user?")) {
+            await usersRef.child(uid).remove();
+            showToast("User removed");
+            loadUsersList();
+        }
+    };
+    
+    window.openEditUserModal = function(uid, email, role) {
+        document.getElementById('editUserId').value = uid;
+        document.getElementById('editUserEmail').value = email;
+        document.getElementById('editUserRole').value = role;
+        document.getElementById('editUserPassword').value = '';
+        document.getElementById('editUserModal').style.display = 'flex';
+    };
+    
+    function closeEditUserModal() { document.getElementById('editUserModal').style.display = 'none'; }
+    
+    document.getElementById('editUserForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!isAdmin()) return;
+        const uid = document.getElementById('editUserId').value;
+        const newEmail = document.getElementById('editUserEmail').value;
+        const newRole = document.getElementById('editUserRole').value;
+        const newPassword = document.getElementById('editUserPassword').value;
+        await usersRef.child(uid).update({ email: newEmail, role: newRole, updatedAt: new Date().toISOString() });
+        if (newPassword && newPassword.length >= 6) {
+            await auth.sendPasswordResetEmail(newEmail);
+            showToast(`User updated! Password reset email sent to ${newEmail}`);
+        } else { showToast(`User ${newEmail} updated`); }
+        closeEditUserModal();
+        loadUsersList();
+        if (uid === currentUser?.uid) { currentUserRole = newRole; updateAdminUI(); }
+    });
+    
+    document.getElementById('addUserForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!isAdmin()) { showToast("Admin only", true); return; }
+        const email = document.getElementById('newUserEmail').value;
+        const password = document.getElementById('newUserPassword').value;
+        const role = document.getElementById('newUserRole').value;
+        const btn = e.target.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating...';
+        try {
+            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+            await usersRef.child(userCredential.user.uid).set({ email, role, createdAt: new Date().toISOString(), createdBy: currentUser?.uid });
+            await auth.signOut();
+            showToast(`✅ User "${email}" created successfully as ${role}! Please login again to continue.`);
+            document.getElementById('addUserForm').reset();
+            setTimeout(() => { location.reload(); }, 2000);
+        } catch(err) { showToast(err.message, true); }
+        finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Create User'; }
+    });
+    
+    // UPDATED: Report with single row stats - TOTAL COMPONENTS, TOTAL STOCK (PCS), CATEGORIES, LOW STOCK ALERTS
+    function generateReport() {
+        const totalComponents = allComponents.length;
+        const totalStock = allComponents.reduce((s,c) => s + (c.quantity||0), 0);
+        const categoriesCount = [...new Set(allComponents.map(c => c.category).filter(Boolean))].length;
+        const lowStockCount = allComponents.filter(c => (c.quantity||0) <= (c.minStockLevel||0)).length;
+        
+        const html = `
+            <div class="report-header">
+                <h2><i class="fas fa-chart-bar"></i> Inventory Dashboard</h2>
+                <p>Generated: ${new Date().toLocaleString()} | Real-time Stock Summary</p>
+            </div>
+            <div class="report-stats-row">
+                <div class="report-stat-item">
+                    <div class="report-stat-label"><i class="fas fa-microchip"></i> TOTAL COMPONENTS</div>
+                    <div class="report-stat-value">${totalComponents}</div>
+                </div>
+                <div class="report-stat-item">
+                    <div class="report-stat-label"><i class="fas fa-boxes"></i> TOTAL STOCK <span class="report-stat-unit">(PCS)</span></div>
+                    <div class="report-stat-value">${totalStock.toLocaleString()}</div>
+                </div>
+                <div class="report-stat-item">
+                    <div class="report-stat-label"><i class="fas fa-tags"></i> CATEGORIES</div>
+                    <div class="report-stat-value">${categoriesCount}</div>
+                </div>
+                <div class="report-stat-item">
+                    <div class="report-stat-label"><i class="fas fa-exclamation-triangle"></i> LOW STOCK ALERTS</div>
+                    <div class="report-stat-value ${lowStockCount > 0 ? 'low-stock-value' : ''}">${lowStockCount}</div>
+                </div>
+            </div>
+            <div class="report-table-wrapper" style="padding: 20px;">
+                <h3 style="margin-bottom: 15px; color: #1e2f4e;"><i class="fas fa-list"></i> Complete Component List</h3>
+                <table style="width:100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #1e2f4e; color: white;">
+                            <th style="padding: 12px;">Component ID</th><th style="padding: 12px;">Component Name</th><th style="padding: 12px;">Category</th><th style="padding: 12px;">Value/Specs</th><th style="padding: 12px;">Stock</th><th style="padding: 12px;">Min Stock</th><th style="padding: 12px;">Location</th><th style="padding: 12px;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${allComponents.map(c => {
+                            const status = (c.quantity || 0) <= (c.minStockLevel || 0) ? 'LOW' : 'OK';
+                            const statusClass = status === 'OK' ? 'stock-ok' : 'stock-low';
+                            return `<tr style="border-bottom: 1px solid #e9ecef;">
+                                <td style="padding: 10px;"><strong>${escapeHtml(c.componentId)}</strong></td>
+                                <td style="padding: 10px;">${escapeHtml(c.name)}</td>
+                                <td style="padding: 10px;">${escapeHtml(c.category) || '-'}</td>
+                                <td style="padding: 10px;">${escapeHtml(c.value) || '-'}</td>
+                                <td style="padding: 10px;"><strong>${c.quantity || 0}</strong> pcs</td>
+                                <td style="padding: 10px;">${c.minStockLevel || 0}</td>
+                                <td style="padding: 10px;">${escapeHtml(c.location) || '-'}</td>
+                                <td style="padding: 10px;"><span class="stock-badge-report ${statusClass}">${status}</span></td>
+                            </tr>`;
+                        }).join('')}
+                        ${allComponents.length === 0 ? '<tr><td colspan="8" style="text-align:center; padding:40px;">No components in inventory</td></tr>' : ''}
+                    </tbody>
+                </table>
+            </div>
+            <div class="report-footer" style="padding: 16px; text-align: center; background: #f8f9fa; border-radius: 0 0 20px 20px; color: #6c757d; font-size: 12px;">
+                <i class="fas fa-print"></i> EIM Electronics Inventory System | Real-time stock management
+            </div>
+        `;
+        document.getElementById("reportContainer").innerHTML = html;
+    }
+    
+    document.getElementById("exportCSVBtn")?.addEventListener("click", () => {
+        let csv = [["Component ID","Name","Category","Value","Stock","Min Stock","Location"]];
+        allComponents.forEach(c => csv.push([c.componentId, c.name, c.category, c.value, c.quantity, c.minStockLevel, c.location]));
+        const blob = new Blob([csv.map(r => r.join(",")).join("\n")], {type:"text/csv"});
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `eim_report_${Date.now()}.csv`;
+        a.click();
+        showToast("CSV exported");
+    });
+    
+    document.getElementById("printReportBtn")?.addEventListener("click", () => window.print());
+    document.getElementById("searchInput")?.addEventListener("input", () => renderComponentsTable());
+    document.getElementById("categoryFilter")?.addEventListener("change", () => renderComponentsTable());
+    
+    function switchToView(viewName) {
+        document.querySelectorAll('.nav-btn-desktop, .nav-btn-mobile').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.view === viewName) btn.classList.add('active');
+        });
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(`${viewName}-view`).classList.add('active');
+        if (viewName === 'reports') generateReport();
+        if (viewName === 'components') renderComponentsTable();
+        if (viewName === 'locations') renderLocations();
+        if (viewName === 'admin' && isAdmin()) loadUsersList();
+        if (viewName === 'add') updateAutoIdPreview();
+    }
+    
+    document.querySelectorAll('.nav-btn-desktop, .nav-btn-mobile').forEach(btn => {
+        btn.addEventListener('click', () => switchToView(btn.dataset.view));
+    });
+    
+    // Authentication
+    let isLoginMode = true;
+    const authContainer = document.getElementById('authContainer');
+    const appWrapper = document.getElementById('appWrapper');
+    const authForm = document.getElementById('authForm');
+    const authSubmitBtn = document.getElementById('authSubmitBtn');
+    const toggleAuth = document.getElementById('toggleAuthMode');
+    const authError = document.getElementById('authError');
+    const rememberCheckbox = document.getElementById('rememberMeCheckbox');
+    
+    document.getElementById('authEmail').value = getLastAdminEmail();
+    
+    toggleAuth.addEventListener('click', () => {
+        isLoginMode = !isLoginMode;
+        authSubmitBtn.textContent = isLoginMode ? 'Login' : 'Register';
+        toggleAuth.innerHTML = isLoginMode ? "Don't have an account? <strong>Register</strong>" : "Already have an account? <strong>Login</strong>";
+        authError.textContent = '';
+        document.getElementById('authPassword').value = '';
+    });
+    
+    authForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('authEmail').value;
+        const password = document.getElementById('authPassword').value;
+        authError.textContent = '';
+        try {
+            if (isLoginMode) {
+                const persist = rememberCheckbox.checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
+                await auth.setPersistence(persist);
+                const cred = await auth.signInWithEmailAndPassword(email, password);
+                currentUser = cred.user;
+                const snap = await usersRef.child(currentUser.uid).once('value');
+                currentUserRole = snap.exists() ? snap.val().role : 'user';
+                if (currentUserRole === 'admin' && rememberCheckbox.checked) saveLastAdminEmail(email);
+                if (!snap.exists()) await usersRef.child(currentUser.uid).set({ email, role: 'user', createdAt: new Date().toISOString() });
+                showToast(`Welcome ${email}`);
+                authContainer.style.display = 'none';
+                appWrapper.style.display = 'flex';
+                document.getElementById('userEmailDisplay').textContent = email;
+                updateAdminUI();
+                loadComponents();
+                switchToView('reports');
+                document.getElementById('authPassword').value = '';
+            } else {
+                await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+                const cred = await auth.createUserWithEmailAndPassword(email, password);
+                currentUser = cred.user;
+                const usersSnap = await usersRef.once('value');
+                const isFirst = !usersSnap.exists();
+                currentUserRole = isFirst ? 'admin' : 'user';
+                await usersRef.child(currentUser.uid).set({ email, role: currentUserRole, createdAt: new Date().toISOString() });
+                if (currentUserRole === 'admin') saveLastAdminEmail(email);
+                showToast(`Account created! Role: ${currentUserRole}`);
+                authContainer.style.display = 'none';
+                appWrapper.style.display = 'flex';
+                document.getElementById('userEmailDisplay').textContent = email;
+                updateAdminUI();
+                loadComponents();
+                switchToView('reports');
+                document.getElementById('authPassword').value = '';
+            }
+        } catch(error) { authError.textContent = error.message; showToast(error.message, true); }
+    });
+    
+    document.getElementById('logoutBtnGlobal').addEventListener('click', async () => {
+        await auth.signOut();
+        authContainer.style.display = 'flex';
+        appWrapper.style.display = 'none';
+        document.getElementById('authPassword').value = '';
+        document.getElementById('authEmail').value = getLastAdminEmail();
+        showToast('Logged out');
+    });
+    
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            currentUser = user;
+            const snap = await usersRef.child(user.uid).once('value');
+            currentUserRole = snap.exists() ? snap.val().role : 'user';
+            if (!snap.exists()) await usersRef.child(user.uid).set({ email: user.email, role: 'user', createdAt: new Date().toISOString() });
+            authContainer.style.display = 'none';
+            appWrapper.style.display = 'flex';
+            document.getElementById('userEmailDisplay').textContent = user.email;
+            updateAdminUI();
+            loadComponents();
+        } else {
+            authContainer.style.display = 'flex';
+            appWrapper.style.display = 'none';
+            document.getElementById('authEmail').value = getLastAdminEmail();
+            if (document.getElementById('authPassword')) document.getElementById('authPassword').value = '';
+        }
+    });
+    
+    window.onclick = function(event) { if (event.target.classList.contains('modal')) event.target.style.display = 'none'; };
+</script>
+</body>
+</html>
