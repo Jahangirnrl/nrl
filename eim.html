@@ -48,6 +48,24 @@
         .auth-switch { margin-top: 20px; font-size: 13px; color: #4facfe; cursor: pointer; }
         .error-msg { color: #e74c3c; font-size: 12px; margin-top: 8px; }
         .admin-badge { background: #e67e22; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; display: inline-block; }
+        .guest-badge { background: #6c757d; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; display: inline-block; }
+        .user-badge { background: #4facfe; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; display: inline-block; }
+        .pending-badge { background: #f39c12; color: white; padding: 2px 8px; border-radius: 20px; font-size: 10px; margin-left: 8px; }
+        .approved-badge { background: #27ae60; color: white; padding: 2px 8px; border-radius: 20px; font-size: 10px; margin-left: 8px; }
+        .rejected-badge { background: #e74c3c; color: white; padding: 2px 8px; border-radius: 20px; font-size: 10px; margin-left: 8px; }
+        .pending-count-badge {
+            background: #e74c3c;
+            color: white;
+            border-radius: 20px;
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 22px;
+        }
         
         .remember-me { display: flex; align-items: center; gap: 8px; margin: 10px 0; font-size: 13px; color: #555; }
         .remember-me input { width: 16px; height: 16px; cursor: pointer; }
@@ -82,6 +100,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            position: relative;
         }
         .nav-btn-desktop:hover { background: #2a3a5e; }
         .nav-btn-desktop.active { background: linear-gradient(95deg, #4facfe, #00f2fe); color: #1a2a3a; font-weight: 600; }
@@ -89,6 +108,14 @@
         .user-card { padding: 20px; border-top: 1px solid rgba(255,255,255,0.15); text-align: center; }
         .user-email { font-size: 13px; background: #1e2a44; padding: 6px 10px; border-radius: 30px; margin: 10px 0; word-break: break-all; }
         .logout-btn { background: #d9534f; border: none; color: white; padding: 8px 16px; border-radius: 40px; cursor: pointer; width: 100%; font-weight: bold; }
+        
+        .sidebar-connection-status {
+            padding: 12px 20px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+            font-size: 11px;
+            background: rgba(0,0,0,0.2);
+            text-align: center;
+        }
         
         .bottom-nav-mobile {
             position: fixed;
@@ -116,6 +143,7 @@
             gap: 4px;
             border-radius: 12px;
             flex: 1;
+            position: relative;
         }
         .nav-btn-mobile.active { background: linear-gradient(95deg, #4facfe, #00f2fe); color: #1a2a3a; font-weight: 600; }
         
@@ -142,102 +170,235 @@
         .search-input, .filter-select { flex: 1; padding: 12px 16px; border-radius: 40px; border: 1px solid #ddd; background: #f9fafb; }
         .reset-btn { background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 40px; cursor: pointer; }
         
-        .table-wrapper { background: white; border-radius: 20px; overflow-x: auto; }
-        table { width: 100%; min-width: 600px; border-collapse: collapse; }
-        th { background: #1e2f4e; color: white; padding: 14px 12px; text-align: left; }
-        td { padding: 12px; border-bottom: 1px solid #e9ecef; }
+        .table-wrapper { background: white; border-radius: 10px; overflow-x: auto; }
+        table { width: 100%; min-width: 800px; border-collapse: collapse; }
+        th { background: #1e2f4e; color: white; padding: 14px 12px; text-align: left; cursor: pointer; user-select: none; transition: background 0.2s; }
+        th:hover { background: #2c3e66; }
+        th i { margin-left: 6px; font-size: 12px; opacity: 0.7; }
+        td { padding: 12px; border-bottom: 1px solid #e9ecef; vertical-align: middle; }
         
-        .edit-btn, .delete-btn { border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; margin: 0 3px; }
+        .edit-btn, .delete-btn, .clone-btn, .approve-btn, .reject-btn { border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; margin: 0 3px; font-size: 12px; transition: 0.2s; }
         .edit-btn { background: #27ae60; color: white; }
         .delete-btn { background: #e74c3c; color: white; }
+        .clone-btn { background: #6c5ce7; color: white; }
+        .approve-btn { background: #27ae60; color: white; }
+        .reject-btn { background: #e67e22; color: white; }
+        .disabled-action { opacity: 0.5; pointer-events: none; filter: grayscale(0.1); cursor: not-allowed; }
+        
+        .stock-control { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .stock-value { font-weight: 700; min-width: 45px; text-align: center; background: #f0f2f5; padding: 4px 8px; border-radius: 20px; font-size: 14px; }
+        .stock-adjust-btn { background: #e9ecef; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .stock-adjust-btn.minus { background: #ffe0e0; color: #c0392b; }
+        .stock-adjust-btn.plus { background: #e0ffe0; color: #27ae60; }
+        .stock-adjust-btn.plus10 { background: #e0e7ff; color: #4f46e5; width: auto; border-radius: 16px; padding: 0 8px; }
         
         .form-card { background: white; border-radius: 24px; padding: 24px; max-width: 800px; }
         .form-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px; }
         .form-group { flex: 1; margin-bottom: 15px; }
         .form-group label { font-weight: 600; margin-bottom: 6px; display: block; font-size: 13px; }
+        .form-group label.required:after { content: " *"; color: #e74c3c; }
         
         input, select, textarea { width: 100%; padding: 12px; border-radius: 16px; border: 1px solid #ced4da; }
         .btn-primary { background: linear-gradient(95deg, #4facfe, #00f2fe); border: none; padding: 12px 24px; border-radius: 40px; font-weight: bold; cursor: pointer; }
+        .btn-primary.disabled-btn { opacity: 0.5; pointer-events: none; cursor: default; }
         
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; }
         .modal-content { background: white; border-radius: 28px; padding: 24px; width: 90%; max-width: 500px; }
         
-        .connection-status { position: fixed; bottom: 20px; right: 20px; background: #f0ad4e; color: white; padding: 6px 14px; border-radius: 20px; font-size: 11px; z-index: 1000; }
-        .toast-notify { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(100px); background: #27ae60; color: white; padding: 10px 20px; border-radius: 50px; z-index: 2000; opacity: 0; transition: all 0.3s ease; pointer-events: none; }
+        .toast-notify { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(100px); background: #27ae60; color: white; padding: 10px 20px; border-radius: 50px; z-index: 2000; opacity: 0; transition: all 0.3s ease; pointer-events: none; white-space: nowrap; }
         .toast-notify.show { transform: translateX(-50%) translateY(0); opacity: 1; }
         
         .locations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-        .location-card { background: white; padding: 16px; border-radius: 20px; border-left: 4px solid #4facfe; }
+        .location-card { background: white; padding: 16px; border-radius: 20px; border-left: 4px solid #4facfe; transition: all 0.2s; }
+        .location-card h3 { margin-bottom: 8px; color: #1e2f4e; }
+        
+        .locations-sort-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            background: white;
+            padding: 10px 16px;
+            border-radius: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .sort-location-btn {
+            background: #f0f2f5;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #2c3e66;
+        }
+        .sort-location-btn.active {
+            background: linear-gradient(95deg, #4facfe, #00f2fe);
+            color: #1a2a3a;
+            box-shadow: 0 2px 6px rgba(79, 172, 254, 0.3);
+        }
+        .sort-location-btn i { font-size: 12px; }
         
         .report-container { background: white; border-radius: 20px; overflow-x: auto; }
         .report-header { background: linear-gradient(135deg, #1e2f4e, #2c3e66); color: white; padding: 24px; border-radius: 20px 20px 0 0; }
         
-        /* Single row stats container */
-        .report-stats-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 16px;
-            padding: 24px;
-            background: #f8f9fa;
-            flex-wrap: wrap;
+        .report-stats-row { 
+            display: flex !important; 
+            flex-direction: row !important; 
+            flex-wrap: nowrap !important; 
+            justify-content: space-between; 
+            gap: 16px; 
+            padding: 24px; 
+            background: #f8f9fa; 
         }
-        .report-stat-item {
-            flex: 1;
-            min-width: 180px;
-            background: white;
-            padding: 20px 16px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
-        }
-        .report-stat-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .report-stat-label {
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #6c757d;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-        .report-stat-value {
-            font-size: 32px;
-            font-weight: 800;
-            color: #1e2f4e;
-        }
-        .report-stat-unit {
-            font-size: 12px;
-            color: #6c757d;
-            margin-left: 4px;
-            font-weight: normal;
-        }
-        .low-stock-value {
-            color: #e74c3c;
-        }
+        .report-stat-item { flex: 1; min-width: 0; background: white; padding: 20px 16px; border-radius: 20px; text-align: center; }
+        .report-stat-value { font-size: 32px; font-weight: 800; color: #1e2f4e; }
+        .low-stock-value { color: #e74c3c; }
         
-        .stock-badge-report { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-        .stock-ok { background: #d4edda; color: #155724; }
-        .stock-low { background: #fff3cd; color: #856404; }
+        .sort-info-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 8px;
+        }
         
         .auto-id-preview { background: #e8f0fe; border-radius: 12px; padding: 10px 15px; margin-top: 8px; font-size: 13px; border-left: 3px solid #4facfe; }
-        .auto-id-preview i { margin-right: 8px; color: #4facfe; }
-        .auto-id-preview strong { font-family: monospace; font-size: 14px; background: white; padding: 2px 8px; border-radius: 20px; margin-left: 8px; }
-        
         .comp-id-input:read-only { background: #e9ecef; cursor: not-allowed; }
         
-        .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
-        .edit-user-btn, .delete-user-btn { border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; }
-        .edit-user-btn { background: #4facfe; color: white; }
-        .delete-user-btn { background: #e74c3c; color: white; }
+        .edit-user-btn { background: #4facfe; color: white; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; margin-right: 5px; }
+        .delete-user-btn { background: #e74c3c; color: white; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; }
+        
+        th.sorted-asc { background: #2c3e66; }
+        th.sorted-desc { background: #2c3e66; }
+        
+        .pending-section { margin-bottom: 30px; background: #fff3e0; border-radius: 20px; padding: 20px; }
+        .pending-section h2 { color: #e67e22; margin-bottom: 15px; }
+        
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            table-layout: fixed;
+        }
+        .report-table th, .report-table td {
+            border: 1px solid #dee2e6;
+            padding: 10px 8px;
+            text-align: left;
+            vertical-align: top;
+            word-wrap: break-word;
+        }
+        .report-table th {
+            background: #1e2f4e;
+            color: white;
+            font-weight: 600;
+        }
+        .report-table th:nth-child(1) { width: 5%; }
+        .report-table th:nth-child(2) { width: 20%; }
+        .report-table th:nth-child(3) { width: 12%; }
+        .report-table th:nth-child(4) { width: 12%; }
+        .report-table th:nth-child(5) { width: 8%; }
+        .report-table th:nth-child(6) { width: 43%; }
+        
+        @media print {
+            .sidebar-desktop, .bottom-nav-mobile, .btn-primary, .search-bar, .toast-notify, .print-sort-bar, #exportCSVBtn, #printReportBtn, #importCSVBtn, .locations-sort-bar, .report-header button, .nav-btn-desktop, .nav-btn-mobile, .user-card, .logo, .sidebar-connection-status { display: none !important; }
+            body.desktop-mode .main-panel { margin-left: 0 !important; width: 100% !important; }
+            .main-panel { padding: 0 !important; margin: 0 !important; }
+            .report-stats-row { flex-wrap: nowrap !important; page-break-inside: avoid; }
+            .report-container { margin: 0; padding: 0; }
+            .report-table th, .report-table td { padding: 6px 4px !important; font-size: 9pt !important; }
+            .report-stat-value { font-size: 14pt !important; }
+            .sort-info-badge { display: inline-block !important; }
+            .report-header { padding: 10px !important; }
+            .report-header h2 { font-size: 14pt !important; }
+            .report-stats-row { padding: 10px !important; }
+            .report-stat-item { padding: 8px !important; }
+        }
         
         @media (max-width: 768px) {
             .sidebar-desktop { display: none; }
             body.desktop-mode .main-panel { margin-left: 0; }
             .main-panel { padding: 16px; }
-            .report-stat-item { min-width: 140px; padding: 12px; }
-            .report-stat-value { font-size: 24px; }
+            .report-stats-row { flex-wrap: wrap !important; }
+            .locations-sort-bar { justify-content: center; }
         }
         @media (min-width: 769px) { .bottom-nav-mobile { display: none; } }
+        
+        .permission-warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #856404;
+        }
+        
+        .field-error {
+            color: #e74c3c;
+            font-size: 11px;
+            margin-top: 4px;
+            display: block;
+        }
+        
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        .loading-spinner i {
+            font-size: 32px;
+            margin-bottom: 10px;
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .csv-import-area {
+            background: #f8f9fa;
+            border: 2px dashed #4facfe;
+            border-radius: 16px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .csv-import-area label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #4facfe;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .csv-import-area label:hover { background: #2c8bda; }
+        .csv-import-area input[type="file"] { display: none; }
+        .csv-import-area small { color: #6c757d; font-size: 12px; }
+        
+        .csv-format-hint {
+            background: #eef2ff;
+            border-radius: 12px;
+            padding: 8px 12px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            color: #1e3a8a;
+        }
     </style>
 </head>
 <body>
@@ -248,7 +409,7 @@
         <h2>EIM</h2>
         <p>Electronics Inventory Manager</p>
         <form id="authForm" autocomplete="off">
-            <input type="email" id="authEmail" class="auth-input" placeholder="Email address" autocomplete="off" required>
+            <input type="email" id="authEmail" class="auth-input" placeholder="Email address" autocomplete="username" required>
             <input type="password" id="authPassword" class="auth-input" placeholder="Password" autocomplete="new-password" required>
             <div class="remember-me"><input type="checkbox" id="rememberMeCheckbox"><label>Keep me logged in</label></div>
             <button type="submit" class="auth-btn" id="authSubmitBtn">Login</button>
@@ -256,8 +417,8 @@
         <div id="authError" class="error-msg"></div>
         <div class="auth-switch" id="toggleAuthMode">Don't have an account? <strong>Register</strong></div>
         <div style="margin-top: 16px; font-size: 11px; background: #f8f9fa; padding: 8px; border-radius: 12px;">
-            <strong>Admin:</strong> jahangir.nrl@gmail.com / admin123<br>
-            <strong>User:</strong> user@example.com / user123
+            <small>🔐 Demo: <strong>guest@eim.com</strong> / guest123 (View-Only)</small><br>
+            <small>📝 Note: New registrations are GUEST accounts only</small>
         </div>
     </div>
 </div>
@@ -268,148 +429,134 @@
         <div class="nav-desktop">
             <button class="nav-btn-desktop" data-view="reports"><i class="fas fa-chart-line"></i><span> Reports</span></button>
             <button class="nav-btn-desktop" data-view="components"><i class="fas fa-microchip"></i><span> Components</span></button>
-            <button class="nav-btn-desktop" data-view="add"><i class="fas fa-plus-circle"></i><span> Add Part</span></button>
+            <button class="nav-btn-desktop" data-view="add" id="addNavBtnDesktop"><i class="fas fa-plus-circle"></i><span> Add Part</span></button>
             <button class="nav-btn-desktop" data-view="locations"><i class="fas fa-map-marker-alt"></i><span> Locations</span></button>
             <button class="nav-btn-desktop" id="adminNavBtn" data-view="admin" style="display:none;"><i class="fas fa-users-cog"></i><span> User Admin</span></button>
+            <button class="nav-btn-desktop" id="approvalsNavBtn" data-view="approvals" style="display:none;"><i class="fas fa-check-double"></i><span> Pending Approvals</span><span id="pendingCountBadgeDesktop" class="pending-count-badge" style="display:none;">0</span></button>
         </div>
         <div class="user-card">
             <i class="fas fa-user-astronaut"></i>
             <div class="user-email" id="userEmailDisplay">electronics@eim</div>
-            <div id="userRoleDisplay" style="font-size:11px;"></div>
+            <div id="userRoleDisplay"></div>
             <button id="logoutBtnGlobal" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+        <div class="sidebar-connection-status" id="sidebarConnectionStatus">
+            <i class="fas fa-spinner fa-pulse"></i> Connecting...
         </div>
     </div>
     
     <div class="bottom-nav-mobile">
         <button class="nav-btn-mobile" data-view="reports"><i class="fas fa-chart-line"></i><span>Reports</span></button>
         <button class="nav-btn-mobile" data-view="components"><i class="fas fa-microchip"></i><span>Parts</span></button>
-        <button class="nav-btn-mobile" data-view="add"><i class="fas fa-plus-circle"></i><span>Add</span></button>
+        <button class="nav-btn-mobile" data-view="add" id="addNavBtnMobile"><i class="fas fa-plus-circle"></i><span>Add</span></button>
         <button class="nav-btn-mobile" data-view="locations"><i class="fas fa-map-marker-alt"></i><span>Loc</span></button>
         <button class="nav-btn-mobile" id="adminNavBtnMobile" data-view="admin" style="display:none;"><i class="fas fa-users-cog"></i><span>Admin</span></button>
+        <button class="nav-btn-mobile" id="approvalsNavBtnMobile" data-view="approvals" style="display:none;"><i class="fas fa-check-double"></i><span>Approvals</span><span id="pendingCountBadgeMobile" class="pending-count-badge" style="display:none;">0</span></button>
     </div>
     
     <div class="main-panel">
         <div id="reports-view" class="view active">
             <h1><i class="fas fa-chart-line"></i> Stock Reports</h1>
-            <div style="display: flex; gap: 12px; margin-bottom: 20px;">
-                <button id="exportCSVBtn" class="btn-primary"><i class="fas fa-file-csv"></i> Export CSV</button>
-                <button id="printReportBtn" class="btn-primary" style="background:#2c3e66;"><i class="fas fa-print"></i> Print / PDF</button>
+            <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+                <button id="exportCSVBtn" class="btn-primary"><i class="fas fa-file-csv"></i> Export CSV (Direct Import Possible)</button>
+                <button id="importCSVBtn" class="btn-primary" style="background:#2c3e66;"><i class="fas fa-file-import"></i> Import CSV</button>
+                <button id="printReportBtn" class="btn-primary" style="background:#6c5ce7;"><i class="fas fa-print"></i> Print / PDF</button>
             </div>
-            <div id="reportContainer" class="report-container">
-                <div class="report-header"><h2>Loading Report...</h2></div>
+            <!-- <div class="csv-format-hint">
+                <i class="fas fa-info-circle"></i> <strong>CSV Format:</strong> Component Name, Category, Value, Stock, Location<br>
+                Example: "10k Resistor","Resistor","10kΩ",50,"Cabinet A-1"
+            </div> -->
+            <!-- CSV Import Area -->
+            <div id="csvImportArea" class="csv-import-area" style="display:none;">
+                <span><i class="fas fa-info-circle"></i> Import components from CSV file (Name, Category, Value, Stock, Location)</span>
+                <label for="csvFileInput"><i class="fas fa-upload"></i> Choose CSV File</label>
+                <input type="file" id="csvFileInput" accept=".csv">
+                <small>Format: Component Name, Category, Value, Stock Quantity, Storage Location</small>
+                <button id="cancelImportBtn" class="reset-btn" style="padding:6px 15px;"><i class="fas fa-times"></i> Cancel</button>
             </div>
+            <div id="reportContainer" class="report-container"><div class="report-header"><h2>Loading Report...</h2></div></div>
         </div>
         
         <div id="components-view" class="view">
             <h1><i class="fas fa-microchip"></i> Components Inventory</h1>
             <div class="search-bar">
-                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search...">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search...">
                 <select id="categoryFilter" class="filter-select"><option value="">All Categories</option></select>
+                <select id="statusFilter" class="filter-select">
+                    <option value="all">All Status</option>
+                    <option value="approved">Approved Only</option>
+                    <option value="pending">Pending Only</option>
+                </select>
                 <button id="resetFiltersBtn" class="reset-btn">Reset</button>
             </div>
             <div class="table-wrapper">
                 <table id="componentsTable">
-                    <thead><tr><th>Component ID</th><th>Name</th><th>Category</th><th>Value</th><th>Stock</th><th>Location</th><th>Actions</th></tr></thead>
-                    <tbody id="componentsTableBody"><tr><td colspan="7">Loading components...</td></tr></tbody>
+                    <thead>
+                        <tr>
+                            <th data-sort="componentId" id="sort-componentId">Component ID <i class="fas fa-sort"></i></th>
+                            <th data-sort="name" id="sort-name">Name <i class="fas fa-sort"></i></th>
+                            <th data-sort="category" id="sort-category">Category <i class="fas fa-sort"></i></th>
+                            <th data-sort="value" id="sort-value">Value <i class="fas fa-sort"></i></th>
+                            <th data-sort="quantity" id="sort-quantity">Stock <i class="fas fa-sort"></i></th>
+                            <th data-sort="location" id="sort-location">Location <i class="fas fa-sort"></i></th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="componentsTableBody">
+                        <tr><td colspan="8" class="loading-spinner"><i class="fas fa-microchip fa-pulse"></i><br>Loading components...</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
         
         <div id="add-view" class="view">
-            <h1><i class="fas fa-plus-circle"></i> Add New Component</h1>
+            <h1><i class="fas fa-plus-circle"></i> Add New Component <span id="addModeText"></span></h1>
             <div class="form-card">
-                <form id="addComponentForm">
+                <div id="permissionWarning" class="permission-warning" style="display:none;">
+                    <i class="fas fa-exclamation-triangle"></i> <strong>Note:</strong> Permission denied error. Please contact administrator.
+                </div>
+                <form id="addComponentForm" novalidate>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label>Component ID (Auto-Generated) *</label>
-                            <input type="text" id="compId" class="comp-id-input" readonly placeholder="Will be auto-generated" style="background:#e9ecef;">
-                            <div id="autoIdPreview" class="auto-id-preview"><i class="fas fa-magic"></i> Enter Category and Value to auto-generate ID</div>
-                        </div>
-                        <div class="form-group"><label>Component Name *</label><input type="text" id="compName" required></div>
+                        <div class="form-group"><label class="required">Component ID (Auto-Generated)</label><input type="text" id="compId" class="comp-id-input" readonly required><div id="autoIdPreview" class="auto-id-preview"><i class="fas fa-magic"></i> Enter Category and Value to auto-generate ID</div></div>
+                        <div class="form-group"><label class="required">Component Name</label><input type="text" id="compName" required><span class="field-error" id="compNameError"></span></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label>Category *</label><input type="text" id="compCategory" required placeholder="e.g., Resistor, Capacitor, IC"></div>
-                        <div class="form-group"><label>Value/Specs *</label><input type="text" id="compValue" required placeholder="e.g., 10kΩ, 100µF"></div>
+                        <div class="form-group"><label class="required">Category</label><input type="text" id="compCategory" required placeholder="e.g., Resistor, Capacitor, IC"><span class="field-error" id="compCategoryError"></span></div>
+                        <div class="form-group"><label class="required">Value/Specs</label><input type="text" id="compValue" required placeholder="e.g., 10kΩ, 100µF"><span class="field-error" id="compValueError"></span></div>
                     </div>
                     <div class="form-row">
                         <div class="form-group"><label>Package Type</label><select id="compPackage"><option>Through-hole</option><option>SMD</option><option>SOP</option><option>QFP</option><option>BGA</option></select></div>
-                        <div class="form-group"><label>Stock Quantity *</label><input type="number" id="compQuantity" min="0" value="0"></div>
+                        <div class="form-group"><label class="required">Stock Quantity (Min 1)</label><input type="number" id="compQuantity" min="1" value="1" required><span class="field-error" id="compQuantityError"></span></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label>Min Stock Alert</label><input type="number" id="compMinStock" value="10"></div>
-                        <div class="form-group"><label>Storage Location</label><input type="text" id="locFull" placeholder="e.g., Cabinet A - Drawer 3"></div>
+                        <div class="form-group"><label>Min Stock Alert</label><input type="number" id="compMinStock" value="2"></div>
+                        <div class="form-group"><label class="required">Storage Location</label><input type="text" id="locFull" required placeholder="e.g., Cabinet A - Drawer 3"><span class="field-error" id="locFullError"></span></div>
                     </div>
                     <div class="form-group"><label>Description</label><textarea id="compDescription" rows="2"></textarea></div>
-                    <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Save Component</button>
+                    <button type="submit" class="btn-primary" id="addComponentBtn"><i class="fas fa-save"></i> Submit for Approval</button>
+                    <p style="font-size:12px; margin-top:10px;" id="submitHint"></p>
                 </form>
             </div>
         </div>
         
         <div id="locations-view" class="view">
             <h1><i class="fas fa-map-marker-alt"></i> Storage Locations</h1>
-            <div id="locationsGrid" class="locations-grid">Loading...</div>
+            <div class="locations-sort-bar"><span style="font-size:13px; color:#555;"><i class="fas fa-sort-amount-down"></i> Sort by:</span><button id="sortLocAscBtn" class="sort-location-btn active"><i class="fas fa-sort-alpha-down"></i> Name A→Z</button><button id="sortLocDescBtn" class="sort-location-btn"><i class="fas fa-sort-alpha-up"></i> Name Z→A</button></div>
+            <div id="locationsGrid" class="locations-grid"><div class="loading-spinner"><i class="fas fa-spinner fa-pulse"></i> Loading locations...</div></div>
         </div>
         
-        <div id="admin-view" class="view">
-            <h1><i class="fas fa-users-cog"></i> User Management <span class="admin-badge">Admin Only</span></h1>
-            <div class="form-card" style="margin-bottom:20px;">
-                <h3>➕ Add New User</h3>
-                <form id="addUserForm" autocomplete="off">
-                    <div class="form-row">
-                        <div class="form-group"><label>Email</label><input type="email" id="newUserEmail" required></div>
-                        <div class="form-group"><label>Password</label><input type="password" id="newUserPassword" required></div>
-                        <div class="form-group"><label>Role</label><select id="newUserRole"><option value="user">User</option><option value="admin">Admin</option></select></div>
-                    </div>
-                    <button type="submit" class="btn-primary"><i class="fas fa-user-plus"></i> Create User</button>
-                </form>
-            </div>
-            <div class="table-wrapper">
-                <h3>📋 Registered Users</h3>
-                <table><thead><tr><th>Email</th><th>Role</th><th>Created Date</th><th>Actions</th> </tr></thead><tbody id="usersTableBody"><tr><td colspan="4">Loading...</td></tr></tbody></table>
-            </div>
-        </div>
+        <div id="admin-view" class="view"><h1><i class="fas fa-users-cog"></i> User Management <span class="admin-badge">Admin Only</span></h1><div class="form-card" style="margin-bottom:20px;"><h3>Add New User</h3><form id="addUserForm"><div class="form-row"><div class="form-group"><label>Email</label><input type="email" id="newUserEmail" required></div><div class="form-group"><label>Password</label><input type="password" id="newUserPassword" required></div><div class="form-group"><label>Role</label><select id="newUserRole"><option value="user">User (Can Add/Edit Own)</option><option value="admin">Admin (Full Access)</option></select></div></div><button type="submit" class="btn-primary"><i class="fas fa-user-plus"></i> Create User</button></form></div><div class="table-wrapper"><h3>Registered Users</h3><table><thead><tr><th>Email</th><th>Role</th><th>Created Date</th><th>Actions</th></tr></thead><tbody id="usersTableBody"></tbody></table></div></div>
+        
+        <div id="approvals-view" class="view"><h1><i class="fas fa-check-double"></i> Pending Approvals <span class="admin-badge">Admin Only</span></h1><div id="pendingApprovalsContainer" class="pending-section"><h2><i class="fas fa-clock"></i> Components Awaiting Approval</h2><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Component ID</th><th>Name</th><th>Category</th><th>Value</th><th>Stock</th><th>Location</th><th>Submitted By</th><th>Actions</th></tr></thead><tbody id="pendingTableBody"><tr><td colspan="8" class="loading-spinner"><i class="fas fa-spinner fa-pulse"></i> Loading......</td></table></tbody></table></div></div></div>
     </div>
 </div>
 
-<div id="editModal" class="modal">
-    <div class="modal-content">
-        <span style="float:right;cursor:pointer;font-size:24px;" id="closeModalBtn">&times;</span>
-        <h3>Edit Component</h3>
-        <form id="editForm">
-            <input type="hidden" id="editKey">
-            <div class="form-group"><label>Component ID</label><input type="text" id="editCompId" readonly></div>
-            <div class="form-group"><label>Name</label><input type="text" id="editName" required></div>
-            <div class="form-group"><label>Category</label><input type="text" id="editCategory" required></div>
-            <div class="form-group"><label>Value</label><input type="text" id="editValue"></div>
-            <div class="form-group"><label>Package</label><select id="editPackage"><option>Through-hole</option><option>SMD</option><option>SOP</option><option>QFP</option><option>BGA</option></select></div>
-            <div class="form-group"><label>Min Stock</label><input type="number" id="editMinStock"></div>
-            <div class="form-group"><label>Current Stock</label><input type="number" id="editQuantity" required></div>
-            <div class="form-group"><label>Location</label><input type="text" id="editLocation"></div>
-            <div style="display:flex; gap:10px; margin-top:15px;">
-                <button type="submit" class="edit-btn" style="flex:1;">Update</button>
-                <button type="button" id="confirmDeleteBtn" class="delete-btn" style="flex:1;">Delete</button>
-                <button type="button" id="cancelEditBtn" style="flex:1; background:#6c757d; color:white; border:none; border-radius:20px;">Cancel</button>
-            </div>
-        </form>
-    </div>
-</div>
+<div id="editModal" class="modal"><div class="modal-content"><span style="float:right;cursor:pointer;font-size:24px;" id="closeModalBtn">&times;</span><h3>Edit Component</h3><form id="editForm"><input type="hidden" id="editKey"><div class="form-group"><label>Component ID</label><input type="text" id="editCompId" readonly></div><div class="form-group"><label>Name</label><input type="text" id="editName" required></div><div class="form-group"><label>Category</label><input type="text" id="editCategory" required></div><div class="form-group"><label>Value</label><input type="text" id="editValue"></div><div class="form-group"><label>Package</label><select id="editPackage"><option>Through-hole</option><option>SMD</option><option>SOP</option><option>QFP</option><option>BGA</option></select></div><div class="form-group"><label>Min Stock</label><input type="number" id="editMinStock"></div><div class="form-group"><label>Current Stock</label><input type="number" id="editQuantity" required></div><div class="form-group"><label>Location</label><input type="text" id="editLocation"></div><div style="display:flex; gap:10px; margin-top:15px;"><button type="submit" class="edit-btn" style="flex:1;">Update</button><button type="button" id="confirmDeleteBtn" class="delete-btn" style="flex:1;">Delete</button><button type="button" id="cancelEditBtn" style="flex:1; background:#6c757d; color:white; border:none; border-radius:20px;">Cancel</button></div></form></div></div>
 
-<div id="editUserModal" class="modal">
-    <div class="modal-content">
-        <span style="float:right;cursor:pointer;font-size:24px;" onclick="closeEditUserModal()">&times;</span>
-        <h3>Edit User</h3>
-        <form id="editUserForm">
-            <input type="hidden" id="editUserId">
-            <div class="form-group"><label>Email</label><input type="email" id="editUserEmail" required></div>
-            <div class="form-group"><label>Role</label><select id="editUserRole"><option value="user">User</option><option value="admin">Admin</option></select></div>
-            <div class="form-group"><label>New Password (optional)</label><input type="password" id="editUserPassword" placeholder="Leave blank to keep current"></div>
-            <button type="submit" class="edit-btn" style="width:100%;">Update User</button>
-        </form>
-    </div>
-</div>
+<div id="editUserModal" class="modal"><div class="modal-content"><span style="float:right;cursor:pointer;font-size:24px;" onclick="closeEditUserModal()">&times;</span><h3>Edit User</h3><form id="editUserForm"><input type="hidden" id="editUserId"><div class="form-group"><label>Email</label><input type="email" id="editUserEmail" required></div><div class="form-group"><label>Role</label><select id="editUserRole"><option value="user">User</option><option value="admin">Admin</option></select></div><div class="form-group"><label>New Password (optional)</label><input type="password" id="editUserPassword" placeholder="Enter new password (min 6 chars)"></div><button type="submit" class="edit-btn" style="width:100%;">Update User</button></form></div></div>
 
-<div id="toastMessage" class="toast-notify"><i class="fas fa-check-circle"></i><span id="toastText"></span></div>
-<div class="connection-status" id="connectionStatus"><i class="fas fa-spinner fa-pulse"></i> Connecting...</div>
+<div id="toastMessage" class="toast-notify"><i class="fas fa-check-circle"></i> <span id="toastText"></span></div>
 
 <script>
     const firebaseConfig = {
@@ -421,92 +568,481 @@
         appId: "1:174655901840:web:fc79e57931797ab2df8815",
         databaseURL: "https://jah-ent-default-rtdb.asia-southeast1.firebasedatabase.app/"
     };
-    
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
-    
     auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-    
     const componentsRef = db.ref('EIM/Components');
+    const pendingRef = db.ref('EIM/PendingComponents');
     const usersRef = db.ref('EIM/Users');
     
     let allComponents = [];
+    let pendingComponents = [];
     let currentUser = null;
-    let currentUserRole = 'user';
+    let currentUserRole = 'guest';
+    let currentSort = { field: 'name', direction: 'asc' };
+    let reportSortField = 'name';
+    let reportSortOrder = 'asc';
+    let locationsSortOrder = 'asc';
     
-    function saveLastAdminEmail(email) { if (email) localStorage.setItem('lastEimAdminEmail', email); }
-    function getLastAdminEmail() { return localStorage.getItem('lastEimAdminEmail') || ''; }
-    
-    function getCodePrefix(str) {
-        if (!str) return 'GEN';
-        let cleaned = str.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-        if (cleaned.length >= 3) return cleaned.substring(0, 3);
-        return (cleaned + 'XXX').substring(0, 3);
-    }
-    
-    function generateAutoComponentId(category, value) {
-        if (!category || !value) return '';
-        const catCode = getCodePrefix(category);
-        const valCode = getCodePrefix(value);
-        const baseId = `${catCode}-${valCode}`;
-        let maxNumber = 0;
-        allComponents.forEach(comp => {
-            if (comp.componentId && comp.componentId.startsWith(baseId + '-')) {
-                const parts = comp.componentId.split('-');
-                const num = parseInt(parts[parts.length - 1], 10);
-                if (!isNaN(num) && num > maxNumber) maxNumber = num;
-            }
-        });
-        return `${baseId}-${(maxNumber + 1).toString().padStart(3, '0')}`;
-    }
-    
-    function updateAutoIdPreview() {
-        const category = document.getElementById('compCategory').value.trim();
-        const value = document.getElementById('compValue').value.trim();
-        if (category && value) {
-            const generatedId = generateAutoComponentId(category, value);
-            document.getElementById('compId').value = generatedId;
-            document.getElementById('autoIdPreview').innerHTML = `<i class="fas fa-check-circle"></i> Generated ID: <strong>${escapeHtml(generatedId)}</strong> <span style="font-size:11px;">(auto-incremented)</span>`;
-            document.getElementById('autoIdPreview').style.background = '#d4edda';
-        } else {
-            document.getElementById('compId').value = '';
-            document.getElementById('autoIdPreview').innerHTML = `<i class="fas fa-info-circle"></i> Enter Category and Value to auto-generate ID`;
-            document.getElementById('autoIdPreview').style.background = '#e8f0fe';
-        }
-    }
-    
-    function showToast(msg, isError = false) {
-        const toast = document.getElementById('toastMessage');
-        document.getElementById('toastText').textContent = msg;
-        toast.style.background = isError ? '#e74c3c' : '#27ae60';
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
+    function showToast(msg, isError) { 
+        const toast = document.getElementById('toastMessage'); 
+        document.getElementById('toastText').textContent = msg; 
+        toast.style.background = isError ? '#e74c3c' : '#27ae60'; 
+        toast.classList.add('show'); 
+        setTimeout(() => toast.classList.remove('show'), 3000); 
     }
     
     function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
-    function formatDate(dateStr) { if (!dateStr) return 'N/A'; try { return new Date(dateStr).toLocaleString(); } catch(e) { return dateStr; } }
+    function isGuest() { return currentUserRole === 'guest'; }
     function isAdmin() { return currentUserRole === 'admin'; }
     
-    function detectDevice() {
-        if (window.innerWidth <= 768) { document.body.classList.remove('desktop-mode'); document.body.classList.add('mobile-mode'); }
-        else { document.body.classList.remove('mobile-mode'); document.body.classList.add('desktop-mode'); }
+    // EXPORT CSV in exact format: Component Name,Category,Value,Stock,Location
+    function exportToCSV() {
+        const approvedComponents = allComponents.filter(c => c.status === 'approved');
+        if(approvedComponents.length === 0) {
+            showToast("No approved components to export", true);
+            return;
+        }
+        
+        // Header exactly as requested
+        const headers = ['Component Name', 'Category', 'Value', 'Stock', 'Location'];
+        const rows = approvedComponents.map(comp => [
+            `"${(comp.name || '').replace(/"/g, '""')}"`,
+            `"${(comp.category || '').replace(/"/g, '""')}"`,
+            `"${(comp.value || '').replace(/"/g, '""')}"`,
+            comp.quantity || 0,
+            `"${(comp.location || 'Not specified').replace(/"/g, '""')}"`
+        ]);
+        
+        const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.setAttribute('download', `eim_inventory_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        showToast(`Exported ${approvedComponents.length} components`, false);
     }
-    window.addEventListener('resize', detectDevice);
-    detectDevice();
     
-    function updateAdminUI() {
-        const adminBtns = [document.getElementById('adminNavBtn'), document.getElementById('adminNavBtnMobile')];
-        if (isAdmin()) {
-            adminBtns.forEach(btn => { if(btn) btn.style.display = 'flex'; });
-            document.getElementById('userRoleDisplay').innerHTML = '<span class="admin-badge">Administrator</span>';
-        } else {
-            adminBtns.forEach(btn => { if(btn) btn.style.display = 'none'; });
-            document.getElementById('userRoleDisplay').innerHTML = '<span style="background:#4facfe; padding:2px 10px; border-radius:20px;">User</span>';
-            if (document.getElementById('admin-view')?.classList.contains('active')) switchToView('reports');
+    // CSV Import Functionality
+    const importBtn = document.getElementById('importCSVBtn');
+    const csvImportArea = document.getElementById('csvImportArea');
+    const cancelImportBtn = document.getElementById('cancelImportBtn');
+    const csvFileInput = document.getElementById('csvFileInput');
+    
+    importBtn?.addEventListener('click', () => {
+        if(isGuest()) { showToast("Guest users cannot import components", true); return; }
+        csvImportArea.style.display = 'flex';
+    });
+    
+    cancelImportBtn?.addEventListener('click', () => {
+        csvImportArea.style.display = 'none';
+        csvFileInput.value = '';
+    });
+    
+    function parseCSVLine(line) {
+        const result = [];
+        let inQuotes = false;
+        let current = '';
+        for (let i = 0; i < line.length; i++) {
+            const ch = line[i];
+            if (ch === '"') {
+                if (inQuotes && line[i+1] === '"') {
+                    current += '"';
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+            } else if (ch === ',' && !inQuotes) {
+                result.push(current.trim());
+                current = '';
+            } else {
+                current += ch;
+            }
+        }
+        result.push(current.trim());
+        return result;
+    }
+    
+    csvFileInput?.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if(!file) return;
+        if(isGuest()) { showToast("Guest users cannot import components", true); return; }
+        
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            const csvText = event.target.result;
+            const lines = csvText.split(/\r?\n/).filter(line => line.trim());
+            if(lines.length < 2) {
+                showToast("CSV file must contain header and at least one data row", true);
+                return;
+            }
+            
+            // Check header format (flexible)
+            let startRow = 0;
+            const firstLine = lines[0].toLowerCase();
+            if(firstLine.includes('component name') || firstLine.includes('name')) {
+                startRow = 1;
+            }
+            
+            let imported = 0;
+            let failed = 0;
+            let duplicate = 0;
+            
+            for(let i = startRow; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if(!line) continue;
+                
+                let cols = parseCSVLine(line);
+                if(cols.length < 5) {
+                    // Try simple split
+                    cols = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+                }
+                if(cols.length < 5) {
+                    failed++;
+                    continue;
+                }
+                
+                const name = cols[0].replace(/^"|"$/g, '').trim();
+                const category = cols[1].replace(/^"|"$/g, '').trim();
+                const value = cols[2].replace(/^"|"$/g, '').trim();
+                const quantity = parseInt(cols[3]) || 1;
+                const location = cols[4].replace(/^"|"$/g, '').trim() || "Not specified";
+                
+                if(!name || !category || !value) {
+                    failed++;
+                    continue;
+                }
+                
+                const prefix = (category.replace(/[^a-zA-Z0-9]/g,'').toUpperCase().substring(0,3) || 'GEN') + '-' + (value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase().substring(0,3) || 'VAL');
+                let max = 0;
+                const allIds = [...allComponents, ...pendingComponents].filter(c => c.componentId && c.componentId.startsWith(prefix+'-'));
+                allIds.forEach(c => { let n = parseInt(c.componentId.split('-').pop(),10); if(!isNaN(n) && n>max) max=n; });
+                const newId = `${prefix}-${(max+1).toString().padStart(3,'0')}`;
+                
+                const idExists = [...allComponents, ...pendingComponents].some(c=>c.componentId===newId);
+                if(idExists) { duplicate++; continue; }
+                
+                const newComp = {
+                    componentId: newId,
+                    name: name,
+                    category: category,
+                    value: value,
+                    package: 'Through-hole',
+                    quantity: Math.max(1, quantity),
+                    minStockLevel: 2,
+                    location: location,
+                    description: `Imported from CSV on ${new Date().toLocaleDateString()}`,
+                    submittedBy: currentUser?.uid,
+                    submittedByEmail: currentUser?.email,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                
+                try {
+                    if(isAdmin()) {
+                        newComp.status = 'approved';
+                        newComp.approvedBy = currentUser.email;
+                        newComp.approvedAt = new Date().toISOString();
+                        await componentsRef.child(newId).set(newComp);
+                    } else {
+                        newComp.status = 'pending';
+                        await pendingRef.push().set(newComp);
+                    }
+                    imported++;
+                } catch(err) {
+                    failed++;
+                    console.error(err);
+                }
+            }
+            
+            showToast(`Import complete: ${imported} added, ${duplicate} duplicates, ${failed} failed`, imported === 0);
+            csvImportArea.style.display = 'none';
+            csvFileInput.value = '';
+            loadComponents();
+            if(!isAdmin()) loadPendingComponents();
+        };
+        reader.readAsText(file, 'UTF-8');
+    });
+    
+    function updatePendingCountBadge() {
+        const count = pendingComponents.length;
+        const desktopBadge = document.getElementById('pendingCountBadgeDesktop');
+        const mobileBadge = document.getElementById('pendingCountBadgeMobile');
+        if(desktopBadge) {
+            if(isAdmin() && count > 0) { desktopBadge.style.display = 'inline-flex'; desktopBadge.textContent = count; }
+            else desktopBadge.style.display = 'none';
+        }
+        if(mobileBadge) {
+            if(isAdmin() && count > 0) { mobileBadge.style.display = 'inline-flex'; mobileBadge.textContent = count; }
+            else mobileBadge.style.display = 'none';
         }
     }
     
+    function parseValueToNumber(val) { 
+        if (!val) return 0; 
+        const match = val.match(/^([\d\.]+)\s*([kKMGTPpuµmun]?)/); 
+        if (!match) return 0; 
+        let num = parseFloat(match[1]); 
+        const prefix = match[2].toLowerCase(); 
+        const mult = { 'p':1e-12,'n':1e-9,'u':1e-6,'µ':1e-6,'m':1e-3,'k':1e3,'M':1e6,'G':1e9,'T':1e12 }; 
+        if (mult[prefix]) num *= mult[prefix]; 
+        return num; 
+    }
+    
+    function generateAutoComponentId(cat, val) { 
+        if (!cat || !val) return ''; 
+        const prefix = (cat.replace(/[^a-zA-Z0-9]/g,'').toUpperCase().substring(0,3) || 'GEN') + '-' + (val.replace(/[^a-zA-Z0-9]/g,'').toUpperCase().substring(0,3) || 'VAL'); 
+        let max = 0; 
+        const allIds = [...allComponents, ...pendingComponents].filter(c => c.componentId && c.componentId.startsWith(prefix+'-'));
+        allIds.forEach(c => { let n = parseInt(c.componentId.split('-').pop(),10); if(!isNaN(n) && n>max) max=n; }); 
+        return `${prefix}-${(max+1).toString().padStart(3,'0')}`; 
+    }
+    
+    function updateAutoIdPreview() { 
+        const cat = document.getElementById('compCategory')?.value.trim(); 
+        const val = document.getElementById('compValue')?.value.trim(); 
+        const idField = document.getElementById('compId'); 
+        const previewDiv = document.getElementById('autoIdPreview'); 
+        if(cat && val && idField && !isGuest()) { 
+            const newId = generateAutoComponentId(cat,val); 
+            idField.value = newId; 
+            previewDiv.innerHTML = `<i class="fas fa-check-circle"></i> Generated ID: <strong>${escapeHtml(newId)}</strong>`; 
+            idField.setCustomValidity('');
+        } else if(idField && isGuest()) { idField.value = ''; previewDiv.innerHTML = '<i class="fas fa-lock"></i> Guest mode: Cannot add components'; idField.setCustomValidity('Guest mode cannot add components'); } 
+        else if(idField) { idField.value = ''; previewDiv.innerHTML = '<i class="fas fa-info-circle"></i> Enter Category and Value to auto-generate ID'; idField.setCustomValidity('Please enter category and value to generate ID'); } 
+    }
+    
+    function validateAddForm() {
+        let isValid = true;
+        const requiredFields = ['compName', 'compCategory', 'compValue', 'compQuantity', 'locFull'];
+        requiredFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            const errorSpan = document.getElementById(fieldId + 'Error');
+            if(field && field.required && (!field.value || field.value.trim() === '')) {
+                if(errorSpan) errorSpan.textContent = 'This field is required';
+                field.style.borderColor = '#e74c3c';
+                isValid = false;
+            } else {
+                if(errorSpan) errorSpan.textContent = '';
+                if(field) field.style.borderColor = '#ced4da';
+            }
+        });
+        const compId = document.getElementById('compId');
+        if(compId && (!compId.value || compId.value.trim() === '')) {
+            isValid = false;
+            document.getElementById('autoIdPreview').style.borderColor = '#e74c3c';
+        } else if(compId) {
+            document.getElementById('autoIdPreview').style.borderColor = '#e8f0fe';
+        }
+        const quantity = parseInt(document.getElementById('compQuantity')?.value);
+        if(isNaN(quantity) || quantity < 1) {
+            const errorSpan = document.getElementById('compQuantityError');
+            if(errorSpan) errorSpan.textContent = 'Stock quantity must be at least 1';
+            document.getElementById('compQuantity').style.borderColor = '#e74c3c';
+            isValid = false;
+        }
+        return isValid;
+    }
+    
+    const addForm = document.getElementById('addComponentForm');
+    if(addForm) {
+        addForm.addEventListener('submit', async e => { 
+            e.preventDefault(); 
+            if(isGuest()) { showToast("Guest users cannot add components", true); return; }
+            if(!validateAddForm()) {
+                showToast("Please fill all required fields correctly. Stock quantity must be at least 1.", true);
+                return;
+            }
+            
+            let id = document.getElementById('compId').value.trim(); 
+            let name = document.getElementById('compName').value.trim(); 
+            let category = document.getElementById('compCategory').value.trim(); 
+            let value = document.getElementById('compValue').value.trim(); 
+            if(!id || !name || !category || !value) { showToast("Please fill required fields", true); return; } 
+            
+            const idExists = [...allComponents, ...pendingComponents].some(c=>c.componentId===id);
+            if(idExists){ showToast("Component ID already exists or pending approval!", true); return; } 
+            
+            let newComp = { 
+                componentId: id, 
+                name, 
+                category, 
+                value, 
+                package: document.getElementById('compPackage').value, 
+                quantity: parseInt(document.getElementById('compQuantity').value)||1, 
+                minStockLevel: parseInt(document.getElementById('compMinStock').value)||2, 
+                location: document.getElementById('locFull').value.trim()||"Not specified", 
+                description: document.getElementById('compDescription').value, 
+                submittedBy: currentUser?.uid,
+                submittedByEmail: currentUser?.email,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            }; 
+            
+            try {
+                if(isAdmin()) {
+                    newComp.status = 'approved';
+                    newComp.approvedBy = currentUser.email;
+                    newComp.approvedAt = new Date().toISOString();
+                    await componentsRef.child(id).set(newComp);
+                    showToast(`✓ "${name}" added directly to inventory`, false);
+                    addForm.reset(); 
+                    document.getElementById('compId').value=''; 
+                    document.getElementById('compQuantity').value='1';
+                    updateAutoIdPreview(); 
+                    switchToView('components');
+                    loadComponents();
+                } else {
+                    newComp.status = 'pending';
+                    const pendingKey = pendingRef.push().key;
+                    await pendingRef.child(pendingKey).set(newComp);
+                    showToast(`📝 "${name}" submitted for admin approval`, false); 
+                    addForm.reset(); 
+                    document.getElementById('compId').value=''; 
+                    document.getElementById('compQuantity').value='1';
+                    updateAutoIdPreview(); 
+                    switchToView('components');
+                }
+            } catch(error) {
+                console.error("Submit error:", error);
+                if(error.message.includes('permission_denied')) {
+                    showToast("Permission denied: Please ask admin to configure Firebase database rules", true);
+                    document.getElementById('permissionWarning').style.display = 'block';
+                } else {
+                    showToast(error.message, true);
+                }
+            }
+        });
+    }
+    
+    ['compName', 'compCategory', 'compValue', 'compQuantity', 'locFull'].forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if(field) {
+            field.addEventListener('input', function() {
+                this.style.borderColor = '#ced4da';
+                const errorSpan = document.getElementById(fieldId + 'Error');
+                if(errorSpan) errorSpan.textContent = '';
+            });
+        }
+    });
+    
+    function renderComponentsTable() {
+        const tbody = document.getElementById("componentsTableBody");
+        if (!tbody) return;
+        
+        let search = document.getElementById("searchInput")?.value.toLowerCase() || "";
+        let catFilter = document.getElementById("categoryFilter")?.value || "";
+        let statusFilter = document.getElementById("statusFilter")?.value || "all";
+        
+        let filtered = allComponents.filter(c => {
+            if(statusFilter === 'approved') return c.status === 'approved';
+            if(statusFilter === 'pending') return c.status === 'pending';
+            return true;
+        });
+        
+        filtered = filtered.filter(c => 
+            (c.componentId || "").toLowerCase().includes(search) || 
+            (c.name || "").toLowerCase().includes(search) || 
+            (c.value || "").toLowerCase().includes(search) || 
+            (c.category || "").toLowerCase().includes(search)
+        ).filter(c => !catFilter || c.category === catFilter);
+        
+        filtered.sort((a, b) => {
+            if (currentSort.field === 'value') {
+                return currentSort.direction === 'asc' ? parseValueToNumber(a.value) - parseValueToNumber(b.value) : parseValueToNumber(b.value) - parseValueToNumber(a.value);
+            } else if (currentSort.field === 'quantity') {
+                return currentSort.direction === 'asc' ? (a.quantity||0) - (b.quantity||0) : (b.quantity||0) - (a.quantity||0);
+            } else {
+                let aVal = String(a[currentSort.field] || '').toLowerCase();
+                let bVal = String(b[currentSort.field] || '').toLowerCase();
+                if (aVal < bVal) return currentSort.direction === 'asc' ? -1 : 1;
+                if (aVal > bVal) return currentSort.direction === 'asc' ? 1 : -1;
+                return 0;
+            }
+        });
+        
+        if (filtered.length === 0) { 
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No components found</td></tr>'; 
+            return; 
+        }
+        
+        let html = '';
+        for (let c of filtered) {
+            let low = (c.quantity || 0) <= (c.minStockLevel || 0);
+            const canEditDelete = !isGuest() && (isAdmin() || c.submittedBy === currentUser?.uid);
+            let statusBadge = '';
+            if(c.status === 'approved') statusBadge = '<span class="approved-badge"><i class="fas fa-check"></i> Approved</span>';
+            else if(c.status === 'pending') statusBadge = '<span class="pending-badge"><i class="fas fa-clock"></i> Pending</span>';
+            else statusBadge = '<span class="rejected-badge"><i class="fas fa-times"></i> Rejected</span>';
+            
+            html += `<tr>
+                <td><strong>${escapeHtml(c.componentId)}</strong></td>
+                <td>${escapeHtml(c.name)}</td>
+                <td>${escapeHtml(c.category) || '-'}</td>
+                <td>${escapeHtml(c.value) || '-'}</td>
+                <td><div class="stock-control"><button class="stock-adjust-btn minus ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', -1)` : ''}">-</button><span class="stock-value" style="background:${low ? '#fee2e2' : '#d1fae5'};">${c.quantity || 0}</span><button class="stock-adjust-btn plus ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', 1)` : ''}">+</button><button class="stock-adjust-btn plus10 ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', 10)` : ''}">+10</button></div></td>
+                <td>${escapeHtml(c.location) || '-'}</td>
+                <td>${statusBadge}</td>
+                <td><button class="edit-btn ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `editComponent('${c.firebaseKey}')` : ''}"><i class="fas fa-edit"></i> Edit</button> <button class="delete-btn ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `deleteComponent('${c.firebaseKey}')` : ''}"><i class="fas fa-trash"></i> Del</button> <button class="clone-btn ${isGuest() ? 'disabled-action' : ''}" onclick="${!isGuest() ? `cloneComponentToAdd('${c.firebaseKey}')` : ''}"><i class="fas fa-copy"></i> Clone</button></td>
+            电子`;
+        }
+        tbody.innerHTML = html;
+        updateSortIcons();
+    }
+    
+    function generateReport() { 
+        let approvedComps = allComponents.filter(c => c.status === 'approved'); 
+        let totalStock = approvedComps.reduce((s,c)=>s+(c.quantity||0),0); 
+        let categoriesCount = new Set(approvedComps.map(c=>c.category).filter(Boolean)).size; 
+        let lowStockCount = approvedComps.filter(c=>(c.quantity||0)<=(c.minStockLevel||0)).length;
+        
+        let sorted = [...approvedComps].sort((a,b)=>{ 
+            if(reportSortField === 'value') return reportSortOrder === 'asc' ? parseValueToNumber(a.value) - parseValueToNumber(b.value) : parseValueToNumber(b.value) - parseValueToNumber(a.value); 
+            else if(reportSortField === 'quantity') return reportSortOrder === 'asc' ? (a.quantity||0) - (b.quantity||0) : (b.quantity||0) - (a.quantity||0); 
+            else { let aVal = String(a[reportSortField] || '').toLowerCase(), bVal = String(b[reportSortField] || '').toLowerCase(); if (aVal < bVal) return reportSortOrder === 'asc' ? -1 : 1; if (aVal > bVal) return reportSortOrder === 'asc' ? 1 : -1; return 0; } 
+        });
+        
+        let sortFieldName = { name:'Name', category:'Category', value:'Value', quantity:'Stock', location:'Location' }[reportSortField] || reportSortField; 
+        let rows = ''; 
+        sorted.forEach((c, i) => { 
+            rows += `<tr>
+                <td style="text-align:center;">${i+1}</td>
+                <td>${escapeHtml(c.name)}</td>
+                <td>${escapeHtml(c.category) || '-'}</td>
+                <td>${escapeHtml(c.value) || '-'}</td>
+                <td style="text-align:center;">${c.quantity || 0}</td>
+                <td>${escapeHtml(c.location) || '-'}</td>
+             </tr>`; 
+        });
+        
+        document.getElementById("reportContainer").innerHTML = `<div class="report-header"><h2><i class="fas fa-chart-bar"></i> Inventory Dashboard</h2><p>Generated: ${new Date().toLocaleString()}</p><div class="sort-info-badge"><i class="fas fa-sort-amount-down"></i> Sorted by: <strong>${sortFieldName}</strong> (${reportSortOrder === 'asc' ? 'Ascending ↑' : 'Descending ↓'})</div><div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;"><button class="btn-primary" style="padding:4px 10px; font-size:12px; background:#6c5ce7;" onclick="sortReportData('name')">Sort by Name</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('category')">Sort by Category</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('value')">Sort by Value</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('quantity')">Sort by Stock</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('location')">Sort by Location</button></div></div><div class="report-stats-row"><div class="report-stat-item"><div>Total Components</div><div class="report-stat-value">${approvedComps.length}</div></div><div class="report-stat-item"><div>Total Stock</div><div class="report-stat-value">${totalStock.toLocaleString()}</div></div><div class="report-stat-item"><div>Categories</div><div class="report-stat-value">${categoriesCount}</div></div><div class="report-stat-item"><div>Low Stock</div><div class="report-stat-value ${lowStockCount>0?'low-stock-value':''}">${lowStockCount}</div></div></div><div style="padding:20px;"><h3>Complete Component List <span style="font-size:12px; color:#666;">(${approvedComps.length} items)</span></h3><table class="report-table"><thead><tr><th>#</th><th>Component Name</th><th>Category</th><th>Value</th><th>Stock</th><th>Storage Location</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    }
+    
+    window.sortReportData = (field) => { if(reportSortField === field) reportSortOrder = reportSortOrder === 'asc' ? 'desc' : 'asc'; else { reportSortField = field; reportSortOrder = 'asc'; } generateReport(); };
+    window.adjustStock = async (key, delta) => { if(isGuest()) { showToast("Guest users cannot modify stock", true); return; } let comp = allComponents.find(c => c.firebaseKey === key); if (!comp) return; if(!isAdmin() && comp.submittedBy !== currentUser?.uid) { showToast("You can only modify components you submitted", true); return; } const newQty = Math.max(1, (comp.quantity || 0) + delta); await componentsRef.child(key).update({ quantity: newQty, updatedAt: new Date().toISOString() }); showToast(`${delta>0?'+':''}${delta} → ${newQty} pcs`, false); };
+    window.deleteComponent = async (key) => { if(isGuest()) { showToast("Guest users cannot delete", true); return; } const comp = allComponents.find(c => c.firebaseKey === key); if(!comp) return; if(!isAdmin() && comp.submittedBy !== currentUser?.uid) { showToast("You can only delete components you submitted", true); return; } if(confirm("Delete permanently?")){ await componentsRef.child(key).remove(); showToast("Component deleted", false); } };
+    window.editComponent = (key) => { if(isGuest()) { showToast("Guest users cannot edit components", true); return; } let c = allComponents.find(c=>c.firebaseKey===key); if(!c) return; if(!isAdmin() && c.submittedBy !== currentUser?.uid) { showToast("You can only edit components you submitted", true); return; } document.getElementById("editKey").value = key; document.getElementById("editCompId").value = c.componentId || ''; document.getElementById("editName").value = c.name || ''; document.getElementById("editCategory").value = c.category || ''; document.getElementById("editValue").value = c.value || ''; document.getElementById("editPackage").value = c.package || 'Through-hole'; document.getElementById("editQuantity").value = c.quantity || 0; document.getElementById("editMinStock").value = c.minStockLevel || 10; document.getElementById("editLocation").value = c.location || ''; document.getElementById("editModal").style.display = "flex"; };
+    window.cloneComponentToAdd = (key) => { if(isGuest()) { showToast("Guest users cannot clone components", true); return; } let c = allComponents.find(c=>c.firebaseKey===key); if(c){ document.getElementById('compName').value = c.name||''; document.getElementById('compCategory').value = c.category||''; document.getElementById('compValue').value = c.value||''; document.getElementById('compPackage').value = c.package||'Through-hole'; document.getElementById('compQuantity').value = Math.max(1, c.quantity||1); document.getElementById('compMinStock').value = c.minStockLevel||2; document.getElementById('locFull').value = c.location||''; document.getElementById('compDescription').value = c.description||''; if(c.category && c.value) { let newId = generateAutoComponentId(c.category, c.value); document.getElementById('compId').value = newId; document.getElementById('autoIdPreview').innerHTML = `<i class="fas fa-copy"></i> Cloned from ${escapeHtml(c.name)} → New ID: <strong>${escapeHtml(newId)}</strong>`; } switchToView('add'); showToast(`Cloned "${c.name}" - Submit for approval`, false); } };
+    window.approveComponent = async (pendingKey) => { if(!isAdmin()) return; const pending = pendingComponents.find(p => p.firebaseKey === pendingKey); if(!pending) return; try { const approvedComp = { componentId: pending.componentId, name: pending.name, category: pending.category, value: pending.value, package: pending.package || 'Through-hole', quantity: Math.max(1, pending.quantity || 1), minStockLevel: pending.minStockLevel || 10, location: pending.location || "Not specified", description: pending.description || "", status: 'approved', submittedBy: pending.submittedBy, submittedByEmail: pending.submittedByEmail, approvedBy: currentUser?.email, approvedAt: new Date().toISOString(), createdAt: pending.createdAt, updatedAt: new Date().toISOString() }; await componentsRef.child(pending.componentId).set(approvedComp); await pendingRef.child(pendingKey).remove(); showToast(`✓ Approved ${pending.name}`, false); loadComponents(); loadPendingComponents(); } catch(error) { showToast(error.message, true); } };
+    window.rejectComponent = async (pendingKey) => { if(!isAdmin()) return; if(confirm("Reject this component submission?")) { await pendingRef.child(pendingKey).remove(); showToast("Component rejected", false); loadPendingComponents(); } };
+    function renderPendingApprovals() { if(!isAdmin()) return; let tbody = document.getElementById("pendingTableBody"); if (!tbody) return; if (pendingComponents.length === 0) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No pending approvals</td></tr>'; return; } let html = ''; for (let p of pendingComponents) { html += `<tr><td><strong>${escapeHtml(p.componentId)}</strong></td><td>${escapeHtml(p.name)}</td><td>${escapeHtml(p.category) || '-'}</td><td>${escapeHtml(p.value) || '-'}</td><td>${p.quantity || 0}</td><td>${escapeHtml(p.location) || '-'}</td><td><small>${escapeHtml(p.submittedByEmail) || p.submittedBy}</small></td><td><button class="approve-btn" onclick="approveComponent('${p.firebaseKey}')"><i class="fas fa-check"></i> Approve</button> <button class="reject-btn" onclick="rejectComponent('${p.firebaseKey}')"><i class="fas fa-times"></i> Reject</button></td></tr>`; } tbody.innerHTML = html; updatePendingCountBadge(); }
+    function renderLocations() { let locMap = new Map(); allComponents.filter(c => c.status === 'approved' && c.location && c.location !== 'Not specified').forEach(c => { if(!locMap.has(c.location)) locMap.set(c.location, []); locMap.get(c.location).push(c); }); let grid = document.getElementById("locationsGrid"); if(locMap.size === 0){ grid.innerHTML='<div class="location-card">No locations yet. Add components with storage locations.</div>'; return; } let entries = Array.from(locMap.entries()); entries.sort((a,b) => locationsSortOrder === 'asc' ? a[0].localeCompare(b[0]) : b[0].localeCompare(a[0])); let html = ''; for(let [loc, parts] of entries){ let total = parts.reduce((s,p)=>s+(p.quantity||0),0); let preview = parts.slice(0,3).map(p => `${escapeHtml(p.name)} (${p.quantity||0})`).join(', '); if(parts.length > 3) preview += '...'; html += `<div class="location-card"><h3><i class="fas fa-boxes"></i> ${escapeHtml(loc)}</h3><p>📦 ${parts.length} types | 🔢 Total: ${total} pcs</p><small>${preview}</small></div>`; } grid.innerHTML = html; }
+    function setLocationSort(order) { locationsSortOrder = order; const ascBtn = document.getElementById('sortLocAscBtn'); const descBtn = document.getElementById('sortLocDescBtn'); if(ascBtn && descBtn) { if(order === 'asc') { ascBtn.classList.add('active'); descBtn.classList.remove('active'); } else { descBtn.classList.add('active'); ascBtn.classList.remove('active'); } } renderLocations(); }
+    function populateFilters() { let cats = [...new Set(allComponents.filter(c => c.status === 'approved').map(c=>c.category).filter(Boolean))]; let sel = document.getElementById("categoryFilter"); if(sel) sel.innerHTML = '<option value="">All Categories</option>' + cats.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join(''); }
+    function updateSortIcons() { const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location']; for(let field of fields) { const th = document.getElementById(`sort-${field}`); if(th) { const icon = th.querySelector('i'); if(currentSort.field === field) { th.style.backgroundColor = '#2c3e66'; if(icon) icon.className = currentSort.direction === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'; } else { th.style.backgroundColor = '#1e2f4e'; if(icon) icon.className = 'fas fa-sort'; } } } }
+    function attachSortListeners() { const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location']; for(let field of fields) { const th = document.getElementById(`sort-${field}`); if(th) { th.onclick = () => { if(currentSort.field === field) currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc'; else { currentSort.field = field; currentSort.direction = 'asc'; } renderComponentsTable(); }; } } }
+    function switchToView(viewName) { document.querySelectorAll('.nav-btn-desktop, .nav-btn-mobile').forEach(btn=>btn.classList.remove('active')); document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(viewName+'-view').classList.add('active'); if(viewName==='locations') renderLocations(); if(viewName==='reports') generateReport(); if(viewName==='add') updateAutoIdPreview(); if(viewName==='components') { renderComponentsTable(); attachSortListeners(); } if(viewName==='approvals' && isAdmin()) renderPendingApprovals(); }
+    function applyPermissionsToUI() { const readonly = isGuest(); const addNavDesktop = document.getElementById('addNavBtnDesktop'); const addNavMobile = document.getElementById('addNavBtnMobile'); const addFormSubmit = document.getElementById('addComponentBtn'); const submitHint = document.getElementById('submitHint'); if(addNavDesktop) addNavDesktop.style.display = readonly ? 'none' : 'flex'; if(addNavMobile) addNavMobile.style.display = readonly ? 'none' : 'flex'; if(addFormSubmit) addFormSubmit.disabled = readonly; if(addFormSubmit) addFormSubmit.classList.toggle('disabled-btn', readonly); if(submitHint) { if(isAdmin()) submitHint.innerHTML = '<i class="fas fa-check-circle"></i> <strong>Admin:</strong> Your submissions are automatically approved.'; else if(!isGuest()) submitHint.innerHTML = '<i class="fas fa-info-circle"></i> <strong>User:</strong> Your submission requires admin approval.'; else submitHint.innerHTML = '<i class="fas fa-lock"></i> Guest accounts cannot add components.'; } const approvalsNavDesktop = document.getElementById('approvalsNavBtn'); const approvalsNavMobile = document.getElementById('approvalsNavBtnMobile'); if(approvalsNavDesktop) approvalsNavDesktop.style.display = isAdmin() ? 'flex' : 'none'; if(approvalsNavMobile) approvalsNavMobile.style.display = isAdmin() ? 'flex' : 'none'; updatePendingCountBadge(); const addModeText = document.getElementById('addModeText'); if(addModeText) { if(isGuest()) addModeText.innerHTML = '<span class="guest-badge">Read Only Mode</span>'; else if(isAdmin()) addModeText.innerHTML = '<span class="admin-badge">Admin (Direct Add)</span>'; else addModeText.innerHTML = '<span class="user-badge">Your submissions require admin approval</span>'; } renderComponentsTable(); }
+    function updateAdminUI() { let btns = [document.getElementById('adminNavBtn'), document.getElementById('adminNavBtnMobile')]; btns.forEach(btn=>{if(btn) btn.style.display = isAdmin() ? 'flex' : 'none';}); let roleDiv = document.getElementById('userRoleDisplay'); if(roleDiv) { if(isAdmin()) roleDiv.innerHTML = '<span class="admin-badge">Administrator</span>'; else if(isGuest()) roleDiv.innerHTML = '<span class="guest-badge">👓 Guest (Read Only)</span>'; else roleDiv.innerHTML = '<span class="user-badge">User (Submissions Need Approval)</span>'; } applyPermissionsToUI(); }
+    async function loadUsersList() { if(!isAdmin()) return; let snap = await usersRef.once('value'); let users = snap.val(); let tbody = document.getElementById('usersTableBody'); if(!users){ tbody.innerHTML='<tr><td colspan="4">No users</td></tr>'; return; } tbody.innerHTML=''; for(let uid in users){ let u = users[uid]; let row = tbody.insertRow(); row.insertCell(0).innerHTML = escapeHtml(u.email); let roleCell = row.insertCell(1); if(u.role === 'admin') roleCell.innerHTML = '<span class="admin-badge">Admin</span>'; else if(u.role === 'guest') roleCell.innerHTML = '<span class="guest-badge">Guest</span>'; else roleCell.innerHTML = '<span class="user-badge">User</span>'; row.insertCell(2).innerHTML = u.createdAt?new Date(u.createdAt).toLocaleString():'N/A'; let actions = row.insertCell(3); if(uid !== currentUser?.uid) actions.innerHTML = `<button class="edit-user-btn" onclick="openEditUserModal('${uid}','${escapeHtml(u.email)}','${u.role}')">Edit</button> <button class="delete-user-btn" onclick="deleteUser('${uid}')">Delete</button>`; else actions.innerHTML = '<span style="color:#6c757d;"><i class="fas fa-user-shield"></i> You</span>'; } }
+    window.deleteUser = async (uid) => { if(isAdmin() && uid !== currentUser?.uid && confirm("Delete user?")){ await usersRef.child(uid).remove(); loadUsersList(); showToast("User deleted",false); } };
+    window.openEditUserModal = (uid, email, role) => { document.getElementById('editUserId').value = uid; document.getElementById('editUserEmail').value = email; document.getElementById('editUserRole').value = role; document.getElementById('editUserPassword').value = ''; document.getElementById('editUserModal').style.display = 'flex'; };
+    function closeEditUserModal() { document.getElementById('editUserModal').style.display = 'none'; }
     function loadComponents() {
         componentsRef.on('value', (snapshot) => {
             const data = snapshot.val();
@@ -514,439 +1050,87 @@
             if (data) {
                 Object.keys(data).forEach(key => {
                     const comp = data[key];
-                    allComponents.push({
-                        firebaseKey: key,
-                        componentId: comp.componentId || key,
-                        name: comp.name || 'Unnamed',
-                        category: comp.category || '',
-                        value: comp.value || '',
-                        package: comp.package || 'Through-hole',
-                        quantity: comp.quantity !== undefined ? comp.quantity : 0,
-                        minStockLevel: comp.minStockLevel !== undefined ? comp.minStockLevel : 10,
-                        location: comp.location || 'Not specified',
-                        description: comp.description || ''
+                    allComponents.push({ 
+                        firebaseKey: key, 
+                        componentId: comp.componentId || key, 
+                        name: comp.name || 'Unnamed', 
+                        category: comp.category || '', 
+                        value: comp.value || '', 
+                        package: comp.package || 'Through-hole', 
+                        quantity: comp.quantity ?? 0, 
+                        minStockLevel: comp.minStockLevel ?? 10, 
+                        location: comp.location || 'Not specified', 
+                        description: comp.description || '',
+                        status: comp.status || 'approved',
+                        submittedBy: comp.submittedBy,
+                        submittedByEmail: comp.submittedByEmail
                     });
                 });
             }
-            document.getElementById('connectionStatus').innerHTML = '<i class="fas fa-check-circle"></i> Connected';
-            document.getElementById('connectionStatus').style.background = '#28a745';
+            const sidebarStatus = document.getElementById('sidebarConnectionStatus');
+            if(sidebarStatus) { 
+                sidebarStatus.innerHTML = '<i class="fas fa-check-circle"></i> Connected - ' + allComponents.length + ' components'; 
+                sidebarStatus.style.background = 'rgba(40, 167, 69, 0.3)'; 
+            }
             refreshUI();
-            updateAutoIdPreview();
-        }, (error) => { showToast("Firebase error: " + error.message, true); });
-    }
-    
-    function refreshUI() {
-        renderComponentsTable();
-        populateFilters();
-        renderLocations();
-        generateReport();
-        if (isAdmin()) loadUsersList();
-    }
-    
-    function renderComponentsTable() {
-        const search = document.getElementById("searchInput")?.value.toLowerCase() || "";
-        const catFilter = document.getElementById("categoryFilter")?.value || "";
-        let filtered = allComponents.filter(c => {
-            const matchSearch = (c.componentId || "").toLowerCase().includes(search) || 
-                              (c.name || "").toLowerCase().includes(search) || 
-                              (c.value || "").toLowerCase().includes(search) || 
-                              (c.category || "").toLowerCase().includes(search);
-            return matchSearch && (!catFilter || c.category === catFilter);
-        });
-        const tbody = document.getElementById("componentsTableBody");
-        if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No components found</td></tr>'; return; }
-        tbody.innerHTML = filtered.map(c => {
-            const isLow = (c.quantity || 0) <= (c.minStockLevel || 0);
-            return `<tr>
-                <td><strong>${escapeHtml(c.componentId)}</strong></td>
-                <td>${escapeHtml(c.name)}</td>
-                <td>${escapeHtml(c.category) || '-'}</td>
-                <td>${escapeHtml(c.value) || '-'}</td>
-                <td><span style="background:${isLow ? '#fee2e2' : '#d1fae5'}; padding:4px 10px; border-radius:20px;">${c.quantity || 0} pcs</span></td>
-                <td>${escapeHtml(c.location) || '-'}</td>
-                <td><button class="edit-btn" onclick="editComponent('${c.firebaseKey}')">Edit</button><button class="delete-btn" onclick="deleteComponent('${c.firebaseKey}')">Delete</button></td>
-            </tr>`;
-        }).join('');
-    }
-    
-    function populateFilters() {
-        const cats = [...new Set(allComponents.map(c => c.category).filter(Boolean))];
-        const catSel = document.getElementById("categoryFilter");
-        if (catSel) catSel.innerHTML = '<option value="">All Categories</option>' + cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
-    }
-    
-    function renderLocations() {
-        const locMap = new Map();
-        allComponents.forEach(c => {
-            if (c.location && c.location !== 'Not specified') {
-                if (!locMap.has(c.location)) locMap.set(c.location, []);
-                locMap.get(c.location).push(c);
+            if(document.getElementById('compCategory')) updateAutoIdPreview();
+        }, (error) => {
+            const sidebarStatus = document.getElementById('sidebarConnectionStatus');
+            if(sidebarStatus) { 
+                sidebarStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Connection error - using offline mode'; 
+                sidebarStatus.style.background = 'rgba(231, 76, 60, 0.3)'; 
             }
+            console.error("Firebase error:", error);
+            showToast("Database connection issue. Please check your network.", true);
         });
-        const grid = document.getElementById("locationsGrid");
-        if (locMap.size === 0) { grid.innerHTML = '<div class="location-card">No locations yet.</div>'; return; }
-        grid.innerHTML = Array.from(locMap.entries()).map(([loc, parts]) => {
-            const totalQty = parts.reduce((a,b) => a + (b.quantity||0), 0);
-            return `<div class="location-card"><i class="fas fa-box"></i><h3>📦 ${escapeHtml(loc)}</h3><p>${parts.length} types | Total: ${totalQty} pcs</p><small>${parts.slice(0,3).map(p => `${escapeHtml(p.name)} (${p.quantity||0})`).join(', ')}${parts.length>3 ? '...' : ''}</small></div>`;
-        }).join('');
     }
+    function loadPendingComponents() { if(!isAdmin()) return; pendingRef.on('value', (snapshot) => { const data = snapshot.val(); pendingComponents = []; if (data) { Object.keys(data).forEach(key => { const comp = data[key]; pendingComponents.push({ firebaseKey: key, componentId: comp.componentId, name: comp.name, category: comp.category, value: comp.value, package: comp.package, quantity: comp.quantity, minStockLevel: comp.minStockLevel, location: comp.location, description: comp.description, submittedBy: comp.submittedBy, submittedByEmail: comp.submittedByEmail, createdAt: comp.createdAt }); }); } renderPendingApprovals(); updatePendingCountBadge(); }); }
+    function refreshUI() { renderComponentsTable(); populateFilters(); renderLocations(); generateReport(); if(isAdmin()) loadUsersList(); applyPermissionsToUI(); }
     
-    window.editComponent = (firebaseKey) => {
-        const comp = allComponents.find(c => c.firebaseKey === firebaseKey);
-        if (!comp) return;
-        document.getElementById("editKey").value = firebaseKey;
-        document.getElementById("editCompId").value = comp.componentId;
-        document.getElementById("editName").value = comp.name;
-        document.getElementById("editCategory").value = comp.category;
-        document.getElementById("editValue").value = comp.value;
-        document.getElementById("editPackage").value = comp.package;
-        document.getElementById("editQuantity").value = comp.quantity;
-        document.getElementById("editMinStock").value = comp.minStockLevel;
-        document.getElementById("editLocation").value = comp.location;
-        document.getElementById("editModal").style.display = "flex";
-    };
-    
-    window.deleteComponent = async (firebaseKey) => {
-        if (confirm("Delete this component permanently?")) {
-            try { await componentsRef.child(firebaseKey).remove(); showToast("Component deleted"); } 
-            catch(e) { showToast(e.message, true); }
-        }
-    };
-    
-    document.getElementById("editForm")?.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const key = document.getElementById("editKey").value;
-        const updated = {
-            componentId: document.getElementById("editCompId").value,
-            name: document.getElementById("editName").value,
-            category: document.getElementById("editCategory").value,
-            value: document.getElementById("editValue").value,
-            package: document.getElementById("editPackage").value,
-            quantity: parseInt(document.getElementById("editQuantity").value) || 0,
-            minStockLevel: parseInt(document.getElementById("editMinStock").value) || 10,
-            location: document.getElementById("editLocation").value || "Not specified",
-            updatedAt: new Date().toISOString()
-        };
-        try {
-            await componentsRef.child(key).update(updated);
-            document.getElementById("editModal").style.display = "none";
-            showToast("Component updated");
-        } catch(e) { showToast(e.message, true); }
-    });
-    
-    document.getElementById("confirmDeleteBtn")?.addEventListener("click", async () => {
-        const key = document.getElementById("editKey").value;
-        if (confirm("Delete permanently?")) {
-            await componentsRef.child(key).remove();
-            document.getElementById("editModal").style.display = "none";
-            showToast("Deleted");
-        }
-    });
-    
-    document.getElementById("closeModalBtn")?.addEventListener("click", () => document.getElementById("editModal").style.display = "none");
-    document.getElementById("cancelEditBtn")?.addEventListener("click", () => document.getElementById("editModal").style.display = "none");
-    document.getElementById("resetFiltersBtn")?.addEventListener("click", () => {
-        document.getElementById("searchInput").value = "";
-        document.getElementById("categoryFilter").value = "";
-        renderComponentsTable();
-    });
-    
-    document.getElementById("addComponentForm")?.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const id = document.getElementById("compId").value.trim();
-        const name = document.getElementById("compName").value.trim();
-        const category = document.getElementById("compCategory").value.trim();
-        const value = document.getElementById("compValue").value.trim();
-        const pkg = document.getElementById("compPackage").value;
-        const quantity = parseInt(document.getElementById("compQuantity").value) || 0;
-        const minStock = parseInt(document.getElementById("compMinStock").value) || 10;
-        const location = document.getElementById("locFull").value.trim() || "Not specified";
-        const description = document.getElementById("compDescription").value;
-        
-        if (!id || !name || !category || !value) { showToast("Please fill all required fields", true); return; }
-        if (allComponents.some(c => c.componentId === id)) { showToast("Component ID already exists!", true); return; }
-        
-        const newComp = { componentId: id, name, category, value, package: pkg, quantity, minStockLevel: minStock, location, description, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
-        try {
-            await componentsRef.child(id).set(newComp);
-            showToast(`✓ ${id} added successfully`);
-            document.getElementById("addComponentForm").reset();
-            document.getElementById('compId').value = '';
-            document.getElementById('autoIdPreview').innerHTML = `<i class="fas fa-info-circle"></i> Enter Category and Value to auto-generate ID`;
-            switchToView('components');
-        } catch(err) { showToast(err.message, true); }
-    });
-    
-    document.getElementById("compCategory")?.addEventListener('input', updateAutoIdPreview);
-    document.getElementById("compValue")?.addEventListener('input', updateAutoIdPreview);
-    
-    async function loadUsersList() {
-        if (!isAdmin()) return;
-        const snapshot = await usersRef.once('value');
-        const users = snapshot.val();
-        const tbody = document.getElementById('usersTableBody');
-        if (!users || Object.keys(users).length === 0) { tbody.innerHTML = '<tr><td colspan="4">No users found</td></tr>'; return; }
-        tbody.innerHTML = '';
-        for (const [uid, userData] of Object.entries(users)) {
-            const row = tbody.insertRow();
-            row.insertCell(0).innerHTML = `<strong>${escapeHtml(userData.email)}</strong><br><small>${uid.substring(0,12)}...</small>`;
-            row.insertCell(1).innerHTML = `<span style="background:${userData.role === 'admin' ? '#e67e22' : '#4facfe'}; color:white; padding:4px 12px; border-radius:20px;">${userData.role === 'admin' ? 'Admin' : 'User'}</span>`;
-            row.insertCell(2).innerHTML = formatDate(userData.createdAt);
-            const actions = row.insertCell(3);
-            if (uid !== currentUser?.uid) {
-                actions.innerHTML = `<div class="action-buttons"><button class="edit-user-btn" onclick="openEditUserModal('${uid}', '${escapeHtml(userData.email)}', '${userData.role}')">Edit</button><button class="delete-user-btn" onclick="deleteUser('${uid}')">Delete</button></div>`;
-            } else {
-                actions.innerHTML = '<span style="color:#6c757d;"><i class="fas fa-user-shield"></i> You</span>';
-            }
-        }
-    }
-    
-    window.deleteUser = async function(uid) {
-        if (!isAdmin() || uid === currentUser?.uid) { showToast("Cannot delete", true); return; }
-        if (confirm("Delete this user?")) {
-            await usersRef.child(uid).remove();
-            showToast("User removed");
-            loadUsersList();
-        }
-    };
-    
-    window.openEditUserModal = function(uid, email, role) {
-        document.getElementById('editUserId').value = uid;
-        document.getElementById('editUserEmail').value = email;
-        document.getElementById('editUserRole').value = role;
-        document.getElementById('editUserPassword').value = '';
-        document.getElementById('editUserModal').style.display = 'flex';
-    };
-    
-    function closeEditUserModal() { document.getElementById('editUserModal').style.display = 'none'; }
-    
-    document.getElementById('editUserForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!isAdmin()) return;
-        const uid = document.getElementById('editUserId').value;
-        const newEmail = document.getElementById('editUserEmail').value;
-        const newRole = document.getElementById('editUserRole').value;
-        const newPassword = document.getElementById('editUserPassword').value;
-        await usersRef.child(uid).update({ email: newEmail, role: newRole, updatedAt: new Date().toISOString() });
-        if (newPassword && newPassword.length >= 6) {
-            await auth.sendPasswordResetEmail(newEmail);
-            showToast(`User updated! Password reset email sent to ${newEmail}`);
-        } else { showToast(`User ${newEmail} updated`); }
-        closeEditUserModal();
-        loadUsersList();
-        if (uid === currentUser?.uid) { currentUserRole = newRole; updateAdminUI(); }
-    });
-    
-    document.getElementById('addUserForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!isAdmin()) { showToast("Admin only", true); return; }
-        const email = document.getElementById('newUserEmail').value;
-        const password = document.getElementById('newUserPassword').value;
-        const role = document.getElementById('newUserRole').value;
-        const btn = e.target.querySelector('button[type="submit"]');
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creating...';
-        try {
-            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-            await usersRef.child(userCredential.user.uid).set({ email, role, createdAt: new Date().toISOString(), createdBy: currentUser?.uid });
-            await auth.signOut();
-            showToast(`✅ User "${email}" created successfully as ${role}! Please login again to continue.`);
-            document.getElementById('addUserForm').reset();
-            setTimeout(() => { location.reload(); }, 2000);
-        } catch(err) { showToast(err.message, true); }
-        finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-plus"></i> Create User'; }
-    });
-    
-    // UPDATED: Report with single row stats - TOTAL COMPONENTS, TOTAL STOCK (PCS), CATEGORIES, LOW STOCK ALERTS
-    function generateReport() {
-        const totalComponents = allComponents.length;
-        const totalStock = allComponents.reduce((s,c) => s + (c.quantity||0), 0);
-        const categoriesCount = [...new Set(allComponents.map(c => c.category).filter(Boolean))].length;
-        const lowStockCount = allComponents.filter(c => (c.quantity||0) <= (c.minStockLevel||0)).length;
-        
-        const html = `
-            <div class="report-header">
-                <h2><i class="fas fa-chart-bar"></i> Inventory Dashboard</h2>
-                <p>Generated: ${new Date().toLocaleString()} | Real-time Stock Summary</p>
-            </div>
-            <div class="report-stats-row">
-                <div class="report-stat-item">
-                    <div class="report-stat-label"><i class="fas fa-microchip"></i> TOTAL COMPONENTS</div>
-                    <div class="report-stat-value">${totalComponents}</div>
-                </div>
-                <div class="report-stat-item">
-                    <div class="report-stat-label"><i class="fas fa-boxes"></i> TOTAL STOCK <span class="report-stat-unit">(PCS)</span></div>
-                    <div class="report-stat-value">${totalStock.toLocaleString()}</div>
-                </div>
-                <div class="report-stat-item">
-                    <div class="report-stat-label"><i class="fas fa-tags"></i> CATEGORIES</div>
-                    <div class="report-stat-value">${categoriesCount}</div>
-                </div>
-                <div class="report-stat-item">
-                    <div class="report-stat-label"><i class="fas fa-exclamation-triangle"></i> LOW STOCK ALERTS</div>
-                    <div class="report-stat-value ${lowStockCount > 0 ? 'low-stock-value' : ''}">${lowStockCount}</div>
-                </div>
-            </div>
-            <div class="report-table-wrapper" style="padding: 20px;">
-                <h3 style="margin-bottom: 15px; color: #1e2f4e;"><i class="fas fa-list"></i> Complete Component List</h3>
-                <table style="width:100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background: #1e2f4e; color: white;">
-                            <th style="padding: 12px;">Component ID</th><th style="padding: 12px;">Component Name</th><th style="padding: 12px;">Category</th><th style="padding: 12px;">Value/Specs</th><th style="padding: 12px;">Stock</th><th style="padding: 12px;">Min Stock</th><th style="padding: 12px;">Location</th><th style="padding: 12px;">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${allComponents.map(c => {
-                            const status = (c.quantity || 0) <= (c.minStockLevel || 0) ? 'LOW' : 'OK';
-                            const statusClass = status === 'OK' ? 'stock-ok' : 'stock-low';
-                            return `<tr style="border-bottom: 1px solid #e9ecef;">
-                                <td style="padding: 10px;"><strong>${escapeHtml(c.componentId)}</strong></td>
-                                <td style="padding: 10px;">${escapeHtml(c.name)}</td>
-                                <td style="padding: 10px;">${escapeHtml(c.category) || '-'}</td>
-                                <td style="padding: 10px;">${escapeHtml(c.value) || '-'}</td>
-                                <td style="padding: 10px;"><strong>${c.quantity || 0}</strong> pcs</td>
-                                <td style="padding: 10px;">${c.minStockLevel || 0}</td>
-                                <td style="padding: 10px;">${escapeHtml(c.location) || '-'}</td>
-                                <td style="padding: 10px;"><span class="stock-badge-report ${statusClass}">${status}</span></td>
-                            </tr>`;
-                        }).join('')}
-                        ${allComponents.length === 0 ? '<tr><td colspan="8" style="text-align:center; padding:40px;">No components in inventory</td></tr>' : ''}
-                    </tbody>
-                </table>
-            </div>
-            <div class="report-footer" style="padding: 16px; text-align: center; background: #f8f9fa; border-radius: 0 0 20px 20px; color: #6c757d; font-size: 12px;">
-                <i class="fas fa-print"></i> EIM Electronics Inventory System | Real-time stock management
-            </div>
-        `;
-        document.getElementById("reportContainer").innerHTML = html;
-    }
-    
-    document.getElementById("exportCSVBtn")?.addEventListener("click", () => {
-        let csv = [["Component ID","Name","Category","Value","Stock","Min Stock","Location"]];
-        allComponents.forEach(c => csv.push([c.componentId, c.name, c.category, c.value, c.quantity, c.minStockLevel, c.location]));
-        const blob = new Blob([csv.map(r => r.join(",")).join("\n")], {type:"text/csv"});
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = `eim_report_${Date.now()}.csv`;
-        a.click();
-        showToast("CSV exported");
-    });
-    
-    document.getElementById("printReportBtn")?.addEventListener("click", () => window.print());
-    document.getElementById("searchInput")?.addEventListener("input", () => renderComponentsTable());
-    document.getElementById("categoryFilter")?.addEventListener("change", () => renderComponentsTable());
-    
-    function switchToView(viewName) {
-        document.querySelectorAll('.nav-btn-desktop, .nav-btn-mobile').forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.dataset.view === viewName) btn.classList.add('active');
-        });
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.getElementById(`${viewName}-view`).classList.add('active');
-        if (viewName === 'reports') generateReport();
-        if (viewName === 'components') renderComponentsTable();
-        if (viewName === 'locations') renderLocations();
-        if (viewName === 'admin' && isAdmin()) loadUsersList();
-        if (viewName === 'add') updateAutoIdPreview();
-    }
-    
-    document.querySelectorAll('.nav-btn-desktop, .nav-btn-mobile').forEach(btn => {
-        btn.addEventListener('click', () => switchToView(btn.dataset.view));
-    });
-    
-    // Authentication
     let isLoginMode = true;
-    const authContainer = document.getElementById('authContainer');
-    const appWrapper = document.getElementById('appWrapper');
-    const authForm = document.getElementById('authForm');
+    const authContainerDiv = document.getElementById('authContainer');
+    const appWrapperDiv = document.getElementById('appWrapper');
+    const authFormElem = document.getElementById('authForm');
     const authSubmitBtn = document.getElementById('authSubmitBtn');
-    const toggleAuth = document.getElementById('toggleAuthMode');
-    const authError = document.getElementById('authError');
-    const rememberCheckbox = document.getElementById('rememberMeCheckbox');
+    const toggleAuthElem = document.getElementById('toggleAuthMode');
+    const authErrorElem = document.getElementById('authError');
+    const rememberCheckboxElem = document.getElementById('rememberMeCheckbox');
+    const authEmailInput = document.getElementById('authEmail');
+    const authPasswordInput = document.getElementById('authPassword');
     
-    document.getElementById('authEmail').value = getLastAdminEmail();
+    const savedEmail = localStorage.getItem('eim_last_email');
+    if(savedEmail && authEmailInput) authEmailInput.value = savedEmail;
     
-    toggleAuth.addEventListener('click', () => {
-        isLoginMode = !isLoginMode;
-        authSubmitBtn.textContent = isLoginMode ? 'Login' : 'Register';
-        toggleAuth.innerHTML = isLoginMode ? "Don't have an account? <strong>Register</strong>" : "Already have an account? <strong>Login</strong>";
-        authError.textContent = '';
-        document.getElementById('authPassword').value = '';
-    });
+    toggleAuthElem?.addEventListener('click',()=>{ isLoginMode=!isLoginMode; authSubmitBtn.textContent = isLoginMode ? 'Login' : 'Register'; toggleAuthElem.innerHTML = isLoginMode ? "Don't have an account? <strong>Register</strong>" : "Already have an account? <strong>Login</strong>"; authErrorElem.textContent=''; authPasswordInput.value = ''; });
     
-    authForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('authEmail').value;
-        const password = document.getElementById('authPassword').value;
-        authError.textContent = '';
-        try {
-            if (isLoginMode) {
-                const persist = rememberCheckbox.checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
-                await auth.setPersistence(persist);
-                const cred = await auth.signInWithEmailAndPassword(email, password);
-                currentUser = cred.user;
-                const snap = await usersRef.child(currentUser.uid).once('value');
-                currentUserRole = snap.exists() ? snap.val().role : 'user';
-                if (currentUserRole === 'admin' && rememberCheckbox.checked) saveLastAdminEmail(email);
-                if (!snap.exists()) await usersRef.child(currentUser.uid).set({ email, role: 'user', createdAt: new Date().toISOString() });
-                showToast(`Welcome ${email}`);
-                authContainer.style.display = 'none';
-                appWrapper.style.display = 'flex';
-                document.getElementById('userEmailDisplay').textContent = email;
-                updateAdminUI();
-                loadComponents();
-                switchToView('reports');
-                document.getElementById('authPassword').value = '';
-            } else {
-                await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-                const cred = await auth.createUserWithEmailAndPassword(email, password);
-                currentUser = cred.user;
-                const usersSnap = await usersRef.once('value');
-                const isFirst = !usersSnap.exists();
-                currentUserRole = isFirst ? 'admin' : 'user';
-                await usersRef.child(currentUser.uid).set({ email, role: currentUserRole, createdAt: new Date().toISOString() });
-                if (currentUserRole === 'admin') saveLastAdminEmail(email);
-                showToast(`Account created! Role: ${currentUserRole}`);
-                authContainer.style.display = 'none';
-                appWrapper.style.display = 'flex';
-                document.getElementById('userEmailDisplay').textContent = email;
-                updateAdminUI();
-                loadComponents();
-                switchToView('reports');
-                document.getElementById('authPassword').value = '';
-            }
-        } catch(error) { authError.textContent = error.message; showToast(error.message, true); }
-    });
+    authFormElem?.addEventListener('submit', async e => { e.preventDefault(); let email = document.getElementById('authEmail').value; let pwd = document.getElementById('authPassword').value; authErrorElem.textContent=''; try { if(isLoginMode){ await auth.setPersistence(rememberCheckboxElem.checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION); let cred = await auth.signInWithEmailAndPassword(email,pwd); localStorage.setItem('eim_last_email', email); currentUser = cred.user; let snap = await usersRef.child(currentUser.uid).once('value'); currentUserRole = snap.exists() ? snap.val().role : 'user'; if(!snap.exists()) await usersRef.child(currentUser.uid).set({ email, role:'user', createdAt:new Date().toISOString() }); authContainerDiv.style.display='none'; appWrapperDiv.style.display='flex'; document.getElementById('userEmailDisplay').textContent = email; updateAdminUI(); loadComponents(); loadPendingComponents(); attachSortListeners(); switchToView('reports'); } else { await auth.createUserWithEmailAndPassword(email,pwd); let user = auth.currentUser; await usersRef.child(user.uid).set({ email, role: 'guest', createdAt: new Date().toISOString(), note: "Guest accounts are read-only. Contact admin to upgrade." }); showToast("Guest account created! You have read-only access.", false); await auth.signInWithEmailAndPassword(email,pwd); } } catch(err){ authErrorElem.textContent = err.message; showToast(err.message,true); } });
     
-    document.getElementById('logoutBtnGlobal').addEventListener('click', async () => {
-        await auth.signOut();
-        authContainer.style.display = 'flex';
-        appWrapper.style.display = 'none';
-        document.getElementById('authPassword').value = '';
-        document.getElementById('authEmail').value = getLastAdminEmail();
-        showToast('Logged out');
-    });
+    document.getElementById('logoutBtnGlobal')?.addEventListener('click', async ()=>{ await auth.signOut(); authContainerDiv.style.display='flex'; appWrapperDiv.style.display='none'; if(authPasswordInput) authPasswordInput.value = ''; showToast('Logged out',false); });
     
-    auth.onAuthStateChanged(async (user) => {
-        if (user) {
-            currentUser = user;
-            const snap = await usersRef.child(user.uid).once('value');
-            currentUserRole = snap.exists() ? snap.val().role : 'user';
-            if (!snap.exists()) await usersRef.child(user.uid).set({ email: user.email, role: 'user', createdAt: new Date().toISOString() });
-            authContainer.style.display = 'none';
-            appWrapper.style.display = 'flex';
-            document.getElementById('userEmailDisplay').textContent = user.email;
-            updateAdminUI();
-            loadComponents();
-        } else {
-            authContainer.style.display = 'flex';
-            appWrapper.style.display = 'none';
-            document.getElementById('authEmail').value = getLastAdminEmail();
-            if (document.getElementById('authPassword')) document.getElementById('authPassword').value = '';
-        }
-    });
+    auth.onAuthStateChanged(async user => { if(user){ currentUser = user; let snap = await usersRef.child(user.uid).once('value'); currentUserRole = snap.exists() ? snap.val().role : 'user'; if(!snap.exists()) await usersRef.child(user.uid).set({ email: user.email, role:'guest', createdAt:new Date().toISOString() }); authContainerDiv.style.display='none'; appWrapperDiv.style.display='flex'; document.getElementById('userEmailDisplay').textContent = user.email; updateAdminUI(); loadComponents(); loadPendingComponents(); attachSortListeners(); } else { authContainerDiv.style.display='flex'; appWrapperDiv.style.display='none'; if(authPasswordInput) authPasswordInput.value = ''; } });
     
-    window.onclick = function(event) { if (event.target.classList.contains('modal')) event.target.style.display = 'none'; };
+    document.getElementById('editForm')?.addEventListener('submit', async e => { e.preventDefault(); if(isGuest()) return; let key = document.getElementById('editKey').value; await componentsRef.child(key).update({ name:document.getElementById('editName').value, category:document.getElementById('editCategory').value, value:document.getElementById('editValue').value, package:document.getElementById('editPackage').value, quantity:parseInt(document.getElementById('editQuantity').value), minStockLevel:parseInt(document.getElementById('editMinStock').value), location:document.getElementById('editLocation').value, updatedAt:new Date().toISOString() }); document.getElementById('editModal').style.display='none'; showToast("Updated",false); });
+    document.getElementById('confirmDeleteBtn')?.addEventListener('click', async ()=>{ if(isGuest()) return; let key = document.getElementById('editKey').value; await componentsRef.child(key).remove(); document.getElementById('editModal').style.display='none'; showToast("Deleted",false); });
+    document.getElementById('closeModalBtn')?.addEventListener('click',()=>document.getElementById('editModal').style.display='none');
+    document.getElementById('cancelEditBtn')?.addEventListener('click',()=>document.getElementById('editModal').style.display='none');
+    document.getElementById('resetFiltersBtn')?.addEventListener('click',()=>{ document.getElementById('searchInput').value=""; document.getElementById('categoryFilter').value=""; document.getElementById('statusFilter').value="all"; renderComponentsTable(); });
+    document.getElementById('searchInput')?.addEventListener('input',()=>renderComponentsTable());
+    document.getElementById('categoryFilter')?.addEventListener('change',()=>renderComponentsTable());
+    document.getElementById('statusFilter')?.addEventListener('change',()=>renderComponentsTable());
+    // Attach export handler
+    document.getElementById('exportCSVBtn')?.addEventListener('click', exportToCSV);
+    document.getElementById('printReportBtn')?.addEventListener('click',()=>window.print());
+    document.getElementById('compCategory')?.addEventListener('input',updateAutoIdPreview);
+    document.getElementById('compValue')?.addEventListener('input',updateAutoIdPreview);
+    document.getElementById('sortLocAscBtn')?.addEventListener('click', () => setLocationSort('asc'));
+    document.getElementById('sortLocDescBtn')?.addEventListener('click', () => setLocationSort('desc'));
+    document.getElementById('editUserForm')?.addEventListener('submit', async e => { e.preventDefault(); let uid = document.getElementById('editUserId').value; let newEmail = document.getElementById('editUserEmail').value; let newRole = document.getElementById('editUserRole').value; let newPassword = document.getElementById('editUserPassword').value; await usersRef.child(uid).update({ email: newEmail, role: newRole, updatedAt: new Date().toISOString() }); if (newPassword && newPassword.length >= 6) { const userSnap = await usersRef.child(uid).once('value'); const userEmail = userSnap.val().email; await auth.sendPasswordResetEmail(userEmail); showToast(`Password reset email sent to ${userEmail}.`, false); } showToast("User updated", false); closeEditUserModal(); loadUsersList(); if(uid === currentUser?.uid) { currentUserRole = newRole; updateAdminUI(); } });
+    document.getElementById('addUserForm')?.addEventListener('submit', async e => { e.preventDefault(); if(!isAdmin()) return; let email = document.getElementById('newUserEmail').value; let pwd = document.getElementById('newUserPassword').value; let role = document.getElementById('newUserRole').value; let cred = await auth.createUserWithEmailAndPassword(email,pwd); await usersRef.child(cred.user.uid).set({ email, role, createdAt: new Date().toISOString() }); showToast(`User ${email} created.`, false); loadUsersList(); document.getElementById('newUserEmail').value = ''; document.getElementById('newUserPassword').value = ''; });
+    function detectDevice() { if(window.innerWidth <= 768){ document.body.classList.remove('desktop-mode'); document.body.classList.add('mobile-mode'); } else { document.body.classList.remove('mobile-mode'); document.body.classList.add('desktop-mode'); } }
+    window.addEventListener('resize', detectDevice); detectDevice();
+    document.querySelectorAll('.nav-btn-desktop, .nav-btn-mobile').forEach(btn => btn.addEventListener('click', function() { switchToView(this.getAttribute('data-view')); }));
+    window.onclick = function(event) { if (event.target.classList?.contains('modal')) event.target.style.display = 'none'; };
+    window.closeEditUserModal = closeEditUserModal;
 </script>
 </body>
 </html>
