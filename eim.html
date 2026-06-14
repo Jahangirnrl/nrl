@@ -214,7 +214,7 @@
         
         .locations-sort-bar {
             display: flex;
-            justify-content: flex-end;
+            justify-content: flex-start;
             align-items: center;
             gap: 12px;
             margin-bottom: 20px;
@@ -468,10 +468,11 @@
             </div> -->
             <!-- CSV Import Area -->
             <div id="csvImportArea" class="csv-import-area" style="display:none;">
-                <span><i class="fas fa-info-circle"></i> Import components from CSV file (Name, Category, Value, Stock, Location)</span>
+                <!-- <span><i class="fas fa-info-circle"></i> Import components from CSV file (Name, Category, Value, Stock, Location)</span> -->
                 <label for="csvFileInput"><i class="fas fa-upload"></i> Choose CSV File</label>
                 <input type="file" id="csvFileInput" accept=".csv">
-                <small>Format: Component Name, Category, Value, Stock Quantity, Storage Location</small>
+                <!-- <small>Format: Component Name, Category, Value, Stock Quantity, Storage Location</small> -->
+                <span><i class="fas fa-info-circle"></i> Import components from CSV file (Name, Category, Value, Stock, Location)</span>
                 <button id="cancelImportBtn" class="reset-btn" style="padding:6px 15px;"><i class="fas fa-times"></i> Cancel</button>
             </div>
             <div id="reportContainer" class="report-container"><div class="report-header"><h2>Loading Report...</h2></div></div>
