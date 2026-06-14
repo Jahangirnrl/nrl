@@ -13,7 +13,68 @@
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background: #f5f7fb; min-height: 100vh; overflow-x: hidden; }
+        
+        /* ========== THEME VARIABLES ========== */
+        :root {
+            /* Light Theme (default) */
+            --bg-body: #f5f7fb;
+            --bg-sidebar: rgba(18, 25, 45, 0.96);
+            --bg-card: white;
+            --bg-table: white;
+            --bg-input: #f9fafb;
+            --text-primary: #1e2f4e;
+            --text-secondary: #6c757d;
+            --text-light: #e0e4f0;
+            --border-color: #ddd;
+            --border-light: #e9ecef;
+            --sidebar-text: white;
+            --nav-hover: #2a3a5e;
+            --nav-active: linear-gradient(95deg, #4facfe, #00f2fe);
+            --input-border: #ced4da;
+            --sidebar-status-bg: rgba(40, 167, 69, 0.3);
+            --sidebar-status-error: rgba(231, 76, 60, 0.3);
+            --stock-bg-normal: #d1fae5;
+            --stock-bg-low: #fee2e2;
+            --stock-btn-minus-bg: #ffe0e0;
+            --stock-btn-plus-bg: #e0ffe0;
+            --stock-btn-plus10-bg: #e0e7ff;
+            --report-header-bg: linear-gradient(135deg, #1e2f4e, #2c3e66);
+            --report-stats-bg: #f8f9fa;
+            --pending-section-bg: #fff3e0;
+            --modal-bg: white;
+            --auto-id-preview-bg: #e8f0fe;
+        }
+        
+        body.dark-theme {
+            --bg-body: #2a2a2a;
+            --bg-sidebar: #1e1e1e;
+            --bg-card: #3a3a3a;
+            --bg-table: #3a3a3a;
+            --bg-input: #4a4a4a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-light: #ccc;
+            --border-color: #555;
+            --border-light: #555;
+            --sidebar-text: #e0e0e0;
+            --nav-hover: #333;
+            --nav-active: linear-gradient(95deg, #4facfe, #00f2fe);
+            --input-border: #555;
+            --sidebar-status-bg: #2a5a2a;
+            --sidebar-status-error: #5a2a2a;
+            --stock-bg-normal: #2a6b2a;
+            --stock-bg-low: #8b3a3a;
+            --stock-btn-minus-bg: #8b3a3a;
+            --stock-btn-plus-bg: #2a6b2a;
+            --stock-btn-plus10-bg: #3a3a6b;
+            --report-header-bg: linear-gradient(135deg, #2c3e66, #1a2a4a);
+            --report-stats-bg: #2a2a2a;
+            --pending-section-bg: #3a3a3a;
+            --modal-bg: #3a3a3a;
+            --auto-id-preview-bg: #4a4a4a;
+        }
+        
+        body { background: var(--bg-body); min-height: 100vh; overflow-x: hidden; transition: background 0.2s ease, color 0.2s ease; }
         
         .auth-container {
             min-height: 100vh;
@@ -29,9 +90,11 @@
             bottom: 0;
             z-index: 9999;
         }
-        
+        body.dark-theme .auth-container {
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d, #1a1a1a);
+        }
         .auth-card {
-            background: white;
+            background: var(--bg-card);
             border-radius: 32px;
             padding: 40px 32px;
             width: 100%;
@@ -39,12 +102,13 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             text-align: center;
         }
-        
         .auth-card .logo-icon { font-size: 56px; color: #4facfe; margin-bottom: 16px; }
-        .auth-card h2 { margin-bottom: 8px; color: #1e2f4e; }
-        .auth-card p { color: #6c757d; font-size: 13px; margin-bottom: 28px; }
-        .auth-input { width: 100%; padding: 14px 16px; margin: 10px 0; border-radius: 28px; border: 1px solid #ddd; font-size: 14px; }
+        .auth-card h2 { margin-bottom: 8px; color: var(--text-primary); }
+        .auth-card p { color: var(--text-secondary); font-size: 13px; margin-bottom: 28px; }
+        .auth-input { width: 100%; padding: 14px 16px; margin: 10px 0; border-radius: 28px; border: 1px solid var(--border-color); font-size: 14px; background: var(--bg-input); color: var(--text-primary); }
+        .auth-input::placeholder { color: var(--text-secondary); }
         .auth-btn { background: linear-gradient(95deg, #4facfe, #00f2fe); border: none; padding: 12px; border-radius: 40px; font-weight: bold; color: #1e2f4e; cursor: pointer; width: 100%; margin-top: 12px; font-size: 16px; }
+        body.dark-theme .auth-btn { color: #1a1a1a; }
         .auth-switch { margin-top: 20px; font-size: 13px; color: #4facfe; cursor: pointer; }
         .error-msg { color: #e74c3c; font-size: 12px; margin-top: 8px; }
         .admin-badge { background: #e67e22; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; display: inline-block; }
@@ -86,7 +150,7 @@
             display: none;
             text-align: center;
             font-size: 9px;
-            color: #6c757d;
+            color: var(--text-secondary);
             padding: 4px 0;
             background: transparent;
         }
@@ -94,14 +158,14 @@
             .mobile-version-hint { display: block; margin-top: 4px; margin-bottom: 60px; }
         }
         
-        .remember-me { display: flex; align-items: center; gap: 8px; margin: 10px 0; font-size: 13px; color: #555; }
-        .remember-me input { width: 16px; height: 16px; cursor: pointer; }
+        .remember-me { display: flex; align-items: center; gap: 8px; margin: 10px 0; font-size: 13px; color: var(--text-secondary); }
+        .remember-me input { width: 16px; height: 16px; cursor: pointer; background: var(--bg-input); }
         .app-wrapper { display: none; width: 100%; min-height: 100vh; }
         
         .sidebar-desktop {
             width: 280px;
-            background: rgba(18, 25, 45, 0.96);
-            color: white;
+            background: var(--bg-sidebar);
+            color: var(--sidebar-text);
             display: flex;
             flex-direction: column;
             position: fixed;
@@ -111,7 +175,8 @@
         
         .logo { padding: 28px 20px; border-bottom: 1px solid rgba(255,255,255,0.15); text-align: center; }
         .logo i { font-size: 48px; color: #4facfe; }
-        .logo h2 { margin-top: 12px; font-weight: 600; }
+        .logo h2 { margin-top: 12px; font-weight: 600; color: var(--sidebar-text); }
+        .logo p { color: var(--text-secondary); }
         
         .nav-desktop { flex: 1; padding: 25px 0; }
         .nav-btn-desktop {
@@ -122,19 +187,41 @@
             text-align: left;
             font-size: 16px;
             font-weight: 500;
-            color: #e0e4f0;
+            color: var(--text-light);
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 12px;
             position: relative;
         }
-        .nav-btn-desktop:hover { background: #2a3a5e; }
-        .nav-btn-desktop.active { background: linear-gradient(95deg, #4facfe, #00f2fe); color: #1a2a3a; font-weight: 600; }
+        .nav-btn-desktop:hover { background: var(--nav-hover); }
+        .nav-btn-desktop.active { background: var(--nav-active); color: #1a2a3a; font-weight: 600; }
+        body.dark-theme .nav-btn-desktop.active { color: #1a1a1a; }
         
         .user-card { padding: 20px; border-top: 1px solid rgba(255,255,255,0.15); text-align: center; }
         .user-email { font-size: 13px; background: #1e2a44; padding: 6px 10px; border-radius: 30px; margin: 10px 0; word-break: break-all; }
+        body.dark-theme .user-email { background: #2a2a2a; color: #ddd; }
         .logout-btn { background: #d9534f; border: none; color: white; padding: 8px 16px; border-radius: 40px; cursor: pointer; width: 100%; font-weight: bold; }
+        
+        /* Theme Toggle Button */
+        .theme-toggle-btn {
+            background: rgba(79, 172, 254, 0.2);
+            border: 1px solid rgba(79, 172, 254, 0.5);
+            border-radius: 40px;
+            padding: 8px 12px;
+            margin-top: 12px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            color: var(--text-dark);
+            transition: all 0.2s;
+        }
+        .theme-toggle-btn:hover { background: rgba(79, 172, 254, 0.4); }
         
         .sidebar-connection-status {
             padding: 12px 20px;
@@ -143,13 +230,14 @@
             background: rgba(0,0,0,0.2);
             text-align: center;
         }
+        body.dark-theme .sidebar-connection-status { background: #252525; }
         
         .bottom-nav-mobile {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(18, 25, 45, 0.98);
+            background: var(--bg-sidebar);
             display: none;
             justify-content: space-around;
             padding: 8px 12px;
@@ -162,7 +250,7 @@
             padding: 8px 12px;
             text-align: center;
             font-size: 12px;
-            color: #a0a8c0;
+            color: var(--text-light);
             cursor: pointer;
             display: flex;
             flex-direction: column;
@@ -172,7 +260,8 @@
             flex: 1;
             position: relative;
         }
-        .nav-btn-mobile.active { background: linear-gradient(95deg, #4facfe, #00f2fe); color: #1a2a3a; font-weight: 600; }
+        .nav-btn-mobile.active { background: var(--nav-active); color: #1a2a3a; font-weight: 600; }
+        body.dark-theme .nav-btn-mobile.active { color: #1a1a1a; }
         
         .main-panel { flex: 1; padding: 20px 24px; width: 100%; }
         body.desktop-mode .main-panel { margin-left: 280px; width: calc(100% - 280px); }
@@ -183,10 +272,10 @@
         .view.active { display: block; }
         @keyframes fade { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
         
-        h1 { font-size: 24px; margin-bottom: 20px; color: #1e2f4e; display: flex; align-items: center; gap: 10px; }
+        h1 { font-size: 24px; margin-bottom: 20px; color: var(--text-primary); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         
         .search-bar {
-            background: white;
+            background: var(--bg-card);
             padding: 12px 16px;
             border-radius: 20px;
             margin-bottom: 20px;
@@ -194,15 +283,18 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-        .search-input, .filter-select { flex: 1; padding: 12px 16px; border-radius: 40px; border: 1px solid #ddd; background: #f9fafb; }
+        .search-input, .filter-select {
+            flex: 1; padding: 12px 16px; border-radius: 40px;
+            border: 1px solid var(--border-color); background: var(--bg-input); color: var(--text-primary);
+        }
         .reset-btn { background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 40px; cursor: pointer; }
         
-        .table-wrapper { background: white; border-radius: 10px; overflow-x: auto; }
+        .table-wrapper { background: var(--bg-table); border-radius: 10px; overflow-x: auto; }
         table { width: 100%; min-width: 800px; border-collapse: collapse; }
-        th { background: #1e2f4e; color: white; padding: 14px 12px; text-align: left; cursor: pointer; user-select: none; transition: background 0.2s; }
-        th:hover { background: #2c3e66; }
+        th { background: #2c3e66; color: white; padding: 14px 12px; text-align: left; cursor: pointer; user-select: none; transition: background 0.2s; }
+        th:hover { background: #3a5a8a; }
         th i { margin-left: 6px; font-size: 12px; opacity: 0.7; }
-        td { padding: 12px; border-bottom: 1px solid #e9ecef; vertical-align: middle; }
+        td { padding: 12px; border-bottom: 1px solid var(--border-light); vertical-align: middle; color: var(--text-primary); background: var(--bg-table); }
         
         .edit-btn, .delete-btn, .clone-btn, .approve-btn, .reject-btn { border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; margin: 0 3px; font-size: 12px; transition: 0.2s; }
         .edit-btn { background: #27ae60; color: white; }
@@ -213,31 +305,36 @@
         .disabled-action { opacity: 0.5; pointer-events: none; filter: grayscale(0.1); cursor: not-allowed; }
         
         .stock-control { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-        .stock-value { font-weight: 700; min-width: 45px; text-align: center; background: #f0f2f5; padding: 4px 8px; border-radius: 20px; font-size: 14px; }
-        .stock-adjust-btn { background: #e9ecef; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; font-size: 16px; cursor: pointer; }
-        .stock-adjust-btn.minus { background: #ffe0e0; color: #c0392b; }
-        .stock-adjust-btn.plus { background: #e0ffe0; color: #27ae60; }
-        .stock-adjust-btn.plus10 { background: #e0e7ff; color: #4f46e5; width: auto; border-radius: 16px; padding: 0 8px; }
+        .stock-value { font-weight: 700; min-width: 45px; text-align: center; padding: 4px 8px; border-radius: 20px; font-size: 14px; background: var(--stock-bg-normal); color: var(--text-primary); }
+        .stock-value.low-stock { background: var(--stock-bg-low); }
+        .stock-adjust-btn { border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .stock-adjust-btn.minus { background: var(--stock-btn-minus-bg); color: #1e2f4e; }
+        .stock-adjust-btn.plus { background: var(--stock-btn-plus-bg); color: #27ae60; }
+        .stock-adjust-btn.plus10 { background: var(--stock-btn-plus10-bg); color: #4f46e5; width: auto; border-radius: 16px; padding: 0 8px; }
         
-        .form-card { background: white; border-radius: 24px; padding: 24px; max-width: 800px; }
+        .form-card { background: var(--bg-card); border-radius: 24px; padding: 24px; max-width: 800px; }
         .form-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px; }
         .form-group { flex: 1; margin-bottom: 15px; }
-        .form-group label { font-weight: 600; margin-bottom: 6px; display: block; font-size: 13px; }
+        .form-group label { font-weight: 600; margin-bottom: 6px; display: block; font-size: 13px; color: var(--text-primary); }
         .form-group label.required:after { content: " *"; color: #e74c3c; }
         
-        input, select, textarea { width: 100%; padding: 12px; border-radius: 16px; border: 1px solid #ced4da; }
-        .btn-primary { background: linear-gradient(95deg, #4facfe, #00f2fe); border: none; padding: 12px 24px; border-radius: 40px; font-weight: bold; cursor: pointer; }
+        input, select, textarea {
+            width: 100%; padding: 12px; border-radius: 16px;
+            border: 1px solid var(--input-border); background: var(--bg-input); color: var(--text-primary);
+        }
+        .btn-primary { background: linear-gradient(95deg, #4facfe, #00f2fe); border: none; padding: 12px 24px; border-radius: 40px; font-weight: bold; cursor: pointer; color: #1e2f4e; }
+        body.dark-theme .btn-primary { color: #1a1a1a; }
         .btn-primary.disabled-btn { opacity: 0.5; pointer-events: none; cursor: default; }
         
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: white; border-radius: 28px; padding: 24px; width: 90%; max-width: 500px; }
+        .modal-content { background: var(--modal-bg); border-radius: 28px; padding: 24px; width: 90%; max-width: 500px; color: var(--text-primary); }
         
         .toast-notify { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(100px); background: #27ae60; color: white; padding: 10px 20px; border-radius: 50px; z-index: 2000; opacity: 0; transition: all 0.3s ease; pointer-events: none; white-space: nowrap; }
         .toast-notify.show { transform: translateX(-50%) translateY(0); opacity: 1; }
         
         .locations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-        .location-card { background: white; padding: 16px; border-radius: 20px; border-left: 4px solid #4facfe; transition: all 0.2s; }
-        .location-card h3 { margin-bottom: 8px; color: #1e2f4e; }
+        .location-card { background: var(--bg-card); padding: 16px; border-radius: 20px; border-left: 4px solid #4facfe; transition: all 0.2s; color: var(--text-primary); }
+        .location-card h3 { margin-bottom: 8px; color: #4facfe; }
         
         .locations-sort-bar {
             display: flex;
@@ -245,46 +342,46 @@
             align-items: center;
             gap: 12px;
             margin-bottom: 20px;
-            background: white;
+            background: var(--bg-card);
             padding: 10px 16px;
             border-radius: 40px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
+        .locations-sort-bar span { color: var(--text-secondary); }
         .sort-location-btn {
-            background: #f0f2f5;
+            background: var(--bg-input);
             border: none;
             padding: 6px 16px;
             border-radius: 30px;
             cursor: pointer;
             font-size: 13px;
             font-weight: 500;
-            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            color: #2c3e66;
+            color: var(--text-primary);
         }
         .sort-location-btn.active {
             background: linear-gradient(95deg, #4facfe, #00f2fe);
-            color: #1a2a3a;
+            color: #1a1a1a;
             box-shadow: 0 2px 6px rgba(79, 172, 254, 0.3);
         }
         .sort-location-btn i { font-size: 12px; }
         
-        .report-container { background: white; border-radius: 20px; overflow-x: auto; }
-        .report-header { background: linear-gradient(135deg, #1e2f4e, #2c3e66); color: white; padding: 24px; border-radius: 20px 20px 0 0; }
+        .report-container { background: var(--bg-card); border-radius: 20px; overflow-x: auto; }
+        .report-header { background: var(--report-header-bg); color: white; padding: 24px; border-radius: 20px 20px 0 0; }
         
-        .report-stats-row { 
-            display: flex !important; 
-            flex-direction: row !important; 
-            flex-wrap: nowrap !important; 
-            justify-content: space-between; 
-            gap: 16px; 
-            padding: 24px; 
-            background: #f8f9fa; 
+        .report-stats-row {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 24px;
+            background: var(--report-stats-bg);
         }
-        .report-stat-item { flex: 1; min-width: 0; background: white; padding: 20px 16px; border-radius: 20px; text-align: center; }
-        .report-stat-value { font-size: 32px; font-weight: 800; color: #1e2f4e; }
+        .report-stat-item { flex: 1; min-width: 0; background: var(--bg-card); padding: 20px 16px; border-radius: 20px; text-align: center; color: var(--text-primary); }
+        .report-stat-value { font-size: 32px; font-weight: 800; color: #4facfe; }
         .low-stock-value { color: #e74c3c; }
         
         .sort-info-badge {
@@ -296,17 +393,17 @@
             margin-top: 8px;
         }
         
-        .auto-id-preview { background: #e8f0fe; border-radius: 12px; padding: 10px 15px; margin-top: 8px; font-size: 13px; border-left: 3px solid #4facfe; }
-        .comp-id-input:read-only { background: #e9ecef; cursor: not-allowed; }
+        .auto-id-preview { background: var(--auto-id-preview-bg); border-radius: 12px; padding: 10px 15px; margin-top: 8px; font-size: 13px; border-left: 3px solid #4facfe; color: var(--text-primary); }
+        .comp-id-input:read-only { background: var(--bg-input); cursor: not-allowed; }
         
-        .edit-user-btn { background: #4facfe; color: white; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; margin-right: 5px; }
+        .edit-user-btn { background: #4facfe; color: #1a1a1a; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; margin-right: 5px; }
         .delete-user-btn { background: #e74c3c; color: white; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; }
         
-        th.sorted-asc { background: #2c3e66; }
-        th.sorted-desc { background: #2c3e66; }
+        th.sorted-asc { background: #3a5a8a; }
+        th.sorted-desc { background: #3a5a8a; }
         
-        .pending-section { margin-bottom: 30px; background: #fff3e0; border-radius: 20px; padding: 20px; }
-        .pending-section h2 { color: #e67e22; margin-bottom: 15px; }
+        .pending-section { margin-bottom: 30px; background: var(--pending-section-bg); border-radius: 20px; padding: 20px; }
+        .pending-section h2 { color: #f39c12; margin-bottom: 15px; }
         
         .report-table {
             width: 100%;
@@ -315,16 +412,20 @@
             table-layout: fixed;
         }
         .report-table th, .report-table td {
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--border-color);
             padding: 10px 8px;
             text-align: left;
             vertical-align: top;
             word-wrap: break-word;
         }
         .report-table th {
-            background: #1e2f4e;
+            background: #2c3e66;
             color: white;
             font-weight: 600;
+        }
+        .report-table td {
+            background: var(--bg-table);
+            color: var(--text-primary);
         }
         .report-table th:nth-child(1) { width: 5%; }
         .report-table th:nth-child(2) { width: 20%; }
@@ -334,7 +435,7 @@
         .report-table th:nth-child(6) { width: 43%; }
         
         @media print {
-            .sidebar-desktop, .bottom-nav-mobile, .btn-primary, .search-bar, .toast-notify, .print-sort-bar, #exportCSVBtn, #printReportBtn, #importCSVBtn, .locations-sort-bar, .report-header button, .nav-btn-desktop, .nav-btn-mobile, .user-card, .logo, .sidebar-connection-status, .version-badge, .mobile-version-hint { display: none !important; }
+            .sidebar-desktop, .bottom-nav-mobile, .btn-primary, .search-bar, .toast-notify, .print-sort-bar, #exportCSVBtn, #printReportBtn, #importCSVBtn, .locations-sort-bar, .report-header button, .nav-btn-desktop, .nav-btn-mobile, .user-card, .logo, .sidebar-connection-status, .version-badge, .mobile-version-hint, .theme-toggle-btn { display: none !important; }
             body.desktop-mode .main-panel { margin-left: 0 !important; width: 100% !important; }
             .main-panel { padding: 0 !important; margin: 0 !important; }
             .report-stats-row { flex-wrap: nowrap !important; page-break-inside: avoid; }
@@ -346,6 +447,8 @@
             .report-header h2 { font-size: 14pt !important; }
             .report-stats-row { padding: 10px !important; }
             .report-stat-item { padding: 8px !important; }
+            body { background: white; }
+            .report-table td, .report-table th { background: white !important; color: black !important; border-color: #ccc !important; }
         }
         
         @media (max-width: 768px) {
@@ -366,6 +469,10 @@
             font-size: 13px;
             color: #856404;
         }
+        body.dark-theme .permission-warning {
+            background: #4a3a2a;
+            color: #ffd966;
+        }
         
         .field-error {
             color: #e74c3c;
@@ -377,7 +484,7 @@
         .loading-spinner {
             text-align: center;
             padding: 40px;
-            color: #6c757d;
+            color: var(--text-secondary);
         }
         .loading-spinner i {
             font-size: 32px;
@@ -391,7 +498,7 @@
         }
         
         .csv-import-area {
-            background: #f8f9fa;
+            background: var(--bg-card);
             border: 2px dashed #4facfe;
             border-radius: 16px;
             padding: 15px 20px;
@@ -401,22 +508,23 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 15px;
+            color: var(--text-primary);
         }
         .csv-import-area label {
             display: inline-flex;
             align-items: center;
             gap: 8px;
             background: #4facfe;
-            color: white;
+            color: #1a1a1a;
             padding: 10px 20px;
             border-radius: 40px;
             cursor: pointer;
             font-weight: 500;
             transition: 0.2s;
         }
-        .csv-import-area label:hover { background: #2c8bda; }
+        .csv-import-area label:hover { background: #2c8bda; color: white; }
         .csv-import-area input[type="file"] { display: none; }
-        .csv-import-area small { color: #6c757d; font-size: 12px; }
+        .csv-import-area small { color: var(--text-secondary); font-size: 12px; }
         
         .csv-format-hint {
             background: #eef2ff;
@@ -426,6 +534,92 @@
             font-size: 12px;
             color: #1e3a8a;
         }
+        body.dark-theme .csv-format-hint {
+            background: #2a3a5a;
+            color: #aac8ff;
+        }
+        
+        select option { background: var(--bg-input); color: var(--text-primary); }
+        
+        body.dark-theme .form-card h3,
+body.dark-theme .table-wrapper h3,
+body.dark-theme #usersTableBody td,
+body.dark-theme #usersTableBody td span,
+body.dark-theme #addUserForm .form-group label {
+    color: #ffffff !important;
+}
+        
+/* Components tab - "Complete Component List" text in dark mode */
+body.dark-theme #reportContainer h3,
+body.dark-theme .report-container h3 {
+    color: #ffffff !important;
+}
+
+/* Component list table headers in dark mode */
+body.dark-theme .report-table th {
+    color: #ffffff !important;
+    background: #2c3e66;
+}
+
+/* Component list table cells in dark mode */
+body.dark-theme .report-table td {
+    color: #e0e0e0 !important;
+}
+
+/* The stock value text inside report table */
+body.dark-theme .report-table td[style*="text-align:center"] {
+    color: #ffffff !important;
+}
+
+/* Any text spans in the report header */
+body.dark-theme .report-header h2,
+body.dark-theme .report-header p,
+body.dark-theme .sort-info-badge {
+    color: #ffffff !important;
+}
+
+body.dark-theme .sort-info-badge strong {
+    color: #ffffff !important;
+}
+        
+/* Add Part tab - submit hint text in dark mode */
+body.dark-theme #submitHint,
+body.dark-theme #submitHint i,
+body.dark-theme #submitHint strong {
+    color: #ffffff !important;
+}
+
+/* Form labels in Add Part tab */
+body.dark-theme #addComponentForm .form-group label {
+    color: #e0e0e0 !important;
+}
+
+/* Required field asterisk */
+body.dark-theme .form-group label.required:after {
+    color: #ff8888 !important;
+}
+
+/* Auto-ID preview text */
+body.dark-theme #autoIdPreview,
+body.dark-theme #autoIdPreview i,
+body.dark-theme #autoIdPreview strong {
+    color: #ffffff !important;
+}
+
+/* Form helper text */
+body.dark-theme .form-card p,
+body.dark-theme .form-card small {
+    color: #cccccc !important;
+}
+
+/* Permission warning text */
+body.dark-theme .permission-warning,
+body.dark-theme .permission-warning strong {
+    color: #ffd966 !important;
+}
+        
+        
+        
     </style>
 </head>
 <body>
@@ -434,7 +628,7 @@
     <div class="auth-card">
         <i class="fas fa-microchip logo-icon"></i>
         <h2>EIM</h2>
-        <p>Electronics Inventory Manager <span style="font-size:9px; background:#e9ecef; padding:2px 8px; border-radius:20px; margin-left:6px;">v2.1.0</span></p>
+        <p>Electronics Inventory Manager <span style="font-size:9px; background:var(--bg-input); padding:2px 8px; border-radius:20px; margin-left:6px;">v2.1.0</span></p>
         <form id="authForm" autocomplete="off">
             <input type="email" id="authEmail" class="auth-input" placeholder="Email address" autocomplete="username" required>
             <input type="password" id="authPassword" class="auth-input" placeholder="Password" autocomplete="new-password" required>
@@ -443,7 +637,7 @@
         </form>
         <div id="authError" class="error-msg"></div>
         <div class="auth-switch" id="toggleAuthMode">Don't have an account? <strong>Register</strong></div>
-        <div style="margin-top: 16px; font-size: 11px; background: #f8f9fa; padding: 8px; border-radius: 12px;">
+        <div style="margin-top: 16px; font-size: 11px; background: var(--bg-input); padding: 8px; border-radius: 12px;">
             <small>🔐 Demo: <strong>guest@eim.com</strong> / guest123 (View-Only)</small><br>
             <small>📝 Note: New registrations are GUEST accounts only</small>
         </div>
@@ -456,7 +650,7 @@
             <i class="fas fa-microchip"></i>
             <h2>EIM</h2>
             <p style="font-size:11px;">Electronics Inventory Manager</p>
-            <div class="version-badge">v2.1.0</div>
+            <div class="version-badge">v2.2.0</div>
         </div>
         <div class="nav-desktop">
             <button class="nav-btn-desktop" data-view="reports"><i class="fas fa-chart-line"></i><span> Reports</span></button>
@@ -471,6 +665,8 @@
             <div class="user-email" id="userEmailDisplay">electronics@eim</div>
             <div id="userRoleDisplay"></div>
             <button id="logoutBtnGlobal" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            <!-- THEME TOGGLE BUTTON ADDED HERE -->
+            <button id="themeToggleSidebar" class="theme-toggle-btn"><i class="fas fa-moon"></i> Dark Mode</button>
         </div>
         <div class="sidebar-connection-status" id="sidebarConnectionStatus">
             <i class="fas fa-spinner fa-pulse"></i> Connecting...
@@ -487,17 +683,22 @@
     </div>
     
     <div class="main-panel">
+        <!-- THEME TOGGLE BUTTON ADDED IN MAIN PANEL TOP RIGHT -->
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+            <button id="themeToggleMain" class="theme-toggle-btn" style="width: auto; padding: 6px 14px;"><i class="fas fa-moon"></i> Dark Mode</button>
+        </div>
+        
         <div id="reports-view" class="view active">
             <h1><i class="fas fa-chart-line"></i> Stock Reports</h1>
             <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
-                <button id="exportCSVBtn" class="btn-primary"><i class="fas fa-file-csv"></i> Export CSV (Direct Import Possible)</button>
-                <button id="importCSVBtn" class="btn-primary" style="background:#2c3e66;"><i class="fas fa-file-import"></i> Import CSV</button>
+                <button id="exportCSVBtn" class="btn-primary"><i class="fas fa-file-csv"></i> Export CSV</button>
+                <button id="importCSVBtn" class="btn-primary" style="background:#2c8bda;"><i class="fas fa-file-import"></i> Import CSV</button>
                 <button id="printReportBtn" class="btn-primary" style="background:#6c5ce7;"><i class="fas fa-print"></i> Print / PDF</button>
             </div>
             <div id="csvImportArea" class="csv-import-area" style="display:none;">
                 <label for="csvFileInput"><i class="fas fa-upload"></i> Choose CSV File</label>
                 <input type="file" id="csvFileInput" accept=".csv">
-                <span><i class="fas fa-info-circle"></i> Import components from CSV file (Name, Category, Value, Stock, Location)</span>
+                <span><i class="fas fa-info-circle"></i> Format: Name, Category, Value, Stock, Location</span>
                 <button id="cancelImportBtn" class="reset-btn" style="padding:6px 15px;"><i class="fas fa-times"></i> Cancel</button>
             </div>
             <div id="reportContainer" class="report-container"><div class="report-header"><h2>Loading Report...</h2></div></div>
@@ -518,20 +719,10 @@
             <div class="table-wrapper">
                 <table id="componentsTable">
                     <thead>
-                        <tr>
-                            <th data-sort="componentId" id="sort-componentId">Component ID <i class="fas fa-sort"></i></th>
-                            <th data-sort="name" id="sort-name">Name <i class="fas fa-sort"></i></th>
-                            <th data-sort="category" id="sort-category">Category <i class="fas fa-sort"></i></th>
-                            <th data-sort="value" id="sort-value">Value <i class="fas fa-sort"></i></th>
-                            <th data-sort="quantity" id="sort-quantity">Stock <i class="fas fa-sort"></i></th>
-                            <th data-sort="location" id="sort-location">Location <i class="fas fa-sort"></i></th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
+                        <tr><th data-sort="componentId" id="sort-componentId">Component ID <i class="fas fa-sort"></i></th><th data-sort="name" id="sort-name">Name <i class="fas fa-sort"></i></th><th data-sort="category" id="sort-category">Category <i class="fas fa-sort"></i></th><th data-sort="value" id="sort-value">Value <i class="fas fa-sort"></i></th><th data-sort="quantity" id="sort-quantity">Stock <i class="fas fa-sort"></i></th><th data-sort="location" id="sort-location">Location <i class="fas fa-sort"></i></th><th>Status</th><th>Actions</th></tr>
                     </thead>
-                    <tbody id="componentsTableBody">
-                        <tr><td colspan="8" class="loading-spinner"><i class="fas fa-microchip fa-pulse"></i><br>Loading components...</td></tr>
-                    </tbody>
+                    <tbody id="componentsTableBody"><tr><td colspan="8" class="loading-spinner"><i class="fas fa-microchip fa-pulse"></i><br>Loading components...</td></tr>
+                </tbody>
                 </table>
             </div>
         </div>
@@ -539,26 +730,12 @@
         <div id="add-view" class="view">
             <h1><i class="fas fa-plus-circle"></i> Add New Component <span id="addModeText"></span></h1>
             <div class="form-card">
-                <div id="permissionWarning" class="permission-warning" style="display:none;">
-                    <i class="fas fa-exclamation-triangle"></i> <strong>Note:</strong> Permission denied error. Please contact administrator.
-                </div>
+                <div id="permissionWarning" class="permission-warning" style="display:none;"><i class="fas fa-exclamation-triangle"></i> <strong>Note:</strong> Permission denied error. Please contact administrator.</div>
                 <form id="addComponentForm" novalidate>
-                    <div class="form-row">
-                        <div class="form-group"><label class="required">Component ID (Auto-Generated)</label><input type="text" id="compId" class="comp-id-input" readonly required><div id="autoIdPreview" class="auto-id-preview"><i class="fas fa-magic"></i> Enter Category and Value to auto-generate ID</div></div>
-                        <div class="form-group"><label class="required">Component Name</label><input type="text" id="compName" required><span class="field-error" id="compNameError"></span></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label class="required">Category</label><input type="text" id="compCategory" required placeholder="e.g., Resistor, Capacitor, IC"><span class="field-error" id="compCategoryError"></span></div>
-                        <div class="form-group"><label class="required">Value/Specs</label><input type="text" id="compValue" required placeholder="e.g., 10kΩ, 100µF"><span class="field-error" id="compValueError"></span></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>Package Type</label><select id="compPackage"><option>Through-hole</option><option>SMD</option><option>SOP</option><option>QFP</option><option>BGA</option></select></div>
-                        <div class="form-group"><label class="required">Stock Quantity (Min 1)</label><input type="number" id="compQuantity" min="1" value="1" required><span class="field-error" id="compQuantityError"></span></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>Min Stock Alert</label><input type="number" id="compMinStock" value="2"></div>
-                        <div class="form-group"><label class="required">Storage Location</label><input type="text" id="locFull" required placeholder="e.g., Cabinet A - Drawer 3"><span class="field-error" id="locFullError"></span></div>
-                    </div>
+                    <div class="form-row"><div class="form-group"><label class="required">Component ID (Auto-Generated)</label><input type="text" id="compId" class="comp-id-input" readonly required><div id="autoIdPreview" class="auto-id-preview"><i class="fas fa-magic"></i> Enter Category and Value to auto-generate ID</div></div><div class="form-group"><label class="required">Component Name</label><input type="text" id="compName" required><span class="field-error" id="compNameError"></span></div></div>
+                    <div class="form-row"><div class="form-group"><label class="required">Category</label><input type="text" id="compCategory" required placeholder="e.g., Resistor, Capacitor, IC"><span class="field-error" id="compCategoryError"></span></div><div class="form-group"><label class="required">Value/Specs</label><input type="text" id="compValue" required placeholder="e.g., 10kΩ, 100µF"><span class="field-error" id="compValueError"></span></div></div>
+                    <div class="form-row"><div class="form-group"><label>Package Type</label><select id="compPackage"><option>Through-hole</option><option>SMD</option><option>SOP</option><option>QFP</option><option>BGA</option></select></div><div class="form-group"><label class="required">Stock Quantity (Min 1)</label><input type="number" id="compQuantity" min="1" value="1" required><span class="field-error" id="compQuantityError"></span></div></div>
+                    <div class="form-row"><div class="form-group"><label>Min Stock Alert</label><input type="number" id="compMinStock" value="2"></div><div class="form-group"><label class="required">Storage Location</label><input type="text" id="locFull" required placeholder="e.g., Cabinet A - Drawer 3"><span class="field-error" id="locFullError"></span></div></div>
                     <div class="form-group"><label>Description</label><textarea id="compDescription" rows="2"></textarea></div>
                     <button type="submit" class="btn-primary" id="addComponentBtn"><i class="fas fa-save"></i> Submit for Approval</button>
                     <p style="font-size:12px; margin-top:10px;" id="submitHint"></p>
@@ -568,15 +745,15 @@
         
         <div id="locations-view" class="view">
             <h1><i class="fas fa-map-marker-alt"></i> Storage Locations</h1>
-            <div class="locations-sort-bar"><span style="font-size:13px; color:#555;"><i class="fas fa-sort-amount-down"></i> Sort by:</span><button id="sortLocAscBtn" class="sort-location-btn active"><i class="fas fa-sort-alpha-down"></i> Name A→Z</button><button id="sortLocDescBtn" class="sort-location-btn"><i class="fas fa-sort-alpha-up"></i> Name Z→A</button></div>
+            <div class="locations-sort-bar"><span style="font-size:13px;"><i class="fas fa-sort-amount-down"></i> Sort by:</span><button id="sortLocAscBtn" class="sort-location-btn active"><i class="fas fa-sort-alpha-down"></i> Name A→Z</button><button id="sortLocDescBtn" class="sort-location-btn"><i class="fas fa-sort-alpha-up"></i> Name Z→A</button></div>
             <div id="locationsGrid" class="locations-grid"><div class="loading-spinner"><i class="fas fa-spinner fa-pulse"></i> Loading locations...</div></div>
         </div>
         
         <div id="admin-view" class="view"><h1><i class="fas fa-users-cog"></i> User Management <span class="admin-badge">Admin Only</span></h1><div class="form-card" style="margin-bottom:20px;"><h3>Add New User</h3><form id="addUserForm"><div class="form-row"><div class="form-group"><label>Email</label><input type="email" id="newUserEmail" required></div><div class="form-group"><label>Password</label><input type="password" id="newUserPassword" required></div><div class="form-group"><label>Role</label><select id="newUserRole"><option value="user">User (Can Add/Edit Own)</option><option value="admin">Admin (Full Access)</option></select></div></div><button type="submit" class="btn-primary"><i class="fas fa-user-plus"></i> Create User</button></form></div><div class="table-wrapper"><h3>Registered Users</h3><table><thead><tr><th>Email</th><th>Role</th><th>Created Date</th><th>Actions</th></tr></thead><tbody id="usersTableBody"></tbody></table></div></div>
         
-        <div id="approvals-view" class="view"><h1><i class="fas fa-check-double"></i> Pending Approvals <span class="admin-badge">Admin Only</span></h1><div id="pendingApprovalsContainer" class="pending-section"><h2><i class="fas fa-clock"></i> Components Awaiting Approval</h2><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Component ID</th><th>Name</th><th>Category</th><th>Value</th><th>Stock</th><th>Location</th><th>Submitted By</th><th>Actions</th></tr></thead><tbody id="pendingTableBody"><tr><td colspan="8" class="loading-spinner"><i class="fas fa-spinner fa-pulse"></i> Loading......</td></tr></tbody></table></div></div></div>
+        <div id="approvals-view" class="view"><h1><i class="fas fa-check-double"></i> Pending Approvals <span class="admin-badge">Admin Only</span></h1><div id="pendingApprovalsContainer" class="pending-section"><h2><i class="fas fa-clock"></i> Components Awaiting Approval</h2><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Component ID</th><th>Name</th><th>Category</th><th>Value</th><th>Stock</th><th>Location</th><th>Submitted By</th><th>Actions</th></tr></thead><tbody id="pendingTableBody"><tr><td colspan="8" class="loading-spinner"><i class="fas fa-spinner fa-pulse"></i> Loading...</td></tr></tbody></table></div></div></div>
         
-        <div class="mobile-version-hint">EIM v2.1.0 — Persistent Login Active</div>
+        <div class="mobile-version-hint">EIM v2.1.0 — Theme Toggle Available</div>
     </div>
 </div>
 
@@ -599,7 +776,6 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
-    // CRITICAL FIX: Use LOCAL persistence for consistent mobile session
     auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     const componentsRef = db.ref('EIM/Components');
     const pendingRef = db.ref('EIM/PendingComponents');
@@ -613,6 +789,41 @@
     let reportSortField = 'name';
     let reportSortOrder = 'asc';
     let locationsSortOrder = 'asc';
+    
+    // ========== THEME TOGGLE FUNCTIONALITY ==========
+    function initTheme() {
+        const savedTheme = localStorage.getItem('eim_theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+            updateThemeButtons(true);
+        } else {
+            document.body.classList.remove('dark-theme');
+            updateThemeButtons(false);
+        }
+    }
+    
+    function updateThemeButtons(isDark) {
+        const icon = isDark ? '<i class="fas fa-sun"></i> Light Mode' : '<i class="fas fa-moon"></i> Dark Mode';
+        const sidebarBtn = document.getElementById('themeToggleSidebar');
+        const mainBtn = document.getElementById('themeToggleMain');
+        if (sidebarBtn) sidebarBtn.innerHTML = icon;
+        if (mainBtn) mainBtn.innerHTML = icon;
+    }
+    
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-theme');
+        localStorage.setItem('eim_theme', isDark ? 'dark' : 'light');
+        updateThemeButtons(isDark);
+        // Refresh UI components to apply theme colors
+        renderComponentsTable();
+        generateReport();
+        renderLocations();
+    }
+    
+    // Attach theme toggle event listeners after DOM is ready
+    document.getElementById('themeToggleSidebar')?.addEventListener('click', toggleTheme);
+    document.getElementById('themeToggleMain')?.addEventListener('click', toggleTheme);
+    // ========== END THEME TOGGLE ==========
     
     function showToast(msg, isError) { 
         const toast = document.getElementById('toastMessage'); 
@@ -690,7 +901,7 @@
                 isValid = false;
             } else {
                 if(errorSpan) errorSpan.textContent = '';
-                if(field) field.style.borderColor = '#ced4da';
+                if(field) field.style.borderColor = 'var(--input-border)';
             }
         });
         const compId = document.getElementById('compId');
@@ -698,7 +909,7 @@
             isValid = false;
             document.getElementById('autoIdPreview').style.borderColor = '#e74c3c';
         } else if(compId) {
-            document.getElementById('autoIdPreview').style.borderColor = '#e8f0fe';
+            document.getElementById('autoIdPreview').style.borderColor = '#4facfe';
         }
         const quantity = parseInt(document.getElementById('compQuantity')?.value);
         if(isNaN(quantity) || quantity < 1) {
@@ -764,7 +975,7 @@
                 <td>${escapeHtml(c.name)}</td>
                 <td>${escapeHtml(c.category) || '-'}</td>
                 <td>${escapeHtml(c.value) || '-'}</td>
-                <td><div class="stock-control"><button class="stock-adjust-btn minus ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', -1)` : ''}">-</button><span class="stock-value" style="background:${low ? '#fee2e2' : '#d1fae5'};">${c.quantity || 0}</span><button class="stock-adjust-btn plus ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', 1)` : ''}">+</button><button class="stock-adjust-btn plus10 ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', 10)` : ''}">+10</button></div></td>
+                <td><div class="stock-control"><button class="stock-adjust-btn minus ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', -1)` : ''}">-</button><span class="stock-value ${low ? 'low-stock' : ''}">${c.quantity || 0}</span><button class="stock-adjust-btn plus ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', 1)` : ''}">+</button><button class="stock-adjust-btn plus10 ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', 10)` : ''}">+10</button></div></td>
                 <td>${escapeHtml(c.location) || '-'}</td>
                 <td>${statusBadge}</td>
                 <td><button class="edit-btn ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `editComponent('${c.firebaseKey}')` : ''}"><i class="fas fa-edit"></i> Edit</button> <button class="delete-btn ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `deleteComponent('${c.firebaseKey}')` : ''}"><i class="fas fa-trash"></i> Del</button> <button class="clone-btn ${isGuest() ? 'disabled-action' : ''}" onclick="${!isGuest() ? `cloneComponentToAdd('${c.firebaseKey}')` : ''}"><i class="fas fa-copy"></i> Clone</button></td>
@@ -799,7 +1010,7 @@
               </tr>`; 
         });
         
-        document.getElementById("reportContainer").innerHTML = `<div class="report-header"><h2><i class="fas fa-chart-bar"></i> Inventory Dashboard</h2><p>Generated: ${new Date().toLocaleString()}</p><div class="sort-info-badge"><i class="fas fa-sort-amount-down"></i> Sorted by: <strong>${sortFieldName}</strong> (${reportSortOrder === 'asc' ? 'Ascending ↑' : 'Descending ↓'})</div><div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;"><button class="btn-primary" style="padding:4px 10px; font-size:12px; background:#6c5ce7;" onclick="sortReportData('name')">Sort by Name</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('category')">Sort by Category</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('value')">Sort by Value</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('quantity')">Sort by Stock</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('location')">Sort by Location</button></div></div><div class="report-stats-row"><div class="report-stat-item"><div>Total Components</div><div class="report-stat-value">${approvedComps.length}</div></div><div class="report-stat-item"><div>Total Stock</div><div class="report-stat-value">${totalStock.toLocaleString()}</div></div><div class="report-stat-item"><div>Categories</div><div class="report-stat-value">${categoriesCount}</div></div><div class="report-stat-item"><div>Low Stock</div><div class="report-stat-value ${lowStockCount>0?'low-stock-value':''}">${lowStockCount}</div></div></div><div style="padding:20px;"><h3>Complete Component List <span style="font-size:12px; color:#666;">(${approvedComps.length} items)</span></h3><table class="report-table"><thead><tr><th>#</th><th>Component Name</th><th>Category</th><th>Value</th><th>Stock</th><th>Storage Location</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+        document.getElementById("reportContainer").innerHTML = `<div class="report-header"><h2><i class="fas fa-chart-bar"></i> Inventory Dashboard</h2><p>Generated: ${new Date().toLocaleString()}</p><div class="sort-info-badge"><i class="fas fa-sort-amount-down"></i> Sorted by: <strong>${sortFieldName}</strong> (${reportSortOrder === 'asc' ? 'Ascending ↑' : 'Descending ↓'})</div><div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;"><button class="btn-primary" style="padding:4px 10px; font-size:12px; background:#6c5ce7;" onclick="sortReportData('name')">Sort by Name</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('category')">Sort by Category</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('value')">Sort by Value</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('quantity')">Sort by Stock</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('location')">Sort by Location</button></div></div><div class="report-stats-row"><div class="report-stat-item"><div>Total Components</div><div class="report-stat-value">${approvedComps.length}</div></div><div class="report-stat-item"><div>Total Stock</div><div class="report-stat-value">${totalStock.toLocaleString()}</div></div><div class="report-stat-item"><div>Categories</div><div class="report-stat-value">${categoriesCount}</div></div><div class="report-stat-item"><div>Low Stock</div><div class="report-stat-value ${lowStockCount>0?'low-stock-value':''}">${lowStockCount}</div></div></div><div style="padding:20px;"><h3>Complete Component List <span style="font-size:12px; color:var(--text-secondary);">(${approvedComps.length} items)</span></h3><table class="report-table"><thead><tr><th>#</th><th>Component Name</th><th>Category</th><th>Value</th><th>Stock</th><th>Storage Location</th></tr></thead><tbody>${rows}</tbody></table></div>`;
     }
     
     window.sortReportData = (field) => { if(reportSortField === field) reportSortOrder = reportSortOrder === 'asc' ? 'desc' : 'asc'; else { reportSortField = field; reportSortOrder = 'asc'; } generateReport(); };
@@ -818,7 +1029,7 @@
     
     function populateFilters() { let cats = [...new Set(allComponents.filter(c => c.status === 'approved').map(c=>c.category).filter(Boolean))]; let sel = document.getElementById("categoryFilter"); if(sel) sel.innerHTML = '<option value="">All Categories</option>' + cats.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join(''); }
     
-    function updateSortIcons() { const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location']; for(let field of fields) { const th = document.getElementById(`sort-${field}`); if(th) { const icon = th.querySelector('i'); if(currentSort.field === field) { th.style.backgroundColor = '#2c3e66'; if(icon) icon.className = currentSort.direction === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'; } else { th.style.backgroundColor = '#1e2f4e'; if(icon) icon.className = 'fas fa-sort'; } } } }
+    function updateSortIcons() { const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location']; for(let field of fields) { const th = document.getElementById(`sort-${field}`); if(th) { const icon = th.querySelector('i'); if(currentSort.field === field) { th.style.backgroundColor = '#3a5a8a'; if(icon) icon.className = currentSort.direction === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'; } else { th.style.backgroundColor = '#2c3e66'; if(icon) icon.className = 'fas fa-sort'; } } } }
     
     function attachSortListeners() { const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location']; for(let field of fields) { const th = document.getElementById(`sort-${field}`); if(th) { th.onclick = () => { if(currentSort.field === field) currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc'; else { currentSort.field = field; currentSort.direction = 'asc'; } renderComponentsTable(); }; } } }
     
@@ -828,7 +1039,7 @@
     
     function updateAdminUI() { let btns = [document.getElementById('adminNavBtn'), document.getElementById('adminNavBtnMobile')]; btns.forEach(btn=>{if(btn) btn.style.display = isAdmin() ? 'flex' : 'none';}); let roleDiv = document.getElementById('userRoleDisplay'); if(roleDiv) { if(isAdmin()) roleDiv.innerHTML = '<span class="admin-badge">Administrator</span>'; else if(isGuest()) roleDiv.innerHTML = '<span class="guest-badge">👓 Guest (Read Only)</span>'; else roleDiv.innerHTML = '<span class="user-badge">User (Submissions Need Approval)</span>'; } applyPermissionsToUI(); }
     
-    async function loadUsersList() { if(!isAdmin()) return; let snap = await usersRef.once('value'); let users = snap.val(); let tbody = document.getElementById('usersTableBody'); if(!users){ tbody.innerHTML='<tr><td colspan="4">No users</td></tr>'; return; } tbody.innerHTML=''; for(let uid in users){ let u = users[uid]; let row = tbody.insertRow(); row.insertCell(0).innerHTML = escapeHtml(u.email); let roleCell = row.insertCell(1); if(u.role === 'admin') roleCell.innerHTML = '<span class="admin-badge">Admin</span>'; else if(u.role === 'guest') roleCell.innerHTML = '<span class="guest-badge">Guest</span>'; else roleCell.innerHTML = '<span class="user-badge">User</span>'; row.insertCell(2).innerHTML = u.createdAt?new Date(u.createdAt).toLocaleString():'N/A'; let actions = row.insertCell(3); if(uid !== currentUser?.uid) actions.innerHTML = `<button class="edit-user-btn" onclick="openEditUserModal('${uid}','${escapeHtml(u.email)}','${u.role}')">Edit</button> <button class="delete-user-btn" onclick="deleteUser('${uid}')">Delete</button>`; else actions.innerHTML = '<span style="color:#6c757d;"><i class="fas fa-user-shield"></i> You</span>'; } }
+    async function loadUsersList() { if(!isAdmin()) return; let snap = await usersRef.once('value'); let users = snap.val(); let tbody = document.getElementById('usersTableBody'); if(!users){ tbody.innerHTML='<tr><td colspan="4">No users</td></tr>'; return; } tbody.innerHTML=''; for(let uid in users){ let u = users[uid]; let row = tbody.insertRow(); row.insertCell(0).innerHTML = escapeHtml(u.email); let roleCell = row.insertCell(1); if(u.role === 'admin') roleCell.innerHTML = '<span class="admin-badge">Admin</span>'; else if(u.role === 'guest') roleCell.innerHTML = '<span class="guest-badge">Guest</span>'; else roleCell.innerHTML = '<span class="user-badge">User</span>'; row.insertCell(2).innerHTML = u.createdAt?new Date(u.createdAt).toLocaleString():'N/A'; let actions = row.insertCell(3); if(uid !== currentUser?.uid) actions.innerHTML = `<button class="edit-user-btn" onclick="openEditUserModal('${uid}','${escapeHtml(u.email)}','${u.role}')">Edit</button> <button class="delete-user-btn" onclick="deleteUser('${uid}')">Delete</button>`; else actions.innerHTML = '<span style="color:var(--text-secondary);"><i class="fas fa-user-shield"></i> You</span>'; } }
     
     window.deleteUser = async (uid) => { if(isAdmin() && uid !== currentUser?.uid && confirm("Delete user?")){ await usersRef.child(uid).remove(); loadUsersList(); showToast("User deleted",false); } };
     window.openEditUserModal = (uid, email, role) => { document.getElementById('editUserId').value = uid; document.getElementById('editUserEmail').value = email; document.getElementById('editUserRole').value = role; document.getElementById('editUserPassword').value = ''; document.getElementById('editUserModal').style.display = 'flex'; };
@@ -875,15 +1086,15 @@
             const sidebarStatus = document.getElementById('sidebarConnectionStatus');
             if(sidebarStatus) { 
                 sidebarStatus.innerHTML = '<i class="fas fa-check-circle"></i> Connected - ' + allComponents.length + ' components'; 
-                sidebarStatus.style.background = 'rgba(40, 167, 69, 0.3)'; 
+                sidebarStatus.style.background = 'var(--sidebar-status-bg)'; 
             }
             refreshUI();
             if(document.getElementById('compCategory')) updateAutoIdPreview();
         }, (error) => {
             const sidebarStatus = document.getElementById('sidebarConnectionStatus');
             if(sidebarStatus) { 
-                sidebarStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Connection error - using offline mode'; 
-                sidebarStatus.style.background = 'rgba(231, 76, 60, 0.3)'; 
+                sidebarStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Connection error'; 
+                sidebarStatus.style.background = 'var(--sidebar-status-error)'; 
             }
             console.error("Firebase error:", error);
             showToast("Database connection issue. Please check your network.", true);
@@ -894,7 +1105,7 @@
     
     function refreshUI() { renderComponentsTable(); populateFilters(); renderLocations(); generateReport(); if(isAdmin()) loadUsersList(); applyPermissionsToUI(); }
     
-    // Auth handling
+    // Authentication
     let isLoginMode = true;
     const authContainerDiv = document.getElementById('authContainer');
     const appWrapperDiv = document.getElementById('appWrapper');
@@ -1004,7 +1215,7 @@
         const field = document.getElementById(fieldId);
         if(field) {
             field.addEventListener('input', function() {
-                this.style.borderColor = '#ced4da';
+                this.style.borderColor = 'var(--input-border)';
                 const errorSpan = document.getElementById(fieldId + 'Error');
                 if(errorSpan) errorSpan.textContent = '';
             });
@@ -1111,7 +1322,9 @@
         reader.readAsText(file, 'UTF-8');
     });
     
-    console.log("EIM v2.1.0 — Version badge added + mobile persistent session fixed");
+    // Initialize theme
+    initTheme();
+    console.log("EIM v2.1.0 — Dark/Light mode toggle added");
 </script>
 </body>
 </html>
