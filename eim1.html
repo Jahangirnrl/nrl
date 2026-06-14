@@ -220,7 +220,7 @@
         .sort-location-btn i { font-size: 12px; }
         
         .report-container { background: white; border-radius: 20px; overflow-x: auto; }
-        .report-header { background: linear-gradient(135deg, #1e2f4e, #2c3e66); color: white; padding: 20px 24px; border-radius: 20px 20px 0 0; }
+        .report-header { background: linear-gradient(135deg, #1e2f4e, #2c3e66); color: white; padding: 24px; border-radius: 20px 20px 0 0; }
         
         .report-stats-row { 
             display: flex !important; 
@@ -228,12 +228,21 @@
             flex-wrap: nowrap !important; 
             justify-content: space-between; 
             gap: 16px; 
-            padding: 20px 24px; 
+            padding: 24px; 
             background: #f8f9fa; 
         }
-        .report-stat-item { flex: 1; min-width: 0; background: white; padding: 16px 12px; border-radius: 20px; text-align: center; }
-        .report-stat-value { font-size: 28px; font-weight: 800; color: #1e2f4e; }
+        .report-stat-item { flex: 1; min-width: 0; background: white; padding: 20px 16px; border-radius: 20px; text-align: center; }
+        .report-stat-value { font-size: 32px; font-weight: 800; color: #1e2f4e; }
         .low-stock-value { color: #e74c3c; }
+        
+        .sort-info-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 8px;
+        }
         
         .auto-id-preview { background: #e8f0fe; border-radius: 12px; padding: 10px 15px; margin-top: 8px; font-size: 13px; border-left: 3px solid #4facfe; }
         .comp-id-input:read-only { background: #e9ecef; cursor: not-allowed; }
@@ -244,22 +253,15 @@
         th.sorted-asc { background: #2c3e66; }
         th.sorted-desc { background: #2c3e66; }
         
-        /* Hide sort info badge on print */
-        .sort-info-badge { display: none; }
-        
         @media print {
             .sidebar-desktop, .bottom-nav-mobile, .btn-primary, .search-bar, .toast-notify, .print-sort-bar, #exportCSVBtn, #printReportBtn, .locations-sort-bar { display: none !important; }
             body.desktop-mode .main-panel { margin-left: 0 !important; width: 100% !important; }
             .main-panel { padding: 0 !important; margin: 0 !important; }
             .report-stats-row { flex-wrap: nowrap !important; page-break-inside: avoid; }
             .report-container { margin: 0; padding: 0; }
-            .report-table th, .report-table td { padding: 4px 3px !important; font-size: 9pt !important; }
-            .report-stat-value { font-size: 16px !important; }
-            .report-stat-item { padding: 8px 4px !important; }
-            .report-header { padding: 12px 16px !important; }
-            .report-header h2 { font-size: 14pt !important; margin: 0; }
-            .report-header p { font-size: 8pt !important; margin: 2px 0; }
-            .sort-info-badge { display: none !important; }
+            .report-table th, .report-table td { padding: 4px 3px !important; font-size: 10pt !important; }
+            .report-stat-value { font-size: 18px !important; }
+            .sort-info-badge { display: inline-block !important; }
         }
         
         @media (max-width: 768px) {
@@ -353,7 +355,7 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="componentsTableBody"> hilab<td colspan="7">Loading components...</td></tbody>
+                    <tbody id="componentsTableBody"><tr><td colspan="7">Loading components...</td></td></tbody>
                 </table>
             </div>
         </div>
@@ -385,8 +387,7 @@
         <div id="admin-view" class="view">
             <h1><i class="fas fa-users-cog"></i> User Management <span class="admin-badge">Admin Only</span></h1>
             <div class="form-card" style="margin-bottom:20px;"><h3> Add New User</h3><form id="addUserForm"><div class="form-row"><div class="form-group"><label>Email</label><input type="email" id="newUserEmail" required></div><div class="form-group"><label>Password</label><input type="password" id="newUserPassword" required></div><div class="form-group"><label>Role</label><select id="newUserRole"><option value="user">User</option><option value="admin">Admin</option></select></div></div><button type="submit" class="btn-primary"><i class="fas fa-user-plus"></i> Create User</button></form></div>
-            <div class="table-wrapper"><h3> Registered Users</h3><table><thead><tr><th>Email</th><th>Role</th><th>Created Date</th><th>Actions</th></tr></thead><tbody id="usersTableBody"><tr><td colspan="4">Loading......</td></tr></tbody>
-            </div>
+            <div class="table-wrapper"><h3> Registered Users</h3><table><thead><tr><th>Email</th><th>Role</th><th>Created Date</th><th>Actions</th></tr></thead><tbody id="usersTableBody"><tr><td colspan="4">Loading...</td></tr></tbody>}</div>
         </div>
     </div>
 </div>
@@ -421,6 +422,11 @@
     let printSortField = 'name';
     let printSortOrder = 'asc';
     let locationsSortOrder = 'asc';
+    
+    function getFieldDisplayName(field) {
+        const names = { name: 'Name', category: 'Category', value: 'Value', location: 'Location', quantity: 'Stock', componentId: 'Component ID' };
+        return names[field] || field;
+    }
     
     function parseValueToNumber(val) { if (!val) return 0; const match = val.match(/^([\d\.]+)\s*([kKMGTPuµmun]?)/); if (!match) return 0; let num = parseFloat(match[1]); const prefix = match[2].toLowerCase(); const mult = { 'p':1e-12,'n':1e-9,'u':1e-6,'µ':1e-6,'m':1e-3,'k':1e3,'M':1e6,'G':1e9,'T':1e12 }; if (mult[prefix]) num *= mult[prefix]; return num; }
     function showToast(msg, isError) { const toast = document.getElementById('toastMessage'); document.getElementById('toastText').textContent = msg; toast.style.background = isError ? '#e74c3c' : '#27ae60'; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000); }
@@ -473,7 +479,7 @@
         
         let tbody = document.getElementById("componentsTableBody");
         if (!tbody) return;
-        if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No components found</td></tr>'; return; }
+        if (filtered.length === 0) { tbody.innerHTML = '</table><td colspan="7" style="text-align:center;">No components found</td></tr>'; return; }
         
         let html = '';
         for (let c of filtered) {
@@ -620,11 +626,15 @@
             }
         });
         
+        let sortDirectionText = printSortOrder === 'asc' ? '↑ Ascending' : '↓ Descending';
+        let sortFieldText = getFieldDisplayName(printSortField);
+        
         let rows = sorted.map((c,i)=>`<tr><td style="padding:4px 3px;">${i+1}</td><td style="padding:4px 3px;">${escapeHtml(c.name)}</td><td style="padding:4px 3px;">${escapeHtml(c.category)||'-'}</td><td style="padding:4px 3px;">${escapeHtml(c.value)||'-'}</td><td style="padding:4px 3px;">${escapeHtml(c.location)||'-'}</td></tr>`).join(''); 
         
         document.getElementById("reportContainer").innerHTML = `<div class="report-header">
             <h2><i class="fas fa-chart-bar"></i> Inventory Dashboard</h2>
             <p>Generated: ${new Date().toLocaleString()}</p>
+            <div class="sort-info-badge"><i class="fas fa-sort-amount-down"></i> Sorted by: <strong>${sortFieldText}</strong> (${sortDirectionText})</div>
         </div>
         <div style="display:flex;gap:12px;margin:15px 20px;flex-wrap:wrap;">
             <button class="btn-primary" style="padding:6px 12px;" onclick="sortReportData('name')"><i class="fas fa-sort-alpha-down"></i> Name</button>
@@ -639,7 +649,7 @@
             <div class="report-stat-item"><div>Low Stock</div><div class="report-stat-value ${lowStockCount>0?'low-stock-value':''}">${lowStockCount}</div></div>
         </div>
         <div style="padding:12px;">
-            <h3>Complete Component List</h3>
+            <h3>Complete Component List <span style="font-size:12px; color:#666;">(Sorted by: ${sortFieldText} ${printSortOrder === 'asc' ? '↑' : '↓'})</span></h3>
             <table class="report-table" style="width:100%;border-collapse:collapse;">
                 <thead><tr style="background:#1e2f4e;color:#fff"><th style="padding:5px 3px;">#</th><th style="padding:5px 3px;">Name</th><th style="padding:5px 3px;">Category</th><th style="padding:5px 3px;">Value</th><th style="padding:5px 3px;">Location</th></tr></thead>
                 <tbody>${rows}</tbody>
