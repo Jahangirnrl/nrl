@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Converter | EIM Export → Import Format</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: white;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header h1 i {
+            color: #4facfe;
+            margin-right: 10px;
+        }
+        
+        .header p {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .card h2 {
+            color: #1e2f4e;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+        }
+        
+        .card h2 i {
+            color: #4facfe;
+        }
+        
+        .file-area {
+            border: 2px dashed #4facfe;
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .file-area:hover {
+            background: #e8f0fe;
+            border-color: #2c8bda;
+        }
+        
+        .file-area i {
+            font-size: 48px;
+            color: #4facfe;
+            margin-bottom: 15px;
+        }
+        
+        .file-area p {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .file-area .small {
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .preview-section {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .preview-section h3 {
+            color: #1e2f4e;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .preview-box {
+            background: #1e1e2e;
+            color: #a6e22e;
+            padding: 15px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            max-height: 300px;
+            margin-bottom: 15px;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px 25px;
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4facfe;
+        }
+        
+        .stat-card .label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(95deg, #4facfe, #00f2fe);
+            color: #1e2f4e;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-warning {
+            background: #e67e22;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #d35400;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .format-example {
+            background: #e8f0fe;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .format-example h3 {
+            color: #1e2f4e;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .format-example pre {
+            background: #1e1e2e;
+            color: #a6e22e;
+            padding: 12px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 11px;
+            margin-top: 8px;
+        }
+        
+        .format-example .note {
+            font-size: 12px;
+            color: #e74c3c;
+            margin-top: 10px;
+        }
+        
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+            margin-top: 30px;
+        }
+        
+        .alert {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .filename {
+            background: #e9ecef;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .card { padding: 20px; }
+            .btn { padding: 10px 16px; font-size: 12px; }
+            .stat-card .number { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-exchange-alt"></i> EIM CSV Converter</h1>
+            <p>Convert exported backup files to ready-to-import format</p>
+        </div>
+        
+        <div class="card">
+            <h2><i class="fas fa-upload"></i> 1. Upload Exported CSV</h2>
+            <div class="file-area" id="fileDropZone">
+                <i class="fas fa-file-csv"></i>
+                <p>Click or drag & drop your exported CSV file here</p>
+                <p class="small">Accepts files exported from EIM "Export CSV (Backup)" button</p>
+                <input type="file" id="fileInput" accept=".csv">
+            </div>
+            <div id="filenameDisplay"></div>
+            
+            <div id="alertBox" class="alert"></div>
+            
+            <div id="previewSection" class="preview-section">
+                <h3><i class="fas fa-eye"></i> Conversion Preview</h3>
+                <div class="stats" id="statsPanel"></div>
+                <div class="preview-box" id="previewBox"></div>
+                <div class="buttons">
+                    <button class="btn btn-success" id="downloadBtn" disabled>
+                        <i class="fas fa-download"></i> Download Import-Ready CSV
+                    </button>
+                    <button class="btn btn-primary" id="copyBtn" disabled>
+                        <i class="fas fa-copy"></i> Copy to Clipboard
+                    </button>
+                    <button class="btn btn-secondary" id="resetBtn">
+                        <i class="fas fa-trash-alt"></i> Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2><i class="fas fa-info-circle"></i> Format Reference</h2>
+            <div class="format-example">
+                <h3>📤 Exported Format (from EIM)</h3>
+                <pre>#,"Component Name","Category","Value","Stock","Storage Location"
+1,"10k Resistor","Resistor","10kΩ",50,"Cabinet A-1"
+2,"100uF Capacitor","Capacitor","100µF",30,"Drawer B-2"
+3,"ATMega328","IC","16MHz",10,"ESD Box 3"</pre>
+                
+                <h3 style="margin-top: 15px;">📥 Import Format (after conversion)</h3>
+                <pre>Component Name,Category,Value,Stock,Location
+"10k Resistor","Resistor","10kΩ",50,"Cabinet A-1"
+"100uF Capacitor","Capacitor","100µF",30,"Drawer B-2"
+"ATMega328","IC","16MHz",10,"ESD Box 3"</pre>
+                
+                <div class="note">
+                    <i class="fas fa-lightbulb"></i> <strong>Note:</strong> The converter automatically:
+                    <ul style="margin-top: 8px; margin-left: 20px;">
+                        <li>Removes the # (serial number) column</li>
+                        <li>Renames "Storage Location" → "Location"</li>
+                        <li>Reorders headers to match import format</li>
+                        <li>Preserves all your component data</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2><i class="fas fa-question-circle"></i> How to Use</h2>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div><strong>Step 1:</strong> In EIM, go to Reports tab and click <strong>"Export CSV (Backup)"</strong> to save your data</div>
+                <div><strong>Step 2:</strong> Upload that exported file using this converter</div>
+                <div><strong>Step 3:</strong> Review the preview to verify your data</div>
+                <div><strong>Step 4:</strong> Click <strong>"Download Import-Ready CSV"</strong></div>
+                <div><strong>Step 5:</strong> In EIM, click <strong>"Import CSV"</strong> and select the converted file</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <i class="fas fa-microchip"></i> EIM Electronics Inventory Manager - CSV Converter Tool
+        </div>
+    </div>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        // DOM Elements
+        const fileInput = document.getElementById('fileInput');
+        const fileDropZone = document.getElementById('fileDropZone');
+        const filenameDisplay = document.getElementById('filenameDisplay');
+        const previewSection = document.getElementById('previewSection');
+        const previewBox = document.getElementById('previewBox');
+        const statsPanel = document.getElementById('statsPanel');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const alertBox = document.getElementById('alertBox');
+        
+        let convertedData = null;
+        let originalFilename = '';
+        let convertedCSV = '';
+        let componentCount = 0;
+        
+        // File drop zone click
+        fileDropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        // Drag and drop
+        fileDropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileDropZone.style.background = '#e8f0fe';
+            fileDropZone.style.borderColor = '#2c8bda';
+        });
+        
+        fileDropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            fileDropZone.style.background = '#f8f9fa';
+            fileDropZone.style.borderColor = '#4facfe';
+        });
+        
+        fileDropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileDropZone.style.background = '#f8f9fa';
+            fileDropZone.style.borderColor = '#4facfe';
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+        
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+        
+        // Reset button
+        resetBtn.addEventListener('click', () => {
+            fileInput.value = '';
+            convertedData = null;
+            originalFilename = '';
+            convertedCSV = '';
+            filenameDisplay.innerHTML = '';
+            previewSection.style.display = 'none';
+            alertBox.style.display = 'none';
+            fileDropZone.style.background = '#f8f9fa';
+            fileDropZone.style.borderColor = '#4facfe';
+        });
+        
+        // Download button
+        downloadBtn.addEventListener('click', () => {
+            if (!convertedCSV) return;
+            
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+            const downloadFilename = `import_ready_${timestamp}.csv`;
+            
+            const blob = new Blob([convertedCSV], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.setAttribute('download', downloadFilename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showAlert('success', `✓ File downloaded as "${downloadFilename}" - Ready to import into EIM!`);
+        });
+        
+        // Copy button
+        copyBtn.addEventListener('click', async () => {
+            if (!convertedCSV) return;
+            try {
+                await navigator.clipboard.writeText(convertedCSV);
+                showAlert('success', '✓ Converted CSV copied to clipboard!');
+            } catch (err) {
+                showAlert('error', 'Failed to copy. Please download the file instead.');
+            }
+        });
+        
+        // Main conversion function
+        function handleFile(file) {
+            if (!file.name.endsWith('.csv')) {
+                showAlert('error', 'Please select a valid CSV file exported from EIM');
+                return;
+            }
+            
+            originalFilename = file.name;
+            filenameDisplay.innerHTML = `<span class="filename"><i class="fas fa-file-csv"></i> ${escapeHtml(file.name)}</span>`;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const csvText = event.target.result;
+                const result = convertExportedToImport(csvText);
+                
+                if (result && result.data.length > 0) {
+                    convertedCSV = result.csv;
+                    componentCount = result.data.length;
+                    convertedData = result.data;
+                    
+                    // Show preview
+                    displayPreview(result);
+                    previewSection.style.display = 'block';
+                    downloadBtn.disabled = false;
+                    copyBtn.disabled = false;
+                    showAlert('success', `✓ Successfully converted ${componentCount} components! Ready for import.`);
+                } else {
+                    showAlert('error', 'Failed to convert. Make sure you selected a valid exported CSV file from EIM.');
+                    previewSection.style.display = 'none';
+                    downloadBtn.disabled = true;
+                    copyBtn.disabled = true;
+                }
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+        
+        // Convert exported CSV to import format
+        function convertExportedToImport(csvText) {
+            const lines = csvText.split(/\r?\n/).filter(line => line.trim());
+            if (lines.length < 2) {
+                return null;
+            }
+            
+            // Parse header - handles quoted fields
+            const headerLine = lines[0];
+            const headerCols = parseCSVLine(headerLine);
+            
+            // Find column indices (case insensitive)
+            let nameIdx = -1, categoryIdx = -1, valueIdx = -1, stockIdx = -1, locationIdx = -1;
+            
+            for (let i = 0; i < headerCols.length; i++) {
+                const col = headerCols[i].toLowerCase().replace(/^"|"$/g, '').trim();
+                if (col === 'component name' || col === 'name') nameIdx = i;
+                else if (col === 'category') categoryIdx = i;
+                else if (col === 'value') valueIdx = i;
+                else if (col === 'stock') stockIdx = i;
+                else if (col === 'storage location' || col === 'location') locationIdx = i;
+            }
+            
+            // Check if we found all required columns
+            if (nameIdx === -1 || categoryIdx === -1 || valueIdx === -1 || stockIdx === -1 || locationIdx === -1) {
+                console.error('Missing columns:', { nameIdx, categoryIdx, valueIdx, stockIdx, locationIdx });
+                return null;
+            }
+            
+            // Generate new CSV in import format
+            let resultLines = ['Component Name,Category,Value,Stock,Location'];
+            const dataRows = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                const cols = parseCSVLine(lines[i]);
+                
+                if (cols.length > Math.max(nameIdx, categoryIdx, valueIdx, stockIdx, locationIdx)) {
+                    const name = cleanField(cols[nameIdx]);
+                    const category = cleanField(cols[categoryIdx]);
+                    const value = cleanField(cols[valueIdx]);
+                    const stock = cleanField(cols[stockIdx]);
+                    const location = cleanField(cols[locationIdx]);
+                    
+                    if (name && category && value && stock && location) {
+                        // Validate stock is a number
+                        const stockNum = parseInt(stock);
+                        if (isNaN(stockNum)) continue;
+                        
+                        const escapedName = escapeCSV(name);
+                        const escapedCategory = escapeCSV(category);
+                        const escapedValue = escapeCSV(value);
+                        const escapedLocation = escapeCSV(location);
+                        
+                        resultLines.push(`${escapedName},${escapedCategory},${escapedValue},${stockNum},${escapedLocation}`);
+                        dataRows.push({ name, category, value, stock: stockNum, location });
+                    }
+                }
+            }
+            
+            if (resultLines.length <= 1) {
+                return null;
+            }
+            
+            return {
+                csv: resultLines.join('\n'),
+                data: dataRows,
+                count: dataRows.length
+            };
+        }
+        
+        // Parse CSV line respecting quotes
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current);
+            
+            return result;
+        }
+        
+        // Clean field - remove surrounding quotes and trim
+        function cleanField(field) {
+            if (!field) return '';
+            let cleaned = field.trim();
+            if (cleaned.startsWith('"') && cleaned.endsWith('"')) {
+                cleaned = cleaned.slice(1, -1);
+            }
+            return cleaned.trim();
+        }
+        
+        // Escape field for CSV output
+        function escapeCSV(field) {
+            if (!field) return '""';
+            // If contains comma, quote, or newline, wrap in quotes and escape internal quotes
+            if (field.includes(',') || field.includes('"') || field.includes('\n')) {
+                return `"${field.replace(/"/g, '""')}"`;
+            }
+            return `"${field}"`;
+        }
+        
+        // Display preview
+        function displayPreview(result) {
+            // Update stats
+            statsPanel.innerHTML = `
+                <div class="stat-card">
+                    <div class="number">${result.data.length}</div>
+                    <div class="label">Components Found</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">${result.data.reduce((sum, r) => sum + (parseInt(r.stock) || 0), 0)}</div>
+                    <div class="label">Total Stock Units</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">${new Set(result.data.map(r => r.category)).size}</div>
+                    <div class="label">Categories</div>
+                </div>
+            `;
+            
+            // Show preview (first 10 rows)
+            const previewLines = result.csv.split('\n');
+            const previewRows = previewLines.slice(0, 11).join('\n');
+            const moreMsg = previewLines.length > 11 ? `\n... and ${previewLines.length - 11} more rows` : '';
+            
+            previewBox.innerHTML = `<strong>📄 Converted CSV (${result.data.length} rows):</strong><br><br>${escapeHtml(previewRows)}${escapeHtml(moreMsg)}`;
+        }
+        
+        // Show alert message
+        function showAlert(type, message) {
+            alertBox.className = `alert alert-${type}`;
+            alertBox.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+            alertBox.style.display = 'block';
+            
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Escape HTML for safe display
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+        
+        // Example file generation for testing
+        function generateExampleFile() {
+            const exampleData = `#,"Component Name","Category","Value","Stock","Storage Location"
+1,"10k Resistor","Resistor","10kΩ",50,"Cabinet A-1"
+2,"100uF Capacitor","Capacitor","100µF",30,"Drawer B-2"
+3,"ATMega328","IC","16MHz",10,"ESD Box 3"
+4,"LED Red","LED","5mm",100,"Bin C-4"
+5,"BC547","Transistor","NPN",25,"Box T-2"`;
+            
+            const blob = new Blob([exampleData], { type: 'text/csv' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.setAttribute('download', 'eim_export_example.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
