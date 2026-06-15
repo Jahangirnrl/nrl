@@ -16,8 +16,7 @@
         
         /* ========== THEME VARIABLES ========== */
         :root {
-            /* Light Theme (default) */
-            --bg-body: #f5f7fb;
+            --bg-body: #a9a2ab;
             --bg-sidebar: rgba(18, 25, 45, 0.96);
             --bg-card: white;
             --bg-table: white;
@@ -43,36 +42,44 @@
             --pending-section-bg: #fff3e0;
             --modal-bg: white;
             --auto-id-preview-bg: #e8f0fe;
+            --location-card-hover: rgba(79, 172, 254, 0.08);
+            
         }
         
+        /* BETTER DARK MODE COLORS from 1111.html */
         body.dark-theme {
-            --bg-body: #2a2a2a;
-            --bg-sidebar: #1e1e1e;
-            --bg-card: #3a3a3a;
-            --bg-table: #3a3a3a;
-            --bg-input: #4a4a4a;
-            --text-primary: #e0e0e0;
-            --text-secondary: #b0b0b0;
-            --text-light: #ccc;
-            --border-color: #555;
-            --border-light: #555;
+            --bg-body: #1e1e2f;
+            --bg-sidebar: #1a1a2e;
+            --bg-card: #1a1b2a;
+/*            #2c2c4d;*/
+/*            #1a1a2e; */
+/*            #2d2d44;*/
+            --bg-table: #2d2d44;
+            --bg-input: #3a3a55;
+            --text-primary: #f0f0f0;
+            --text-secondary: #b0b0c0;
+            --text-light: #d0d0e0;
+            --border-color: #4a4a6a;
+            --border-light: #3a3a55;
             --sidebar-text: #e0e0e0;
-            --nav-hover: #333;
+            --nav-hover: #2a2a4a;
             --nav-active: linear-gradient(95deg, #4facfe, #00f2fe);
-            --input-border: #555;
-            --sidebar-status-bg: #2a5a2a;
-            --sidebar-status-error: #5a2a2a;
+            --input-border: #5a5a7a;
+            --sidebar-status-bg: rgba(40, 167, 69, 0.3);
+            --sidebar-status-error: rgba(231, 76, 60, 0.3);
             --stock-bg-normal: #2a6b2a;
             --stock-bg-low: #8b3a3a;
             --stock-btn-minus-bg: #8b3a3a;
             --stock-btn-plus-bg: #2a6b2a;
             --stock-btn-plus10-bg: #3a3a6b;
             --report-header-bg: linear-gradient(135deg, #2c3e66, #1a2a4a);
-            --report-stats-bg: #2a2a2a;
+            --report-stats-bg: #2a2a3a;
             --pending-section-bg: #3a3a3a;
-            --modal-bg: #3a3a3a;
-            --auto-id-preview-bg: #4a4a4a;
+            --modal-bg: #3a3a55;
+            --auto-id-preview-bg: #4a4a6a;
+/*          --location-card-hover: #3a3a5a;*/
         }
+
         
         body { background: var(--bg-body); min-height: 100vh; overflow-x: hidden; transition: background 0.2s ease, color 0.2s ease; }
         
@@ -91,7 +98,7 @@
             z-index: 9999;
         }
         body.dark-theme .auth-container {
-            background: linear-gradient(135deg, #1a1a1a, #2d2d2d, #1a1a1a);
+            background: linear-gradient(135deg, #0a0a1a, #1a1a2e, #0a0a1a);
         }
         .auth-card {
             background: var(--bg-card);
@@ -111,9 +118,9 @@
         body.dark-theme .auth-btn { color: #1a1a1a; }
         .auth-switch { margin-top: 20px; font-size: 13px; color: #4facfe; cursor: pointer; }
         .error-msg { color: #e74c3c; font-size: 12px; margin-top: 8px; }
-        .admin-badge { background: #e67e22; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; display: inline-block; }
-        .guest-badge { background: #6c757d; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; display: inline-block; }
-        .user-badge { background: #4facfe; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; display: inline-block; }
+        .admin-badge { background: #e67e22; color: white; padding: 2px 10px; border-radius: 20px; font-size: 15px; margin-left: 8px; display: inline-block; }
+        .guest-badge { background: #6c757d; color: white; padding: 2px 10px; border-radius: 20px; font-size: 15px; margin-left: 8px; display: inline-block; }
+        .user-badge { background: #4facfe; color: white; padding: 2px 10px; border-radius: 20px; font-size: 15px; margin-left: 8px; display: inline-block; }
         .pending-badge { background: #f39c12; color: white; padding: 2px 8px; border-radius: 20px; font-size: 10px; margin-left: 8px; }
         .approved-badge { background: #27ae60; color: white; padding: 2px 8px; border-radius: 20px; font-size: 10px; margin-left: 8px; }
         .rejected-badge { background: #e74c3c; color: white; padding: 2px 8px; border-radius: 20px; font-size: 10px; margin-left: 8px; }
@@ -199,11 +206,10 @@
         body.dark-theme .nav-btn-desktop.active { color: #1a1a1a; }
         
         .user-card { padding: 20px; border-top: 1px solid rgba(255,255,255,0.15); text-align: center; }
-        .user-email { font-size: 13px; background: #1e2a44; padding: 6px 10px; border-radius: 30px; margin: 10px 0; word-break: break-all; }
-        body.dark-theme .user-email { background: #2a2a2a; color: #ddd; }
+        .user-email { font-size: 14px; background: #1e2a44; padding: 6px 10px; border-radius: 30px; margin: 10px 0; word-break: break-all; }
+        body.dark-theme .user-email { background: #2a2a4a; color: #ddd; }
         .logout-btn { background: #d9534f; border: none; color: white; padding: 8px 16px; border-radius: 40px; cursor: pointer; width: 100%; font-weight: bold; }
         
-        /* Theme Toggle Button */
         .theme-toggle-btn {
             background: rgba(79, 172, 254, 0.2);
             border: 1px solid rgba(79, 172, 254, 0.5);
@@ -218,7 +224,6 @@
             justify-content: center;
             gap: 8px;
             width: 100%;
-            color: var(--text-dark);
             transition: all 0.2s;
         }
         .theme-toggle-btn:hover { background: rgba(79, 172, 254, 0.4); }
@@ -230,7 +235,7 @@
             background: rgba(0,0,0,0.2);
             text-align: center;
         }
-        body.dark-theme .sidebar-connection-status { background: #252525; }
+        body.dark-theme .sidebar-connection-status { background: #252540; }
         
         .bottom-nav-mobile {
             position: fixed;
@@ -332,9 +337,100 @@
         .toast-notify { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(100px); background: #27ae60; color: white; padding: 10px 20px; border-radius: 50px; z-index: 2000; opacity: 0; transition: all 0.3s ease; pointer-events: none; white-space: nowrap; }
         .toast-notify.show { transform: translateX(-50%) translateY(0); opacity: 1; }
         
-        .locations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-        .location-card { background: var(--bg-card); padding: 16px; border-radius: 20px; border-left: 4px solid #4facfe; transition: all 0.2s; color: var(--text-primary); }
-        .location-card h3 { margin-bottom: 8px; color: #4facfe; }
+        /* ========== ENHANCED LOCATIONS TAB - UNIFORM CARDS WITH FULL COMPONENT LIST ========== */
+        .locations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 24px;
+            margin-top: 16px;
+        }
+        .location-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 20px;
+            border-left: 5px solid #4facfe;
+            transition: all 0.25s ease;
+            color: var(--text-primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 300px;
+        }
+
+        .location-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+            background: var(--location-card-hover);
+        }
+        
+        .location-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+            color: #4facfe;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px dotted var(--border-light);
+            padding-bottom: 10px;
+        }
+        .location-stats {
+            display: flex;
+            gap: 16px;
+            margin: 12px 0 16px 0;
+            font-size: 0.85rem;
+            background: var(--bg-input);
+            padding: 8px 14px;
+            border-radius: 40px;
+            justify-content: space-around;
+        }
+        .stat-badge {
+            background: rgba(79,172,254,0.15);
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-weight: 600;
+        }
+        .component-list-full {
+            margin-top: 8px;
+            flex: 1;
+            max-height: 280px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+        .component-list-full .comp-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 6px;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.85rem;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .comp-item .comp-name {
+            font-weight: 600;
+            flex: 2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .comp-item .comp-qty {
+            background: var(--stock-bg-normal);
+            padding: 2px 10px;
+            border-radius: 40px;
+            font-weight: bold;
+            min-width: 65px;
+            text-align: center;
+            font-size: 0.75rem;
+        }
+        .comp-item .comp-qty.low-stock-card {
+            background: var(--stock-bg-low);
+            color: #e74c3c;
+        }
+        .component-list-full::-webkit-scrollbar { width: 4px; }
+        .component-list-full::-webkit-scrollbar-track { background: var(--border-light); border-radius: 4px; }
+        .component-list-full::-webkit-scrollbar-thumb { background: #4facfe; border-radius: 4px; }
+        .empty-location { color: var(--text-secondary); text-align: center; padding: 20px; font-style: italic; }
         
         .locations-sort-bar {
             display: flex;
@@ -457,6 +553,8 @@
             .main-panel { padding: 16px; }
             .report-stats-row { flex-wrap: wrap !important; }
             .locations-sort-bar { justify-content: center; }
+            .locations-grid { grid-template-columns: 1fr; }
+            .comp-item { flex-direction: column; align-items: flex-start !important; }
         }
         @media (min-width: 769px) { .bottom-nav-mobile { display: none; } }
         
@@ -542,83 +640,121 @@
         select option { background: var(--bg-input); color: var(--text-primary); }
         
         body.dark-theme .form-card h3,
-body.dark-theme .table-wrapper h3,
-body.dark-theme #usersTableBody td,
-body.dark-theme #usersTableBody td span,
-body.dark-theme #addUserForm .form-group label {
-    color: #ffffff !important;
+        body.dark-theme .table-wrapper h3,
+        body.dark-theme #usersTableBody td,
+        body.dark-theme #usersTableBody td span,
+        body.dark-theme #addUserForm .form-group label {
+            color: #ffffff !important;
+        }
+        
+        body.dark-theme #reportContainer h3,
+        body.dark-theme .report-container h3 {
+            color: #ffffff !important;
+        }
+        
+        body.dark-theme .report-table th {
+            color: #ffffff !important;
+            background: #2c3e66;
+        }
+        
+        body.dark-theme .report-table td {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-theme .report-table td[style*="text-align:center"] {
+            color: #ffffff !important;
+        }
+        
+        body.dark-theme .report-header h2,
+        body.dark-theme .report-header p,
+        body.dark-theme .sort-info-badge {
+            color: #ffffff !important;
+        }
+        
+        body.dark-theme .sort-info-badge strong {
+            color: #ffffff !important;
+        }
+        
+        body.dark-theme #submitHint,
+        body.dark-theme #submitHint i,
+        body.dark-theme #submitHint strong {
+            color: #ffffff !important;
+        }
+        
+        body.dark-theme #addComponentForm .form-group label {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-theme .form-group label.required:after {
+            color: #ff8888 !important;
+        }
+        
+        body.dark-theme #autoIdPreview,
+        body.dark-theme #autoIdPreview i,
+        body.dark-theme #autoIdPreview strong {
+            color: #ffffff !important;
+        }
+        
+        body.dark-theme .form-card p,
+        body.dark-theme .form-card small {
+            color: #cccccc !important;
+        }
+        
+        body.dark-theme .permission-warning,
+        body.dark-theme .permission-warning strong {
+            color: #ffd966 !important;
+        }
+        
+
+.user-card {
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    text-align: center;
+}
+
+.user-email {
+    font-size: 14px;
+    background: #1e2a44;
+    padding: 6px 10px;
+    border-radius: 30px;
+    margin: 10px 0;
+    word-break: break-all;
+}
+
+#userRoleDisplay {
+    margin-bottom: 8px;
+}
+
+.logout-btn {
+    background: #d9534f;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 40px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.theme-toggle-btn {
+    background: rgba(79, 172, 254, 0.2);
+    border: 1px solid rgba(79, 172, 254, 0.5);
+    border-radius: 40px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    transition: all 0.2s;
 }
         
-/* Components tab - "Complete Component List" text in dark mode */
-body.dark-theme #reportContainer h3,
-body.dark-theme .report-container h3 {
-    color: #ffffff !important;
-}
-
-/* Component list table headers in dark mode */
-body.dark-theme .report-table th {
-    color: #ffffff !important;
-    background: #2c3e66;
-}
-
-/* Component list table cells in dark mode */
-body.dark-theme .report-table td {
-    color: #e0e0e0 !important;
-}
-
-/* The stock value text inside report table */
-body.dark-theme .report-table td[style*="text-align:center"] {
-    color: #ffffff !important;
-}
-
-/* Any text spans in the report header */
-body.dark-theme .report-header h2,
-body.dark-theme .report-header p,
-body.dark-theme .sort-info-badge {
-    color: #ffffff !important;
-}
-
-body.dark-theme .sort-info-badge strong {
-    color: #ffffff !important;
-}
-        
-/* Add Part tab - submit hint text in dark mode */
-body.dark-theme #submitHint,
-body.dark-theme #submitHint i,
-body.dark-theme #submitHint strong {
-    color: #ffffff !important;
-}
-
-/* Form labels in Add Part tab */
-body.dark-theme #addComponentForm .form-group label {
-    color: #e0e0e0 !important;
-}
-
-/* Required field asterisk */
-body.dark-theme .form-group label.required:after {
-    color: #ff8888 !important;
-}
-
-/* Auto-ID preview text */
-body.dark-theme #autoIdPreview,
-body.dark-theme #autoIdPreview i,
-body.dark-theme #autoIdPreview strong {
-    color: #ffffff !important;
-}
-
-/* Form helper text */
-body.dark-theme .form-card p,
-body.dark-theme .form-card small {
-    color: #cccccc !important;
-}
-
-/* Permission warning text */
-body.dark-theme .permission-warning,
-body.dark-theme .permission-warning strong {
-    color: #ffd966 !important;
-}
-        
-        
+body.dark-theme button,
+body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);}
         
     </style>
 </head>
@@ -628,7 +764,7 @@ body.dark-theme .permission-warning strong {
     <div class="auth-card">
         <i class="fas fa-microchip logo-icon"></i>
         <h2>EIM</h2>
-        <p>Electronics Inventory Manager <span style="font-size:9px; background:var(--bg-input); padding:2px 8px; border-radius:20px; margin-left:6px;">v2.2.0</span></p>
+        <p>Electronics Inventory Manager <span style="font-size:9px; background:var(--bg-input); padding:2px 8px; border-radius:20px; margin-left:6px;" class="app-version-display"></span></p>
         <form id="authForm" autocomplete="off">
             <input type="email" id="authEmail" class="auth-input" placeholder="Email address" autocomplete="username" required>
             <input type="password" id="authPassword" class="auth-input" placeholder="Password" autocomplete="new-password" required>
@@ -637,10 +773,12 @@ body.dark-theme .permission-warning strong {
         </form>
         <div id="authError" class="error-msg"></div>
         <div class="auth-switch" id="toggleAuthMode">Don't have an account? <strong>Register</strong></div>
+<!--
         <div style="margin-top: 16px; font-size: 11px; background: var(--bg-input); padding: 8px; border-radius: 12px;">
             <small>🔐 Demo: <strong>guest@eim.com</strong> / guest123 (View-Only)</small><br>
             <small>📝 Note: New registrations are GUEST accounts only</small>
         </div>
+-->
     </div>
 </div>
 
@@ -650,7 +788,7 @@ body.dark-theme .permission-warning strong {
             <i class="fas fa-microchip"></i>
             <h2>EIM</h2>
             <p style="font-size:11px;">Electronics Inventory Manager</p>
-            <div class="version-badge">v2.2.0</div>
+            <div class="version-badge app-version-display"></div>
         </div>
         <div class="nav-desktop">
             <button class="nav-btn-desktop" data-view="reports"><i class="fas fa-chart-line"></i><span> Reports</span></button>
@@ -665,9 +803,9 @@ body.dark-theme .permission-warning strong {
             <div class="user-email" id="userEmailDisplay">electronics@eim</div>
             <div id="userRoleDisplay"></div>
             <button id="logoutBtnGlobal" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-            <!-- THEME TOGGLE BUTTON ADDED HERE -->
             <button id="themeToggleSidebar" class="theme-toggle-btn"><i class="fas fa-moon"></i> Dark Mode</button>
         </div>
+                
         <div class="sidebar-connection-status" id="sidebarConnectionStatus">
             <i class="fas fa-spinner fa-pulse"></i> Connecting...
         </div>
@@ -683,7 +821,6 @@ body.dark-theme .permission-warning strong {
     </div>
     
     <div class="main-panel">
-        <!-- THEME TOGGLE BUTTON ADDED IN MAIN PANEL TOP RIGHT -->
         <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
             <button id="themeToggleMain" class="theme-toggle-btn" style="width: auto; padding: 6px 14px;"><i class="fas fa-moon"></i> Dark Mode</button>
         </div>
@@ -753,7 +890,7 @@ body.dark-theme .permission-warning strong {
         
         <div id="approvals-view" class="view"><h1><i class="fas fa-check-double"></i> Pending Approvals <span class="admin-badge">Admin Only</span></h1><div id="pendingApprovalsContainer" class="pending-section"><h2><i class="fas fa-clock"></i> Components Awaiting Approval</h2><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Component ID</th><th>Name</th><th>Category</th><th>Value</th><th>Stock</th><th>Location</th><th>Submitted By</th><th>Actions</th></tr></thead><tbody id="pendingTableBody"><tr><td colspan="8" class="loading-spinner"><i class="fas fa-spinner fa-pulse"></i> Loading...</td></tr></tbody></table></div></div></div>
         
-        <div class="mobile-version-hint">EIM v2.2.0 — Theme Toggle Available</div>
+        <div class="mobile-version-hint app-version-display"></div>
     </div>
 </div>
 
@@ -764,6 +901,12 @@ body.dark-theme .permission-warning strong {
 <div id="toastMessage" class="toast-notify"><i class="fas fa-check-circle"></i> <span id="toastText"></span></div>
 
 <script>
+    const APP_VERSION = "v2.3.0";
+    
+    function updateVersionDisplays() {
+        document.querySelectorAll('.app-version-display').forEach(el => el.textContent = APP_VERSION);
+    }
+    
     const firebaseConfig = {
         apiKey: "AIzaSyA77524v09FOTq2b5XgFynCXYTsvkNfpr8",
         authDomain: "jah-ent.firebaseapp.com",
@@ -790,7 +933,7 @@ body.dark-theme .permission-warning strong {
     let reportSortOrder = 'asc';
     let locationsSortOrder = 'asc';
     
-    // ========== THEME TOGGLE FUNCTIONALITY ==========
+    // Theme functions
     function initTheme() {
         const savedTheme = localStorage.getItem('eim_theme');
         if (savedTheme === 'dark') {
@@ -814,16 +957,13 @@ body.dark-theme .permission-warning strong {
         const isDark = document.body.classList.toggle('dark-theme');
         localStorage.setItem('eim_theme', isDark ? 'dark' : 'light');
         updateThemeButtons(isDark);
-        // Refresh UI components to apply theme colors
         renderComponentsTable();
         generateReport();
         renderLocations();
     }
     
-    // Attach theme toggle event listeners after DOM is ready
     document.getElementById('themeToggleSidebar')?.addEventListener('click', toggleTheme);
     document.getElementById('themeToggleMain')?.addEventListener('click', toggleTheme);
-    // ========== END THEME TOGGLE ==========
     
     function showToast(msg, isError) { 
         const toast = document.getElementById('toastMessage'); 
@@ -1007,7 +1147,7 @@ body.dark-theme .permission-warning strong {
                 <td>${escapeHtml(c.value) || '-'}</td>
                 <td style="text-align:center;">${c.quantity || 0}</td>
                 <td>${escapeHtml(c.location) || '-'}</td>
-              </tr>`; 
+            </tr>`; 
         });
         
         document.getElementById("reportContainer").innerHTML = `<div class="report-header"><h2><i class="fas fa-chart-bar"></i> Inventory Dashboard</h2><p>Generated: ${new Date().toLocaleString()}</p><div class="sort-info-badge"><i class="fas fa-sort-amount-down"></i> Sorted by: <strong>${sortFieldName}</strong> (${reportSortOrder === 'asc' ? 'Ascending ↑' : 'Descending ↓'})</div><div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;"><button class="btn-primary" style="padding:4px 10px; font-size:12px; background:#6c5ce7;" onclick="sortReportData('name')">Sort by Name</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('category')">Sort by Category</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('value')">Sort by Value</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('quantity')">Sort by Stock</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('location')">Sort by Location</button></div></div><div class="report-stats-row"><div class="report-stat-item"><div>Total Components</div><div class="report-stat-value">${approvedComps.length}</div></div><div class="report-stat-item"><div>Total Stock</div><div class="report-stat-value">${totalStock.toLocaleString()}</div></div><div class="report-stat-item"><div>Categories</div><div class="report-stat-value">${categoriesCount}</div></div><div class="report-stat-item"><div>Low Stock</div><div class="report-stat-value ${lowStockCount>0?'low-stock-value':''}">${lowStockCount}</div></div></div><div style="padding:20px;"><h3>Complete Component List <span style="font-size:12px; color:var(--text-secondary);">(${approvedComps.length} items)</span></h3><table class="report-table"><thead><tr><th>#</th><th>Component Name</th><th>Category</th><th>Value</th><th>Stock</th><th>Storage Location</th></tr></thead><tbody>${rows}</tbody></table></div>`;
@@ -1021,25 +1161,182 @@ body.dark-theme .permission-warning strong {
     window.approveComponent = async (pendingKey) => { if(!isAdmin()) return; const pending = pendingComponents.find(p => p.firebaseKey === pendingKey); if(!pending) return; try { const approvedComp = { componentId: pending.componentId, name: pending.name, category: pending.category, value: pending.value, package: pending.package || 'Through-hole', quantity: Math.max(1, pending.quantity || 1), minStockLevel: pending.minStockLevel || 10, location: pending.location || "Not specified", description: pending.description || "", status: 'approved', submittedBy: pending.submittedBy, submittedByEmail: pending.submittedByEmail, approvedBy: currentUser?.email, approvedAt: new Date().toISOString(), createdAt: pending.createdAt, updatedAt: new Date().toISOString() }; await componentsRef.child(pending.componentId).set(approvedComp); await pendingRef.child(pendingKey).remove(); showToast(`✓ Approved ${pending.name}`, false); loadComponents(); loadPendingComponents(); } catch(error) { showToast(error.message, true); } };
     window.rejectComponent = async (pendingKey) => { if(!isAdmin()) return; if(confirm("Reject this component submission?")) { await pendingRef.child(pendingKey).remove(); showToast("Component rejected", false); loadPendingComponents(); } };
     
-    function renderPendingApprovals() { if(!isAdmin()) return; let tbody = document.getElementById("pendingTableBody"); if (!tbody) return; if (pendingComponents.length === 0) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No pending approvals</td></tr>'; return; } let html = ''; for (let p of pendingComponents) { html += `<tr><td><strong>${escapeHtml(p.componentId)}</strong></td><td>${escapeHtml(p.name)}</td><td>${escapeHtml(p.category) || '-'}</td><td>${escapeHtml(p.value) || '-'}</td><td>${p.quantity || 0}</td><td>${escapeHtml(p.location) || '-'}</td><td><small>${escapeHtml(p.submittedByEmail) || p.submittedBy}</small></td><td><button class="approve-btn" onclick="approveComponent('${p.firebaseKey}')"><i class="fas fa-check"></i> Approve</button> <button class="reject-btn" onclick="rejectComponent('${p.firebaseKey}')"><i class="fas fa-times"></i> Reject</button></td></tr>`; } tbody.innerHTML = html; updatePendingCountBadge(); }
+    function renderPendingApprovals() { if(!isAdmin()) return; let tbody = document.getElementById("pendingTableBody"); if (!tbody) return; if (pendingComponents.length === 0) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No pending approvals</td></tr>'; return; } let html = ''; for (let p of pendingComponents) { html += `<tr>
+        <td><strong>${escapeHtml(p.componentId)}</strong></td>
+        <td>${escapeHtml(p.name)}</td>
+        <td>${escapeHtml(p.category) || '-'}</td>
+        <td>${escapeHtml(p.value) || '-'}</td>
+        <td>${p.quantity || 0}</td>
+        <td>${escapeHtml(p.location) || '-'}</td>
+        <td><small>${escapeHtml(p.submittedByEmail) || p.submittedBy}</small></td>
+        <td><button class="approve-btn" onclick="approveComponent('${p.firebaseKey}')"><i class="fas fa-check"></i> Approve</button> <button class="reject-btn" onclick="rejectComponent('${p.firebaseKey}')"><i class="fas fa-times"></i> Reject</button></td>
+    </tr>`; } tbody.innerHTML = html; updatePendingCountBadge(); }
     
-    function renderLocations() { let locMap = new Map(); allComponents.filter(c => c.status === 'approved' && c.location && c.location !== 'Not specified').forEach(c => { if(!locMap.has(c.location)) locMap.set(c.location, []); locMap.get(c.location).push(c); }); let grid = document.getElementById("locationsGrid"); if(locMap.size === 0){ grid.innerHTML='<div class="location-card">No locations yet. Add components with storage locations.</div>'; return; } let entries = Array.from(locMap.entries()); entries.sort((a,b) => locationsSortOrder === 'asc' ? a[0].localeCompare(b[0]) : b[0].localeCompare(a[0])); let html = ''; for(let [loc, parts] of entries){ let total = parts.reduce((s,p)=>s+(p.quantity||0),0); let preview = parts.slice(0,3).map(p => `${escapeHtml(p.name)} (${p.quantity||0})`).join(', '); if(parts.length > 3) preview += '...'; html += `<div class="location-card"><h3><i class="fas fa-boxes"></i> ${escapeHtml(loc)}</h3><p>📦 ${parts.length} types | 🔢 Total: ${total} pcs</p><small>${preview}</small></div>`; } grid.innerHTML = html; }
+    // ENHANCED LOCATIONS FUNCTION - SHOWS ALL COMPONENTS IN UNIFORM CARDS
+    function renderLocations() { 
+        let locMap = new Map(); 
+        allComponents.filter(c => c.status === 'approved' && c.location && c.location !== 'Not specified').forEach(c => { 
+            if(!locMap.has(c.location)) locMap.set(c.location, []); 
+            locMap.get(c.location).push(c); 
+        }); 
+        let grid = document.getElementById("locationsGrid"); 
+        if(locMap.size === 0){ 
+            grid.innerHTML='<div class="location-card" style="grid-column:1/-1; text-align:center;">No locations yet. Add components with storage locations.</div>'; 
+            return; 
+        } 
+        let entries = Array.from(locMap.entries()); 
+        entries.sort((a,b) => locationsSortOrder === 'asc' ? a[0].localeCompare(b[0]) : b[0].localeCompare(a[0])); 
+        let html = ''; 
+        for(let [loc, parts] of entries){ 
+            let total = parts.reduce((s,p)=>s+(p.quantity||0),0); 
+            let itemsHtml = '';
+            for(let part of parts) {
+                let isLow = (part.quantity || 0) <= (part.minStockLevel || 2);
+                itemsHtml += `<div class="comp-item">
+                    <span class="comp-name" title="${escapeHtml(part.name)} (${escapeHtml(part.value || '')})">🔹 ${escapeHtml(part.name)}</span>
+                    <span class="comp-qty ${isLow ? 'low-stock-card' : ''}">📦 ${part.quantity || 0} pcs</span>
+                </div>`;
+            }
+            html += `<div class="location-card">
+                <h3><i class="fas fa-boxes"></i> ${escapeHtml(loc)}</h3>
+                <div class="location-stats">
+                    <span class="stat-badge"><i class="fas fa-microchip"></i> ${parts.length} types</span>
+                    <span class="stat-badge"><i class="fas fa-layer-group"></i> Total: ${total} pcs</span>
+                </div>
+                <div class="component-list-full">
+                    ${itemsHtml}
+                </div>
+            </div>`; 
+        } 
+        grid.innerHTML = html; 
+    }
     
-    function setLocationSort(order) { locationsSortOrder = order; const ascBtn = document.getElementById('sortLocAscBtn'); const descBtn = document.getElementById('sortLocDescBtn'); if(ascBtn && descBtn) { if(order === 'asc') { ascBtn.classList.add('active'); descBtn.classList.remove('active'); } else { descBtn.classList.add('active'); ascBtn.classList.remove('active'); } } renderLocations(); }
+    function setLocationSort(order) { 
+        locationsSortOrder = order; 
+        const ascBtn = document.getElementById('sortLocAscBtn'); 
+        const descBtn = document.getElementById('sortLocDescBtn'); 
+        if(ascBtn && descBtn) { 
+            if(order === 'asc') { 
+                ascBtn.classList.add('active'); 
+                descBtn.classList.remove('active'); 
+            } else { 
+                descBtn.classList.add('active'); 
+                ascBtn.classList.remove('active'); 
+            } 
+        } 
+        renderLocations(); 
+    }
     
-    function populateFilters() { let cats = [...new Set(allComponents.filter(c => c.status === 'approved').map(c=>c.category).filter(Boolean))]; let sel = document.getElementById("categoryFilter"); if(sel) sel.innerHTML = '<option value="">All Categories</option>' + cats.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join(''); }
+    function populateFilters() { 
+        let cats = [...new Set(allComponents.filter(c => c.status === 'approved').map(c=>c.category).filter(Boolean))]; 
+        let sel = document.getElementById("categoryFilter"); 
+        if(sel) sel.innerHTML = '<option value="">All Categories</option>' + cats.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join(''); 
+    }
     
-    function updateSortIcons() { const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location']; for(let field of fields) { const th = document.getElementById(`sort-${field}`); if(th) { const icon = th.querySelector('i'); if(currentSort.field === field) { th.style.backgroundColor = '#3a5a8a'; if(icon) icon.className = currentSort.direction === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'; } else { th.style.backgroundColor = '#2c3e66'; if(icon) icon.className = 'fas fa-sort'; } } } }
+    function updateSortIcons() { 
+        const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location']; 
+        for(let field of fields) { 
+            const th = document.getElementById(`sort-${field}`); 
+            if(th) { 
+                const icon = th.querySelector('i'); 
+                if(currentSort.field === field) { 
+                    th.style.backgroundColor = '#3a5a8a'; 
+                    if(icon) icon.className = currentSort.direction === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'; 
+                } else { 
+                    th.style.backgroundColor = '#2c3e66'; 
+                    if(icon) icon.className = 'fas fa-sort'; 
+                } 
+            } 
+        } 
+    }
     
-    function attachSortListeners() { const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location']; for(let field of fields) { const th = document.getElementById(`sort-${field}`); if(th) { th.onclick = () => { if(currentSort.field === field) currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc'; else { currentSort.field = field; currentSort.direction = 'asc'; } renderComponentsTable(); }; } } }
+    function attachSortListeners() { 
+        const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location']; 
+        for(let field of fields) { 
+            const th = document.getElementById(`sort-${field}`); 
+            if(th) { 
+                th.onclick = () => { 
+                    if(currentSort.field === field) currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc'; 
+                    else { currentSort.field = field; currentSort.direction = 'asc'; } 
+                    renderComponentsTable(); 
+                }; 
+            } 
+        } 
+    }
     
-    function switchToView(viewName) { document.querySelectorAll('.nav-btn-desktop, .nav-btn-mobile').forEach(btn=>btn.classList.remove('active')); document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(viewName+'-view').classList.add('active'); if(viewName==='locations') renderLocations(); if(viewName==='reports') generateReport(); if(viewName==='add') updateAutoIdPreview(); if(viewName==='components') { renderComponentsTable(); attachSortListeners(); } if(viewName==='approvals' && isAdmin()) renderPendingApprovals(); }
+    function switchToView(viewName) { 
+        document.querySelectorAll('.nav-btn-desktop, .nav-btn-mobile').forEach(btn=>btn.classList.remove('active')); 
+        document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); 
+        document.getElementById(viewName+'-view').classList.add('active'); 
+        if(viewName==='locations') renderLocations(); 
+        if(viewName==='reports') generateReport(); 
+        if(viewName==='add') updateAutoIdPreview(); 
+        if(viewName==='components') { renderComponentsTable(); attachSortListeners(); } 
+        if(viewName==='approvals' && isAdmin()) renderPendingApprovals(); 
+    }
     
-    function applyPermissionsToUI() { const readonly = isGuest(); const addNavDesktop = document.getElementById('addNavBtnDesktop'); const addNavMobile = document.getElementById('addNavBtnMobile'); const addFormSubmit = document.getElementById('addComponentBtn'); const submitHint = document.getElementById('submitHint'); if(addNavDesktop) addNavDesktop.style.display = readonly ? 'none' : 'flex'; if(addNavMobile) addNavMobile.style.display = readonly ? 'none' : 'flex'; if(addFormSubmit) addFormSubmit.disabled = readonly; if(addFormSubmit) addFormSubmit.classList.toggle('disabled-btn', readonly); if(submitHint) { if(isAdmin()) submitHint.innerHTML = '<i class="fas fa-check-circle"></i> <strong>Admin:</strong> Your submissions are automatically approved.'; else if(!isGuest()) submitHint.innerHTML = '<i class="fas fa-info-circle"></i> <strong>User:</strong> Your submission requires admin approval.'; else submitHint.innerHTML = '<i class="fas fa-lock"></i> Guest accounts cannot add components.'; } const approvalsNavDesktop = document.getElementById('approvalsNavBtn'); const approvalsNavMobile = document.getElementById('approvalsNavBtnMobile'); if(approvalsNavDesktop) approvalsNavDesktop.style.display = isAdmin() ? 'flex' : 'none'; if(approvalsNavMobile) approvalsNavMobile.style.display = isAdmin() ? 'flex' : 'none'; updatePendingCountBadge(); const addModeText = document.getElementById('addModeText'); if(addModeText) { if(isGuest()) addModeText.innerHTML = '<span class="guest-badge">Read Only Mode</span>'; else if(isAdmin()) addModeText.innerHTML = '<span class="admin-badge">Admin (Direct Add)</span>'; else addModeText.innerHTML = '<span class="user-badge">Your submissions require admin approval</span>'; } renderComponentsTable(); }
+    function applyPermissionsToUI() { 
+        const readonly = isGuest(); 
+        const addNavDesktop = document.getElementById('addNavBtnDesktop'); 
+        const addNavMobile = document.getElementById('addNavBtnMobile'); 
+        const addFormSubmit = document.getElementById('addComponentBtn'); 
+        const submitHint = document.getElementById('submitHint'); 
+        if(addNavDesktop) addNavDesktop.style.display = readonly ? 'none' : 'flex'; 
+        if(addNavMobile) addNavMobile.style.display = readonly ? 'none' : 'flex'; 
+        if(addFormSubmit) addFormSubmit.disabled = readonly; 
+        if(addFormSubmit) addFormSubmit.classList.toggle('disabled-btn', readonly); 
+        if(submitHint) { 
+            if(isAdmin()) submitHint.innerHTML = '<i class="fas fa-check-circle"></i> <strong>Admin:</strong> Your submissions are automatically approved.'; 
+            else if(!isGuest()) submitHint.innerHTML = '<i class="fas fa-info-circle"></i> <strong>User:</strong> Your submission requires admin approval.'; 
+            else submitHint.innerHTML = '<i class="fas fa-lock"></i> Guest accounts cannot add components.'; 
+        } 
+        const approvalsNavDesktop = document.getElementById('approvalsNavBtn'); 
+        const approvalsNavMobile = document.getElementById('approvalsNavBtnMobile'); 
+        if(approvalsNavDesktop) approvalsNavDesktop.style.display = isAdmin() ? 'flex' : 'none'; 
+        if(approvalsNavMobile) approvalsNavMobile.style.display = isAdmin() ? 'flex' : 'none'; 
+        updatePendingCountBadge(); 
+        const addModeText = document.getElementById('addModeText'); 
+        if(addModeText) { 
+            if(isGuest()) addModeText.innerHTML = '<span class="guest-badge">Read Only Mode</span>'; 
+            else if(isAdmin()) addModeText.innerHTML = '<span class="admin-badge">Admin (Direct Add)</span>'; 
+            else addModeText.innerHTML = '<span class="user-badge">Your submissions require admin approval</span>'; 
+        } 
+        renderComponentsTable(); 
+    }
     
-    function updateAdminUI() { let btns = [document.getElementById('adminNavBtn'), document.getElementById('adminNavBtnMobile')]; btns.forEach(btn=>{if(btn) btn.style.display = isAdmin() ? 'flex' : 'none';}); let roleDiv = document.getElementById('userRoleDisplay'); if(roleDiv) { if(isAdmin()) roleDiv.innerHTML = '<span class="admin-badge">Administrator</span>'; else if(isGuest()) roleDiv.innerHTML = '<span class="guest-badge">👓 Guest (Read Only)</span>'; else roleDiv.innerHTML = '<span class="user-badge">User (Submissions Need Approval)</span>'; } applyPermissionsToUI(); }
+    function updateAdminUI() { 
+        let btns = [document.getElementById('adminNavBtn'), document.getElementById('adminNavBtnMobile')]; 
+        btns.forEach(btn=>{if(btn) btn.style.display = isAdmin() ? 'flex' : 'none';}); 
+        let roleDiv = document.getElementById('userRoleDisplay'); 
+        if(roleDiv) { 
+            if(isAdmin()) roleDiv.innerHTML = '<span class="admin-badge">Administrator</span>'; 
+            else if(isGuest()) roleDiv.innerHTML = '<span class="guest-badge">👓 Guest (Read Only)</span>'; 
+            else roleDiv.innerHTML = '<span class="user-badge">User (Submissions Need Approval)</span>'; 
+        } 
+        applyPermissionsToUI(); 
+    }
     
-    async function loadUsersList() { if(!isAdmin()) return; let snap = await usersRef.once('value'); let users = snap.val(); let tbody = document.getElementById('usersTableBody'); if(!users){ tbody.innerHTML='<tr><td colspan="4">No users</td></tr>'; return; } tbody.innerHTML=''; for(let uid in users){ let u = users[uid]; let row = tbody.insertRow(); row.insertCell(0).innerHTML = escapeHtml(u.email); let roleCell = row.insertCell(1); if(u.role === 'admin') roleCell.innerHTML = '<span class="admin-badge">Admin</span>'; else if(u.role === 'guest') roleCell.innerHTML = '<span class="guest-badge">Guest</span>'; else roleCell.innerHTML = '<span class="user-badge">User</span>'; row.insertCell(2).innerHTML = u.createdAt?new Date(u.createdAt).toLocaleString():'N/A'; let actions = row.insertCell(3); if(uid !== currentUser?.uid) actions.innerHTML = `<button class="edit-user-btn" onclick="openEditUserModal('${uid}','${escapeHtml(u.email)}','${u.role}')">Edit</button> <button class="delete-user-btn" onclick="deleteUser('${uid}')">Delete</button>`; else actions.innerHTML = '<span style="color:var(--text-secondary);"><i class="fas fa-user-shield"></i> You</span>'; } }
+    async function loadUsersList() { 
+        if(!isAdmin()) return; 
+        let snap = await usersRef.once('value'); 
+        let users = snap.val(); 
+        let tbody = document.getElementById('usersTableBody'); 
+        if(!users){ tbody.innerHTML='<tr><td colspan="4">No users</td></tr>'; return; } 
+        tbody.innerHTML=''; 
+        for(let uid in users){ 
+            let u = users[uid]; 
+            let row = tbody.insertRow(); 
+            row.insertCell(0).innerHTML = escapeHtml(u.email); 
+            let roleCell = row.insertCell(1); 
+            if(u.role === 'admin') roleCell.innerHTML = '<span class="admin-badge">Admin</span>'; 
+            else if(u.role === 'guest') roleCell.innerHTML = '<span class="guest-badge">Guest</span>'; 
+            else roleCell.innerHTML = '<span class="user-badge">User</span>'; 
+            row.insertCell(2).innerHTML = u.createdAt?new Date(u.createdAt).toLocaleString():'N/A'; 
+            let actions = row.insertCell(3); 
+            if(uid !== currentUser?.uid) actions.innerHTML = `<button class="edit-user-btn" onclick="openEditUserModal('${uid}','${escapeHtml(u.email)}','${u.role}')">Edit</button> <button class="delete-user-btn" onclick="deleteUser('${uid}')">Delete</button>`; 
+            else actions.innerHTML = '<span style="color:var(--text-secondary);"><i class="fas fa-user-shield"></i> You</span>'; 
+        } 
+    }
     
     window.deleteUser = async (uid) => { if(isAdmin() && uid !== currentUser?.uid && confirm("Delete user?")){ await usersRef.child(uid).remove(); loadUsersList(); showToast("User deleted",false); } };
     window.openEditUserModal = (uid, email, role) => { document.getElementById('editUserId').value = uid; document.getElementById('editUserEmail').value = email; document.getElementById('editUserRole').value = role; document.getElementById('editUserPassword').value = ''; document.getElementById('editUserModal').style.display = 'flex'; };
@@ -1101,9 +1398,44 @@ body.dark-theme .permission-warning strong {
         });
     }
     
-    function loadPendingComponents() { if(!isAdmin()) return; pendingRef.on('value', (snapshot) => { const data = snapshot.val(); pendingComponents = []; if (data) { Object.keys(data).forEach(key => { const comp = data[key]; pendingComponents.push({ firebaseKey: key, componentId: comp.componentId, name: comp.name, category: comp.category, value: comp.value, package: comp.package, quantity: comp.quantity, minStockLevel: comp.minStockLevel, location: comp.location, description: comp.description, submittedBy: comp.submittedBy, submittedByEmail: comp.submittedByEmail, createdAt: comp.createdAt }); }); } renderPendingApprovals(); updatePendingCountBadge(); }); }
+    function loadPendingComponents() { 
+        if(!isAdmin()) return; 
+        pendingRef.on('value', (snapshot) => { 
+            const data = snapshot.val(); 
+            pendingComponents = []; 
+            if (data) { 
+                Object.keys(data).forEach(key => { 
+                    const comp = data[key]; 
+                    pendingComponents.push({ 
+                        firebaseKey: key, 
+                        componentId: comp.componentId, 
+                        name: comp.name, 
+                        category: comp.category, 
+                        value: comp.value, 
+                        package: comp.package, 
+                        quantity: comp.quantity, 
+                        minStockLevel: comp.minStockLevel, 
+                        location: comp.location, 
+                        description: comp.description, 
+                        submittedBy: comp.submittedBy, 
+                        submittedByEmail: comp.submittedByEmail, 
+                        createdAt: comp.createdAt 
+                    }); 
+                }); 
+            } 
+            renderPendingApprovals(); 
+            updatePendingCountBadge(); 
+        }); 
+    }
     
-    function refreshUI() { renderComponentsTable(); populateFilters(); renderLocations(); generateReport(); if(isAdmin()) loadUsersList(); applyPermissionsToUI(); }
+    function refreshUI() { 
+        renderComponentsTable(); 
+        populateFilters(); 
+        renderLocations(); 
+        generateReport(); 
+        if(isAdmin()) loadUsersList(); 
+        applyPermissionsToUI(); 
+    }
     
     // Authentication
     let isLoginMode = true;
@@ -1234,7 +1566,7 @@ body.dark-theme .permission-warning strong {
     
     cancelImportBtnElem?.addEventListener('click', () => {
         csvImportAreaElem.style.display = 'none';
-        csvFileInputElem.value = '';
+        if(csvFileInputElem) csvFileInputElem.value = '';
     });
     
     function parseCSVLine(line) {
@@ -1315,16 +1647,16 @@ body.dark-theme .permission-warning strong {
             }
             showToast(`Import complete: ${imported} added, ${duplicate} duplicates, ${failed} failed`, imported === 0);
             csvImportAreaElem.style.display = 'none';
-            csvFileInputElem.value = '';
+            if(csvFileInputElem) csvFileInputElem.value = '';
             loadComponents();
             if(!isAdmin()) loadPendingComponents();
         };
         reader.readAsText(file, 'UTF-8');
     });
     
-    // Initialize theme
     initTheme();
-    console.log("EIM v2.2.0 — Dark/Light mode toggle added");
+    updateVersionDisplays();
+    console.log(`${APP_VERSION} — Enhanced Locations tab with uniform cards and improved dark mode colors`);
 </script>
 </body>
 </html>
