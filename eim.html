@@ -977,23 +977,39 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
     function isGuest() { return currentUserRole === 'guest'; }
     function isAdmin() { return currentUserRole === 'admin'; }
     
+
     function exportToCSV() {
-        const approvedComponents = allComponents.filter(c => c.status === 'approved');
-        if(approvedComponents.length === 0) { showToast("No approved components to export", true); return; }
-        const headers = ['Component Name', 'Category', 'Value', 'Stock', 'Location'];
-        const rows = approvedComponents.map(comp => [`"${(comp.name || '').replace(/"/g, '""')}"`, `"${(comp.category || '').replace(/"/g, '""')}"`, `"${(comp.value || '').replace(/"/g, '""')}"`, comp.quantity || 0, `"${(comp.location || 'Not specified').replace(/"/g, '""')}"`]);
-        const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
-        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        link.href = url;
-        link.setAttribute('download', `eim_inventory_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        showToast(`Exported ${approvedComponents.length} components`, false);
-    }
+    const approvedComponents = allComponents.filter(c => c.status === 'approved');
+    if(approvedComponents.length === 0) { showToast("No approved components to export", true); return; }
+    const headers = ['Component Name', 'Category', 'Value', 'Stock', 'Location'];
+    const rows = approvedComponents.map(comp => [`"${(comp.name || '').replace(/"/g, '""')}"`, `"${(comp.category || '').replace(/"/g, '""')}"`, `"${(comp.value || '').replace(/"/g, '""')}"`, comp.quantity || 0, `"${(comp.location || 'Not specified').replace(/"/g, '""')}"`]);
+    const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    
+    // Get Bangladesh Time (GMT+6)
+    const now = new Date();
+    const bdTime = new Date(now.getTime() + (6 * 60 * 60 * 1000)); // Add 6 hours for BD time
+    
+    // Format: DD_MM_YYYY_HH_MM_SS
+    const day = String(bdTime.getUTCDate()).padStart(2, '0');
+    const month = String(bdTime.getUTCMonth() + 1).padStart(2, '0');
+    const year = bdTime.getUTCFullYear();
+    const hours = String(bdTime.getUTCHours()).padStart(2, '0');
+    const minutes = String(bdTime.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(bdTime.getUTCSeconds()).padStart(2, '0');
+    
+    const filename = `eim_backup_${day}_${month}_${year}_${hours}_${minutes}_${seconds}.csv`;
+    
+    link.setAttribute('download', filename);                              
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast(`Exported ${approvedComponents.length} components`, false);
+}
     
     function parseValueToNumber(val) { 
         if (!val) return 0; 
@@ -1660,3 +1676,7 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
 </script>
 </body>
 </html>
+
+
+
+
