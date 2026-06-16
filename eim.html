@@ -51,9 +51,6 @@
             --bg-body: #1e1e2f;
             --bg-sidebar: #1a1a2e;
             --bg-card: #1a1b2a;
-/*            #2c2c4d;*/
-/*            #1a1a2e; */
-/*            #2d2d44;*/
             --bg-table: #2d2d44;
             --bg-input: #3a3a55;
             --text-primary: #f0f0f0;
@@ -77,7 +74,6 @@
             --pending-section-bg: #3a3a3a;
             --modal-bg: #3a3a55;
             --auto-id-preview-bg: #4a4a6a;
-/*          --location-card-hover: #3a3a5a;*/
         }
 
         
@@ -295,7 +291,7 @@
         .reset-btn { background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 40px; cursor: pointer; }
         
         .table-wrapper { background: var(--bg-table); border-radius: 10px; overflow-x: auto; }
-        table { width: 100%; min-width: 800px; border-collapse: collapse; }
+        table { width: 100%; min-width: 780px; border-collapse: collapse; }
         th { background: #2c3e66; color: white; padding: 14px 12px; text-align: left; cursor: pointer; user-select: none; transition: background 0.2s; }
         th:hover { background: #3a5a8a; }
         th i { margin-left: 6px; font-size: 12px; opacity: 0.7; }
@@ -524,11 +520,12 @@
             color: var(--text-primary);
         }
         .report-table th:nth-child(1) { width: 5%; }
-        .report-table th:nth-child(2) { width: 20%; }
+        .report-table th:nth-child(2) { width: 15%; }
         .report-table th:nth-child(3) { width: 12%; }
         .report-table th:nth-child(4) { width: 12%; }
         .report-table th:nth-child(5) { width: 8%; }
-        .report-table th:nth-child(6) { width: 43%; }
+        .report-table th:nth-child(6) { width: 18%; }
+        .report-table th:nth-child(7) { width: 30%; }
         
         @media print {
             .sidebar-desktop, .bottom-nav-mobile, .btn-primary, .search-bar, .toast-notify, .print-sort-bar, #exportCSVBtn, #printReportBtn, #importCSVBtn, .locations-sort-bar, .report-header button, .nav-btn-desktop, .nav-btn-mobile, .user-card, .logo, .sidebar-connection-status, .version-badge, .mobile-version-hint, .theme-toggle-btn { display: none !important; }
@@ -756,6 +753,117 @@
 body.dark-theme button,
 body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);}
         
+        /* Fix for table cell text wrapping */
+        .report-table td {
+            word-wrap: break-word;
+            white-space: normal;
+            line-height: 1.4;
+        }
+        
+        .component-list-full .comp-item {
+            white-space: normal;
+            line-height: 1.3;
+        }
+        
+        td .stock-control {
+            white-space: nowrap;
+        }
+        
+        .pending-table td {
+            word-wrap: break-word;
+            white-space: normal;
+        }
+        
+        .pending-table .date-added-cell {
+            font-size: 11px;
+            white-space: nowrap;
+        }
+        
+        /* Fix for date display in components table */
+        .date-added-cell {
+            font-size: 12px;
+            white-space: nowrap;
+            min-width: 140px;
+        }
+        
+        .report-date-cell {
+            font-size: 11px;
+            white-space: nowrap;
+            min-width: 140px;
+        }
+        
+        .component-name-cell {
+            min-width: 100px;
+            word-wrap: break-word;
+        }
+        
+        .component-value-cell {
+            min-width: 80px;
+            word-wrap: break-word;
+        }
+        
+        .component-category-cell {
+            min-width: 90px;
+            word-wrap: break-word;
+        }
+        
+        .component-location-cell {
+            min-width: 100px;
+            word-wrap: break-word;
+        }
+        
+        .action-cell {
+            white-space: nowrap;
+            min-width: 180px;
+        }
+        
+        .component-id-cell {
+            min-width: 100px;
+            word-wrap: break-word;
+        }
+        
+        /* Components table - ID column hidden by default */
+        .id-column {
+            display: none;
+        }
+        
+        .id-column.show-id {
+            display: table-cell;
+        }
+        
+        .show-id-btn {
+            background: rgba(79, 172, 254, 0.15);
+            border: 1px solid #4facfe;
+            color: #1a1a1a;                
+            padding: 2px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-left: 10px;
+        }
+        
+        .show-id-btn:hover {
+            background: #4facfe;
+            color: #1a1a1a;
+        }
+        
+        .show-id-btn.active {
+            background: #4facfe;
+            color: #1a1a1a;
+        }
+        
+        body.dark-theme .show-id-btn {
+            color: #aac8ff;
+            border-color: #aac8ff;
+        }
+        
+        body.dark-theme .show-id-btn:hover,
+        body.dark-theme .show-id-btn.active {
+            background: #4facfe;
+            color: #1a1a1a;
+        }
     </style>
 </head>
 <body>
@@ -773,12 +881,6 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
         </form>
         <div id="authError" class="error-msg"></div>
         <div class="auth-switch" id="toggleAuthMode">Don't have an account? <strong>Register</strong></div>
-<!--
-        <div style="margin-top: 16px; font-size: 11px; background: var(--bg-input); padding: 8px; border-radius: 12px;">
-            <small>🔐 Demo: <strong>guest@eim.com</strong> / guest123 (View-Only)</small><br>
-            <small>📝 Note: New registrations are GUEST accounts only</small>
-        </div>
--->
     </div>
 </div>
 
@@ -842,7 +944,10 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
         </div>
         
         <div id="components-view" class="view">
-            <h1><i class="fas fa-microchip"></i> Components Inventory</h1>
+            <h1>
+                <i class="fas fa-microchip"></i> Components Inventory
+                <button id="toggleIdBtn" class="show-id-btn"><i class="fas fa-eye"></i> Show ID</button>
+            </h1>
             <div class="search-bar">
                 <input type="text" id="searchInput" class="search-input" placeholder="Search...">
                 <select id="categoryFilter" class="filter-select"><option value="">All Categories</option></select>
@@ -854,11 +959,21 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
                 <button id="resetFiltersBtn" class="reset-btn">Reset</button>
             </div>
             <div class="table-wrapper">
-                <table id="componentsTable">
+                <table id="componentsTable" class="components-table">
                     <thead>
-                        <tr><th data-sort="componentId" id="sort-componentId">Component ID <i class="fas fa-sort"></i></th><th data-sort="name" id="sort-name">Name <i class="fas fa-sort"></i></th><th data-sort="category" id="sort-category">Category <i class="fas fa-sort"></i></th><th data-sort="value" id="sort-value">Value <i class="fas fa-sort"></i></th><th data-sort="quantity" id="sort-quantity">Stock <i class="fas fa-sort"></i></th><th data-sort="location" id="sort-location">Location <i class="fas fa-sort"></i></th><th>Status</th><th>Actions</th></tr>
+                        <tr>
+                            <th data-sort="componentId" id="sort-componentId" class="id-column" style="min-width:100px;">Component ID <i class="fas fa-sort"></i></th>
+                            <th data-sort="name" id="sort-name" style="min-width:120px;">Name <i class="fas fa-sort"></i></th>
+                            <th data-sort="category" id="sort-category" style="min-width:100px;">Category <i class="fas fa-sort"></i></th>
+                            <th data-sort="value" id="sort-value" style="min-width:80px;">Value <i class="fas fa-sort"></i></th>
+                            <th data-sort="quantity" id="sort-quantity" style="min-width:100px;">Stock <i class="fas fa-sort"></i></th>
+                            <th data-sort="location" id="sort-location" style="min-width:120px;">Location <i class="fas fa-sort"></i></th>
+                            <th data-sort="createdAt" id="sort-createdAt" style="min-width:140px;">Date Added <i class="fas fa-sort"></i></th>
+                            <th style="min-width:100px;">Status</th>
+                            <th style="min-width:180px;">Actions</th>
+                        </tr>
                     </thead>
-                    <tbody id="componentsTableBody"><tr><td colspan="8" class="loading-spinner"><i class="fas fa-microchip fa-pulse"></i><br>Loading components...</td></tr>
+                    <tbody id="componentsTableBody"><tr><td colspan="9" class="loading-spinner"><i class="fas fa-microchip fa-pulse"></i><br>Loading components...</td></tr>
                 </tbody>
                 </table>
             </div>
@@ -888,7 +1003,31 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
         
         <div id="admin-view" class="view"><h1><i class="fas fa-users-cog"></i> User Management <span class="admin-badge">Admin Only</span></h1><div class="form-card" style="margin-bottom:20px;"><h3>Add New User</h3><form id="addUserForm"><div class="form-row"><div class="form-group"><label>Email</label><input type="email" id="newUserEmail" required></div><div class="form-group"><label>Password</label><input type="password" id="newUserPassword" required></div><div class="form-group"><label>Role</label><select id="newUserRole"><option value="user">User (Can Add/Edit Own)</option><option value="admin">Admin (Full Access)</option></select></div></div><button type="submit" class="btn-primary"><i class="fas fa-user-plus"></i> Create User</button></form></div><div class="table-wrapper"><h3>Registered Users</h3><table><thead><tr><th>Email</th><th>Role</th><th>Created Date</th><th>Actions</th></tr></thead><tbody id="usersTableBody"></tbody></table></div></div>
         
-        <div id="approvals-view" class="view"><h1><i class="fas fa-check-double"></i> Pending Approvals <span class="admin-badge">Admin Only</span></h1><div id="pendingApprovalsContainer" class="pending-section"><h2><i class="fas fa-clock"></i> Components Awaiting Approval</h2><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Component ID</th><th>Name</th><th>Category</th><th>Value</th><th>Stock</th><th>Location</th><th>Submitted By</th><th>Actions</th></tr></thead><tbody id="pendingTableBody"><tr><td colspan="8" class="loading-spinner"><i class="fas fa-spinner fa-pulse"></i> Loading...</td></tr></tbody></table></div></div></div>
+        <div id="approvals-view" class="view">
+            <h1><i class="fas fa-check-double"></i> Pending Approvals <span class="admin-badge">Admin Only</span></h1>
+            <div id="pendingApprovalsContainer" class="pending-section">
+                <h2><i class="fas fa-clock"></i> Components Awaiting Approval</h2>
+                <div class="table-wrapper">
+                    <table id="pendingTable" class="pending-table">
+                        <thead>
+                            <tr>
+                                <th style="min-width:120px;">Component ID</th>
+                                <th style="min-width:120px;">Name</th>
+                                <th style="min-width:100px;">Category</th>
+                                <th style="min-width:80px;">Value</th>
+                                <th style="min-width:80px;">Stock</th>
+                                <th style="min-width:120px;">Location</th>
+                                <th style="min-width:140px;">Date Added</th>
+                                <th style="min-width:140px;">Submitted By</th>
+                                <th style="min-width:160px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pendingTableBody"><tr><td colspan="9" class="loading-spinner"><i class="fas fa-spinner fa-pulse"></i> Loading...</td></tr>
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
         
         <div class="mobile-version-hint app-version-display"></div>
     </div>
@@ -901,7 +1040,8 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
 <div id="toastMessage" class="toast-notify"><i class="fas fa-check-circle"></i> <span id="toastText"></span></div>
 
 <script>
-    const APP_VERSION = "v2.3.0";
+    const APP_VERSION = "v2.4.0";
+    let showIdColumn = false;
     
     function updateVersionDisplays() {
         document.querySelectorAll('.app-version-display').forEach(el => el.textContent = APP_VERSION);
@@ -932,6 +1072,44 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
     let reportSortField = 'name';
     let reportSortOrder = 'asc';
     let locationsSortOrder = 'asc';
+    
+    // Helper function to format Bangladesh Time (converts UTC to BD time)
+    function formatBDTime(isoString) {
+        if (!isoString) return '-';
+        try {
+            const date = new Date(isoString);
+            // Display in Bangladesh time format (UTC+6)
+            return date.toLocaleString('en-BD', { 
+                timeZone: 'Asia/Dhaka',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+        } catch(e) {
+            return isoString;
+        }
+    }
+    
+    // Toggle ID column visibility
+    function toggleIdColumn() {
+        showIdColumn = !showIdColumn;
+        const btn = document.getElementById('toggleIdBtn');
+        const idColumns = document.querySelectorAll('.id-column');
+        
+        if (showIdColumn) {
+            idColumns.forEach(col => col.classList.add('show-id'));
+            btn.innerHTML = '<i class="fas fa-eye-slash"></i> Hide ID';
+            btn.classList.add('active');
+        } else {
+            idColumns.forEach(col => col.classList.remove('show-id'));
+            btn.innerHTML = '<i class="fas fa-eye"></i> Show ID';
+            btn.classList.remove('active');
+        }
+    }
     
     // Theme functions
     function initTheme() {
@@ -991,7 +1169,7 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
     
     // Get Bangladesh Time (GMT+6)
     const now = new Date();
-    const bdTime = new Date(now.getTime() + (6 * 60 * 60 * 1000)); // Add 6 hours for BD time
+    const bdTime = new Date(now.getTime() + (6 * 60 * 60 * 1000));
     
     // Format: DD_MM_YYYY_HH_MM_SS
     const day = String(bdTime.getUTCDate()).padStart(2, '0');
@@ -1113,7 +1291,7 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
         });
         
         if (filtered.length === 0) { 
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No components found</td></tr>'; 
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No components found</td></tr>'; 
             return; 
         }
         
@@ -1126,15 +1304,19 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
             else if(c.status === 'pending') statusBadge = '<span class="pending-badge"><i class="fas fa-clock"></i> Pending</span>';
             else statusBadge = '<span class="rejected-badge"><i class="fas fa-times"></i> Rejected</span>';
             
+            // Format the BD time (converts UTC to BD time)
+            const dateAdded = formatBDTime(c.createdAt);
+            
             html += `<tr>
-                <td><strong>${escapeHtml(c.componentId)}</strong></td>
-                <td>${escapeHtml(c.name)}</td>
-                <td>${escapeHtml(c.category) || '-'}</td>
-                <td>${escapeHtml(c.value) || '-'}</td>
+                <td class="id-column ${showIdColumn ? 'show-id' : ''}"><strong>${escapeHtml(c.componentId)}</strong></td>
+                <td class="component-name-cell">${escapeHtml(c.name)}</td>
+                <td class="component-category-cell">${escapeHtml(c.category) || '-'}</td>
+                <td class="component-value-cell">${escapeHtml(c.value) || '-'}</td>
                 <td><div class="stock-control"><button class="stock-adjust-btn minus ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', -1)` : ''}">-</button><span class="stock-value ${low ? 'low-stock' : ''}">${c.quantity || 0}</span><button class="stock-adjust-btn plus ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', 1)` : ''}">+</button><button class="stock-adjust-btn plus10 ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', 10)` : ''}">+10</button></div></td>
-                <td>${escapeHtml(c.location) || '-'}</td>
+                <td class="component-location-cell">${escapeHtml(c.location) || '-'}</td>
+                <td class="date-added-cell">${dateAdded}</td>
                 <td>${statusBadge}</td>
-                <td><button class="edit-btn ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `editComponent('${c.firebaseKey}')` : ''}"><i class="fas fa-edit"></i> Edit</button> <button class="delete-btn ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `deleteComponent('${c.firebaseKey}')` : ''}"><i class="fas fa-trash"></i> Del</button> <button class="clone-btn ${isGuest() ? 'disabled-action' : ''}" onclick="${!isGuest() ? `cloneComponentToAdd('${c.firebaseKey}')` : ''}"><i class="fas fa-copy"></i> Clone</button></td>
+                <td class="action-cell"><button class="edit-btn ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `editComponent('${c.firebaseKey}')` : ''}"><i class="fas fa-edit"></i> Edit</button> <button class="delete-btn ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `deleteComponent('${c.firebaseKey}')` : ''}"><i class="fas fa-trash"></i> Del</button> <button class="clone-btn ${isGuest() ? 'disabled-action' : ''}" onclick="${!isGuest() ? `cloneComponentToAdd('${c.firebaseKey}')` : ''}"><i class="fas fa-copy"></i> Clone</button></td>
             </tr>`;
         }
         tbody.innerHTML = html;
@@ -1156,6 +1338,7 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
         let sortFieldName = { name:'Name', category:'Category', value:'Value', quantity:'Stock', location:'Location' }[reportSortField] || reportSortField; 
         let rows = ''; 
         sorted.forEach((c, i) => { 
+            const dateAdded = formatBDTime(c.createdAt);
             rows += `<tr>
                 <td style="text-align:center;">${i+1}</td>
                 <td>${escapeHtml(c.name)}</td>
@@ -1163,10 +1346,11 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
                 <td>${escapeHtml(c.value) || '-'}</td>
                 <td style="text-align:center;">${c.quantity || 0}</td>
                 <td>${escapeHtml(c.location) || '-'}</td>
+                <td class="report-date-cell">${dateAdded}</td>
             </tr>`; 
         });
         
-        document.getElementById("reportContainer").innerHTML = `<div class="report-header"><h2><i class="fas fa-chart-bar"></i> Inventory Dashboard</h2><p>Generated: ${new Date().toLocaleString()}</p><div class="sort-info-badge"><i class="fas fa-sort-amount-down"></i> Sorted by: <strong>${sortFieldName}</strong> (${reportSortOrder === 'asc' ? 'Ascending ↑' : 'Descending ↓'})</div><div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;"><button class="btn-primary" style="padding:4px 10px; font-size:12px; background:#6c5ce7;" onclick="sortReportData('name')">Sort by Name</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('category')">Sort by Category</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('value')">Sort by Value</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('quantity')">Sort by Stock</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('location')">Sort by Location</button></div></div><div class="report-stats-row"><div class="report-stat-item"><div>Total Components</div><div class="report-stat-value">${approvedComps.length}</div></div><div class="report-stat-item"><div>Total Stock</div><div class="report-stat-value">${totalStock.toLocaleString()}</div></div><div class="report-stat-item"><div>Categories</div><div class="report-stat-value">${categoriesCount}</div></div><div class="report-stat-item"><div>Low Stock</div><div class="report-stat-value ${lowStockCount>0?'low-stock-value':''}">${lowStockCount}</div></div></div><div style="padding:20px;"><h3>Complete Component List <span style="font-size:12px; color:var(--text-secondary);">(${approvedComps.length} items)</span></h3><table class="report-table"><thead><tr><th>#</th><th>Component Name</th><th>Category</th><th>Value</th><th>Stock</th><th>Storage Location</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+        document.getElementById("reportContainer").innerHTML = `<div class="report-header"><h2><i class="fas fa-chart-bar"></i> Inventory Dashboard</h2><p>Generated: ${new Date().toLocaleString()}</p><div class="sort-info-badge"><i class="fas fa-sort-amount-down"></i> Sorted by: <strong>${sortFieldName}</strong> (${reportSortOrder === 'asc' ? 'Ascending ↑' : 'Descending ↓'})</div><div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;"><button class="btn-primary" style="padding:4px 10px; font-size:12px; background:#6c5ce7;" onclick="sortReportData('name')">Sort by Name</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('category')">Sort by Category</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('value')">Sort by Value</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('quantity')">Sort by Stock</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('location')">Sort by Location</button></div></div><div class="report-stats-row"><div class="report-stat-item"><div>Total Components</div><div class="report-stat-value">${approvedComps.length}</div></div><div class="report-stat-item"><div>Total Stock</div><div class="report-stat-value">${totalStock.toLocaleString()}</div></div><div class="report-stat-item"><div>Categories</div><div class="report-stat-value">${categoriesCount}</div></div><div class="report-stat-item"><div>Low Stock</div><div class="report-stat-value ${lowStockCount>0?'low-stock-value':''}">${lowStockCount}</div></div></div><div style="padding:20px;"><h3>Complete Component List <span style="font-size:12px; color:var(--text-secondary);">(${approvedComps.length} items)</span></h3><table class="report-table"><thead><tr><th>#</th><th>Component Name</th><th>Category</th><th>Value</th><th>Stock</th><th>Storage Location</th><th>Date Added</th></tr></thead><tbody>${rows}</tbody></table></div>`;
     }
     
     window.sortReportData = (field) => { if(reportSortField === field) reportSortOrder = reportSortOrder === 'asc' ? 'desc' : 'asc'; else { reportSortField = field; reportSortOrder = 'asc'; } generateReport(); };
@@ -1174,19 +1358,62 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
     window.deleteComponent = async (key) => { if(isGuest()) { showToast("Guest users cannot delete", true); return; } const comp = allComponents.find(c => c.firebaseKey === key); if(!comp) return; if(!isAdmin() && comp.submittedBy !== currentUser?.uid) { showToast("You can only delete components you submitted", true); return; } if(confirm("Delete permanently?")){ await componentsRef.child(key).remove(); showToast("Component deleted", false); } };
     window.editComponent = (key) => { if(isGuest()) { showToast("Guest users cannot edit components", true); return; } let c = allComponents.find(c=>c.firebaseKey===key); if(!c) return; if(!isAdmin() && c.submittedBy !== currentUser?.uid) { showToast("You can only edit components you submitted", true); return; } document.getElementById("editKey").value = key; document.getElementById("editCompId").value = c.componentId || ''; document.getElementById("editName").value = c.name || ''; document.getElementById("editCategory").value = c.category || ''; document.getElementById("editValue").value = c.value || ''; document.getElementById("editPackage").value = c.package || 'Through-hole'; document.getElementById("editQuantity").value = c.quantity || 0; document.getElementById("editMinStock").value = c.minStockLevel || 10; document.getElementById("editLocation").value = c.location || ''; document.getElementById("editModal").style.display = "flex"; };
     window.cloneComponentToAdd = (key) => { if(isGuest()) { showToast("Guest users cannot clone components", true); return; } let c = allComponents.find(c=>c.firebaseKey===key); if(c){ document.getElementById('compName').value = c.name||''; document.getElementById('compCategory').value = c.category||''; document.getElementById('compValue').value = c.value||''; document.getElementById('compPackage').value = c.package||'Through-hole'; document.getElementById('compQuantity').value = Math.max(1, c.quantity||1); document.getElementById('compMinStock').value = c.minStockLevel||2; document.getElementById('locFull').value = c.location||''; document.getElementById('compDescription').value = c.description||''; if(c.category && c.value) { let newId = generateAutoComponentId(c.category, c.value); document.getElementById('compId').value = newId; document.getElementById('autoIdPreview').innerHTML = `<i class="fas fa-copy"></i> Cloned from ${escapeHtml(c.name)} → New ID: <strong>${escapeHtml(newId)}</strong>`; } switchToView('add'); showToast(`Cloned "${c.name}" - Submit for approval`, false); } };
-    window.approveComponent = async (pendingKey) => { if(!isAdmin()) return; const pending = pendingComponents.find(p => p.firebaseKey === pendingKey); if(!pending) return; try { const approvedComp = { componentId: pending.componentId, name: pending.name, category: pending.category, value: pending.value, package: pending.package || 'Through-hole', quantity: Math.max(1, pending.quantity || 1), minStockLevel: pending.minStockLevel || 10, location: pending.location || "Not specified", description: pending.description || "", status: 'approved', submittedBy: pending.submittedBy, submittedByEmail: pending.submittedByEmail, approvedBy: currentUser?.email, approvedAt: new Date().toISOString(), createdAt: pending.createdAt, updatedAt: new Date().toISOString() }; await componentsRef.child(pending.componentId).set(approvedComp); await pendingRef.child(pendingKey).remove(); showToast(`✓ Approved ${pending.name}`, false); loadComponents(); loadPendingComponents(); } catch(error) { showToast(error.message, true); } };
+    window.approveComponent = async (pendingKey) => { if(!isAdmin()) return; const pending = pendingComponents.find(p => p.firebaseKey === pendingKey); if(!pending) return; try { 
+        // Store UTC time for approval
+        const nowUTC = new Date();
+        
+        const approvedComp = { 
+            componentId: pending.componentId, 
+            name: pending.name, 
+            category: pending.category, 
+            value: pending.value, 
+            package: pending.package || 'Through-hole', 
+            quantity: Math.max(1, pending.quantity || 1), 
+            minStockLevel: pending.minStockLevel || 10, 
+            location: pending.location || "Not specified", 
+            description: pending.description || "", 
+            status: 'approved', 
+            submittedBy: pending.submittedBy, 
+            submittedByEmail: pending.submittedByEmail, 
+            approvedBy: currentUser?.email, 
+            approvedAt: nowUTC.toISOString(), // UTC time
+            createdAt: pending.createdAt, // Keep original UTC time
+            updatedAt: nowUTC.toISOString() // UTC time
+        }; 
+        await componentsRef.child(pending.componentId).set(approvedComp); 
+        await pendingRef.child(pendingKey).remove(); 
+        showToast(`✓ Approved ${pending.name}`, false); 
+        loadComponents(); 
+        loadPendingComponents(); 
+    } catch(error) { showToast(error.message, true); } };
     window.rejectComponent = async (pendingKey) => { if(!isAdmin()) return; if(confirm("Reject this component submission?")) { await pendingRef.child(pendingKey).remove(); showToast("Component rejected", false); loadPendingComponents(); } };
     
-    function renderPendingApprovals() { if(!isAdmin()) return; let tbody = document.getElementById("pendingTableBody"); if (!tbody) return; if (pendingComponents.length === 0) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No pending approvals</td></tr>'; return; } let html = ''; for (let p of pendingComponents) { html += `<tr>
-        <td><strong>${escapeHtml(p.componentId)}</strong></td>
-        <td>${escapeHtml(p.name)}</td>
-        <td>${escapeHtml(p.category) || '-'}</td>
-        <td>${escapeHtml(p.value) || '-'}</td>
-        <td>${p.quantity || 0}</td>
-        <td>${escapeHtml(p.location) || '-'}</td>
-        <td><small>${escapeHtml(p.submittedByEmail) || p.submittedBy}</small></td>
-        <td><button class="approve-btn" onclick="approveComponent('${p.firebaseKey}')"><i class="fas fa-check"></i> Approve</button> <button class="reject-btn" onclick="rejectComponent('${p.firebaseKey}')"><i class="fas fa-times"></i> Reject</button></td>
-    </tr>`; } tbody.innerHTML = html; updatePendingCountBadge(); }
+    function renderPendingApprovals() { 
+        if(!isAdmin()) return; 
+        let tbody = document.getElementById("pendingTableBody"); 
+        if (!tbody) return; 
+        if (pendingComponents.length === 0) { 
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No pending approvals</td></tr>'; 
+            return; 
+        } 
+        let html = ''; 
+        for (let p of pendingComponents) { 
+            const dateAdded = formatBDTime(p.createdAt);
+            html += `<tr>
+                <td><strong>${escapeHtml(p.componentId)}</strong></td>
+                <td>${escapeHtml(p.name)}</td>
+                <td>${escapeHtml(p.category) || '-'}</td>
+                <td>${escapeHtml(p.value) || '-'}</td>
+                <td style="text-align:center;">${p.quantity || 0}</td>
+                <td>${escapeHtml(p.location) || '-'}</td>
+                <td class="date-added-cell">${dateAdded}</td>
+                <td><small>${escapeHtml(p.submittedByEmail) || p.submittedBy}</small></td>
+                <td class="action-cell"><button class="approve-btn" onclick="approveComponent('${p.firebaseKey}')"><i class="fas fa-check"></i> Approve</button> <button class="reject-btn" onclick="rejectComponent('${p.firebaseKey}')"><i class="fas fa-times"></i> Reject</button></td>
+            </tr>`; 
+        } 
+        tbody.innerHTML = html; 
+        updatePendingCountBadge(); 
+    }
     
     // ENHANCED LOCATIONS FUNCTION - SHOWS ALL COMPONENTS IN UNIFORM CARDS
     function renderLocations() { 
@@ -1250,7 +1477,7 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
     }
     
     function updateSortIcons() { 
-        const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location']; 
+        const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location', 'createdAt']; 
         for(let field of fields) { 
             const th = document.getElementById(`sort-${field}`); 
             if(th) { 
@@ -1267,7 +1494,7 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
     }
     
     function attachSortListeners() { 
-        const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location']; 
+        const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location', 'createdAt']; 
         for(let field of fields) { 
             const th = document.getElementById(`sort-${field}`); 
             if(th) { 
@@ -1392,7 +1619,8 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
                         description: comp.description || '',
                         status: comp.status || 'approved',
                         submittedBy: comp.submittedBy,
-                        submittedByEmail: comp.submittedByEmail
+                        submittedByEmail: comp.submittedByEmail,
+                        createdAt: comp.createdAt || null
                     });
                 });
             }
@@ -1507,6 +1735,10 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
         if(!id || !name || !category || !value) { showToast("Please fill required fields", true); return; } 
         const idExists = [...allComponents, ...pendingComponents].some(c=>c.componentId===id);
         if(idExists){ showToast("Component ID already exists or pending approval!", true); return; } 
+
+        // Store UTC time (browser's local time converted to UTC)
+        const nowUTC = new Date();
+
         let newComp = { 
             componentId: id, name, category, value, 
             package: document.getElementById('compPackage').value, 
@@ -1516,14 +1748,14 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
             description: document.getElementById('compDescription').value, 
             submittedBy: currentUser?.uid,
             submittedByEmail: currentUser?.email,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            createdAt: nowUTC.toISOString(), // store UTC time
+            updatedAt: nowUTC.toISOString()
         }; 
         try {
             if(isAdmin()) {
                 newComp.status = 'approved';
                 newComp.approvedBy = currentUser.email;
-                newComp.approvedAt = new Date().toISOString();
+                newComp.approvedAt = nowUTC.toISOString();
                 await componentsRef.child(id).set(newComp);
                 showToast(`✓ "${name}" added directly to inventory`, false);
                 document.getElementById('addComponentForm').reset(); 
@@ -1641,18 +1873,22 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
                 const newId = `${prefix}-${(max+1).toString().padStart(3,'0')}`;
                 const idExists = [...allComponents, ...pendingComponents].some(c=>c.componentId===newId);
                 if(idExists) { duplicate++; continue; }
+                
+                // Store UTC time for import
+                const nowUTC = new Date();
+                
                 const newComp = {
                     componentId: newId, name, category, value, package: 'Through-hole',
                     quantity: Math.max(1, quantity), minStockLevel: 2, location,
-                    description: `Imported from CSV on ${new Date().toLocaleDateString()}`,
+                    description: `Imported from CSV on ${nowUTC.toLocaleDateString()}`,
                     submittedBy: currentUser?.uid, submittedByEmail: currentUser?.email,
-                    createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
+                    createdAt: nowUTC.toISOString(), updatedAt: nowUTC.toISOString()
                 };
                 try {
                     if(isAdmin()) {
                         newComp.status = 'approved';
                         newComp.approvedBy = currentUser.email;
-                        newComp.approvedAt = new Date().toISOString();
+                        newComp.approvedAt = nowUTC.toISOString();
                         await componentsRef.child(newId).set(newComp);
                     } else {
                         newComp.status = 'pending';
@@ -1670,13 +1906,12 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
         reader.readAsText(file, 'UTF-8');
     });
     
+    // Toggle ID button event listener
+    document.getElementById('toggleIdBtn')?.addEventListener('click', toggleIdColumn);
+    
     initTheme();
     updateVersionDisplays();
-    console.log(`${APP_VERSION} — Enhanced Locations tab with uniform cards and improved dark mode colors`);
+    console.log(`${APP_VERSION} — Added Show/Hide ID toggle button in Components tab.`);
 </script>
 </body>
 </html>
-
-
-
-
