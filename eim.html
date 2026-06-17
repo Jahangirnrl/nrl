@@ -989,7 +989,7 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
     </div>
     <div style="display: flex; margin-left: 30px; justify-content: center; gap: 4px; flex-wrap: wrap; margin-top: 6px;">
         <p style="font-size:11px; margin: 0;">Electronics Inventory Manager</p>
-        <span class="version-badge app-version-display" style="position: static; background: rgba(79, 172, 254, 0.25); padding: 2px 10px; border-radius: 20px; font-size: 10px; color: #aac8ff; border: 0.5px solid rgba(255,255,255,0.2); white-space: nowrap;">v2.5.0</span>
+        <span class="version-badge app-version-display" style="position: static; background: rgba(79, 172, 254, 0.25); padding: 2px 10px; border-radius: 20px; font-size: 10px; color: #aac8ff; border: 0.5px solid rgba(255,255,255,0.2); white-space: nowrap;">v2.4.0</span>
     </div>
 </div>
     <div class="nav-desktop">
@@ -1137,13 +1137,45 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
 </div>
 
 <div id="editModal" class="modal"><div class="modal-content"><span style="float:right;cursor:pointer;font-size:24px;" id="closeModalBtn">&times;</span><h3>Edit Component</h3><form id="editForm"><input type="hidden" id="editKey"><div class="form-group"><label>Component ID</label><input type="text" id="editCompId" readonly></div><div class="form-group"><label>Name</label><input type="text" id="editName" required></div><div class="form-group"><label>Category</label><input type="text" id="editCategory" required></div><div class="form-group"><label>Value</label><input type="text" id="editValue"></div><div class="form-group"><label>Package</label><select id="editPackage"><option>Through-hole</option><option>SMD</option><option>SOP</option><option>QFP</option><option>BGA</option></select></div><div class="form-group"><label>Min Stock</label><input type="number" id="editMinStock"></div><div class="form-group"><label>Current Stock</label><input type="number" id="editQuantity" required></div><div class="form-group"><label>Location</label><input type="text" id="editLocation"></div><div style="display:flex; gap:10px; margin-top:15px;"><button type="submit" class="edit-btn" style="flex:1;">Update</button><button type="button" id="confirmDeleteBtn" class="delete-btn" style="flex:1;">Delete</button><button type="button" id="cancelEditBtn" style="flex:1; background:#6c757d; color:white; border:none; border-radius:20px;">Cancel</button></div></form></div></div>
+<!-- ===== NEW: DESCRIPTION-ONLY EDIT MODAL ===== -->
+<div id="editDescriptionModal" class="modal">
+    <div class="modal-content" style="max-width: 450px;">
+        <span style="float:right;cursor:pointer;font-size:24px;color:var(--text-secondary);" onclick="closeDescriptionModal()">&times;</span>
+        <h3 style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+            <i class="fas fa-pen" style="color:#4facfe;"></i> 
+            Edit Description
+            <span id="descCompName" style="font-size:14px; font-weight:400; color:var(--text-secondary);"></span>
+        </h3>
+        <form id="editDescriptionForm">
+            <input type="hidden" id="editDescKey">
+            <div class="form-group">
+                <label style="font-weight:500;">
+                    <i class="fas fa-info-circle"></i> Component Description
+                </label>
+                <textarea id="editDescText" rows="4" placeholder="Add notes, specifications, datasheet links, or any additional details..." style="width:100%; padding:12px; border-radius:16px; border:2px solid #4facfe; background:var(--bg-input); color:var(--text-primary); font-size:14px; resize:vertical;"></textarea>
+                <small style="color:var(--text-secondary); font-size:11px; display:block; margin-top:6px;">
+                    <i class="fas fa-info-circle"></i> This description appears as a tooltip in the Locations tab
+                </small>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button type="button" onclick="closeDescriptionModal()" style="flex:1; background:#6c757d; color:white; border:none; border-radius:40px; padding:12px; cursor:pointer; font-weight:500;">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="submit" class="btn-primary" style="flex:1; display:flex; align-items:center; justify-content:center; gap:8px;">
+                    <i class="fas fa-save"></i> Save Description
+                </button>
+                
+            </div>
+        </form>
+    </div>
+</div>    
 
 <div id="editUserModal" class="modal"><div class="modal-content"><span style="float:right;cursor:pointer;font-size:24px;" onclick="closeEditUserModal()">&times;</span><h3>Edit User</h3><form id="editUserForm"><input type="hidden" id="editUserId"><div class="form-group"><label>Email</label><input type="email" id="editUserEmail" required></div><div class="form-group"><label>Role</label><select id="editUserRole"><option value="user">User</option><option value="admin">Admin</option></select></div><div class="form-group"><label>New Password (optional)</label><input type="password" id="editUserPassword" placeholder="Enter new password (min 6 chars)"></div><button type="submit" class="edit-btn" style="width:100%;">Update User</button></form></div></div>
 
 <div id="toastMessage" class="toast-notify"><i class="fas fa-check-circle"></i> <span id="toastText"></span></div>
 
 <script>
-    const APP_VERSION = "v2.5.0";
+    const APP_VERSION = "v2.4.0";
     let showIdColumn = false;
     
     function updateVersionDisplays() {
@@ -1570,10 +1602,22 @@ function renderLocations() {
         for(let part of parts) {
             let isLow = (part.quantity || 0) <= (part.minStockLevel || 2);
             let desc = part.description || '';
-            let descHtml = '';
+            
+            // Check if user can edit this component
+            const canEdit = !isGuest() && (isAdmin() || part.submittedBy === currentUser?.uid);
+            
             if (desc.trim()) {
-                descHtml = `<button class="desc-info-btn" title="Show description"><i class="fas fa-info-circle"></i><span class="desc-tooltip">${escapeHtml(desc)}</span></button>`;
+                descHtml = `<button class="desc-info-btn" onclick="${canEdit ? `openDescriptionModal('${part.firebaseKey}', '${escapeHtml(part.name)}', '${escapeHtml(desc)}')` : ''}" title="${canEdit ? 'Click to edit description' : 'View description (read-only)'}">
+                    <i class="fas fa-info-circle"></i>
+                    <span class="desc-tooltip">${escapeHtml(desc)}</span>
+                </button>`;
+            } else {
+                descHtml = `<button class="desc-info-btn" onclick="${canEdit ? `openDescriptionModal('${part.firebaseKey}', '${escapeHtml(part.name)}', '')` : ''}" title="${canEdit ? 'Click to add description' : 'No description'}" style="${canEdit ? '' : 'color:#6c757d; opacity:0.5;'}">
+                    <i class="fas ${canEdit ? 'fa-plus-circle' : 'fa-info-circle'}"></i>
+                    <span class="desc-tooltip" style="${canEdit ? '' : 'color:#6c757d;'}">${canEdit ? 'Click to add description' : 'No description'}</span>
+                </button>`;
             }
+            
             itemsHtml += `<div class="comp-item">
                 <span class="comp-name-wrap">
                     <span class="comp-name" title="${escapeHtml(part.name)} (${escapeHtml(part.value || '')})">🔹 ${escapeHtml(part.name)}</span>
@@ -2141,6 +2185,87 @@ function renderLocations() {
     initTheme();
     updateVersionDisplays();
     console.log(`${APP_VERSION} — Added description tooltip to Location cards.`);
+    
+    // ===== OPEN DESCRIPTION-ONLY MODAL =====
+window.openDescriptionModal = (firebaseKey, componentName, currentDescription) => {
+    if(isGuest()) {
+        showToast("Guest users cannot edit descriptions", true);
+        return;
+    }
+    
+    // Check permission
+    const comp = allComponents.find(c => c.firebaseKey === firebaseKey);
+    if(!comp) return;
+    if(!isAdmin() && comp.submittedBy !== currentUser?.uid) {
+        showToast("You can only edit components you submitted", true);
+        return;
+    }
+    
+    document.getElementById('editDescKey').value = firebaseKey;
+    document.getElementById('editDescText').value = currentDescription || '';
+    document.getElementById('descCompName').textContent = `— ${componentName}`;
+    document.getElementById('editDescriptionModal').style.display = 'flex';
+    
+    // Auto-focus the textarea
+    setTimeout(() => {
+        document.getElementById('editDescText').focus();
+    }, 300);
+};
+
+// ===== CLOSE DESCRIPTION-ONLY MODAL =====
+window.closeDescriptionModal = () => {
+    document.getElementById('editDescriptionModal').style.display = 'none';
+};
+
+// ===== SAVE DESCRIPTION ONLY =====
+document.getElementById('editDescriptionForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const key = document.getElementById('editDescKey').value;
+    const description = document.getElementById('editDescText').value.trim();
+    
+    if(!key) {
+        showToast("Error: No component selected", true);
+        return;
+    }
+    
+    try {
+        await componentsRef.child(key).update({
+            description: description,
+            updatedAt: new Date().toISOString()
+        });
+        
+        closeDescriptionModal();
+        showToast("✅ Description updated successfully!", false);
+        
+        // Refresh locations view to show updated tooltip
+        if(document.getElementById('locations-view').classList.contains('active')) {
+            renderLocations();
+        }
+        
+        // Also refresh components table if visible
+        if(document.getElementById('components-view').classList.contains('active')) {
+            renderComponentsTable();
+        }
+        
+    } catch(error) {
+        showToast("Error updating description: " + error.message, true);
+    }
+});
+
+// ===== CLOSE MODAL ON ESCAPE KEY =====
+document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') {
+        closeDescriptionModal();
+    }
+});
+
+// ===== CLOSE MODAL WHEN CLICKING OUTSIDE =====
+document.getElementById('editDescriptionModal')?.addEventListener('click', (e) => {
+    if(e.target === e.currentTarget) {
+        closeDescriptionModal();
+    }
+});
 </script>
 </body>
 </html>
