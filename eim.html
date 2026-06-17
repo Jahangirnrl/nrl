@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>EIM | Electronics Inventory Manager</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234facfe'%3E%3Cpath d='M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 2h1.5v3h-1.5V6zm0 4h1.5v3h-1.5v-3zm0 4h1.5v3h-1.5v-3zM7 6h1.5v3H7V6zm0 4h1.5v3H7v-3zm0 4h1.5v3H7v-3zm8 0h1.5v3H15v-3zm0-4h1.5v3H15v-3zm0-4h1.5v3H15V6z'/%3E%3C/svg%3E">
+    <title>EIM</title>
+    <!--<link rel="icon" type="image/png" href="https://img.icons8.com/color/48/000000/electronics.png">-->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234facfe'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3C/svg%3E">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -333,100 +334,118 @@
         .toast-notify { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(100px); background: #27ae60; color: white; padding: 10px 20px; border-radius: 50px; z-index: 2000; opacity: 0; transition: all 0.3s ease; pointer-events: none; white-space: nowrap; }
         .toast-notify.show { transform: translateX(-50%) translateY(0); opacity: 1; }
         
-        /* ========== ENHANCED LOCATIONS TAB - UNIFORM CARDS WITH FULL COMPONENT LIST ========== */
-        .locations-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-            gap: 24px;
-            margin-top: 16px;
-        }
-        .location-card {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 20px;
-            border-left: 5px solid #4facfe;
-            transition: all 0.25s ease;
-            color: var(--text-primary);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            min-height: 300px;
-        }
+/* ========== ENHANCED LOCATIONS TAB - UNIFORM CARDS WITH FULL COMPONENT LIST ========== */
+.locations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 24px;
+    margin-top: 16px;
+}
+.location-card {
+    background: var(--bg-card);
+    border-radius: 24px;
+    padding: 20px;
+    border-left: 5px solid #4facfe;
+    transition: all 0.25s ease;
+    color: var(--text-primary);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 300px;
+}
 
-        .location-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
-            background: var(--location-card-hover);
-        }
-        
-        .location-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 12px;
-            color: #4facfe;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border-bottom: 2px dotted var(--border-light);
-            padding-bottom: 10px;
-        }
-        .location-stats {
-            display: flex;
-            gap: 16px;
-            margin: 12px 0 16px 0;
-            font-size: 0.85rem;
-            background: var(--bg-input);
-            padding: 8px 14px;
-            border-radius: 40px;
-            justify-content: space-around;
-        }
-        .stat-badge {
-            background: rgba(79,172,254,0.15);
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-weight: 600;
-        }
-        .component-list-full {
-            margin-top: 8px;
-            flex: 1;
-            max-height: 280px;
-            overflow-y: auto;
-            padding-right: 6px;
-        }
-        .component-list-full .comp-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 6px;
-            border-bottom: 1px solid var(--border-light);
-            font-size: 0.85rem;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .comp-item .comp-name {
-            font-weight: 600;
-            flex: 2;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .comp-item .comp-qty {
-            background: var(--stock-bg-normal);
-            padding: 2px 10px;
-            border-radius: 40px;
-            font-weight: bold;
-            min-width: 65px;
-            text-align: center;
-            font-size: 0.75rem;
-        }
-        .comp-item .comp-qty.low-stock-card {
-            background: var(--stock-bg-low);
-            color: #e74c3c;
-        }
-        .component-list-full::-webkit-scrollbar { width: 4px; }
-        .component-list-full::-webkit-scrollbar-track { background: var(--border-light); border-radius: 4px; }
-        .component-list-full::-webkit-scrollbar-thumb { background: #4facfe; border-radius: 4px; }
-        .empty-location { color: var(--text-secondary); text-align: center; padding: 20px; font-style: italic; }
+.location-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+    background: var(--location-card-hover);
+}
+
+/* ===== LOCATION CARD HEADING - LIGHT MODE ===== */
+.location-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 12px;
+    color: #0d11e4; /* dark blue for light mode */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 2px dotted var(--border-light);
+    padding-bottom: 10px;
+    transition: color 0.3s ease;
+}
+
+/* ===== LOCATION CARD HOVER (both modes) ===== */
+.location-card:hover h3 {
+    color: #660bb9 !important; /* bright cyan on hover */
+}
+
+/* ===== DARK MODE OVERRIDE ===== */
+body.dark-theme .location-card h3 {
+    color: #ffffff !important; /* white in dark mode */
+}
+
+/* Dark mode hover still uses the bright cyan */
+body.dark-theme .location-card:hover h3 {
+    color: #00f2fe !important;
+}
+
+.location-stats {
+    display: flex;
+    gap: 16px;
+    margin: 12px 0 16px 0;
+    font-size: 0.85rem;
+    background: var(--bg-input);
+    padding: 8px 14px;
+    border-radius: 40px;
+    justify-content: space-around;
+}
+.stat-badge {
+    background: rgba(79,172,254,0.15);
+    padding: 4px 12px;
+    border-radius: 40px;
+    font-weight: 600;
+}
+.component-list-full {
+    margin-top: 8px;
+    flex: 1;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+.component-list-full .comp-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 0.85rem;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.comp-item .comp-name {
+    font-weight: 600;
+    flex: 2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.comp-item .comp-qty {
+    background: var(--stock-bg-normal);
+    padding: 2px 10px;
+    border-radius: 40px;
+    font-weight: bold;
+    min-width: 65px;
+    text-align: center;
+    font-size: 0.75rem;
+}
+.comp-item .comp-qty.low-stock-card {
+    background: var(--stock-bg-low);
+    color: #e74c3c;
+}
+.component-list-full::-webkit-scrollbar { width: 4px; }
+.component-list-full::-webkit-scrollbar-track { background: var(--border-light); border-radius: 4px; }
+.component-list-full::-webkit-scrollbar-thumb { background: #4facfe; border-radius: 4px; }
+.empty-location { color: var(--text-secondary); text-align: center; padding: 20px; font-style: italic; }
         
         .locations-sort-bar {
             display: flex;
