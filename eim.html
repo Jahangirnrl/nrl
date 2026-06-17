@@ -150,6 +150,8 @@
             letter-spacing: 0.3px;
             border: 0.5px solid rgba(255,255,255,0.2);
         }
+        
+
         .mobile-version-hint {
             display: none;
             text-align: center;
@@ -182,7 +184,7 @@
         .logo h2 { margin-top: 12px; font-weight: 600; color: var(--sidebar-text); }
         .logo p { color: var(--text-secondary); }
         
-        .nav-desktop { flex: 1; padding: 25px 0; }
+        .nav-desktop { flex: 1; padding: 08px 0; }
         .nav-btn-desktop {
             width: 100%;
             background: transparent;
@@ -883,6 +885,7 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
             background: #4facfe;
             color: #1a1a1a;
         }
+        
     </style>
 </head>
 <body>
@@ -905,32 +908,39 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
 
 <div class="app-wrapper" id="appWrapper">
     <div class="sidebar-desktop">
-        <div class="logo">
-            <i class="fas fa-microchip"></i>
-            <h2>EIM</h2>
-            <p style="font-size:11px;">Electronics Inventory Manager</p>
-            <div class="version-badge app-version-display"></div>
-        </div>
-        <div class="nav-desktop">
-            <button class="nav-btn-desktop" data-view="reports"><i class="fas fa-chart-line"></i><span> Reports</span></button>
-            <button class="nav-btn-desktop" data-view="components"><i class="fas fa-microchip"></i><span> Components</span></button>
-            <button class="nav-btn-desktop" data-view="add" id="addNavBtnDesktop"><i class="fas fa-plus-circle"></i><span> Add Part</span></button>
-            <button class="nav-btn-desktop" data-view="locations"><i class="fas fa-map-marker-alt"></i><span> Locations</span></button>
-            <button class="nav-btn-desktop" id="adminNavBtn" data-view="admin" style="display:none;"><i class="fas fa-users-cog"></i><span> User Admin</span></button>
-            <button class="nav-btn-desktop" id="approvalsNavBtn" data-view="approvals" style="display:none;"><i class="fas fa-check-double"></i><span> Pending Approvals</span><span id="pendingCountBadgeDesktop" class="pending-count-badge" style="display:none;">0</span></button>
-        </div>
-        <div class="user-card">
-            <i class="fas fa-user-astronaut"></i>
-            <div class="user-email" id="userEmailDisplay">electronics@eim</div>
-            <div id="userRoleDisplay"></div>
-            <button id="logoutBtnGlobal" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-            <button id="themeToggleSidebar" class="theme-toggle-btn"><i class="fas fa-moon"></i> Dark Mode</button>
-        </div>
-                
-        <div class="sidebar-connection-status" id="sidebarConnectionStatus">
-            <i class="fas fa-spinner fa-pulse"></i> Connecting...
-        </div>
+    <div class="logo">
+    <i class="fas fa-microchip"></i>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+        <h2 style="margin: 0;">EIM</h2>
     </div>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+        <p style="font-size:11px; margin: 0;">Electronics Inventory Manager</p>
+        <span class="version-badge app-version-display" style="position: static; background: rgba(79, 172, 254, 0.25); padding: 2px 10px; border-radius: 20px; font-size: 10px; color: #aac8ff; border: 0.5px solid rgba(255,255,255,0.2); white-space: nowrap;">v2.4.0</span>
+    </div>
+</div>
+    <div class="nav-desktop">
+        <button class="nav-btn-desktop" data-view="reports"><i class="fas fa-chart-line"></i><span> Reports</span></button>
+        <button class="nav-btn-desktop" data-view="components"><i class="fas fa-microchip"></i><span> Components</span></button>
+        <button class="nav-btn-desktop" data-view="add" id="addNavBtnDesktop"><i class="fas fa-plus-circle"></i><span> Add Part</span></button>
+        <button class="nav-btn-desktop" data-view="locations"><i class="fas fa-map-marker-alt"></i><span> Locations</span></button>
+        <button class="nav-btn-desktop" id="adminNavBtn" data-view="admin" style="display:none;"><i class="fas fa-users-cog"></i><span> User Admin</span></button>
+        <button class="nav-btn-desktop" id="approvalsNavBtn" data-view="approvals" style="display:none;"><i class="fas fa-check-double"></i><span> Pending Approvals</span><span id="pendingCountBadgeDesktop" class="pending-count-badge" style="display:none;">0</span></button>
+    </div>
+    <div class="user-card">
+        <i class="fas fa-user-astronaut"></i>
+        <div class="user-email" id="userEmailDisplay">electronics@eim</div>
+        <div id="userRoleDisplay"></div>
+        <button id="logoutBtnGlobal" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        <button id="themeToggleSidebar" class="theme-toggle-btn"><i class="fas fa-moon"></i> Dark Mode</button>
+    </div>
+            
+    <div class="sidebar-connection-status" id="sidebarConnectionStatus">
+        <i class="fas fa-spinner fa-pulse"></i> Connecting...
+    </div>
+</div>
+    
+    
+    
     
     <div class="bottom-nav-mobile">
         <button class="nav-btn-mobile" data-view="reports"><i class="fas fa-chart-line"></i><span>Reports</span></button>
