@@ -918,14 +918,75 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
             word-wrap: break-word;
         }
         
-        /* Components table - ID column hidden by default */
-        .id-column {
-            display: none;
-        }
-        
-        .id-column.show-id {
-            display: table-cell;
-        }
+        /* Column visibility controls */
+.id-column {
+    display: none;
+}
+.id-column.show-id {
+    display: table-cell;
+}
+
+.status-column {
+    display: none;
+}
+.status-column.show-status {
+    display: table-cell;
+}
+
+.actions-column {
+    display: none;
+}
+.actions-column.show-actions {
+    display: table-cell;
+}
+
+/* Toggle buttons styling */
+.show-id-btn {
+    background: rgba(79, 172, 254, 0.15);
+    border: 1px solid #4facfe;
+    color: #1a1a1a;                
+    padding: 6px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s;
+    margin-right: 4px;
+}
+
+.show-id-btn:hover {
+    background: #4facfe;
+    color: #1a1a1a;
+}
+
+.show-id-btn.active {
+    background: #4facfe;
+    color: #1a1a1a;
+}
+
+body.dark-theme .show-id-btn {
+    color: #aac8ff;
+    border-color: #aac8ff;
+}
+
+body.dark-theme .show-id-btn:hover,
+body.dark-theme .show-id-btn.active {
+    background: #4facfe;
+    color: #1a1a1a;
+}
+
+/* For mobile responsiveness */
+@media (max-width: 768px) {
+    .show-id-btn {
+        font-size: 10px;
+        padding: 4px 12px;
+    }
+    
+    #components-view h1 {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}  
         
         .show-id-btn {
             background: rgba(79, 172, 254, 0.15);
@@ -1047,40 +1108,44 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
         </div>
         
         <div id="components-view" class="view">
-            <h1>
-                <i class="fas fa-microchip"></i> Components Inventory
-                <button id="toggleIdBtn" class="show-id-btn"><i class="fas fa-eye"></i> Show ID</button>
-            </h1>
-            <div class="search-bar">
-                <input type="text" id="searchInput" class="search-input" placeholder="Search...">
-                <select id="categoryFilter" class="filter-select"><option value="">All Categories</option></select>
-                <select id="statusFilter" class="filter-select">
-                    <option value="all">All Status</option>
-                    <option value="approved">Approved Only</option>
-                    <option value="pending">Pending Only</option>
-                </select>
-                <button id="resetFiltersBtn" class="reset-btn">Reset</button>
-            </div>
-            <div class="table-wrapper">
-                <table id="componentsTable" class="components-table">
-                    <thead>
-                        <tr>
-                            <th data-sort="componentId" id="sort-componentId" class="id-column" style="min-width:100px;">Component ID <i class="fas fa-sort"></i></th>
-                            <th data-sort="name" id="sort-name" style="min-width:120px;">Name <i class="fas fa-sort"></i></th>
-                            <th data-sort="category" id="sort-category" style="min-width:100px;">Category <i class="fas fa-sort"></i></th>
-                            <th data-sort="value" id="sort-value" style="min-width:80px;">Value <i class="fas fa-sort"></i></th>
-                            <th data-sort="quantity" id="sort-quantity" style="min-width:100px;">Stock <i class="fas fa-sort"></i></th>
-                            <th data-sort="location" id="sort-location" style="min-width:120px;">Location <i class="fas fa-sort"></i></th>
-                            <th data-sort="createdAt" id="sort-createdAt" style="min-width:140px;">Date Added <i class="fas fa-sort"></i></th>
-                            <th style="min-width:100px;">Status</th>
-                            <th style="min-width:180px;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="componentsTableBody"><tr><td colspan="9" class="loading-spinner"><i class="fas fa-microchip fa-pulse"></i><br>Loading components...</td></tr>
-                </tbody>
-                </table>
-            </div>
+    <h1>
+        <i class="fas fa-microchip"></i> Components Inventory
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; width: 100%;">
+            <button id="toggleIdBtn" class="show-id-btn"><i class="fas fa-eye"></i> ID</button>
+            <button id="toggleStatusBtn" class="show-id-btn"><i class="fas fa-eye"></i> Status</button>
+            <button id="toggleActionsBtn" class="show-id-btn"><i class="fas fa-eye"></i> Actions</button>
         </div>
+    </h1>
+    <div class="search-bar">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search...">
+        <select id="categoryFilter" class="filter-select"><option value="">All Categories</option></select>
+        <select id="statusFilter" class="filter-select">
+            <option value="all">All Status</option>
+            <option value="approved">Approved Only</option>
+            <option value="pending">Pending Only</option>
+        </select>
+        <button id="resetFiltersBtn" class="reset-btn">Reset</button>
+    </div>
+    <div class="table-wrapper">
+        <table id="componentsTable" class="components-table">
+            <thead>
+                <tr>
+                    <th data-sort="componentId" id="sort-componentId" class="id-column" style="min-width:100px;">Component ID <i class="fas fa-sort"></i></th>
+                    <th data-sort="name" id="sort-name" style="min-width:120px;">Name <i class="fas fa-sort"></i></th>
+                    <th data-sort="category" id="sort-category" style="min-width:100px;">Category <i class="fas fa-sort"></i></th>
+                    <th data-sort="value" id="sort-value" style="min-width:80px;">Value <i class="fas fa-sort"></i></th>
+                    <th data-sort="quantity" id="sort-quantity" style="min-width:100px;">Stock <i class="fas fa-sort"></i></th>
+                    <th data-sort="location" id="sort-location" style="min-width:120px;">Location <i class="fas fa-sort"></i></th>
+                    <th data-sort="createdAt" id="sort-createdAt" style="min-width:140px;">Date Added <i class="fas fa-sort"></i></th>
+                    <th data-sort="status" id="sort-status" style="min-width:100px;" class="status-column">Status <i class="fas fa-sort"></i></th>
+                    <th style="min-width:180px;" class="actions-column">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="componentsTableBody"><tr><td colspan="9" class="loading-spinner"><i class="fas fa-microchip fa-pulse"></i><br>Loading components...</td></tr>
+        </tbody>
+        </table>
+    </div>
+</div>
         
         <div id="add-view" class="view">
             <h1><i class="fas fa-plus-circle"></i> Add New Component <span id="addModeText"></span></h1>
@@ -1176,7 +1241,10 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
 
 <script>
     const APP_VERSION = "v2.4.0";
+    
     let showIdColumn = false;
+    let showStatusColumn = false;
+    let showActionsColumn = false;
     
     function updateVersionDisplays() {
         document.querySelectorAll('.app-version-display').forEach(el => el.textContent = APP_VERSION);
@@ -1230,21 +1298,55 @@ body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);
     }
     
     // Toggle ID column visibility
-    function toggleIdColumn() {
-        showIdColumn = !showIdColumn;
-        const btn = document.getElementById('toggleIdBtn');
-        const idColumns = document.querySelectorAll('.id-column');
-        
-        if (showIdColumn) {
-            idColumns.forEach(col => col.classList.add('show-id'));
-            btn.innerHTML = '<i class="fas fa-eye-slash"></i> Hide ID';
-            btn.classList.add('active');
-        } else {
-            idColumns.forEach(col => col.classList.remove('show-id'));
-            btn.innerHTML = '<i class="fas fa-eye"></i> Show ID';
-            btn.classList.remove('active');
-        }
+function toggleIdColumn() {
+    showIdColumn = !showIdColumn;
+    const btn = document.getElementById('toggleIdBtn');
+    const idColumns = document.querySelectorAll('.id-column');
+    
+    if (showIdColumn) {
+        idColumns.forEach(col => col.classList.add('show-id'));
+        btn.innerHTML = '<i class="fas fa-eye-slash"></i> ID';
+        btn.classList.add('active');
+    } else {
+        idColumns.forEach(col => col.classList.remove('show-id'));
+        btn.innerHTML = '<i class="fas fa-eye"></i> ID';
+        btn.classList.remove('active');
     }
+}
+
+// Toggle Status column visibility
+function toggleStatusColumn() {
+    showStatusColumn = !showStatusColumn;
+    const btn = document.getElementById('toggleStatusBtn');
+    const statusColumns = document.querySelectorAll('.status-column');
+    
+    if (showStatusColumn) {
+        statusColumns.forEach(col => col.classList.add('show-status'));
+        btn.innerHTML = '<i class="fas fa-eye-slash"></i> Status';
+        btn.classList.add('active');
+    } else {
+        statusColumns.forEach(col => col.classList.remove('show-status'));
+        btn.innerHTML = '<i class="fas fa-eye"></i> Status';
+        btn.classList.remove('active');
+    }
+}
+
+// Toggle Actions column visibility
+function toggleActionsColumn() {
+    showActionsColumn = !showActionsColumn;
+    const btn = document.getElementById('toggleActionsBtn');
+    const actionsColumns = document.querySelectorAll('.actions-column');
+    
+    if (showActionsColumn) {
+        actionsColumns.forEach(col => col.classList.add('show-actions'));
+        btn.innerHTML = '<i class="fas fa-eye-slash"></i> Actions';
+        btn.classList.add('active');
+    } else {
+        actionsColumns.forEach(col => col.classList.remove('show-actions'));
+        btn.innerHTML = '<i class="fas fa-eye"></i> Actions';
+        btn.classList.remove('active');
+    }
+}
     
     // Theme functions
     function initTheme() {
@@ -1422,72 +1524,77 @@ function exportToCSV() {
     }
     
     function renderComponentsTable() {
-        const tbody = document.getElementById("componentsTableBody");
-        if (!tbody) return;
-        
-        let search = document.getElementById("searchInput")?.value.toLowerCase() || "";
-        let catFilter = document.getElementById("categoryFilter")?.value || "";
-        let statusFilter = document.getElementById("statusFilter")?.value || "all";
-        
-        let filtered = allComponents.filter(c => {
-            if(statusFilter === 'approved') return c.status === 'approved';
-            if(statusFilter === 'pending') return c.status === 'pending';
-            return true;
-        });
-        
-        filtered = filtered.filter(c => 
-            (c.componentId || "").toLowerCase().includes(search) || 
-            (c.name || "").toLowerCase().includes(search) || 
-            (c.value || "").toLowerCase().includes(search) || 
-            (c.category || "").toLowerCase().includes(search)
-        ).filter(c => !catFilter || c.category === catFilter);
-        
-        filtered.sort((a, b) => {
-            if (currentSort.field === 'value') {
-                return currentSort.direction === 'asc' ? parseValueToNumber(a.value) - parseValueToNumber(b.value) : parseValueToNumber(b.value) - parseValueToNumber(a.value);
-            } else if (currentSort.field === 'quantity') {
-                return currentSort.direction === 'asc' ? (a.quantity||0) - (b.quantity||0) : (b.quantity||0) - (a.quantity||0);
-            } else {
-                let aVal = String(a[currentSort.field] || '').toLowerCase();
-                let bVal = String(b[currentSort.field] || '').toLowerCase();
-                if (aVal < bVal) return currentSort.direction === 'asc' ? -1 : 1;
-                if (aVal > bVal) return currentSort.direction === 'asc' ? 1 : -1;
-                return 0;
-            }
-        });
-        
-        if (filtered.length === 0) { 
-            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No components found</td></tr>'; 
-            return; 
+    const tbody = document.getElementById("componentsTableBody");
+    if (!tbody) return;
+    
+    let search = document.getElementById("searchInput")?.value.toLowerCase() || "";
+    let catFilter = document.getElementById("categoryFilter")?.value || "";
+    let statusFilter = document.getElementById("statusFilter")?.value || "all";
+    
+    let filtered = allComponents.filter(c => {
+        if(statusFilter === 'approved') return c.status === 'approved';
+        if(statusFilter === 'pending') return c.status === 'pending';
+        return true;
+    });
+    
+    filtered = filtered.filter(c => 
+        (c.componentId || "").toLowerCase().includes(search) || 
+        (c.name || "").toLowerCase().includes(search) || 
+        (c.value || "").toLowerCase().includes(search) || 
+        (c.category || "").toLowerCase().includes(search)
+    ).filter(c => !catFilter || c.category === catFilter);
+    
+    filtered.sort((a, b) => {
+        if (currentSort.field === 'value') {
+            return currentSort.direction === 'asc' ? parseValueToNumber(a.value) - parseValueToNumber(b.value) : parseValueToNumber(b.value) - parseValueToNumber(a.value);
+        } else if (currentSort.field === 'quantity') {
+            return currentSort.direction === 'asc' ? (a.quantity||0) - (b.quantity||0) : (b.quantity||0) - (a.quantity||0);
+        } else if (currentSort.field === 'status') {
+            let aVal = String(a.status || '').toLowerCase();
+            let bVal = String(b.status || '').toLowerCase();
+            if (aVal < bVal) return currentSort.direction === 'asc' ? -1 : 1;
+            if (aVal > bVal) return currentSort.direction === 'asc' ? 1 : -1;
+            return 0;
+        } else {
+            let aVal = String(a[currentSort.field] || '').toLowerCase();
+            let bVal = String(b[currentSort.field] || '').toLowerCase();
+            if (aVal < bVal) return currentSort.direction === 'asc' ? -1 : 1;
+            if (aVal > bVal) return currentSort.direction === 'asc' ? 1 : -1;
+            return 0;
         }
-        
-        let html = '';
-        for (let c of filtered) {
-            let low = (c.quantity || 0) <= (c.minStockLevel || 0);
-            const canEditDelete = !isGuest() && (isAdmin() || c.submittedBy === currentUser?.uid);
-            let statusBadge = '';
-            if(c.status === 'approved') statusBadge = '<span class="approved-badge"><i class="fas fa-check"></i> Approved</span>';
-            else if(c.status === 'pending') statusBadge = '<span class="pending-badge"><i class="fas fa-clock"></i> Pending</span>';
-            else statusBadge = '<span class="rejected-badge"><i class="fas fa-times"></i> Rejected</span>';
-            
-            // Format the BD time (converts UTC to BD time)
-            const dateAdded = formatBDTime(c.createdAt);
-            
-            html += `<tr>
-                <td class="id-column ${showIdColumn ? 'show-id' : ''}"><strong>${escapeHtml(c.componentId)}</strong></td>
-                <td class="component-name-cell">${escapeHtml(c.name)}</td>
-                <td class="component-category-cell">${escapeHtml(c.category) || '-'}</td>
-                <td class="component-value-cell">${escapeHtml(c.value) || '-'}</td>
-                <td><div class="stock-control"><button class="stock-adjust-btn minus ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', -1)` : ''}">-</button><span class="stock-value ${low ? 'low-stock' : ''}">${c.quantity || 0}</span><button class="stock-adjust-btn plus ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', 1)` : ''}">+</button><button class="stock-adjust-btn plus10 ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', 10)` : ''}">+10</button></div></td>
-                <td class="component-location-cell">${escapeHtml(c.location) || '-'}</td>
-                <td class="date-added-cell">${dateAdded}</td>
-                <td>${statusBadge}</td>
-                <td class="action-cell"><button class="edit-btn ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `editComponent('${c.firebaseKey}')` : ''}"><i class="fas fa-edit"></i> Edit</button> <button class="delete-btn ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `deleteComponent('${c.firebaseKey}')` : ''}"><i class="fas fa-trash"></i> Del</button> <button class="clone-btn ${isGuest() ? 'disabled-action' : ''}" onclick="${!isGuest() ? `cloneComponentToAdd('${c.firebaseKey}')` : ''}"><i class="fas fa-copy"></i> Clone</button></td>
-            </tr>`;
-        }
-        tbody.innerHTML = html;
-        updateSortIcons();
+    });
+    
+    if (filtered.length === 0) { 
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No components found</td></tr>'; 
+        return; 
     }
+    
+    let html = '';
+    for (let c of filtered) {
+        let low = (c.quantity || 0) <= (c.minStockLevel || 0);
+        const canEditDelete = !isGuest() && (isAdmin() || c.submittedBy === currentUser?.uid);
+        let statusBadge = '';
+        if(c.status === 'approved') statusBadge = '<span class="approved-badge"><i class="fas fa-check"></i> Approved</span>';
+        else if(c.status === 'pending') statusBadge = '<span class="pending-badge"><i class="fas fa-clock"></i> Pending</span>';
+        else statusBadge = '<span class="rejected-badge"><i class="fas fa-times"></i> Rejected</span>';
+        
+        const dateAdded = formatBDTime(c.createdAt);
+        
+        html += `<tr>
+            <td class="id-column ${showIdColumn ? 'show-id' : ''}"><strong>${escapeHtml(c.componentId)}</strong></td>
+            <td class="component-name-cell">${escapeHtml(c.name)}</td>
+            <td class="component-category-cell">${escapeHtml(c.category) || '-'}</td>
+            <td class="component-value-cell">${escapeHtml(c.value) || '-'}</td>
+            <td><div class="stock-control"><button class="stock-adjust-btn minus ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', -1)` : ''}">-</button><span class="stock-value ${low ? 'low-stock' : ''}">${c.quantity || 0}</span><button class="stock-adjust-btn plus ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', 1)` : ''}">+</button><button class="stock-adjust-btn plus10 ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', 10)` : ''}">+10</button></div></td>
+            <td class="component-location-cell">${escapeHtml(c.location) || '-'}</td>
+            <td class="date-added-cell">${dateAdded}</td>
+            <td class="status-column ${showStatusColumn ? 'show-status' : ''}">${statusBadge}</td>
+            <td class="actions-column ${showActionsColumn ? 'show-actions' : ''}"><button class="edit-btn ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `editComponent('${c.firebaseKey}')` : ''}"><i class="fas fa-edit"></i> Edit</button> <button class="delete-btn ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `deleteComponent('${c.firebaseKey}')` : ''}"><i class="fas fa-trash"></i> Del</button> <button class="clone-btn ${isGuest() ? 'disabled-action' : ''}" onclick="${!isGuest() ? `cloneComponentToAdd('${c.firebaseKey}')` : ''}"><i class="fas fa-copy"></i> Clone</button></td>
+        </tr>`;
+    }
+    tbody.innerHTML = html;
+    updateSortIcons();
+}
     
     function generateReport() { 
         let approvedComps = allComponents.filter(c => c.status === 'approved'); 
@@ -1520,7 +1627,17 @@ function exportToCSV() {
     }
     
     window.sortReportData = (field) => { if(reportSortField === field) reportSortOrder = reportSortOrder === 'asc' ? 'desc' : 'asc'; else { reportSortField = field; reportSortOrder = 'asc'; } generateReport(); };
-    window.adjustStock = async (key, delta) => { if(isGuest()) { showToast("Guest users cannot modify stock", true); return; } let comp = allComponents.find(c => c.firebaseKey === key); if (!comp) return; if(!isAdmin() && comp.submittedBy !== currentUser?.uid) { showToast("You can only modify components you submitted", true); return; } const newQty = Math.max(1, (comp.quantity || 0) + delta); await componentsRef.child(key).update({ quantity: newQty, updatedAt: new Date().toISOString() }); showToast(`${delta>0?'+':''}${delta} → ${newQty} pcs`, false); };
+    
+    window.adjustStock = async (key, delta) => {if(isGuest()) { showToast("Guest users cannot modify stock", true); return; }let comp = allComponents.find(c => c.firebaseKey === key); if (!comp) return;     if(!isAdmin() && comp.submittedBy !== currentUser?.uid) {         showToast("You can only modify components you submitted", true);         return;     } 
+    // CHANGE: Allow stock to go down to 0 instead of 1
+    const newQty = Math.max(0, (comp.quantity || 0) + delta); 
+    await componentsRef.child(key).update({ 
+        quantity: newQty, 
+        updatedAt: new Date().toISOString() 
+    }); 
+    showToast(`${delta>0?'+':''}${delta} → ${newQty} pcs`, false); 
+};
+    
     window.deleteComponent = async (key) => { if(isGuest()) { showToast("Guest users cannot delete", true); return; } const comp = allComponents.find(c => c.firebaseKey === key); if(!comp) return; if(!isAdmin() && comp.submittedBy !== currentUser?.uid) { showToast("You can only delete components you submitted", true); return; } if(confirm("Delete permanently?")){ await componentsRef.child(key).remove(); showToast("Component deleted", false); } };
     window.editComponent = (key) => { if(isGuest()) { showToast("Guest users cannot edit components", true); return; } let c = allComponents.find(c=>c.firebaseKey===key); if(!c) return; if(!isAdmin() && c.submittedBy !== currentUser?.uid) { showToast("You can only edit components you submitted", true); return; } document.getElementById("editKey").value = key; document.getElementById("editCompId").value = c.componentId || ''; document.getElementById("editName").value = c.name || ''; document.getElementById("editCategory").value = c.category || ''; document.getElementById("editValue").value = c.value || ''; document.getElementById("editPackage").value = c.package || 'Through-hole'; document.getElementById("editQuantity").value = c.quantity || 0; document.getElementById("editMinStock").value = c.minStockLevel || 10; document.getElementById("editLocation").value = c.location || ''; document.getElementById("editModal").style.display = "flex"; };
     window.cloneComponentToAdd = (key) => { if(isGuest()) { showToast("Guest users cannot clone components", true); return; } let c = allComponents.find(c=>c.firebaseKey===key); if(c){ document.getElementById('compName').value = c.name||''; document.getElementById('compCategory').value = c.category||''; document.getElementById('compValue').value = c.value||''; document.getElementById('compPackage').value = c.package||'Through-hole'; document.getElementById('compQuantity').value = Math.max(1, c.quantity||1); document.getElementById('compMinStock').value = c.minStockLevel||2; document.getElementById('locFull').value = c.location||''; document.getElementById('compDescription').value = c.description||''; if(c.category && c.value) { let newId = generateAutoComponentId(c.category, c.value); document.getElementById('compId').value = newId; document.getElementById('autoIdPreview').innerHTML = `<i class="fas fa-copy"></i> Cloned from ${escapeHtml(c.name)} → New ID: <strong>${escapeHtml(newId)}</strong>`; } switchToView('add'); showToast(`Cloned "${c.name}" - Submit for approval`, false); } };
@@ -1606,13 +1723,18 @@ function renderLocations() {
             // Check if user can edit this component
             const canEdit = !isGuest() && (isAdmin() || part.submittedBy === currentUser?.uid);
             
+            // Escape description for JSON-safe string
+            const safeDesc = desc.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/'/g, "\\'");
+            const safeName = part.name.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/'/g, "\\'");
+            
             if (desc.trim()) {
-                descHtml = `<button class="desc-info-btn" onclick="${canEdit ? `openDescriptionModal('${part.firebaseKey}', '${escapeHtml(part.name)}', '${escapeHtml(desc)}')` : ''}" title="${canEdit ? 'Click to edit description' : 'View description (read-only)'}">
+                // Use data attributes instead of inline onclick for long content
+                descHtml = `<button class="desc-info-btn" data-key="${part.firebaseKey}" data-name="${escapeHtml(safeName)}" data-desc="${escapeHtml(safeDesc)}" ${canEdit ? '' : 'disabled'} title="${canEdit ? 'Click to edit description' : 'View description (read-only)'}">
                     <i class="fas fa-info-circle"></i>
                     <span class="desc-tooltip">${escapeHtml(desc)}</span>
                 </button>`;
             } else {
-                descHtml = `<button class="desc-info-btn" onclick="${canEdit ? `openDescriptionModal('${part.firebaseKey}', '${escapeHtml(part.name)}', '')` : ''}" title="${canEdit ? 'Click to add description' : 'No description'}" style="${canEdit ? '' : 'color:#6c757d; opacity:0.5;'}">
+                descHtml = `<button class="desc-info-btn" data-key="${part.firebaseKey}" data-name="${escapeHtml(safeName)}" data-desc="" ${canEdit ? '' : 'disabled'} title="${canEdit ? 'Click to add description' : 'No description'}" style="${canEdit ? '' : 'color:#6c757d; opacity:0.5;'}">
                     <i class="fas ${canEdit ? 'fa-plus-circle' : 'fa-info-circle'}"></i>
                     <span class="desc-tooltip" style="${canEdit ? '' : 'color:#6c757d;'}">${canEdit ? 'Click to add description' : 'No description'}</span>
                 </button>`;
@@ -1638,6 +1760,18 @@ function renderLocations() {
         </div>`; 
     } 
     grid.innerHTML = html; 
+    
+    // Attach event listeners to all description buttons
+    document.querySelectorAll('.desc-info-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if(this.disabled) return;
+            const key = this.dataset.key;
+            const name = this.dataset.name;
+            const desc = this.dataset.desc;
+            openDescriptionModal(key, name, desc);
+        });
+    });
 }
     
     function setLocationSort(order) { 
@@ -1663,35 +1797,35 @@ function renderLocations() {
     }
     
     function updateSortIcons() { 
-        const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location', 'createdAt']; 
-        for(let field of fields) { 
-            const th = document.getElementById(`sort-${field}`); 
-            if(th) { 
-                const icon = th.querySelector('i'); 
-                if(currentSort.field === field) { 
-                    th.style.backgroundColor = '#3a5a8a'; 
-                    if(icon) icon.className = currentSort.direction === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'; 
-                } else { 
-                    th.style.backgroundColor = '#2c3e66'; 
-                    if(icon) icon.className = 'fas fa-sort'; 
-                } 
+    const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location', 'createdAt', 'status']; 
+    for(let field of fields) { 
+        const th = document.getElementById(`sort-${field}`); 
+        if(th) { 
+            const icon = th.querySelector('i'); 
+            if(currentSort.field === field) { 
+                th.style.backgroundColor = '#3a5a8a'; 
+                if(icon) icon.className = currentSort.direction === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'; 
+            } else { 
+                th.style.backgroundColor = '#2c3e66'; 
+                if(icon) icon.className = 'fas fa-sort'; 
             } 
         } 
-    }
+    } 
+}
     
-    function attachSortListeners() { 
-        const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location', 'createdAt']; 
-        for(let field of fields) { 
-            const th = document.getElementById(`sort-${field}`); 
-            if(th) { 
-                th.onclick = () => { 
-                    if(currentSort.field === field) currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc'; 
-                    else { currentSort.field = field; currentSort.direction = 'asc'; } 
-                    renderComponentsTable(); 
-                }; 
-            } 
+function attachSortListeners() { 
+    const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location', 'createdAt', 'status']; 
+    for(let field of fields) { 
+        const th = document.getElementById(`sort-${field}`); 
+        if(th) { 
+            th.onclick = () => { 
+                if(currentSort.field === field) currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc'; 
+                else { currentSort.field = field; currentSort.direction = 'asc'; } 
+                renderComponentsTable(); 
+            }; 
         } 
-    }
+    } 
+}
     
     function switchToView(viewName) { 
         document.querySelectorAll('.nav-btn-desktop, .nav-btn-mobile').forEach(btn=>btn.classList.remove('active')); 
@@ -2179,8 +2313,15 @@ function renderLocations() {
     };
     reader.readAsText(file, 'UTF-8');
 });
+    
     // Toggle ID button event listener
-    document.getElementById('toggleIdBtn')?.addEventListener('click', toggleIdColumn);
+document.getElementById('toggleIdBtn')?.addEventListener('click', toggleIdColumn);
+
+// Toggle Status button event listener
+document.getElementById('toggleStatusBtn')?.addEventListener('click', toggleStatusColumn);
+
+// Toggle Actions button event listener
+document.getElementById('toggleActionsBtn')?.addEventListener('click', toggleActionsColumn);
     
     initTheme();
     updateVersionDisplays();
@@ -2266,6 +2407,128 @@ document.getElementById('editDescriptionModal')?.addEventListener('click', (e) =
         closeDescriptionModal();
     }
 });
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    //Optional
+    // Save column visibility states
+function saveColumnVisibility() {
+    localStorage.setItem('eim_show_id', JSON.stringify(showIdColumn));
+    localStorage.setItem('eim_show_status', JSON.stringify(showStatusColumn));
+    localStorage.setItem('eim_show_actions', JSON.stringify(showActionsColumn));
+}
+
+// Load column visibility states
+function loadColumnVisibility() {
+    const savedId = localStorage.getItem('eim_show_id');
+    const savedStatus = localStorage.getItem('eim_show_status');
+    const savedActions = localStorage.getItem('eim_show_actions');
+    
+    if (savedId !== null) {
+        showIdColumn = JSON.parse(savedId);
+        if (showIdColumn) {
+            document.getElementById('toggleIdBtn')?.classList.add('active');
+            document.getElementById('toggleIdBtn').innerHTML = '<i class="fas fa-eye-slash"></i> ID';
+            document.querySelectorAll('.id-column').forEach(col => col.classList.add('show-id'));
+        }
+    }
+    
+    if (savedStatus !== null) {
+        showStatusColumn = JSON.parse(savedStatus);
+        if (showStatusColumn) {
+            document.getElementById('toggleStatusBtn')?.classList.add('active');
+            document.getElementById('toggleStatusBtn').innerHTML = '<i class="fas fa-eye-slash"></i> Status';
+            document.querySelectorAll('.status-column').forEach(col => col.classList.add('show-status'));
+        }
+    }
+    
+    if (savedActions !== null) {
+        showActionsColumn = JSON.parse(savedActions);
+        if (showActionsColumn) {
+            document.getElementById('toggleActionsBtn')?.classList.add('active');
+            document.getElementById('toggleActionsBtn').innerHTML = '<i class="fas fa-eye-slash"></i> Actions';
+            document.querySelectorAll('.actions-column').forEach(col => col.classList.add('show-actions'));
+        }
+    }
+}
+
+// Update toggle functions to save state
+function toggleIdColumn() {
+    showIdColumn = !showIdColumn;
+    const btn = document.getElementById('toggleIdBtn');
+    const idColumns = document.querySelectorAll('.id-column');
+    
+    if (showIdColumn) {
+        idColumns.forEach(col => col.classList.add('show-id'));
+        btn.innerHTML = '<i class="fas fa-eye-slash"></i> ID';
+        btn.classList.add('active');
+    } else {
+        idColumns.forEach(col => col.classList.remove('show-id'));
+        btn.innerHTML = '<i class="fas fa-eye"></i> ID';
+        btn.classList.remove('active');
+    }
+    saveColumnVisibility();
+}
+
+function toggleStatusColumn() {
+    showStatusColumn = !showStatusColumn;
+    const btn = document.getElementById('toggleStatusBtn');
+    const statusColumns = document.querySelectorAll('.status-column');
+    
+    if (showStatusColumn) {
+        statusColumns.forEach(col => col.classList.add('show-status'));
+        btn.innerHTML = '<i class="fas fa-eye-slash"></i> Status';
+        btn.classList.add('active');
+    } else {
+        statusColumns.forEach(col => col.classList.remove('show-status'));
+        btn.innerHTML = '<i class="fas fa-eye"></i> Status';
+        btn.classList.remove('active');
+    }
+    saveColumnVisibility();
+}
+
+function toggleActionsColumn() {
+    showActionsColumn = !showActionsColumn;
+    const btn = document.getElementById('toggleActionsBtn');
+    const actionsColumns = document.querySelectorAll('.actions-column');
+    
+    if (showActionsColumn) {
+        actionsColumns.forEach(col => col.classList.add('show-actions'));
+        btn.innerHTML = '<i class="fas fa-eye-slash"></i> Actions';
+        btn.classList.add('active');
+    } else {
+        actionsColumns.forEach(col => col.classList.remove('show-actions'));
+        btn.innerHTML = '<i class="fas fa-eye"></i> Actions';
+        btn.classList.remove('active');
+    }
+    saveColumnVisibility();
+}
+
+// Call loadColumnVisibility after page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadColumnVisibility();
+});
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 </script>
 </body>
 </html>
