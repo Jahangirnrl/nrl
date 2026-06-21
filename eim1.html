@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>EIM | Electronics Inventory Manager</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234facfe'%3E%3Cpath d='M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 2h1.5v3h-1.5V6zm0 4h1.5v3h-1.5v-3zm0 4h1.5v3h-1.5v-3zM7 6h1.5v3H7V6zm0 4h1.5v3H7v-3zm0 4h1.5v3H7v-3zm8 0h1.5v3H15v-3zm0-4h1.5v3H15v-3zm0-4h1.5v3H15V6z'/%3E%3C/svg%3E">
+    <title>EIM</title>
+    <!-- Chip/Processor Icon -->
+<link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -14,15 +15,77 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
         
-        /* DARKER GRAY THEME */
-        body { background: #2a2a2a; min-height: 100vh; overflow-x: hidden; }
+        /* ========== THEME VARIABLES ========== */
+        :root {
+            --bg-body: #a9a2ab;
+            --bg-sidebar: rgba(18, 25, 45, 0.96);
+            --bg-card: white;
+            --bg-table: white;
+            --bg-input: #f9fafb;
+            --text-primary: #1e2f4e;
+            --text-secondary: #6c757d;
+            --text-light: #e0e4f0;
+            --border-color: #ddd;
+            --border-light: #e9ecef;
+            --sidebar-text: white;
+            --nav-hover: #2a3a5e;
+            --nav-active: linear-gradient(95deg, #4facfe, #00f2fe);
+            --input-border: #ced4da;
+            --sidebar-status-bg: rgba(40, 167, 69, 0.3);
+            --sidebar-status-error: rgba(231, 76, 60, 0.3);
+            --stock-bg-normal: #d1fae5;
+            --stock-bg-low: #fee2e2;
+            --stock-btn-minus-bg: #ffe0e0;
+            --stock-btn-plus-bg: #e0ffe0;
+            --stock-btn-plus10-bg: #e0e7ff;
+            --report-header-bg: linear-gradient(135deg, #1e2f4e, #2c3e66);
+            --report-stats-bg: #f8f9fa;
+            --pending-section-bg: #fff3e0;
+            --modal-bg: white;
+            --auto-id-preview-bg: #e8f0fe;
+            --location-card-hover: rgba(79, 172, 254, 0.08);
+            
+        }
+        
+        /* BETTER DARK MODE COLORS from 1111.html */
+        body.dark-theme {
+            --bg-body: #1e1e2f;
+            --bg-sidebar: #1a1a2e;
+            --bg-card: #1a1b2a;
+            --bg-table: #2d2d44;
+            --bg-input: #3a3a55;
+            --text-primary: #f0f0f0;
+            --text-secondary: #b0b0c0;
+            --text-light: #d0d0e0;
+            --border-color: #4a4a6a;
+            --border-light: #3a3a55;
+            --sidebar-text: #e0e0e0;
+            --nav-hover: #2a2a4a;
+            --nav-active: linear-gradient(95deg, #4facfe, #00f2fe);
+            --input-border: #5a5a7a;
+            --sidebar-status-bg: rgba(40, 167, 69, 0.3);
+            --sidebar-status-error: rgba(231, 76, 60, 0.3);
+            --stock-bg-normal: #2a6b2a;
+            --stock-bg-low: #8b3a3a;
+            --stock-btn-minus-bg: #8b3a3a;
+            --stock-btn-plus-bg: #2a6b2a;
+            --stock-btn-plus10-bg: #3a3a6b;
+            --report-header-bg: linear-gradient(135deg, #2c3e66, #1a2a4a);
+            --report-stats-bg: #2a2a3a;
+            --pending-section-bg: #3a3a3a;
+            --modal-bg: #3a3a55;
+            --auto-id-preview-bg: #4a4a6a;
+        }
+
+        
+        body { background: var(--bg-body); min-height: 100vh; overflow-x: hidden; transition: background 0.2s ease, color 0.2s ease; }
         
         .auth-container {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a1a, #2d2d2d, #1a1a1a);
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
             padding: 20px;
             position: fixed;
             top: 0;
@@ -31,31 +94,30 @@
             bottom: 0;
             z-index: 9999;
         }
-        
+        body.dark-theme .auth-container {
+            background: linear-gradient(135deg, #0a0a1a, #1a1a2e, #0a0a1a);
+        }
         .auth-card {
-            background: #3a3a3a;
+            background: var(--bg-card);
             border-radius: 32px;
             padding: 40px 32px;
             width: 100%;
             max-width: 420px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             text-align: center;
         }
-        
         .auth-card .logo-icon { font-size: 56px; color: #4facfe; margin-bottom: 16px; }
-        .auth-card h2 { margin-bottom: 8px; color: #e0e0e0; }
-        .auth-card p { color: #b0b0b0; font-size: 13px; margin-bottom: 28px; }
-        .auth-input { 
-            width: 100%; padding: 14px 16px; margin: 10px 0; border-radius: 28px; 
-            border: 1px solid #555; font-size: 14px; background: #4a4a4a; color: #e0e0e0;
-        }
-        .auth-input::placeholder { color: #aaa; }
-        .auth-btn { background: linear-gradient(95deg, #4facfe, #00f2fe); border: none; padding: 12px; border-radius: 40px; font-weight: bold; color: #1a1a1a; cursor: pointer; width: 100%; margin-top: 12px; font-size: 16px; }
+        .auth-card h2 { margin-bottom: 8px; color: var(--text-primary); }
+        .auth-card p { color: var(--text-secondary); font-size: 13px; margin-bottom: 28px; }
+        .auth-input { width: 100%; padding: 14px 16px; margin: 10px 0; border-radius: 28px; border: 1px solid var(--border-color); font-size: 14px; background: var(--bg-input); color: var(--text-primary); }
+        .auth-input::placeholder { color: var(--text-secondary); }
+        .auth-btn { background: linear-gradient(95deg, #4facfe, #00f2fe); border: none; padding: 12px; border-radius: 40px; font-weight: bold; color: #1e2f4e; cursor: pointer; width: 100%; margin-top: 12px; font-size: 16px; }
+        body.dark-theme .auth-btn { color: #1a1a1a; }
         .auth-switch { margin-top: 20px; font-size: 13px; color: #4facfe; cursor: pointer; }
         .error-msg { color: #e74c3c; font-size: 12px; margin-top: 8px; }
-        .admin-badge { background: #e67e22; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; display: inline-block; }
-        .guest-badge { background: #6c757d; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; display: inline-block; }
-        .user-badge { background: #4facfe; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; display: inline-block; }
+        .admin-badge { background: #e67e22; color: white; padding: 2px 10px; border-radius: 20px; font-size: 15px; margin-left: 8px; display: inline-block; }
+        .guest-badge { background: #6c757d; color: white; padding: 2px 10px; border-radius: 20px; font-size: 15px; margin-left: 8px; display: inline-block; }
+        .user-badge { background: #4facfe; color: white; padding: 2px 10px; border-radius: 20px; font-size: 15px; margin-left: 8px; display: inline-block; }
         .pending-badge { background: #f39c12; color: white; padding: 2px 8px; border-radius: 20px; font-size: 10px; margin-left: 8px; }
         .approved-badge { background: #27ae60; color: white; padding: 2px 8px; border-radius: 20px; font-size: 10px; margin-left: 8px; }
         .rejected-badge { background: #e74c3c; color: white; padding: 2px 8px; border-radius: 20px; font-size: 10px; margin-left: 8px; }
@@ -88,11 +150,13 @@
             letter-spacing: 0.3px;
             border: 0.5px solid rgba(255,255,255,0.2);
         }
+        
+
         .mobile-version-hint {
             display: none;
             text-align: center;
             font-size: 9px;
-            color: #aaa;
+            color: var(--text-secondary);
             padding: 4px 0;
             background: transparent;
         }
@@ -100,14 +164,14 @@
             .mobile-version-hint { display: block; margin-top: 4px; margin-bottom: 60px; }
         }
         
-        .remember-me { display: flex; align-items: center; gap: 8px; margin: 10px 0; font-size: 13px; color: #ccc; }
-        .remember-me input { width: 16px; height: 16px; cursor: pointer; background: #4a4a4a; }
+        .remember-me { display: flex; align-items: center; gap: 8px; margin: 10px 0; font-size: 13px; color: var(--text-secondary); }
+        .remember-me input { width: 16px; height: 16px; cursor: pointer; background: var(--bg-input); }
         .app-wrapper { display: none; width: 100%; min-height: 100vh; }
         
         .sidebar-desktop {
             width: 280px;
-            background: #1e1e1e;
-            color: white;
+            background: var(--bg-sidebar);
+            color: var(--sidebar-text);
             display: flex;
             flex-direction: column;
             position: fixed;
@@ -115,12 +179,12 @@
             z-index: 10;
         }
         
-        .logo { padding: 28px 20px; border-bottom: 1px solid #333; text-align: center; }
+        .logo { padding: 28px 20px; border-bottom: 1px solid rgba(255,255,255,0.15); text-align: center; }
         .logo i { font-size: 48px; color: #4facfe; }
-        .logo h2 { margin-top: 12px; font-weight: 600; color: #e0e0e0; }
-        .logo p { color: #aaa; }
+        .logo h2 { margin-top: 12px; font-weight: 600; color: var(--sidebar-text); }
+        .logo p { color: var(--text-secondary); }
         
-        .nav-desktop { flex: 1; padding: 25px 0; }
+        .nav-desktop { flex: 1; padding: 08px 0; }
         .nav-btn-desktop {
             width: 100%;
             background: transparent;
@@ -129,35 +193,55 @@
             text-align: left;
             font-size: 16px;
             font-weight: 500;
-            color: #ccc;
+            color: var(--text-light);
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 12px;
             position: relative;
         }
-        .nav-btn-desktop:hover { background: #333; }
-        .nav-btn-desktop.active { background: linear-gradient(95deg, #4facfe, #00f2fe); color: #1a1a1a; font-weight: 600; }
+        .nav-btn-desktop:hover { background: var(--nav-hover); }
+        .nav-btn-desktop.active { background: var(--nav-active); color: #1a2a3a; font-weight: 600; }
+        body.dark-theme .nav-btn-desktop.active { color: #1a1a1a; }
         
-        .user-card { padding: 20px; border-top: 1px solid #333; text-align: center; }
-        .user-email { font-size: 13px; background: #2a2a2a; padding: 6px 10px; border-radius: 30px; margin: 10px 0; word-break: break-all; color: #ddd; }
+        .user-card { padding: 20px; border-top: 1px solid rgba(255,255,255,0.15); text-align: center; }
+        .user-email { font-size: 14px; background: #1e2a44; padding: 6px 10px; border-radius: 30px; margin: 10px 0; word-break: break-all; }
+        body.dark-theme .user-email { background: #2a2a4a; color: #ddd; }
         .logout-btn { background: #d9534f; border: none; color: white; padding: 8px 16px; border-radius: 40px; cursor: pointer; width: 100%; font-weight: bold; }
+        
+        .theme-toggle-btn {
+            background: rgba(79, 172, 254, 0.2);
+            border: 1px solid rgba(79, 172, 254, 0.5);
+            border-radius: 40px;
+            padding: 8px 12px;
+            margin-top: 12px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        .theme-toggle-btn:hover { background: rgba(79, 172, 254, 0.4); }
         
         .sidebar-connection-status {
             padding: 12px 20px;
-            border-top: 1px solid #333;
+            border-top: 1px solid rgba(255,255,255,0.15);
             font-size: 11px;
-            background: #252525;
+            background: rgba(0,0,0,0.2);
             text-align: center;
-            color: #aaa;
         }
+        body.dark-theme .sidebar-connection-status { background: #252540; }
         
         .bottom-nav-mobile {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: #1e1e1e;
+            background: var(--bg-sidebar);
             display: none;
             justify-content: space-around;
             padding: 8px 12px;
@@ -170,7 +254,7 @@
             padding: 8px 12px;
             text-align: center;
             font-size: 12px;
-            color: #aaa;
+            color: var(--text-light);
             cursor: pointer;
             display: flex;
             flex-direction: column;
@@ -180,7 +264,8 @@
             flex: 1;
             position: relative;
         }
-        .nav-btn-mobile.active { background: linear-gradient(95deg, #4facfe, #00f2fe); color: #1a1a1a; font-weight: 600; }
+        .nav-btn-mobile.active { background: var(--nav-active); color: #1a2a3a; font-weight: 600; }
+        body.dark-theme .nav-btn-mobile.active { color: #1a1a1a; }
         
         .main-panel { flex: 1; padding: 20px 24px; width: 100%; }
         body.desktop-mode .main-panel { margin-left: 280px; width: calc(100% - 280px); }
@@ -191,10 +276,10 @@
         .view.active { display: block; }
         @keyframes fade { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
         
-        h1 { font-size: 24px; margin-bottom: 20px; color: #e0e0e0; display: flex; align-items: center; gap: 10px; }
+        h1 { font-size: 24px; margin-bottom: 20px; color: var(--text-primary); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         
         .search-bar {
-            background: #3a3a3a;
+            background: var(--bg-card);
             padding: 12px 16px;
             border-radius: 20px;
             margin-bottom: 20px;
@@ -202,19 +287,18 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-        .search-input, .filter-select { 
-            flex: 1; padding: 12px 16px; border-radius: 40px; 
-            border: 1px solid #555; background: #4a4a4a; color: #e0e0e0;
+        .search-input, .filter-select {
+            flex: 1; padding: 12px 16px; border-radius: 40px;
+            border: 1px solid var(--border-color); background: var(--bg-input); color: var(--text-primary);
         }
-        .search-input::placeholder, .filter-select { color: #aaa; }
         .reset-btn { background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 40px; cursor: pointer; }
         
-        .table-wrapper { background: #3a3a3a; border-radius: 10px; overflow-x: auto; }
-        table { width: 100%; min-width: 800px; border-collapse: collapse; }
+        .table-wrapper { background: var(--bg-table); border-radius: 10px; overflow-x: auto; }
+        table { width: 100%; min-width: 780px; border-collapse: collapse; }
         th { background: #2c3e66; color: white; padding: 14px 12px; text-align: left; cursor: pointer; user-select: none; transition: background 0.2s; }
         th:hover { background: #3a5a8a; }
         th i { margin-left: 6px; font-size: 12px; opacity: 0.7; }
-        td { padding: 12px; border-bottom: 1px solid #555; vertical-align: middle; color: #e0e0e0; background: #3a3a3a; }
+        td { padding: 12px; border-bottom: 1px solid var(--border-light); vertical-align: middle; color: var(--text-primary); background: var(--bg-table); }
         
         .edit-btn, .delete-btn, .clone-btn, .approve-btn, .reject-btn { border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; margin: 0 3px; font-size: 12px; transition: 0.2s; }
         .edit-btn { background: #27ae60; color: white; }
@@ -225,36 +309,221 @@
         .disabled-action { opacity: 0.5; pointer-events: none; filter: grayscale(0.1); cursor: not-allowed; }
         
         .stock-control { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-        .stock-value { font-weight: 700; min-width: 45px; text-align: center; background: #4a4a4a; padding: 4px 8px; border-radius: 20px; font-size: 14px; color: #e0e0e0; }
-        .stock-adjust-btn { background: #555; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; font-size: 16px; cursor: pointer; color: #e0e0e0; }
-        .stock-adjust-btn.minus { background: #8b3a3a; color: #ffaaaa; }
-        .stock-adjust-btn.plus { background: #2a6b2a; color: #aaffaa; }
-        .stock-adjust-btn.plus10 { background: #3a3a6b; color: #aaaaff; width: auto; border-radius: 16px; padding: 0 8px; }
+        .stock-value { font-weight: 700; min-width: 45px; text-align: center; padding: 4px 8px; border-radius: 20px; font-size: 14px; background: var(--stock-bg-normal); color: var(--text-primary); }
+        .stock-value.low-stock { background: var(--stock-bg-low); }
+        .stock-adjust-btn { border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .stock-adjust-btn.minus { background: var(--stock-btn-minus-bg); color: #1e2f4e; }
+        .stock-adjust-btn.plus { background: var(--stock-btn-plus-bg); color: #27ae60; }
+        .stock-adjust-btn.plus10 { background: var(--stock-btn-plus10-bg); color: #4f46e5; width: auto; border-radius: 16px; padding: 0 8px; }
         
-        .form-card { background: #3a3a3a; border-radius: 24px; padding: 24px; max-width: 800px; }
+        .form-card { background: var(--bg-card); border-radius: 24px; padding: 24px; max-width: 800px; }
         .form-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px; }
         .form-group { flex: 1; margin-bottom: 15px; }
-        .form-group label { font-weight: 600; margin-bottom: 6px; display: block; font-size: 13px; color: #ddd; }
+        .form-group label { font-weight: 600; margin-bottom: 6px; display: block; font-size: 13px; color: var(--text-primary); }
         .form-group label.required:after { content: " *"; color: #e74c3c; }
         
-        input, select, textarea { 
-            width: 100%; padding: 12px; border-radius: 16px; 
-            border: 1px solid #555; background: #4a4a4a; color: #e0e0e0;
+        input, select, textarea {
+            width: 100%; padding: 12px; border-radius: 16px;
+            border: 1px solid var(--input-border); background: var(--bg-input); color: var(--text-primary);
         }
-        input::placeholder, textarea::placeholder { color: #aaa; }
-        .btn-primary { background: linear-gradient(95deg, #4facfe, #00f2fe); border: none; padding: 12px 24px; border-radius: 40px; font-weight: bold; cursor: pointer; color: #1a1a1a; }
+        .btn-primary { background: linear-gradient(95deg, #4facfe, #00f2fe); border: none; padding: 08px 12px; border-radius: 40px; font-weight: bold; cursor: pointer; color: #1e2f4e; }
+        body.dark-theme .btn-primary { color: #1a1a1a; }
         .btn-primary.disabled-btn { opacity: 0.5; pointer-events: none; cursor: default; }
         
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: #3a3a3a; border-radius: 28px; padding: 24px; width: 90%; max-width: 500px; color: #e0e0e0; }
-        .modal-content h3 { color: #e0e0e0; margin-bottom: 16px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: var(--modal-bg); border-radius: 28px; padding: 24px; width: 90%; max-width: 500px; color: var(--text-primary); }
         
         .toast-notify { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(100px); background: #27ae60; color: white; padding: 10px 20px; border-radius: 50px; z-index: 2000; opacity: 0; transition: all 0.3s ease; pointer-events: none; white-space: nowrap; }
         .toast-notify.show { transform: translateX(-50%) translateY(0); opacity: 1; }
         
-        .locations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-        .location-card { background: #3a3a3a; padding: 16px; border-radius: 20px; border-left: 4px solid #4facfe; transition: all 0.2s; color: #e0e0e0; }
-        .location-card h3 { margin-bottom: 8px; color: #4facfe; }
+/* ========== ENHANCED LOCATIONS TAB - UNIFORM CARDS WITH FULL COMPONENT LIST ========== */
+.locations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 24px;
+    margin-top: 16px;
+}
+.location-card {
+    background: var(--bg-card);
+    border-radius: 24px;
+    padding: 10px;
+    border-left: 5px solid #4facfe;
+    transition: all 0.25s ease;
+    color: var(--text-primary);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 300px;
+    position: relative; /* needed for tooltip positioning */
+    overflow: visible; /* allow tooltip to overflow */
+}
+
+.location-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+    background: var(--location-card-hover);
+}
+
+/* ===== LOCATION CARD HEADING - LIGHT MODE ===== */
+.location-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 12px;
+    color: #0d11e4; /* dark blue for light mode */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 2px dotted var(--border-light);
+    padding-bottom: 10px;
+    transition: color 0.3s ease;
+}
+
+/* ===== LOCATION CARD HOVER (both modes) ===== */
+.location-card:hover h3 {
+    color: #660bb9 !important; /* bright cyan on hover */
+}
+
+/* ===== DARK MODE OVERRIDE ===== */
+body.dark-theme .location-card h3 {
+    color: #ffffff !important; /* white in dark mode */
+}
+
+/* Dark mode hover still uses the bright cyan */
+body.dark-theme .location-card:hover h3 {
+    color: #00f2fe !important;
+}
+
+.location-stats {
+    display: flex;
+    gap: 16px;
+    margin: 12px 0 16px 0;
+    font-size: 0.85rem;
+    background: var(--bg-input);
+    padding: 8px 14px;
+    border-radius: 40px;
+    justify-content: space-around;
+    flex-shrink: 0; /* prevent stats from shrinking */
+}
+.stat-badge {
+    background: rgba(79,172,254,0.15);
+    padding: 4px 12px;
+    border-radius: 40px;
+    font-weight: 600;
+}
+.component-list-full {
+    margin-top: 8px;
+    flex: 1;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+.component-list-full .comp-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 0.85rem;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.comp-item .comp-name-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 2;
+    min-width: 0;
+    height: 100%;
+    position: relative; /* tooltip positioning context */
+}
+.comp-item .comp-name {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    line-height: 1.4;
+}
+.comp-item .comp-qty {
+    background: var(--stock-bg-normal);
+    padding: 2px 10px;
+    border-radius: 40px;
+    font-weight: bold;
+    min-width: 65px;
+    text-align: center;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+}
+.comp-item .comp-qty.low-stock-card {
+    background: var(--stock-bg-low);
+    color: #e74c3c;
+}
+.component-list-full::-webkit-scrollbar { width: 4px; }
+.component-list-full::-webkit-scrollbar-track { background: var(--border-light); border-radius: 4px; }
+.component-list-full::-webkit-scrollbar-thumb { background: #4facfe; border-radius: 4px; }
+.empty-location { color: var(--text-secondary); text-align: center; padding: 20px; font-style: italic; }
+
+/* ===== FIXED TOOLTIP - Now overflows card properly ===== */
+.desc-info-btn {
+    background: none;
+    border: none;
+    color: #4facfe;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 4px;
+    padding: 0;
+    transition: 0.2s;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    line-height: 1;
+    z-index: 5;
+}
+.desc-info-btn:hover {
+    color: #00f2fe;
+    transform: scale(1.15);
+}
+.desc-tooltip {
+    display: none;
+    position: fixed; /* Use fixed positioning to avoid card clipping */
+    background: var(--bg-card);
+    color: var(--text-primary);
+    padding: 02px 02px;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    font-size: 11px;
+    max-width: 180px;
+    width: max-content;
+    z-index: 9999;
+    border: 1px solid var(--border-color);
+    white-space: normal;
+    word-wrap: break-word;
+    font-weight: 200;
+    line-height: 1.4;
+    text-align: left;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+}
+.desc-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px;
+    height: 12px;
+    background: var(--bg-card);
+    border-right: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+.desc-info-btn:hover .desc-tooltip {
+    display: block;
+}
+
         
         .locations-sort-bar {
             display: flex;
@@ -262,25 +531,24 @@
             align-items: center;
             gap: 12px;
             margin-bottom: 20px;
-            background: #3a3a3a;
+            background: var(--bg-card);
             padding: 10px 16px;
             border-radius: 40px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
-        .locations-sort-bar span { color: #ccc; }
+        .locations-sort-bar span { color: var(--text-secondary); }
         .sort-location-btn {
-            background: #4a4a4a;
+            background: var(--bg-input);
             border: none;
             padding: 6px 16px;
             border-radius: 30px;
             cursor: pointer;
             font-size: 13px;
             font-weight: 500;
-            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            color: #ddd;
+            color: var(--text-primary);
         }
         .sort-location-btn.active {
             background: linear-gradient(95deg, #4facfe, #00f2fe);
@@ -289,19 +557,19 @@
         }
         .sort-location-btn i { font-size: 12px; }
         
-        .report-container { background: #3a3a3a; border-radius: 20px; overflow-x: auto; }
-        .report-header { background: linear-gradient(135deg, #2c3e66, #1a2a4a); color: white; padding: 24px; border-radius: 20px 20px 0 0; }
+        .report-container { background: var(--bg-card); border-radius: 20px; overflow-x: auto; }
+        .report-header { background: var(--report-header-bg); color: white; padding: 24px; border-radius: 20px 20px 0 0; }
         
-        .report-stats-row { 
-            display: flex !important; 
-            flex-direction: row !important; 
-            flex-wrap: nowrap !important; 
-            justify-content: space-between; 
-            gap: 16px; 
-            padding: 24px; 
-            background: #2a2a2a; 
+        .report-stats-row {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 24px;
+            background: var(--report-stats-bg);
         }
-        .report-stat-item { flex: 1; min-width: 0; background: #3a3a3a; padding: 20px 16px; border-radius: 20px; text-align: center; color: #e0e0e0; }
+        .report-stat-item { flex: 1; min-width: 0; background: var(--bg-card); padding: 20px 16px; border-radius: 20px; text-align: center; color: var(--text-primary); }
         .report-stat-value { font-size: 32px; font-weight: 800; color: #4facfe; }
         .low-stock-value { color: #e74c3c; }
         
@@ -314,8 +582,8 @@
             margin-top: 8px;
         }
         
-        .auto-id-preview { background: #4a4a4a; border-radius: 12px; padding: 10px 15px; margin-top: 8px; font-size: 13px; border-left: 3px solid #4facfe; color: #ddd; }
-        .comp-id-input:read-only { background: #4a4a4a; cursor: not-allowed; }
+        .auto-id-preview { background: var(--auto-id-preview-bg); border-radius: 12px; padding: 10px 15px; margin-top: 8px; font-size: 13px; border-left: 3px solid #4facfe; color: var(--text-primary); }
+        .comp-id-input:read-only { background: var(--bg-input); cursor: not-allowed; }
         
         .edit-user-btn { background: #4facfe; color: #1a1a1a; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; margin-right: 5px; }
         .delete-user-btn { background: #e74c3c; color: white; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; }
@@ -323,7 +591,7 @@
         th.sorted-asc { background: #3a5a8a; }
         th.sorted-desc { background: #3a5a8a; }
         
-        .pending-section { margin-bottom: 30px; background: #3a3a3a; border-radius: 20px; padding: 20px; }
+        .pending-section { margin-bottom: 30px; background: var(--pending-section-bg); border-radius: 20px; padding: 20px; }
         .pending-section h2 { color: #f39c12; margin-bottom: 15px; }
         
         .report-table {
@@ -333,7 +601,7 @@
             table-layout: fixed;
         }
         .report-table th, .report-table td {
-            border: 1px solid #555;
+            border: 1px solid var(--border-color);
             padding: 10px 8px;
             text-align: left;
             vertical-align: top;
@@ -345,18 +613,19 @@
             font-weight: 600;
         }
         .report-table td {
-            background: #3a3a3a;
-            color: #e0e0e0;
+            background: var(--bg-table);
+            color: var(--text-primary);
         }
         .report-table th:nth-child(1) { width: 5%; }
-        .report-table th:nth-child(2) { width: 20%; }
+        .report-table th:nth-child(2) { width: 15%; }
         .report-table th:nth-child(3) { width: 12%; }
         .report-table th:nth-child(4) { width: 12%; }
         .report-table th:nth-child(5) { width: 8%; }
-        .report-table th:nth-child(6) { width: 43%; }
+        .report-table th:nth-child(6) { width: 18%; }
+        .report-table th:nth-child(7) { width: 30%; }
         
         @media print {
-            .sidebar-desktop, .bottom-nav-mobile, .btn-primary, .search-bar, .toast-notify, .print-sort-bar, #exportCSVBtn, #printReportBtn, #importCSVBtn, .locations-sort-bar, .report-header button, .nav-btn-desktop, .nav-btn-mobile, .user-card, .logo, .sidebar-connection-status, .version-badge, .mobile-version-hint { display: none !important; }
+            .sidebar-desktop, .bottom-nav-mobile, .btn-primary, .search-bar, .toast-notify, .print-sort-bar, #exportCSVBtn, #printReportBtn, #importCSVBtn, .locations-sort-bar, .report-header button, .nav-btn-desktop, .nav-btn-mobile, .user-card, .logo, .sidebar-connection-status, .version-badge, .mobile-version-hint, .theme-toggle-btn { display: none !important; }
             body.desktop-mode .main-panel { margin-left: 0 !important; width: 100% !important; }
             .main-panel { padding: 0 !important; margin: 0 !important; }
             .report-stats-row { flex-wrap: nowrap !important; page-break-inside: avoid; }
@@ -378,16 +647,22 @@
             .main-panel { padding: 16px; }
             .report-stats-row { flex-wrap: wrap !important; }
             .locations-sort-bar { justify-content: center; }
+            .locations-grid { grid-template-columns: 1fr; }
+            .comp-item { flex-direction: column; align-items: flex-start !important; }
         }
         @media (min-width: 769px) { .bottom-nav-mobile { display: none; } }
         
         .permission-warning {
-            background: #4a3a2a;
+            background: #fff3cd;
             border-left: 4px solid #ffc107;
             padding: 12px 16px;
             border-radius: 8px;
             margin-bottom: 16px;
             font-size: 13px;
+            color: #856404;
+        }
+        body.dark-theme .permission-warning {
+            background: #4a3a2a;
             color: #ffd966;
         }
         
@@ -401,7 +676,7 @@
         .loading-spinner {
             text-align: center;
             padding: 40px;
-            color: #aaa;
+            color: var(--text-secondary);
         }
         .loading-spinner i {
             font-size: 32px;
@@ -415,7 +690,7 @@
         }
         
         .csv-import-area {
-            background: #3a3a3a;
+            background: var(--bg-card);
             border: 2px dashed #4facfe;
             border-radius: 16px;
             padding: 15px 20px;
@@ -425,7 +700,7 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 15px;
-            color: #ddd;
+            color: var(--text-primary);
         }
         .csv-import-area label {
             display: inline-flex;
@@ -441,18 +716,312 @@
         }
         .csv-import-area label:hover { background: #2c8bda; color: white; }
         .csv-import-area input[type="file"] { display: none; }
-        .csv-import-area small { color: #aaa; font-size: 12px; }
+        .csv-import-area small { color: var(--text-secondary); font-size: 12px; }
         
         .csv-format-hint {
-            background: #2a3a5a;
+            background: #eef2ff;
             border-radius: 12px;
             padding: 8px 12px;
             margin-bottom: 16px;
             font-size: 12px;
+            color: #1e3a8a;
+        }
+        body.dark-theme .csv-format-hint {
+            background: #2a3a5a;
             color: #aac8ff;
         }
         
-        select option { background: #4a4a4a; color: #e0e0e0; }
+        select option { background: var(--bg-input); color: var(--text-primary); }
+        
+        body.dark-theme .form-card h3,
+        body.dark-theme .table-wrapper h3,
+        body.dark-theme #usersTableBody td,
+        body.dark-theme #usersTableBody td span,
+        body.dark-theme #addUserForm .form-group label {
+            color: #ffffff !important;
+        }
+        
+        body.dark-theme #reportContainer h3,
+        body.dark-theme .report-container h3 {
+            color: #ffffff !important;
+        }
+        
+        body.dark-theme .report-table th {
+            color: #ffffff !important;
+            background: #2c3e66;
+        }
+        
+        body.dark-theme .report-table td {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-theme .report-table td[style*="text-align:center"] {
+            color: #ffffff !important;
+        }
+        
+        body.dark-theme .report-header h2,
+        body.dark-theme .report-header p,
+        body.dark-theme .sort-info-badge {
+            color: #ffffff !important;
+        }
+        
+        body.dark-theme .sort-info-badge strong {
+            color: #ffffff !important;
+        }
+        
+        body.dark-theme #submitHint,
+        body.dark-theme #submitHint i,
+        body.dark-theme #submitHint strong {
+            color: #ffffff !important;
+        }
+        
+        body.dark-theme #addComponentForm .form-group label {
+            color: #e0e0e0 !important;
+        }
+        
+        body.dark-theme .form-group label.required:after {
+            color: #ff8888 !important;
+        }
+        
+        body.dark-theme #autoIdPreview,
+        body.dark-theme #autoIdPreview i,
+        body.dark-theme #autoIdPreview strong {
+            color: #ffffff !important;
+        }
+        
+        body.dark-theme .form-card p,
+        body.dark-theme .form-card small {
+            color: #cccccc !important;
+        }
+        
+        body.dark-theme .permission-warning,
+        body.dark-theme .permission-warning strong {
+            color: #ffd966 !important;
+        }
+        
+
+.user-card {
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    text-align: center;
+}
+
+.user-email {
+    font-size: 14px;
+    background: #1e2a44;
+    padding: 6px 10px;
+    border-radius: 30px;
+    margin: 10px 0;
+    word-break: break-all;
+}
+
+#userRoleDisplay {
+    margin-bottom: 8px;
+}
+
+.logout-btn {
+    background: #d9534f;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 40px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.theme-toggle-btn {
+    background: rgba(79, 172, 254, 0.2);
+    border: 1px solid rgba(79, 172, 254, 0.5);
+    border-radius: 40px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    transition: all 0.2s;
+}
+        
+body.dark-theme button,
+body.dark-theme .component-list-full .comp-item {    color: var(--text-primary);}
+        
+        /* Fix for table cell text wrapping */
+        .report-table td {
+            word-wrap: break-word;
+            white-space: normal;
+            line-height: 1.4;
+        }
+        
+        .component-list-full .comp-item {
+            white-space: normal;
+            line-height: 1.3;
+        }
+        
+        td .stock-control {
+            white-space: nowrap;
+        }
+        
+        .pending-table td {
+            word-wrap: break-word;
+            white-space: normal;
+        }
+        
+        .pending-table .date-added-cell {
+            font-size: 11px;
+            white-space: nowrap;
+        }
+        
+        /* Fix for date display in components table */
+        .date-added-cell {
+            font-size: 12px;
+            white-space: nowrap;
+            min-width: 140px;
+        }
+        
+        .report-date-cell {
+            font-size: 11px;
+            white-space: nowrap;
+            min-width: 140px;
+        }
+        
+        .component-name-cell {
+            min-width: 100px;
+            word-wrap: break-word;
+        }
+        
+        .component-value-cell {
+            min-width: 80px;
+            word-wrap: break-word;
+        }
+        
+        .component-category-cell {
+            min-width: 90px;
+            word-wrap: break-word;
+        }
+        
+        .component-location-cell {
+            min-width: 100px;
+            word-wrap: break-word;
+        }
+        
+        .action-cell {
+            white-space: nowrap;
+            min-width: 180px;
+        }
+        
+        .component-id-cell {
+            min-width: 100px;
+            word-wrap: break-word;
+        }
+        
+        /* Column visibility controls */
+.id-column {
+    display: none;
+}
+.id-column.show-id {
+    display: table-cell;
+}
+
+.status-column {
+    display: none;
+}
+.status-column.show-status {
+    display: table-cell;
+}
+
+.actions-column {
+    display: none;
+}
+.actions-column.show-actions {
+    display: table-cell;
+}
+
+/* Toggle buttons styling */
+.show-id-btn {
+    background: rgba(79, 172, 254, 0.15);
+    border: 1px solid #4facfe;
+    color: #1a1a1a;                
+    padding: 6px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s;
+    margin-right: 4px;
+}
+
+.show-id-btn:hover {
+    background: #4facfe;
+    color: #1a1a1a;
+}
+
+.show-id-btn.active {
+    background: #4facfe;
+    color: #1a1a1a;
+}
+
+body.dark-theme .show-id-btn {
+    color: #aac8ff;
+    border-color: #aac8ff;
+}
+
+body.dark-theme .show-id-btn:hover,
+body.dark-theme .show-id-btn.active {
+    background: #4facfe;
+    color: #1a1a1a;
+}
+
+/* For mobile responsiveness */
+@media (max-width: 768px) {
+    .show-id-btn {
+        font-size: 10px;
+        padding: 4px 12px;
+    }
+    
+    #components-view h1 {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}  
+        
+        .show-id-btn {
+            background: rgba(79, 172, 254, 0.15);
+            border: 1px solid #4facfe;
+            color: #1a1a1a;                
+            padding: 2px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-left: 10px;
+        }
+        
+        .show-id-btn:hover {
+            background: #4facfe;
+            color: #1a1a1a;
+        }
+        
+        .show-id-btn.active {
+            background: #4facfe;
+            color: #1a1a1a;
+        }
+        
+        body.dark-theme .show-id-btn {
+            color: #aac8ff;
+            border-color: #aac8ff;
+        }
+        
+        body.dark-theme .show-id-btn:hover,
+        body.dark-theme .show-id-btn.active {
+            background: #4facfe;
+            color: #1a1a1a;
+        }
     </style>
 </head>
 <body>
@@ -461,7 +1030,7 @@
     <div class="auth-card">
         <i class="fas fa-microchip logo-icon"></i>
         <h2>EIM</h2>
-        <p>Electronics Inventory Manager <span style="font-size:9px; background:#555; padding:2px 8px; border-radius:20px; margin-left:6px;">v2.1.0</span></p>
+        <p>Electronics Inventory Manager <span style="font-size:9px; background:var(--bg-input); padding:2px 8px; border-radius:20px; margin-left:6px;" class="app-version-display"></span></p>
         <form id="authForm" autocomplete="off">
             <input type="email" id="authEmail" class="auth-input" placeholder="Email address" autocomplete="username" required>
             <input type="password" id="authPassword" class="auth-input" placeholder="Password" autocomplete="new-password" required>
@@ -470,39 +1039,44 @@
         </form>
         <div id="authError" class="error-msg"></div>
         <div class="auth-switch" id="toggleAuthMode">Don't have an account? <strong>Register</strong></div>
-        <div style="margin-top: 16px; font-size: 11px; background: #4a4a4a; padding: 8px; border-radius: 12px; color: #ccc;">
-            <small>🔐 Demo: <strong>guest@eim.com</strong> / guest123 (View-Only)</small><br>
-            <small>📝 Note: New registrations are GUEST accounts only</small>
-        </div>
     </div>
 </div>
 
 <div class="app-wrapper" id="appWrapper">
     <div class="sidebar-desktop">
-        <div class="logo">
-            <i class="fas fa-microchip"></i>
-            <h2>EIM</h2>
-            <p style="font-size:11px;">Electronics Inventory Manager</p>
-            <div class="version-badge">v2.1.0</div>
-        </div>
-        <div class="nav-desktop">
-            <button class="nav-btn-desktop" data-view="reports"><i class="fas fa-chart-line"></i><span> Reports</span></button>
-            <button class="nav-btn-desktop" data-view="components"><i class="fas fa-microchip"></i><span> Components</span></button>
-            <button class="nav-btn-desktop" data-view="add" id="addNavBtnDesktop"><i class="fas fa-plus-circle"></i><span> Add Part</span></button>
-            <button class="nav-btn-desktop" data-view="locations"><i class="fas fa-map-marker-alt"></i><span> Locations</span></button>
-            <button class="nav-btn-desktop" id="adminNavBtn" data-view="admin" style="display:none;"><i class="fas fa-users-cog"></i><span> User Admin</span></button>
-            <button class="nav-btn-desktop" id="approvalsNavBtn" data-view="approvals" style="display:none;"><i class="fas fa-check-double"></i><span> Pending Approvals</span><span id="pendingCountBadgeDesktop" class="pending-count-badge" style="display:none;">0</span></button>
-        </div>
-        <div class="user-card">
-            <i class="fas fa-user-astronaut"></i>
-            <div class="user-email" id="userEmailDisplay">electronics@eim</div>
-            <div id="userRoleDisplay"></div>
-            <button id="logoutBtnGlobal" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-        </div>
-        <div class="sidebar-connection-status" id="sidebarConnectionStatus">
-            <i class="fas fa-spinner fa-pulse"></i> Connecting...
-        </div>
+    <div class="logo">
+    <i class="fas fa-microchip"></i>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+        <h2 style="margin: 0;">EIM</h2>
     </div>
+    <div style="display: flex; margin-left: 30px; justify-content: center; gap: 4px; flex-wrap: wrap; margin-top: 6px;">
+        <p style="font-size:11px; margin: 0;">Electronics Inventory Manager</p>
+        <span class="version-badge app-version-display" style="position: static; background: rgba(79, 172, 254, 0.25); padding: 2px 10px; border-radius: 20px; font-size: 10px; color: #aac8ff; border: 0.5px solid rgba(255,255,255,0.2); white-space: nowrap;">v2.4.0</span>
+    </div>
+</div>
+    <div class="nav-desktop">
+        <button class="nav-btn-desktop" data-view="reports"><i class="fas fa-chart-line"></i><span> Reports</span></button>
+        <button class="nav-btn-desktop" data-view="components"><i class="fas fa-microchip"></i><span> Components</span></button>
+        <button class="nav-btn-desktop" data-view="add" id="addNavBtnDesktop"><i class="fas fa-plus-circle"></i><span> Add Part</span></button>
+        <button class="nav-btn-desktop" data-view="locations"><i class="fas fa-map-marker-alt"></i><span> Locations</span></button>
+        <button class="nav-btn-desktop" id="adminNavBtn" data-view="admin" style="display:none;"><i class="fas fa-users-cog"></i><span> User Admin</span></button>
+        <button class="nav-btn-desktop" id="approvalsNavBtn" data-view="approvals" style="display:none;"><i class="fas fa-check-double"></i><span> Pending Approvals</span><span id="pendingCountBadgeDesktop" class="pending-count-badge" style="display:none;">0</span></button>
+    </div>
+    <div class="user-card">
+        <i class="fas fa-user-astronaut"></i>
+        <div class="user-email" id="userEmailDisplay">electronics@eim</div>
+        <div id="userRoleDisplay"></div>
+        <button id="logoutBtnGlobal" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        <button id="themeToggleSidebar" class="theme-toggle-btn"><i class="fas fa-moon"></i> Dark Mode</button>
+    </div>
+            
+    <div class="sidebar-connection-status" id="sidebarConnectionStatus">
+        <i class="fas fa-spinner fa-pulse"></i> Connecting...
+    </div>
+</div>
+    
+    
+    
     
     <div class="bottom-nav-mobile">
         <button class="nav-btn-mobile" data-view="reports"><i class="fas fa-chart-line"></i><span>Reports</span></button>
@@ -514,11 +1088,15 @@
     </div>
     
     <div class="main-panel">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+            <button id="themeToggleMain" class="theme-toggle-btn" style="width: auto; padding: 6px 14px;"><i class="fas fa-moon"></i> Dark Mode</button>
+        </div>
+        
         <div id="reports-view" class="view active">
             <h1><i class="fas fa-chart-line"></i> Stock Reports</h1>
             <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
                 <button id="exportCSVBtn" class="btn-primary"><i class="fas fa-file-csv"></i> Export CSV</button>
-                <button id="importCSVBtn" class="btn-primary" style="background:#2c3e66;"><i class="fas fa-file-import"></i> Import CSV</button>
+                <button id="importCSVBtn" class="btn-primary" style="background:#2c8bda;"><i class="fas fa-file-import"></i> Import CSV</button>
                 <button id="printReportBtn" class="btn-primary" style="background:#6c5ce7;"><i class="fas fa-print"></i> Print / PDF</button>
             </div>
             <div id="csvImportArea" class="csv-import-area" style="display:none;">
@@ -531,25 +1109,44 @@
         </div>
         
         <div id="components-view" class="view">
-            <h1><i class="fas fa-microchip"></i> Components Inventory</h1>
-            <div class="search-bar">
-                <input type="text" id="searchInput" class="search-input" placeholder="Search...">
-                <select id="categoryFilter" class="filter-select"><option value="">All Categories</option></select>
-                <select id="statusFilter" class="filter-select">
-                    <option value="all">All Status</option>
-                    <option value="approved">Approved Only</option>
-                    <option value="pending">Pending Only</option>
-                </select>
-                <button id="resetFiltersBtn" class="reset-btn">Reset</button>
-            </div>
-            <div class="table-wrapper">
-                <table id="componentsTable">
-                    <thead>
-                        <tr><th data-sort="componentId" id="sort-componentId">Component ID <i class="fas fa-sort"></i></th><th data-sort="name" id="sort-name">Name <i class="fas fa-sort"></i></th><th data-sort="category" id="sort-category">Category <i class="fas fa-sort"></i></th><th data-sort="value" id="sort-value">Value <i class="fas fa-sort"></i></th><th data-sort="quantity" id="sort-quantity">Stock <i class="fas fa-sort"></i></th><th data-sort="location" id="sort-location">Location <i class="fas fa-sort"></i></th><th>Status</th><th>Actions</th></tr></thead>
-                    <tbody id="componentsTableBody"><tr><td colspan="8" class="loading-spinner"><i class="fas fa-microchip fa-pulse"></i><br>Loading components...</td></tr></tbody>
-                </table>
-            </div>
+    <h1>
+        <i class="fas fa-microchip"></i> Components Inventory
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; width: 100%;">
+            <button id="toggleIdBtn" class="show-id-btn"><i class="fas fa-eye"></i> ID</button>
+            <button id="toggleStatusBtn" class="show-id-btn"><i class="fas fa-eye"></i> Status</button>
+            <button id="toggleActionsBtn" class="show-id-btn"><i class="fas fa-eye"></i> Actions</button>
         </div>
+    </h1>
+    <div class="search-bar">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search...">
+        <select id="categoryFilter" class="filter-select"><option value="">All Categories</option></select>
+        <select id="statusFilter" class="filter-select">
+            <option value="all">All Status</option>
+            <option value="approved">Approved Only</option>
+            <option value="pending">Pending Only</option>
+        </select>
+        <button id="resetFiltersBtn" class="reset-btn">Reset</button>
+    </div>
+    <div class="table-wrapper">
+        <table id="componentsTable" class="components-table">
+            <thead>
+                <tr>
+                    <th data-sort="componentId" id="sort-componentId" class="id-column" style="min-width:100px;">Component ID <i class="fas fa-sort"></i></th>
+                    <th data-sort="name" id="sort-name" style="min-width:120px;">Name <i class="fas fa-sort"></i></th>
+                    <th data-sort="category" id="sort-category" style="min-width:100px;">Category <i class="fas fa-sort"></i></th>
+                    <th data-sort="value" id="sort-value" style="min-width:80px;">Value <i class="fas fa-sort"></i></th>
+                    <th data-sort="quantity" id="sort-quantity" style="min-width:100px;">Stock <i class="fas fa-sort"></i></th>
+                    <th data-sort="location" id="sort-location" style="min-width:120px;">Location <i class="fas fa-sort"></i></th>
+                    <th data-sort="createdAt" id="sort-createdAt" style="min-width:140px;">Date Added <i class="fas fa-sort"></i></th>
+                    <th data-sort="status" id="sort-status" style="min-width:100px;" class="status-column">Status <i class="fas fa-sort"></i></th>
+                    <th style="min-width:180px;" class="actions-column">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="componentsTableBody"><tr><td colspan="9" class="loading-spinner"><i class="fas fa-microchip fa-pulse"></i><br>Loading components...</td></tr>
+        </tbody>
+        </table>
+    </div>
+</div>
         
         <div id="add-view" class="view">
             <h1><i class="fas fa-plus-circle"></i> Add New Component <span id="addModeText"></span></h1>
@@ -575,19 +1172,85 @@
         
         <div id="admin-view" class="view"><h1><i class="fas fa-users-cog"></i> User Management <span class="admin-badge">Admin Only</span></h1><div class="form-card" style="margin-bottom:20px;"><h3>Add New User</h3><form id="addUserForm"><div class="form-row"><div class="form-group"><label>Email</label><input type="email" id="newUserEmail" required></div><div class="form-group"><label>Password</label><input type="password" id="newUserPassword" required></div><div class="form-group"><label>Role</label><select id="newUserRole"><option value="user">User (Can Add/Edit Own)</option><option value="admin">Admin (Full Access)</option></select></div></div><button type="submit" class="btn-primary"><i class="fas fa-user-plus"></i> Create User</button></form></div><div class="table-wrapper"><h3>Registered Users</h3><table><thead><tr><th>Email</th><th>Role</th><th>Created Date</th><th>Actions</th></tr></thead><tbody id="usersTableBody"></tbody></table></div></div>
         
-        <div id="approvals-view" class="view"><h1><i class="fas fa-check-double"></i> Pending Approvals <span class="admin-badge">Admin Only</span></h1><div id="pendingApprovalsContainer" class="pending-section"><h2><i class="fas fa-clock"></i> Components Awaiting Approval</h2><div class="table-wrapper"><table id="pendingTable"><thead><tr><th>Component ID</th><th>Name</th><th>Category</th><th>Value</th><th>Stock</th><th>Location</th><th>Submitted By</th><th>Actions</th></tr></thead><tbody id="pendingTableBody"><tr><td colspan="8" class="loading-spinner"><i class="fas fa-spinner fa-pulse"></i> Loading...</td></tr></tbody></table></div></div></div>
+        <div id="approvals-view" class="view">
+            <h1><i class="fas fa-check-double"></i> Pending Approvals <span class="admin-badge">Admin Only</span></h1>
+            <div id="pendingApprovalsContainer" class="pending-section">
+                <h2><i class="fas fa-clock"></i> Components Awaiting Approval</h2>
+                <div class="table-wrapper">
+                    <table id="pendingTable" class="pending-table">
+                        <thead>
+                            <tr>
+                                <th style="min-width:120px;">Component ID</th>
+                                <th style="min-width:120px;">Name</th>
+                                <th style="min-width:100px;">Category</th>
+                                <th style="min-width:80px;">Value</th>
+                                <th style="min-width:80px;">Stock</th>
+                                <th style="min-width:120px;">Location</th>
+                                <th style="min-width:140px;">Date Added</th>
+                                <th style="min-width:140px;">Submitted By</th>
+                                <th style="min-width:160px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pendingTableBody"><tr><td colspan="9" class="loading-spinner"><i class="fas fa-spinner fa-pulse"></i> Loading...</td></tr>
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
         
-        <div class="mobile-version-hint">EIM v2.1.0 — Dark Gray Theme</div>
+        <div class="mobile-version-hint app-version-display"></div>
     </div>
 </div>
 
 <div id="editModal" class="modal"><div class="modal-content"><span style="float:right;cursor:pointer;font-size:24px;" id="closeModalBtn">&times;</span><h3>Edit Component</h3><form id="editForm"><input type="hidden" id="editKey"><div class="form-group"><label>Component ID</label><input type="text" id="editCompId" readonly></div><div class="form-group"><label>Name</label><input type="text" id="editName" required></div><div class="form-group"><label>Category</label><input type="text" id="editCategory" required></div><div class="form-group"><label>Value</label><input type="text" id="editValue"></div><div class="form-group"><label>Package</label><select id="editPackage"><option>Through-hole</option><option>SMD</option><option>SOP</option><option>QFP</option><option>BGA</option></select></div><div class="form-group"><label>Min Stock</label><input type="number" id="editMinStock"></div><div class="form-group"><label>Current Stock</label><input type="number" id="editQuantity" required></div><div class="form-group"><label>Location</label><input type="text" id="editLocation"></div><div style="display:flex; gap:10px; margin-top:15px;"><button type="submit" class="edit-btn" style="flex:1;">Update</button><button type="button" id="confirmDeleteBtn" class="delete-btn" style="flex:1;">Delete</button><button type="button" id="cancelEditBtn" style="flex:1; background:#6c757d; color:white; border:none; border-radius:20px;">Cancel</button></div></form></div></div>
+<!-- ===== NEW: DESCRIPTION-ONLY EDIT MODAL ===== -->
+<div id="editDescriptionModal" class="modal">
+    <div class="modal-content" style="max-width: 450px;">
+        <span style="float:right;cursor:pointer;font-size:24px;color:var(--text-secondary);" onclick="closeDescriptionModal()">&times;</span>
+        <h3 style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+            <i class="fas fa-pen" style="color:#4facfe;"></i> 
+            Edit Description
+            <span id="descCompName" style="font-size:14px; font-weight:400; color:var(--text-secondary);"></span>
+        </h3>
+        <form id="editDescriptionForm">
+            <input type="hidden" id="editDescKey">
+            <div class="form-group">
+                <label style="font-weight:500;">
+                    <i class="fas fa-info-circle"></i> Component Description
+                </label>
+                <textarea id="editDescText" rows="4" placeholder="Add notes, specifications, datasheet links, or any additional details..." style="width:100%; padding:12px; border-radius:16px; border:2px solid #4facfe; background:var(--bg-input); color:var(--text-primary); font-size:14px; resize:vertical;"></textarea>
+                <small style="color:var(--text-secondary); font-size:11px; display:block; margin-top:6px;">
+                    <i class="fas fa-info-circle"></i> This description appears as a tooltip in the Locations tab
+                </small>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button type="button" onclick="closeDescriptionModal()" style="flex:1; background:#6c757d; color:white; border:none; border-radius:40px; padding:12px; cursor:pointer; font-weight:500;">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="submit" class="btn-primary" style="flex:1; display:flex; align-items:center; justify-content:center; gap:8px;">
+                    <i class="fas fa-save"></i> Save Description
+                </button>
+                
+            </div>
+        </form>
+    </div>
+</div>    
 
 <div id="editUserModal" class="modal"><div class="modal-content"><span style="float:right;cursor:pointer;font-size:24px;" onclick="closeEditUserModal()">&times;</span><h3>Edit User</h3><form id="editUserForm"><input type="hidden" id="editUserId"><div class="form-group"><label>Email</label><input type="email" id="editUserEmail" required></div><div class="form-group"><label>Role</label><select id="editUserRole"><option value="user">User</option><option value="admin">Admin</option></select></div><div class="form-group"><label>New Password (optional)</label><input type="password" id="editUserPassword" placeholder="Enter new password (min 6 chars)"></div><button type="submit" class="edit-btn" style="width:100%;">Update User</button></form></div></div>
 
 <div id="toastMessage" class="toast-notify"><i class="fas fa-check-circle"></i> <span id="toastText"></span></div>
 
 <script>
+    const APP_VERSION = "v2.4.0";
+    
+    let showIdColumn = false;
+    let showStatusColumn = false;
+    let showActionsColumn = false;
+    
+    function updateVersionDisplays() {
+        document.querySelectorAll('.app-version-display').forEach(el => el.textContent = APP_VERSION);
+    }
+    
     const firebaseConfig = {
         apiKey: "AIzaSyA77524v09FOTq2b5XgFynCXYTsvkNfpr8",
         authDomain: "jah-ent.firebaseapp.com",
@@ -614,6 +1277,110 @@
     let reportSortOrder = 'asc';
     let locationsSortOrder = 'asc';
     
+    // Helper function to format Bangladesh Time (converts UTC to BD time)
+    function formatBDTime(isoString) {
+        if (!isoString) return '-';
+        try {
+            const date = new Date(isoString);
+            // Display in Bangladesh time format (UTC+6)
+            return date.toLocaleString('en-BD', { 
+                timeZone: 'Asia/Dhaka',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+        } catch(e) {
+            return isoString;
+        }
+    }
+    
+    // Toggle ID column visibility
+function toggleIdColumn() {
+    showIdColumn = !showIdColumn;
+    const btn = document.getElementById('toggleIdBtn');
+    const idColumns = document.querySelectorAll('.id-column');
+    
+    if (showIdColumn) {
+        idColumns.forEach(col => col.classList.add('show-id'));
+        btn.innerHTML = '<i class="fas fa-eye-slash"></i> ID';
+        btn.classList.add('active');
+    } else {
+        idColumns.forEach(col => col.classList.remove('show-id'));
+        btn.innerHTML = '<i class="fas fa-eye"></i> ID';
+        btn.classList.remove('active');
+    }
+}
+
+// Toggle Status column visibility
+function toggleStatusColumn() {
+    showStatusColumn = !showStatusColumn;
+    const btn = document.getElementById('toggleStatusBtn');
+    const statusColumns = document.querySelectorAll('.status-column');
+    
+    if (showStatusColumn) {
+        statusColumns.forEach(col => col.classList.add('show-status'));
+        btn.innerHTML = '<i class="fas fa-eye-slash"></i> Status';
+        btn.classList.add('active');
+    } else {
+        statusColumns.forEach(col => col.classList.remove('show-status'));
+        btn.innerHTML = '<i class="fas fa-eye"></i> Status';
+        btn.classList.remove('active');
+    }
+}
+
+// Toggle Actions column visibility
+function toggleActionsColumn() {
+    showActionsColumn = !showActionsColumn;
+    const btn = document.getElementById('toggleActionsBtn');
+    const actionsColumns = document.querySelectorAll('.actions-column');
+    
+    if (showActionsColumn) {
+        actionsColumns.forEach(col => col.classList.add('show-actions'));
+        btn.innerHTML = '<i class="fas fa-eye-slash"></i> Actions';
+        btn.classList.add('active');
+    } else {
+        actionsColumns.forEach(col => col.classList.remove('show-actions'));
+        btn.innerHTML = '<i class="fas fa-eye"></i> Actions';
+        btn.classList.remove('active');
+    }
+}
+    
+    // Theme functions
+    function initTheme() {
+        const savedTheme = localStorage.getItem('eim_theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+            updateThemeButtons(true);
+        } else {
+            document.body.classList.remove('dark-theme');
+            updateThemeButtons(false);
+        }
+    }
+    
+    function updateThemeButtons(isDark) {
+        const icon = isDark ? '<i class="fas fa-sun"></i> Light Mode' : '<i class="fas fa-moon"></i> Dark Mode';
+        const sidebarBtn = document.getElementById('themeToggleSidebar');
+        const mainBtn = document.getElementById('themeToggleMain');
+        if (sidebarBtn) sidebarBtn.innerHTML = icon;
+        if (mainBtn) mainBtn.innerHTML = icon;
+    }
+    
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-theme');
+        localStorage.setItem('eim_theme', isDark ? 'dark' : 'light');
+        updateThemeButtons(isDark);
+        renderComponentsTable();
+        generateReport();
+        renderLocations();
+    }
+    
+    document.getElementById('themeToggleSidebar')?.addEventListener('click', toggleTheme);
+    document.getElementById('themeToggleMain')?.addEventListener('click', toggleTheme);
+    
     function showToast(msg, isError) { 
         const toast = document.getElementById('toastMessage'); 
         document.getElementById('toastText').textContent = msg; 
@@ -626,23 +1393,70 @@
     function isGuest() { return currentUserRole === 'guest'; }
     function isAdmin() { return currentUserRole === 'admin'; }
     
-    function exportToCSV() {
-        const approvedComponents = allComponents.filter(c => c.status === 'approved');
-        if(approvedComponents.length === 0) { showToast("No approved components to export", true); return; }
-        const headers = ['Component Name', 'Category', 'Value', 'Stock', 'Location'];
-        const rows = approvedComponents.map(comp => [`"${(comp.name || '').replace(/"/g, '""')}"`, `"${(comp.category || '').replace(/"/g, '""')}"`, `"${(comp.value || '').replace(/"/g, '""')}"`, comp.quantity || 0, `"${(comp.location || 'Not specified').replace(/"/g, '""')}"`]);
-        const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
-        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        link.href = url;
-        link.setAttribute('download', `eim_inventory_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        showToast(`Exported ${approvedComponents.length} components`, false);
+
+
+    
+function exportToCSV() {
+    // COMBINE approved + pending components
+    let allData = [];
+    
+    // Add approved components from Components node
+    allComponents.forEach(c => {
+        allData.push({...c});
+    });
+    
+    // Add pending components from PendingComponents node
+    pendingComponents.forEach(p => {
+        allData.push({...p});
+    });
+    
+    if(allData.length === 0) { 
+        showToast("No components to export", true); 
+        return; 
     }
+    
+    const headers = ['Component ID', 'Name', 'Category', 'Value', 'Stock', 'Location', 'Date Added', 'Status'];
+    
+    const rows = allData.map(comp => [
+        `"${(comp.componentId || '').replace(/"/g, '""')}"`,
+        `"${(comp.name || '').replace(/"/g, '""')}"`,
+        `"${(comp.category || '').replace(/"/g, '""')}"`,
+        `"${(comp.value || '').replace(/"/g, '""')}"`,
+        comp.quantity || 0,
+        `"${(comp.location || 'Not specified').replace(/"/g, '""')}"`,
+        `"${comp.createdAt ? formatBDTime(comp.createdAt) : ''}"`,
+        `"${comp.status || 'pending'}"`
+    ]);
+    
+    const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    
+    const now = new Date();
+    const bdTime = new Date(now.getTime() + (6 * 60 * 60 * 1000));
+    const day = String(bdTime.getUTCDate()).padStart(2, '0');
+    const month = String(bdTime.getUTCMonth() + 1).padStart(2, '0');
+    const year = bdTime.getUTCFullYear();
+    let hours = bdTime.getUTCHours();
+    const minutes = String(bdTime.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(bdTime.getUTCSeconds()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12 || 12;
+    const hours12 = String(hours).padStart(2, '0');
+    
+    const filename = `eim_backup_${day}_${month}_${year} | ${hours12}_${minutes}_${seconds}_${ampm}.csv`;
+    
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    const pendingCount = allData.filter(c => c.status === 'pending').length;
+    showToast(`Exported ${allData.length} components (${pendingCount} pending)`, false);
+}
     
     function parseValueToNumber(val) { 
         if (!val) return 0; 
@@ -690,7 +1504,7 @@
                 isValid = false;
             } else {
                 if(errorSpan) errorSpan.textContent = '';
-                if(field) field.style.borderColor = '#555';
+                if(field) field.style.borderColor = 'var(--input-border)';
             }
         });
         const compId = document.getElementById('compId');
@@ -711,68 +1525,77 @@
     }
     
     function renderComponentsTable() {
-        const tbody = document.getElementById("componentsTableBody");
-        if (!tbody) return;
-        
-        let search = document.getElementById("searchInput")?.value.toLowerCase() || "";
-        let catFilter = document.getElementById("categoryFilter")?.value || "";
-        let statusFilter = document.getElementById("statusFilter")?.value || "all";
-        
-        let filtered = allComponents.filter(c => {
-            if(statusFilter === 'approved') return c.status === 'approved';
-            if(statusFilter === 'pending') return c.status === 'pending';
-            return true;
-        });
-        
-        filtered = filtered.filter(c => 
-            (c.componentId || "").toLowerCase().includes(search) || 
-            (c.name || "").toLowerCase().includes(search) || 
-            (c.value || "").toLowerCase().includes(search) || 
-            (c.category || "").toLowerCase().includes(search)
-        ).filter(c => !catFilter || c.category === catFilter);
-        
-        filtered.sort((a, b) => {
-            if (currentSort.field === 'value') {
-                return currentSort.direction === 'asc' ? parseValueToNumber(a.value) - parseValueToNumber(b.value) : parseValueToNumber(b.value) - parseValueToNumber(a.value);
-            } else if (currentSort.field === 'quantity') {
-                return currentSort.direction === 'asc' ? (a.quantity||0) - (b.quantity||0) : (b.quantity||0) - (a.quantity||0);
-            } else {
-                let aVal = String(a[currentSort.field] || '').toLowerCase();
-                let bVal = String(b[currentSort.field] || '').toLowerCase();
-                if (aVal < bVal) return currentSort.direction === 'asc' ? -1 : 1;
-                if (aVal > bVal) return currentSort.direction === 'asc' ? 1 : -1;
-                return 0;
-            }
-        });
-        
-        if (filtered.length === 0) { 
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No components found</td></tr>'; 
-            return; 
+    const tbody = document.getElementById("componentsTableBody");
+    if (!tbody) return;
+    
+    let search = document.getElementById("searchInput")?.value.toLowerCase() || "";
+    let catFilter = document.getElementById("categoryFilter")?.value || "";
+    let statusFilter = document.getElementById("statusFilter")?.value || "all";
+    
+    let filtered = allComponents.filter(c => {
+        if(statusFilter === 'approved') return c.status === 'approved';
+        if(statusFilter === 'pending') return c.status === 'pending';
+        return true;
+    });
+    
+    filtered = filtered.filter(c => 
+        (c.componentId || "").toLowerCase().includes(search) || 
+        (c.name || "").toLowerCase().includes(search) || 
+        (c.value || "").toLowerCase().includes(search) || 
+        (c.category || "").toLowerCase().includes(search)
+    ).filter(c => !catFilter || c.category === catFilter);
+    
+    filtered.sort((a, b) => {
+        if (currentSort.field === 'value') {
+            return currentSort.direction === 'asc' ? parseValueToNumber(a.value) - parseValueToNumber(b.value) : parseValueToNumber(b.value) - parseValueToNumber(a.value);
+        } else if (currentSort.field === 'quantity') {
+            return currentSort.direction === 'asc' ? (a.quantity||0) - (b.quantity||0) : (b.quantity||0) - (a.quantity||0);
+        } else if (currentSort.field === 'status') {
+            let aVal = String(a.status || '').toLowerCase();
+            let bVal = String(b.status || '').toLowerCase();
+            if (aVal < bVal) return currentSort.direction === 'asc' ? -1 : 1;
+            if (aVal > bVal) return currentSort.direction === 'asc' ? 1 : -1;
+            return 0;
+        } else {
+            let aVal = String(a[currentSort.field] || '').toLowerCase();
+            let bVal = String(b[currentSort.field] || '').toLowerCase();
+            if (aVal < bVal) return currentSort.direction === 'asc' ? -1 : 1;
+            if (aVal > bVal) return currentSort.direction === 'asc' ? 1 : -1;
+            return 0;
         }
-        
-        let html = '';
-        for (let c of filtered) {
-            let low = (c.quantity || 0) <= (c.minStockLevel || 0);
-            const canEditDelete = !isGuest() && (isAdmin() || c.submittedBy === currentUser?.uid);
-            let statusBadge = '';
-            if(c.status === 'approved') statusBadge = '<span class="approved-badge"><i class="fas fa-check"></i> Approved</span>';
-            else if(c.status === 'pending') statusBadge = '<span class="pending-badge"><i class="fas fa-clock"></i> Pending</span>';
-            else statusBadge = '<span class="rejected-badge"><i class="fas fa-times"></i> Rejected</span>';
-            
-            html += `<tr>
-                <td><strong>${escapeHtml(c.componentId)}</strong></td>
-                <td>${escapeHtml(c.name)}</td>
-                <td>${escapeHtml(c.category) || '-'}</td>
-                <td>${escapeHtml(c.value) || '-'}</td>
-                <td><div class="stock-control"><button class="stock-adjust-btn minus ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', -1)` : ''}">-</button><span class="stock-value" style="background:${low ? '#8b3a3a' : '#2a6b2a'};">${c.quantity || 0}</span><button class="stock-adjust-btn plus ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', 1)` : ''}">+</button><button class="stock-adjust-btn plus10 ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', 10)` : ''}">+10</button></div></td>
-                <td>${escapeHtml(c.location) || '-'}</td>
-                <td>${statusBadge}</td>
-                <td><button class="edit-btn ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `editComponent('${c.firebaseKey}')` : ''}"><i class="fas fa-edit"></i> Edit</button> <button class="delete-btn ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `deleteComponent('${c.firebaseKey}')` : ''}"><i class="fas fa-trash"></i> Del</button> <button class="clone-btn ${isGuest() ? 'disabled-action' : ''}" onclick="${!isGuest() ? `cloneComponentToAdd('${c.firebaseKey}')` : ''}"><i class="fas fa-copy"></i> Clone</button></td>
-            </tr>`;
-        }
-        tbody.innerHTML = html;
-        updateSortIcons();
+    });
+    
+    if (filtered.length === 0) { 
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No components found</td></tr>'; 
+        return; 
     }
+    
+    let html = '';
+    for (let c of filtered) {
+        let low = (c.quantity || 0) <= (c.minStockLevel || 0);
+        const canEditDelete = !isGuest() && (isAdmin() || c.submittedBy === currentUser?.uid);
+        let statusBadge = '';
+        if(c.status === 'approved') statusBadge = '<span class="approved-badge"><i class="fas fa-check"></i> Approved</span>';
+        else if(c.status === 'pending') statusBadge = '<span class="pending-badge"><i class="fas fa-clock"></i> Pending</span>';
+        else statusBadge = '<span class="rejected-badge"><i class="fas fa-times"></i> Rejected</span>';
+        
+        const dateAdded = formatBDTime(c.createdAt);
+        
+        html += `<tr>
+            <td class="id-column ${showIdColumn ? 'show-id' : ''}"><strong>${escapeHtml(c.componentId)}</strong></td>
+            <td class="component-name-cell">${escapeHtml(c.name)}</td>
+            <td class="component-category-cell">${escapeHtml(c.category) || '-'}</td>
+            <td class="component-value-cell">${escapeHtml(c.value) || '-'}</td>
+            <td><div class="stock-control"><button class="stock-adjust-btn minus ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', -1)` : ''}">-</button><span class="stock-value ${low ? 'low-stock' : ''}">${c.quantity || 0}</span><button class="stock-adjust-btn plus ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', 1)` : ''}">+</button><button class="stock-adjust-btn plus10 ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `adjustStock('${c.firebaseKey}', 10)` : ''}">+10</button></div></td>
+            <td class="component-location-cell">${escapeHtml(c.location) || '-'}</td>
+            <td class="date-added-cell">${dateAdded}</td>
+            <td class="status-column ${showStatusColumn ? 'show-status' : ''}">${statusBadge}</td>
+            <td class="actions-column ${showActionsColumn ? 'show-actions' : ''}"><button class="edit-btn ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `editComponent('${c.firebaseKey}')` : ''}"><i class="fas fa-edit"></i> Edit</button> <button class="delete-btn ${!canEditDelete ? 'disabled-action' : ''}" onclick="${canEditDelete ? `deleteComponent('${c.firebaseKey}')` : ''}"><i class="fas fa-trash"></i> Del</button> <button class="clone-btn ${isGuest() ? 'disabled-action' : ''}" onclick="${!isGuest() ? `cloneComponentToAdd('${c.firebaseKey}')` : ''}"><i class="fas fa-copy"></i> Clone</button></td>
+        </tr>`;
+    }
+    tbody.innerHTML = html;
+    updateSortIcons();
+}
     
     function generateReport() { 
         let approvedComps = allComponents.filter(c => c.status === 'approved'); 
@@ -789,6 +1612,7 @@
         let sortFieldName = { name:'Name', category:'Category', value:'Value', quantity:'Stock', location:'Location' }[reportSortField] || reportSortField; 
         let rows = ''; 
         sorted.forEach((c, i) => { 
+            const dateAdded = formatBDTime(c.createdAt);
             rows += `<tr>
                 <td style="text-align:center;">${i+1}</td>
                 <td>${escapeHtml(c.name)}</td>
@@ -796,39 +1620,287 @@
                 <td>${escapeHtml(c.value) || '-'}</td>
                 <td style="text-align:center;">${c.quantity || 0}</td>
                 <td>${escapeHtml(c.location) || '-'}</td>
-              </tr>`; 
+                <td class="report-date-cell">${dateAdded}</td>
+            </tr>`; 
         });
         
-        document.getElementById("reportContainer").innerHTML = `<div class="report-header"><h2><i class="fas fa-chart-bar"></i> Inventory Dashboard</h2><p>Generated: ${new Date().toLocaleString()}</p><div class="sort-info-badge"><i class="fas fa-sort-amount-down"></i> Sorted by: <strong>${sortFieldName}</strong> (${reportSortOrder === 'asc' ? 'Ascending ↑' : 'Descending ↓'})</div><div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;"><button class="btn-primary" style="padding:4px 10px; font-size:12px; background:#6c5ce7;" onclick="sortReportData('name')">Sort by Name</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('category')">Sort by Category</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('value')">Sort by Value</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('quantity')">Sort by Stock</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('location')">Sort by Location</button></div></div><div class="report-stats-row"><div class="report-stat-item"><div>Total Components</div><div class="report-stat-value">${approvedComps.length}</div></div><div class="report-stat-item"><div>Total Stock</div><div class="report-stat-value">${totalStock.toLocaleString()}</div></div><div class="report-stat-item"><div>Categories</div><div class="report-stat-value">${categoriesCount}</div></div><div class="report-stat-item"><div>Low Stock</div><div class="report-stat-value ${lowStockCount>0?'low-stock-value':''}">${lowStockCount}</div></div></div><div style="padding:20px;"><h3>Complete Component List <span style="font-size:12px; color:#aaa;">(${approvedComps.length} items)</span></h3><table class="report-table"><thead><tr><th>#</th><th>Component Name</th><th>Category</th><th>Value</th><th>Stock</th><th>Storage Location</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+        document.getElementById("reportContainer").innerHTML = `<div class="report-header"><h2><i class="fas fa-chart-bar"></i> Inventory Dashboard</h2><p>Generated: ${new Date().toLocaleString()}</p><div class="sort-info-badge"><i class="fas fa-sort-amount-down"></i> Sorted by: <strong>${sortFieldName}</strong> (${reportSortOrder === 'asc' ? 'Ascending ↑' : 'Descending ↓'})</div><div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;"><button class="btn-primary" style="padding:4px 10px; font-size:12px; background:#6c5ce7;" onclick="sortReportData('name')">Sort by Name</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('category')">Sort by Category</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('value')">Sort by Value</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('quantity')">Sort by Stock</button><button class="btn-primary" style="padding:4px 10px; font-size:12px;" onclick="sortReportData('location')">Sort by Location</button></div></div><div class="report-stats-row"><div class="report-stat-item"><div>Total Components</div><div class="report-stat-value">${approvedComps.length}</div></div><div class="report-stat-item"><div>Total Stock</div><div class="report-stat-value">${totalStock.toLocaleString()}</div></div><div class="report-stat-item"><div>Categories</div><div class="report-stat-value">${categoriesCount}</div></div><div class="report-stat-item"><div>Low Stock</div><div class="report-stat-value ${lowStockCount>0?'low-stock-value':''}">${lowStockCount}</div></div></div><div style="padding:20px;"><h3>Complete Component List <span style="font-size:12px; color:var(--text-secondary);">(${approvedComps.length} items)</span></h3><table class="report-table"><thead><tr><th>#</th><th>Component Name</th><th>Category</th><th>Value</th><th>Stock</th><th>Storage Location</th><th>Date Added</th></tr></thead><tbody>${rows}</tbody></table></div>`;
     }
     
     window.sortReportData = (field) => { if(reportSortField === field) reportSortOrder = reportSortOrder === 'asc' ? 'desc' : 'asc'; else { reportSortField = field; reportSortOrder = 'asc'; } generateReport(); };
-    window.adjustStock = async (key, delta) => { if(isGuest()) { showToast("Guest users cannot modify stock", true); return; } let comp = allComponents.find(c => c.firebaseKey === key); if (!comp) return; if(!isAdmin() && comp.submittedBy !== currentUser?.uid) { showToast("You can only modify components you submitted", true); return; } const newQty = Math.max(1, (comp.quantity || 0) + delta); await componentsRef.child(key).update({ quantity: newQty, updatedAt: new Date().toISOString() }); showToast(`${delta>0?'+':''}${delta} → ${newQty} pcs`, false); };
+    
+    window.adjustStock = async (key, delta) => {if(isGuest()) { showToast("Guest users cannot modify stock", true); return; }let comp = allComponents.find(c => c.firebaseKey === key); if (!comp) return;     if(!isAdmin() && comp.submittedBy !== currentUser?.uid) {         showToast("You can only modify components you submitted", true);         return;     } 
+    // CHANGE: Allow stock to go down to 0 instead of 1
+    const newQty = Math.max(0, (comp.quantity || 0) + delta); 
+    await componentsRef.child(key).update({ 
+        quantity: newQty, 
+        updatedAt: new Date().toISOString() 
+    }); 
+    showToast(`${delta>0?'+':''}${delta} → ${newQty} pcs`, false); 
+};
+    
     window.deleteComponent = async (key) => { if(isGuest()) { showToast("Guest users cannot delete", true); return; } const comp = allComponents.find(c => c.firebaseKey === key); if(!comp) return; if(!isAdmin() && comp.submittedBy !== currentUser?.uid) { showToast("You can only delete components you submitted", true); return; } if(confirm("Delete permanently?")){ await componentsRef.child(key).remove(); showToast("Component deleted", false); } };
     window.editComponent = (key) => { if(isGuest()) { showToast("Guest users cannot edit components", true); return; } let c = allComponents.find(c=>c.firebaseKey===key); if(!c) return; if(!isAdmin() && c.submittedBy !== currentUser?.uid) { showToast("You can only edit components you submitted", true); return; } document.getElementById("editKey").value = key; document.getElementById("editCompId").value = c.componentId || ''; document.getElementById("editName").value = c.name || ''; document.getElementById("editCategory").value = c.category || ''; document.getElementById("editValue").value = c.value || ''; document.getElementById("editPackage").value = c.package || 'Through-hole'; document.getElementById("editQuantity").value = c.quantity || 0; document.getElementById("editMinStock").value = c.minStockLevel || 10; document.getElementById("editLocation").value = c.location || ''; document.getElementById("editModal").style.display = "flex"; };
     window.cloneComponentToAdd = (key) => { if(isGuest()) { showToast("Guest users cannot clone components", true); return; } let c = allComponents.find(c=>c.firebaseKey===key); if(c){ document.getElementById('compName').value = c.name||''; document.getElementById('compCategory').value = c.category||''; document.getElementById('compValue').value = c.value||''; document.getElementById('compPackage').value = c.package||'Through-hole'; document.getElementById('compQuantity').value = Math.max(1, c.quantity||1); document.getElementById('compMinStock').value = c.minStockLevel||2; document.getElementById('locFull').value = c.location||''; document.getElementById('compDescription').value = c.description||''; if(c.category && c.value) { let newId = generateAutoComponentId(c.category, c.value); document.getElementById('compId').value = newId; document.getElementById('autoIdPreview').innerHTML = `<i class="fas fa-copy"></i> Cloned from ${escapeHtml(c.name)} → New ID: <strong>${escapeHtml(newId)}</strong>`; } switchToView('add'); showToast(`Cloned "${c.name}" - Submit for approval`, false); } };
-    window.approveComponent = async (pendingKey) => { if(!isAdmin()) return; const pending = pendingComponents.find(p => p.firebaseKey === pendingKey); if(!pending) return; try { const approvedComp = { componentId: pending.componentId, name: pending.name, category: pending.category, value: pending.value, package: pending.package || 'Through-hole', quantity: Math.max(1, pending.quantity || 1), minStockLevel: pending.minStockLevel || 10, location: pending.location || "Not specified", description: pending.description || "", status: 'approved', submittedBy: pending.submittedBy, submittedByEmail: pending.submittedByEmail, approvedBy: currentUser?.email, approvedAt: new Date().toISOString(), createdAt: pending.createdAt, updatedAt: new Date().toISOString() }; await componentsRef.child(pending.componentId).set(approvedComp); await pendingRef.child(pendingKey).remove(); showToast(`✓ Approved ${pending.name}`, false); loadComponents(); loadPendingComponents(); } catch(error) { showToast(error.message, true); } };
+    window.approveComponent = async (pendingKey) => { if(!isAdmin()) return; const pending = pendingComponents.find(p => p.firebaseKey === pendingKey); if(!pending) return; try { 
+        // Store UTC time for approval
+        const nowUTC = new Date();
+        
+        const approvedComp = { 
+            componentId: pending.componentId, 
+            name: pending.name, 
+            category: pending.category, 
+            value: pending.value, 
+            package: pending.package || 'Through-hole', 
+            quantity: Math.max(1, pending.quantity || 1), 
+            minStockLevel: pending.minStockLevel || 10, 
+            location: pending.location || "Not specified", 
+            description: pending.description || "", 
+            status: 'approved', 
+            submittedBy: pending.submittedBy, 
+            submittedByEmail: pending.submittedByEmail, 
+            approvedBy: currentUser?.email, 
+            approvedAt: nowUTC.toISOString(), // UTC time
+            createdAt: pending.createdAt, // Keep original UTC time
+            updatedAt: nowUTC.toISOString() // UTC time
+        }; 
+        await componentsRef.child(pending.componentId).set(approvedComp); 
+        await pendingRef.child(pendingKey).remove(); 
+        showToast(`✓ Approved ${pending.name}`, false); 
+        loadComponents(); 
+        loadPendingComponents(); 
+    } catch(error) { showToast(error.message, true); } };
     window.rejectComponent = async (pendingKey) => { if(!isAdmin()) return; if(confirm("Reject this component submission?")) { await pendingRef.child(pendingKey).remove(); showToast("Component rejected", false); loadPendingComponents(); } };
     
-    function renderPendingApprovals() { if(!isAdmin()) return; let tbody = document.getElementById("pendingTableBody"); if (!tbody) return; if (pendingComponents.length === 0) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No pending approvals</td></tr>'; return; } let html = ''; for (let p of pendingComponents) { html += `<tr><td><strong>${escapeHtml(p.componentId)}</strong></td><td>${escapeHtml(p.name)}</td><td>${escapeHtml(p.category) || '-'}</td><td>${escapeHtml(p.value) || '-'}</td><td>${p.quantity || 0}</td><td>${escapeHtml(p.location) || '-'}</td><td><small>${escapeHtml(p.submittedByEmail) || p.submittedBy}</small></td><td><button class="approve-btn" onclick="approveComponent('${p.firebaseKey}')"><i class="fas fa-check"></i> Approve</button> <button class="reject-btn" onclick="rejectComponent('${p.firebaseKey}')"><i class="fas fa-times"></i> Reject</button></td></tr>`; } tbody.innerHTML = html; updatePendingCountBadge(); }
+    function renderPendingApprovals() { 
+        if(!isAdmin()) return; 
+        let tbody = document.getElementById("pendingTableBody"); 
+        if (!tbody) return; 
+        if (pendingComponents.length === 0) { 
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No pending approvals</td></tr>'; 
+            return; 
+        } 
+        let html = ''; 
+        for (let p of pendingComponents) { 
+            const dateAdded = formatBDTime(p.createdAt);
+            html += `<tr>
+                <td><strong>${escapeHtml(p.componentId)}</strong></td>
+                <td>${escapeHtml(p.name)}</td>
+                <td>${escapeHtml(p.category) || '-'}</td>
+                <td>${escapeHtml(p.value) || '-'}</td>
+                <td style="text-align:center;">${p.quantity || 0}</td>
+                <td>${escapeHtml(p.location) || '-'}</td>
+                <td class="date-added-cell">${dateAdded}</td>
+                <td><small>${escapeHtml(p.submittedByEmail) || p.submittedBy}</small></td>
+                <td class="action-cell"><button class="approve-btn" onclick="approveComponent('${p.firebaseKey}')"><i class="fas fa-check"></i> Approve</button> <button class="reject-btn" onclick="rejectComponent('${p.firebaseKey}')"><i class="fas fa-times"></i> Reject</button></td>
+            </tr>`; 
+        } 
+        tbody.innerHTML = html; 
+        updatePendingCountBadge(); 
+    }
     
-    function renderLocations() { let locMap = new Map(); allComponents.filter(c => c.status === 'approved' && c.location && c.location !== 'Not specified').forEach(c => { if(!locMap.has(c.location)) locMap.set(c.location, []); locMap.get(c.location).push(c); }); let grid = document.getElementById("locationsGrid"); if(locMap.size === 0){ grid.innerHTML='<div class="location-card">No locations yet. Add components with storage locations.</div>'; return; } let entries = Array.from(locMap.entries()); entries.sort((a,b) => locationsSortOrder === 'asc' ? a[0].localeCompare(b[0]) : b[0].localeCompare(a[0])); let html = ''; for(let [loc, parts] of entries){ let total = parts.reduce((s,p)=>s+(p.quantity||0),0); let preview = parts.slice(0,3).map(p => `${escapeHtml(p.name)} (${p.quantity||0})`).join(', '); if(parts.length > 3) preview += '...'; html += `<div class="location-card"><h3><i class="fas fa-boxes"></i> ${escapeHtml(loc)}</h3><p>📦 ${parts.length} types | 🔢 Total: ${total} pcs</p><small>${preview}</small></div>`; } grid.innerHTML = html; }
+    // ENHANCED LOCATIONS FUNCTION - SHOWS ALL COMPONENTS WITH DESCRIPTION TOOLTIP
+function renderLocations() { 
+    let locMap = new Map(); 
+    allComponents.filter(c => c.status === 'approved' && c.location && c.location !== 'Not specified').forEach(c => { 
+        if(!locMap.has(c.location)) locMap.set(c.location, []); 
+        locMap.get(c.location).push(c); 
+    }); 
+    let grid = document.getElementById("locationsGrid"); 
+    if(locMap.size === 0){ 
+        grid.innerHTML='<div class="location-card" style="grid-column:1/-1; text-align:center;">No locations yet. Add components with storage locations.</div>'; 
+        return; 
+    } 
+    let entries = Array.from(locMap.entries()); 
+    entries.sort((a,b) => locationsSortOrder === 'asc' ? a[0].localeCompare(b[0]) : b[0].localeCompare(a[0])); 
+    let html = ''; 
+    for(let [loc, parts] of entries){ 
+        let total = parts.reduce((s,p)=>s+(p.quantity||0),0); 
+        let itemsHtml = '';
+        for(let part of parts) {
+            let isLow = (part.quantity || 0) <= (part.minStockLevel || 2);
+            let desc = part.description || '';
+            
+            // Check if user can edit this component
+            const canEdit = !isGuest() && (isAdmin() || part.submittedBy === currentUser?.uid);
+            
+            // Escape description for JSON-safe string
+            const safeDesc = desc.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/'/g, "\\'");
+            const safeName = part.name.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/'/g, "\\'");
+            
+            if (desc.trim()) {
+                // Use data attributes instead of inline onclick for long content
+                descHtml = `<button class="desc-info-btn" data-key="${part.firebaseKey}" data-name="${escapeHtml(safeName)}" data-desc="${escapeHtml(safeDesc)}" ${canEdit ? '' : 'disabled'} title="${canEdit ? 'Click to edit description' : 'View description (read-only)'}">
+                    <i class="fas fa-info-circle"></i>
+                    <span class="desc-tooltip">${escapeHtml(desc)}</span>
+                </button>`;
+            } else {
+                descHtml = `<button class="desc-info-btn" data-key="${part.firebaseKey}" data-name="${escapeHtml(safeName)}" data-desc="" ${canEdit ? '' : 'disabled'} title="${canEdit ? 'Click to add description' : 'No description'}" style="${canEdit ? '' : 'color:#6c757d; opacity:0.5;'}">
+                    <i class="fas ${canEdit ? 'fa-plus-circle' : 'fa-info-circle'}"></i>
+                    <span class="desc-tooltip" style="${canEdit ? '' : 'color:#6c757d;'}">${canEdit ? 'Click to add description' : 'No description'}</span>
+                </button>`;
+            }
+            
+            itemsHtml += `<div class="comp-item">
+                <span class="comp-name-wrap">
+                    <span class="comp-name" title="${escapeHtml(part.name)} (${escapeHtml(part.value || '')})">🔹 ${escapeHtml(part.name)}</span>
+                    ${descHtml}
+                </span>
+                <span class="comp-qty ${isLow ? 'low-stock-card' : ''}">📦 ${part.quantity || 0} pcs</span>
+            </div>`;
+        }
+        html += `<div class="location-card">
+            <h3><i class="fas fa-boxes"></i> ${escapeHtml(loc)}</h3>
+            <div class="location-stats">
+                <span class="stat-badge"><i class="fas fa-microchip"></i> ${parts.length} types</span>
+                <span class="stat-badge"><i class="fas fa-layer-group"></i> Total: ${total} pcs</span>
+            </div>
+            <div class="component-list-full">
+                ${itemsHtml}
+            </div>
+        </div>`; 
+    } 
+    grid.innerHTML = html; 
     
-    function setLocationSort(order) { locationsSortOrder = order; const ascBtn = document.getElementById('sortLocAscBtn'); const descBtn = document.getElementById('sortLocDescBtn'); if(ascBtn && descBtn) { if(order === 'asc') { ascBtn.classList.add('active'); descBtn.classList.remove('active'); } else { descBtn.classList.add('active'); ascBtn.classList.remove('active'); } } renderLocations(); }
+    // Attach event listeners to all description buttons
+    document.querySelectorAll('.desc-info-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if(this.disabled) return;
+            const key = this.dataset.key;
+            const name = this.dataset.name;
+            const desc = this.dataset.desc;
+            openDescriptionModal(key, name, desc);
+        });
+    });
+}
     
-    function populateFilters() { let cats = [...new Set(allComponents.filter(c => c.status === 'approved').map(c=>c.category).filter(Boolean))]; let sel = document.getElementById("categoryFilter"); if(sel) sel.innerHTML = '<option value="">All Categories</option>' + cats.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join(''); }
+    function setLocationSort(order) { 
+        locationsSortOrder = order; 
+        const ascBtn = document.getElementById('sortLocAscBtn'); 
+        const descBtn = document.getElementById('sortLocDescBtn'); 
+        if(ascBtn && descBtn) { 
+            if(order === 'asc') { 
+                ascBtn.classList.add('active'); 
+                descBtn.classList.remove('active'); 
+            } else { 
+                descBtn.classList.add('active'); 
+                ascBtn.classList.remove('active'); 
+            } 
+        } 
+        renderLocations(); 
+    }
     
-    function updateSortIcons() { const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location']; for(let field of fields) { const th = document.getElementById(`sort-${field}`); if(th) { const icon = th.querySelector('i'); if(currentSort.field === field) { th.style.backgroundColor = '#3a5a8a'; if(icon) icon.className = currentSort.direction === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'; } else { th.style.backgroundColor = '#2c3e66'; if(icon) icon.className = 'fas fa-sort'; } } } }
+    function populateFilters() { 
+        let cats = [...new Set(allComponents.filter(c => c.status === 'approved').map(c=>c.category).filter(Boolean))]; 
+        let sel = document.getElementById("categoryFilter"); 
+        if(sel) sel.innerHTML = '<option value="">All Categories</option>' + cats.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join(''); 
+    }
     
-    function attachSortListeners() { const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location']; for(let field of fields) { const th = document.getElementById(`sort-${field}`); if(th) { th.onclick = () => { if(currentSort.field === field) currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc'; else { currentSort.field = field; currentSort.direction = 'asc'; } renderComponentsTable(); }; } } }
+    function updateSortIcons() { 
+    const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location', 'createdAt', 'status']; 
+    for(let field of fields) { 
+        const th = document.getElementById(`sort-${field}`); 
+        if(th) { 
+            const icon = th.querySelector('i'); 
+            if(currentSort.field === field) { 
+                th.style.backgroundColor = '#3a5a8a'; 
+                if(icon) icon.className = currentSort.direction === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'; 
+            } else { 
+                th.style.backgroundColor = '#2c3e66'; 
+                if(icon) icon.className = 'fas fa-sort'; 
+            } 
+        } 
+    } 
+}
     
-    function switchToView(viewName) { document.querySelectorAll('.nav-btn-desktop, .nav-btn-mobile').forEach(btn=>btn.classList.remove('active')); document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(viewName+'-view').classList.add('active'); if(viewName==='locations') renderLocations(); if(viewName==='reports') generateReport(); if(viewName==='add') updateAutoIdPreview(); if(viewName==='components') { renderComponentsTable(); attachSortListeners(); } if(viewName==='approvals' && isAdmin()) renderPendingApprovals(); }
+function attachSortListeners() { 
+    const fields = ['componentId', 'name', 'category', 'value', 'quantity', 'location', 'createdAt', 'status']; 
+    for(let field of fields) { 
+        const th = document.getElementById(`sort-${field}`); 
+        if(th) { 
+            th.onclick = () => { 
+                if(currentSort.field === field) currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc'; 
+                else { currentSort.field = field; currentSort.direction = 'asc'; } 
+                renderComponentsTable(); 
+            }; 
+        } 
+    } 
+}
     
-    function applyPermissionsToUI() { const readonly = isGuest(); const addNavDesktop = document.getElementById('addNavBtnDesktop'); const addNavMobile = document.getElementById('addNavBtnMobile'); const addFormSubmit = document.getElementById('addComponentBtn'); const submitHint = document.getElementById('submitHint'); if(addNavDesktop) addNavDesktop.style.display = readonly ? 'none' : 'flex'; if(addNavMobile) addNavMobile.style.display = readonly ? 'none' : 'flex'; if(addFormSubmit) addFormSubmit.disabled = readonly; if(addFormSubmit) addFormSubmit.classList.toggle('disabled-btn', readonly); if(submitHint) { if(isAdmin()) submitHint.innerHTML = '<i class="fas fa-check-circle"></i> <strong>Admin:</strong> Your submissions are automatically approved.'; else if(!isGuest()) submitHint.innerHTML = '<i class="fas fa-info-circle"></i> <strong>User:</strong> Your submission requires admin approval.'; else submitHint.innerHTML = '<i class="fas fa-lock"></i> Guest accounts cannot add components.'; } const approvalsNavDesktop = document.getElementById('approvalsNavBtn'); const approvalsNavMobile = document.getElementById('approvalsNavBtnMobile'); if(approvalsNavDesktop) approvalsNavDesktop.style.display = isAdmin() ? 'flex' : 'none'; if(approvalsNavMobile) approvalsNavMobile.style.display = isAdmin() ? 'flex' : 'none'; updatePendingCountBadge(); const addModeText = document.getElementById('addModeText'); if(addModeText) { if(isGuest()) addModeText.innerHTML = '<span class="guest-badge">Read Only Mode</span>'; else if(isAdmin()) addModeText.innerHTML = '<span class="admin-badge">Admin (Direct Add)</span>'; else addModeText.innerHTML = '<span class="user-badge">Your submissions require admin approval</span>'; } renderComponentsTable(); }
+    function switchToView(viewName) { 
+        document.querySelectorAll('.nav-btn-desktop, .nav-btn-mobile').forEach(btn=>btn.classList.remove('active')); 
+        document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); 
+        document.getElementById(viewName+'-view').classList.add('active'); 
+        if(viewName==='locations') renderLocations(); 
+        if(viewName==='reports') generateReport(); 
+        if(viewName==='add') updateAutoIdPreview(); 
+        if(viewName==='components') { renderComponentsTable(); attachSortListeners(); } 
+        if(viewName==='approvals' && isAdmin()) renderPendingApprovals(); 
+    }
     
-    function updateAdminUI() { let btns = [document.getElementById('adminNavBtn'), document.getElementById('adminNavBtnMobile')]; btns.forEach(btn=>{if(btn) btn.style.display = isAdmin() ? 'flex' : 'none';}); let roleDiv = document.getElementById('userRoleDisplay'); if(roleDiv) { if(isAdmin()) roleDiv.innerHTML = '<span class="admin-badge">Administrator</span>'; else if(isGuest()) roleDiv.innerHTML = '<span class="guest-badge">👓 Guest (Read Only)</span>'; else roleDiv.innerHTML = '<span class="user-badge">User (Submissions Need Approval)</span>'; } applyPermissionsToUI(); }
+    function applyPermissionsToUI() { 
+        const readonly = isGuest(); 
+        const addNavDesktop = document.getElementById('addNavBtnDesktop'); 
+        const addNavMobile = document.getElementById('addNavBtnMobile'); 
+        const addFormSubmit = document.getElementById('addComponentBtn'); 
+        const submitHint = document.getElementById('submitHint'); 
+        if(addNavDesktop) addNavDesktop.style.display = readonly ? 'none' : 'flex'; 
+        if(addNavMobile) addNavMobile.style.display = readonly ? 'none' : 'flex'; 
+        if(addFormSubmit) addFormSubmit.disabled = readonly; 
+        if(addFormSubmit) addFormSubmit.classList.toggle('disabled-btn', readonly); 
+        if(submitHint) { 
+            if(isAdmin()) submitHint.innerHTML = '<i class="fas fa-check-circle"></i> <strong>Admin:</strong> Your submissions are automatically approved.'; 
+            else if(!isGuest()) submitHint.innerHTML = '<i class="fas fa-info-circle"></i> <strong>User:</strong> Your submission requires admin approval.'; 
+            else submitHint.innerHTML = '<i class="fas fa-lock"></i> Guest accounts cannot add components.'; 
+        } 
+        const approvalsNavDesktop = document.getElementById('approvalsNavBtn'); 
+        const approvalsNavMobile = document.getElementById('approvalsNavBtnMobile'); 
+        if(approvalsNavDesktop) approvalsNavDesktop.style.display = isAdmin() ? 'flex' : 'none'; 
+        if(approvalsNavMobile) approvalsNavMobile.style.display = isAdmin() ? 'flex' : 'none'; 
+        updatePendingCountBadge(); 
+        const addModeText = document.getElementById('addModeText'); 
+        if(addModeText) { 
+            if(isGuest()) addModeText.innerHTML = '<span class="guest-badge">Read Only Mode</span>'; 
+            else if(isAdmin()) addModeText.innerHTML = '<span class="admin-badge">Admin (Direct Add)</span>'; 
+            else addModeText.innerHTML = '<span class="user-badge">Your submissions require admin approval</span>'; 
+        } 
+        renderComponentsTable(); 
+    }
     
-    async function loadUsersList() { if(!isAdmin()) return; let snap = await usersRef.once('value'); let users = snap.val(); let tbody = document.getElementById('usersTableBody'); if(!users){ tbody.innerHTML='<tr><td colspan="4">No users</td></tr>'; return; } tbody.innerHTML=''; for(let uid in users){ let u = users[uid]; let row = tbody.insertRow(); row.insertCell(0).innerHTML = escapeHtml(u.email); let roleCell = row.insertCell(1); if(u.role === 'admin') roleCell.innerHTML = '<span class="admin-badge">Admin</span>'; else if(u.role === 'guest') roleCell.innerHTML = '<span class="guest-badge">Guest</span>'; else roleCell.innerHTML = '<span class="user-badge">User</span>'; row.insertCell(2).innerHTML = u.createdAt?new Date(u.createdAt).toLocaleString():'N/A'; let actions = row.insertCell(3); if(uid !== currentUser?.uid) actions.innerHTML = `<button class="edit-user-btn" onclick="openEditUserModal('${uid}','${escapeHtml(u.email)}','${u.role}')">Edit</button> <button class="delete-user-btn" onclick="deleteUser('${uid}')">Delete</button>`; else actions.innerHTML = '<span style="color:#aaa;"><i class="fas fa-user-shield"></i> You</span>'; } }
+    function updateAdminUI() { 
+        let btns = [document.getElementById('adminNavBtn'), document.getElementById('adminNavBtnMobile')]; 
+        btns.forEach(btn=>{if(btn) btn.style.display = isAdmin() ? 'flex' : 'none';}); 
+        let roleDiv = document.getElementById('userRoleDisplay'); 
+        if(roleDiv) { 
+            if(isAdmin()) roleDiv.innerHTML = '<span class="admin-badge">Administrator</span>'; 
+            else if(isGuest()) roleDiv.innerHTML = '<span class="guest-badge">👓 Guest (Read Only)</span>'; 
+            else roleDiv.innerHTML = '<span class="user-badge">User (Submissions Need Approval)</span>'; 
+        } 
+        applyPermissionsToUI(); 
+    }
+    
+    async function loadUsersList() { 
+        if(!isAdmin()) return; 
+        let snap = await usersRef.once('value'); 
+        let users = snap.val(); 
+        let tbody = document.getElementById('usersTableBody'); 
+        if(!users){ tbody.innerHTML='<tr><td colspan="4">No users</td></tr>'; return; } 
+        tbody.innerHTML=''; 
+        for(let uid in users){ 
+            let u = users[uid]; 
+            let row = tbody.insertRow(); 
+            row.insertCell(0).innerHTML = escapeHtml(u.email); 
+            let roleCell = row.insertCell(1); 
+            if(u.role === 'admin') roleCell.innerHTML = '<span class="admin-badge">Admin</span>'; 
+            else if(u.role === 'guest') roleCell.innerHTML = '<span class="guest-badge">Guest</span>'; 
+            else roleCell.innerHTML = '<span class="user-badge">User</span>'; 
+            row.insertCell(2).innerHTML = u.createdAt?new Date(u.createdAt).toLocaleString():'N/A'; 
+            let actions = row.insertCell(3); 
+            if(uid !== currentUser?.uid) actions.innerHTML = `<button class="edit-user-btn" onclick="openEditUserModal('${uid}','${escapeHtml(u.email)}','${u.role}')">Edit</button> <button class="delete-user-btn" onclick="deleteUser('${uid}')">Delete</button>`; 
+            else actions.innerHTML = '<span style="color:var(--text-secondary);"><i class="fas fa-user-shield"></i> You</span>'; 
+        } 
+    }
     
     window.deleteUser = async (uid) => { if(isAdmin() && uid !== currentUser?.uid && confirm("Delete user?")){ await usersRef.child(uid).remove(); loadUsersList(); showToast("User deleted",false); } };
     window.openEditUserModal = (uid, email, role) => { document.getElementById('editUserId').value = uid; document.getElementById('editUserEmail').value = email; document.getElementById('editUserRole').value = role; document.getElementById('editUserPassword').value = ''; document.getElementById('editUserModal').style.display = 'flex'; };
@@ -868,14 +1940,15 @@
                         description: comp.description || '',
                         status: comp.status || 'approved',
                         submittedBy: comp.submittedBy,
-                        submittedByEmail: comp.submittedByEmail
+                        submittedByEmail: comp.submittedByEmail,
+                        createdAt: comp.createdAt || null
                     });
                 });
             }
             const sidebarStatus = document.getElementById('sidebarConnectionStatus');
             if(sidebarStatus) { 
                 sidebarStatus.innerHTML = '<i class="fas fa-check-circle"></i> Connected - ' + allComponents.length + ' components'; 
-                sidebarStatus.style.background = '#2a5a2a'; 
+                sidebarStatus.style.background = 'var(--sidebar-status-bg)'; 
             }
             refreshUI();
             if(document.getElementById('compCategory')) updateAutoIdPreview();
@@ -883,17 +1956,53 @@
             const sidebarStatus = document.getElementById('sidebarConnectionStatus');
             if(sidebarStatus) { 
                 sidebarStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Connection error'; 
-                sidebarStatus.style.background = '#5a2a2a'; 
+                sidebarStatus.style.background = 'var(--sidebar-status-error)'; 
             }
             console.error("Firebase error:", error);
             showToast("Database connection issue. Please check your network.", true);
         });
     }
     
-    function loadPendingComponents() { if(!isAdmin()) return; pendingRef.on('value', (snapshot) => { const data = snapshot.val(); pendingComponents = []; if (data) { Object.keys(data).forEach(key => { const comp = data[key]; pendingComponents.push({ firebaseKey: key, componentId: comp.componentId, name: comp.name, category: comp.category, value: comp.value, package: comp.package, quantity: comp.quantity, minStockLevel: comp.minStockLevel, location: comp.location, description: comp.description, submittedBy: comp.submittedBy, submittedByEmail: comp.submittedByEmail, createdAt: comp.createdAt }); }); } renderPendingApprovals(); updatePendingCountBadge(); }); }
+    function loadPendingComponents() { 
+        if(!isAdmin()) return; 
+        pendingRef.on('value', (snapshot) => { 
+            const data = snapshot.val(); 
+            pendingComponents = []; 
+            if (data) { 
+                Object.keys(data).forEach(key => { 
+                    const comp = data[key]; 
+                    pendingComponents.push({ 
+                        firebaseKey: key, 
+                        componentId: comp.componentId, 
+                        name: comp.name, 
+                        category: comp.category, 
+                        value: comp.value, 
+                        package: comp.package, 
+                        quantity: comp.quantity, 
+                        minStockLevel: comp.minStockLevel, 
+                        location: comp.location, 
+                        description: comp.description, 
+                        submittedBy: comp.submittedBy, 
+                        submittedByEmail: comp.submittedByEmail, 
+                        createdAt: comp.createdAt 
+                    }); 
+                }); 
+            } 
+            renderPendingApprovals(); 
+            updatePendingCountBadge(); 
+        }); 
+    }
     
-    function refreshUI() { renderComponentsTable(); populateFilters(); renderLocations(); generateReport(); if(isAdmin()) loadUsersList(); applyPermissionsToUI(); }
+    function refreshUI() { 
+        renderComponentsTable(); 
+        populateFilters(); 
+        renderLocations(); 
+        generateReport(); 
+        if(isAdmin()) loadUsersList(); 
+        applyPermissionsToUI(); 
+    }
     
+    // Authentication
     let isLoginMode = true;
     const authContainerDiv = document.getElementById('authContainer');
     const appWrapperDiv = document.getElementById('appWrapper');
@@ -947,6 +2056,10 @@
         if(!id || !name || !category || !value) { showToast("Please fill required fields", true); return; } 
         const idExists = [...allComponents, ...pendingComponents].some(c=>c.componentId===id);
         if(idExists){ showToast("Component ID already exists or pending approval!", true); return; } 
+
+        // Store UTC time (browser's local time converted to UTC)
+        const nowUTC = new Date();
+
         let newComp = { 
             componentId: id, name, category, value, 
             package: document.getElementById('compPackage').value, 
@@ -956,14 +2069,14 @@
             description: document.getElementById('compDescription').value, 
             submittedBy: currentUser?.uid,
             submittedByEmail: currentUser?.email,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            createdAt: nowUTC.toISOString(), // store UTC time
+            updatedAt: nowUTC.toISOString()
         }; 
         try {
             if(isAdmin()) {
                 newComp.status = 'approved';
                 newComp.approvedBy = currentUser.email;
-                newComp.approvedAt = new Date().toISOString();
+                newComp.approvedAt = nowUTC.toISOString();
                 await componentsRef.child(id).set(newComp);
                 showToast(`✓ "${name}" added directly to inventory`, false);
                 document.getElementById('addComponentForm').reset(); 
@@ -1003,7 +2116,7 @@
         const field = document.getElementById(fieldId);
         if(field) {
             field.addEventListener('input', function() {
-                this.style.borderColor = '#555';
+                this.style.borderColor = 'var(--input-border)';
                 const errorSpan = document.getElementById(fieldId + 'Error');
                 if(errorSpan) errorSpan.textContent = '';
             });
@@ -1022,7 +2135,7 @@
     
     cancelImportBtnElem?.addEventListener('click', () => {
         csvImportAreaElem.style.display = 'none';
-        csvFileInputElem.value = '';
+        if(csvFileInputElem) csvFileInputElem.value = '';
     });
     
     function parseCSVLine(line) {
@@ -1049,68 +2162,374 @@
         return result;
     }
     
+
     csvFileInputElem?.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if(!file) return;
-        if(isGuest()) { showToast("Guest users cannot import components", true); return; }
-        const reader = new FileReader();
-        reader.onload = async (event) => {
-            const csvText = event.target.result;
-            const lines = csvText.split(/\r?\n/).filter(line => line.trim());
-            if(lines.length < 2) { showToast("CSV file must contain header and at least one data row", true); return; }
-            let startRow = 0;
-            const firstLine = lines[0].toLowerCase();
-            if(firstLine.includes('component name') || firstLine.includes('name')) startRow = 1;
-            let imported = 0, failed = 0, duplicate = 0;
-            for(let i = startRow; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if(!line) continue;
-                let cols = parseCSVLine(line);
-                if(cols.length < 5) cols = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
-                if(cols.length < 5) { failed++; continue; }
-                const name = cols[0].replace(/^"|"$/g, '').trim();
-                const category = cols[1].replace(/^"|"$/g, '').trim();
-                const value = cols[2].replace(/^"|"$/g, '').trim();
-                const quantity = parseInt(cols[3]) || 1;
-                const location = cols[4].replace(/^"|"$/g, '').trim() || "Not specified";
-                if(!name || !category || !value) { failed++; continue; }
+    const file = e.target.files[0];
+    if(!file) return;
+    if(isGuest()) { showToast("Guest users cannot import components", true); return; }
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+        const csvText = event.target.result;
+        const lines = csvText.split(/\r?\n/).filter(line => line.trim());
+        if(lines.length < 2) { showToast("CSV file must contain header and at least one data row", true); return; }
+        
+        let startRow = 0;
+        const firstLine = lines[0].toLowerCase();
+        if(firstLine.includes('component id') || firstLine.includes('name')) startRow = 1;
+        
+        let imported = 0, failed = 0, updated = 0, pendingImported = 0;
+        
+        for(let i = startRow; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if(!line) continue;
+            let cols = parseCSVLine(line);
+            cols = cols.map(c => c.replace(/^"|"$/g, '').trim());
+            
+            // Detect columns: ID, Name, Category, Value, Stock, Location, Date, Status
+            let componentId, name, category, value, quantity, location, dateAdded, status;
+            
+            if (cols.length >= 8) {
+                [componentId, name, category, value, quantity, location, dateAdded, status] = cols;
+            } else if (cols.length >= 7) {
+                [componentId, name, category, value, quantity, location, dateAdded] = cols;
+                status = 'pending';
+            } else if (cols.length >= 6) {
+                [name, category, value, quantity, location, dateAdded] = cols;
+                componentId = '';
+                status = 'pending';
+            } else if (cols.length >= 5) {
+                [name, category, value, quantity, location] = cols;
+                componentId = '';
+                dateAdded = '';
+                status = 'pending';
+            } else {
+                failed++;
+                continue;
+            }
+            
+            quantity = parseInt(quantity) || 1;
+            if(!name || !category || !value) { failed++; continue; }
+            
+            // Auto-generate ID if not provided
+            if (!componentId) {
                 const prefix = (category.replace(/[^a-zA-Z0-9]/g,'').toUpperCase().substring(0,3) || 'GEN') + '-' + (value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase().substring(0,3) || 'VAL');
                 let max = 0;
                 const allIds = [...allComponents, ...pendingComponents].filter(c => c.componentId && c.componentId.startsWith(prefix+'-'));
                 allIds.forEach(c => { let n = parseInt(c.componentId.split('-').pop(),10); if(!isNaN(n) && n>max) max=n; });
-                const newId = `${prefix}-${(max+1).toString().padStart(3,'0')}`;
-                const idExists = [...allComponents, ...pendingComponents].some(c=>c.componentId===newId);
-                if(idExists) { duplicate++; continue; }
-                const newComp = {
-                    componentId: newId, name, category, value, package: 'Through-hole',
-                    quantity: Math.max(1, quantity), minStockLevel: 2, location,
-                    description: `Imported from CSV on ${new Date().toLocaleDateString()}`,
-                    submittedBy: currentUser?.uid, submittedByEmail: currentUser?.email,
-                    createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
-                };
+                componentId = `${prefix}-${(max+1).toString().padStart(3,'0')}`;
+            }
+            
+            const nowUTC = new Date();
+            
+            // Check if exists in Components or Pending
+            const existingComp = allComponents.find(c => c.componentId === componentId);
+            const existingPending = pendingComponents.find(c => c.componentId === componentId);
+            
+            const newComp = {
+                componentId: componentId,
+                name: name,
+                category: category,
+                value: value,
+                package: 'Through-hole',
+                quantity: Math.max(1, quantity),
+                minStockLevel: 2,
+                location: location || "Not specified",
+                description: dateAdded ? `Imported from CSV. Original date: ${dateAdded}` : `Imported from CSV on ${nowUTC.toLocaleDateString()}`,
+                submittedBy: currentUser?.uid,
+                submittedByEmail: currentUser?.email,
+                updatedAt: nowUTC.toISOString()
+            };
+            
+            // Handle date
+            if (dateAdded) {
                 try {
-                    if(isAdmin()) {
+                    const parsedDate = new Date(dateAdded);
+                    if (!isNaN(parsedDate.getTime())) {
+                        newComp.createdAt = parsedDate.toISOString();
+                    } else {
+                        newComp.createdAt = nowUTC.toISOString();
+                    }
+                } catch(e) {
+                    newComp.createdAt = nowUTC.toISOString();
+                }
+            } else {
+                newComp.createdAt = nowUTC.toISOString();
+            }
+            
+            try {
+                if (existingComp) {
+                    // UPDATE approved component (key is componentId)
+                    await componentsRef.child(componentId).update({
+                        name: newComp.name,
+                        category: newComp.category,
+                        value: newComp.value,
+                        quantity: newComp.quantity,
+                        location: newComp.location,
+                        description: newComp.description,
+                        updatedAt: newComp.updatedAt
+                    });
+                    updated++;
+                } else if (existingPending) {
+                    // UPDATE pending component using its Firebase key
+                    const pendingKey = existingPending.firebaseKey;
+                    await pendingRef.child(pendingKey).update({
+                        name: newComp.name,
+                        category: newComp.category,
+                        value: newComp.value,
+                        quantity: newComp.quantity,
+                        location: newComp.location,
+                        description: newComp.description,
+                        updatedAt: newComp.updatedAt
+                    });
+                    updated++;
+                } else {
+                    // NEW component
+                    const targetStatus = (status || 'pending').toLowerCase();
+                    
+                    if (targetStatus === 'approved' && isAdmin()) {
+                        // Admin: direct approve to Components
                         newComp.status = 'approved';
                         newComp.approvedBy = currentUser.email;
-                        newComp.approvedAt = new Date().toISOString();
-                        await componentsRef.child(newId).set(newComp);
+                        newComp.approvedAt = nowUTC.toISOString();
+                        await componentsRef.child(componentId).set(newComp);
+                        imported++;
                     } else {
+                        // Non-admin or status is pending: add to PendingComponents
                         newComp.status = 'pending';
                         await pendingRef.push().set(newComp);
+                        pendingImported++;
                     }
-                    imported++;
-                } catch(err) { failed++; console.error(err); }
+                }
+            } catch(err) { 
+                failed++; 
+                console.error('Import error:', err); 
             }
-            showToast(`Import complete: ${imported} added, ${duplicate} duplicates, ${failed} failed`, imported === 0);
-            csvImportAreaElem.style.display = 'none';
-            csvFileInputElem.value = '';
-            loadComponents();
-            if(!isAdmin()) loadPendingComponents();
-        };
-        reader.readAsText(file, 'UTF-8');
-    });
+        }
+        
+        showToast(`Import: ${imported} approved, ${pendingImported} pending, ${updated} updated, ${failed} failed`, imported === 0 && pendingImported === 0 && updated === 0);
+        csvImportAreaElem.style.display = 'none';
+        if(csvFileInputElem) csvFileInputElem.value = '';
+        loadComponents();
+        loadPendingComponents();
+    };
+    reader.readAsText(file, 'UTF-8');
+});
     
-    console.log("EIM v2.1.0 — Dark Gray Theme + Mobile Persistent Session");
+    // Toggle ID button event listener
+document.getElementById('toggleIdBtn')?.addEventListener('click', toggleIdColumn);
+
+// Toggle Status button event listener
+document.getElementById('toggleStatusBtn')?.addEventListener('click', toggleStatusColumn);
+
+// Toggle Actions button event listener
+document.getElementById('toggleActionsBtn')?.addEventListener('click', toggleActionsColumn);
+    
+    initTheme();
+    updateVersionDisplays();
+    console.log(`${APP_VERSION} — Added description tooltip to Location cards.`);
+    
+    // ===== OPEN DESCRIPTION-ONLY MODAL =====
+window.openDescriptionModal = (firebaseKey, componentName, currentDescription) => {
+    if(isGuest()) {
+        showToast("Guest users cannot edit descriptions", true);
+        return;
+    }
+    
+    // Check permission
+    const comp = allComponents.find(c => c.firebaseKey === firebaseKey);
+    if(!comp) return;
+    if(!isAdmin() && comp.submittedBy !== currentUser?.uid) {
+        showToast("You can only edit components you submitted", true);
+        return;
+    }
+    
+    document.getElementById('editDescKey').value = firebaseKey;
+    document.getElementById('editDescText').value = currentDescription || '';
+    document.getElementById('descCompName').textContent = `— ${componentName}`;
+    document.getElementById('editDescriptionModal').style.display = 'flex';
+    
+    // Auto-focus the textarea
+    setTimeout(() => {
+        document.getElementById('editDescText').focus();
+    }, 300);
+};
+
+// ===== CLOSE DESCRIPTION-ONLY MODAL =====
+window.closeDescriptionModal = () => {
+    document.getElementById('editDescriptionModal').style.display = 'none';
+};
+
+// ===== SAVE DESCRIPTION ONLY =====
+document.getElementById('editDescriptionForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const key = document.getElementById('editDescKey').value;
+    const description = document.getElementById('editDescText').value.trim();
+    
+    if(!key) {
+        showToast("Error: No component selected", true);
+        return;
+    }
+    
+    try {
+        await componentsRef.child(key).update({
+            description: description,
+            updatedAt: new Date().toISOString()
+        });
+        
+        closeDescriptionModal();
+        showToast("✅ Description updated successfully!", false);
+        
+        // Refresh locations view to show updated tooltip
+        if(document.getElementById('locations-view').classList.contains('active')) {
+            renderLocations();
+        }
+        
+        // Also refresh components table if visible
+        if(document.getElementById('components-view').classList.contains('active')) {
+            renderComponentsTable();
+        }
+        
+    } catch(error) {
+        showToast("Error updating description: " + error.message, true);
+    }
+});
+
+// ===== CLOSE MODAL ON ESCAPE KEY =====
+document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') {
+        closeDescriptionModal();
+    }
+});
+
+// ===== CLOSE MODAL WHEN CLICKING OUTSIDE =====
+document.getElementById('editDescriptionModal')?.addEventListener('click', (e) => {
+    if(e.target === e.currentTarget) {
+        closeDescriptionModal();
+    }
+});
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    //Optional
+    // Save column visibility states
+function saveColumnVisibility() {
+    localStorage.setItem('eim_show_id', JSON.stringify(showIdColumn));
+    localStorage.setItem('eim_show_status', JSON.stringify(showStatusColumn));
+    localStorage.setItem('eim_show_actions', JSON.stringify(showActionsColumn));
+}
+
+// Load column visibility states
+function loadColumnVisibility() {
+    const savedId = localStorage.getItem('eim_show_id');
+    const savedStatus = localStorage.getItem('eim_show_status');
+    const savedActions = localStorage.getItem('eim_show_actions');
+    
+    if (savedId !== null) {
+        showIdColumn = JSON.parse(savedId);
+        if (showIdColumn) {
+            document.getElementById('toggleIdBtn')?.classList.add('active');
+            document.getElementById('toggleIdBtn').innerHTML = '<i class="fas fa-eye-slash"></i> ID';
+            document.querySelectorAll('.id-column').forEach(col => col.classList.add('show-id'));
+        }
+    }
+    
+    if (savedStatus !== null) {
+        showStatusColumn = JSON.parse(savedStatus);
+        if (showStatusColumn) {
+            document.getElementById('toggleStatusBtn')?.classList.add('active');
+            document.getElementById('toggleStatusBtn').innerHTML = '<i class="fas fa-eye-slash"></i> Status';
+            document.querySelectorAll('.status-column').forEach(col => col.classList.add('show-status'));
+        }
+    }
+    
+    if (savedActions !== null) {
+        showActionsColumn = JSON.parse(savedActions);
+        if (showActionsColumn) {
+            document.getElementById('toggleActionsBtn')?.classList.add('active');
+            document.getElementById('toggleActionsBtn').innerHTML = '<i class="fas fa-eye-slash"></i> Actions';
+            document.querySelectorAll('.actions-column').forEach(col => col.classList.add('show-actions'));
+        }
+    }
+}
+
+// Update toggle functions to save state
+function toggleIdColumn() {
+    showIdColumn = !showIdColumn;
+    const btn = document.getElementById('toggleIdBtn');
+    const idColumns = document.querySelectorAll('.id-column');
+    
+    if (showIdColumn) {
+        idColumns.forEach(col => col.classList.add('show-id'));
+        btn.innerHTML = '<i class="fas fa-eye-slash"></i> ID';
+        btn.classList.add('active');
+    } else {
+        idColumns.forEach(col => col.classList.remove('show-id'));
+        btn.innerHTML = '<i class="fas fa-eye"></i> ID';
+        btn.classList.remove('active');
+    }
+    saveColumnVisibility();
+}
+
+function toggleStatusColumn() {
+    showStatusColumn = !showStatusColumn;
+    const btn = document.getElementById('toggleStatusBtn');
+    const statusColumns = document.querySelectorAll('.status-column');
+    
+    if (showStatusColumn) {
+        statusColumns.forEach(col => col.classList.add('show-status'));
+        btn.innerHTML = '<i class="fas fa-eye-slash"></i> Status';
+        btn.classList.add('active');
+    } else {
+        statusColumns.forEach(col => col.classList.remove('show-status'));
+        btn.innerHTML = '<i class="fas fa-eye"></i> Status';
+        btn.classList.remove('active');
+    }
+    saveColumnVisibility();
+}
+
+function toggleActionsColumn() {
+    showActionsColumn = !showActionsColumn;
+    const btn = document.getElementById('toggleActionsBtn');
+    const actionsColumns = document.querySelectorAll('.actions-column');
+    
+    if (showActionsColumn) {
+        actionsColumns.forEach(col => col.classList.add('show-actions'));
+        btn.innerHTML = '<i class="fas fa-eye-slash"></i> Actions';
+        btn.classList.add('active');
+    } else {
+        actionsColumns.forEach(col => col.classList.remove('show-actions'));
+        btn.innerHTML = '<i class="fas fa-eye"></i> Actions';
+        btn.classList.remove('active');
+    }
+    saveColumnVisibility();
+}
+
+// Call loadColumnVisibility after page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadColumnVisibility();
+});
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 </script>
 </body>
 </html>
