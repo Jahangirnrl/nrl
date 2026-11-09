@@ -1,4 +1,4 @@
-<!-- const DASHBOARD_VERSION = 'v4.8.3'; -->
+<!-- const DASHBOARD_VERSION = 'v4.9.0'; -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2748,7 +2748,7 @@ const auth = firebase.auth();
 
 // --- GLOBAL STATE & UI ELEMENTS ---
 const SESSION_KEY = 'multiroom_session_active';
-const DASHBOARD_VERSION = 'v4.8.4';
+const DASHBOARD_VERSION = 'v4.9.0';
 let currentDevice = 'ROOM_1';
 const devices = ['ROOM_1', 'ROOM_2', 'ROOM_3', 'ROOM_4'];
 
@@ -4444,30 +4444,46 @@ function saveSchedule(scheduleId) {
         });
 }
 
+// Helper: parse "HH:MM", "HH:MM:SS", "H:MM AM/PM", "HH:MM:SS AM/PM" → {hours, minutes} in 24h
+function parseTimeStrTo24h(timeStr) {
+    if (!timeStr || timeStr === '--:--' || timeStr === '--:--:--') return null;
+    const m12 = timeStr.match(/(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)/i);
+    if (m12) {
+        let h = parseInt(m12[1]);
+        const min = parseInt(m12[2]);
+        const ampm = m12[4].toUpperCase();
+        if (ampm === 'PM' && h !== 12) h += 12;
+        if (ampm === 'AM' && h === 12) h = 0;
+        return { hours: h, minutes: min };
+    }
+    const m24 = timeStr.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+    if (m24) return { hours: parseInt(m24[1]), minutes: parseInt(m24[2]) };
+    return null;
+}
+
 function calculateNextExecutionTime(scheduleData) {
-    const sunriseTime = deviceStates[currentDevice].sunrise;
-    const sunsetTime = deviceStates[currentDevice].sunset;
-    if ((!sunriseTime || sunriseTime === '--:--') && (!sunsetTime || sunsetTime === '--:--')) {
-        return 'Waiting for sunrise/sunset data';
-    }
-    if (scheduleData.type === 'sunrise') {
-        if (!sunriseTime || sunriseTime === '--:--') {
-            return 'Waiting for sunrise data';
-        }
-        const [sunriseHours, sunriseMinutes] = sunriseTime.split(':');
-        const sunriseDate = new Date();
-        sunriseDate.setHours(parseInt(sunriseHours), parseInt(sunriseMinutes) + scheduleData.offset, 0, 0);
-        return `Today at ${convertTo12Hour(sunriseTime)} ${scheduleData.offset >= 0 ? '+ ' : ''}${scheduleData.offset} min ( ${convertTo12Hour(formatTime(sunriseDate))} )`;
-    } else if (scheduleData.type === 'sunset') {
-        if (!sunsetTime || sunsetTime === '--:--') {
-            return 'Waiting for sunset data';
-        }
-        const [sunsetHours, sunsetMinutes] = sunsetTime.split(':');
-        const sunsetDate = new Date();
-        sunsetDate.setHours(parseInt(sunsetHours), parseInt(sunsetMinutes) + scheduleData.offset, 0, 0);
-        return `Today at ${convertTo12Hour(sunsetTime)} ${scheduleData.offset >= 0 ? '+' : ''}${scheduleData.offset}min (${convertTo12Hour(formatTime(sunsetDate))})`;
-    }
-    return 'Will be calculated';
+    const sunriseTime = deviceStates[currentDevice]?.sunrise;
+    const sunsetTime  = deviceStates[currentDevice]?.sunset;
+    const target = scheduleData.type === 'sunrise' ? sunriseTime
+                 : scheduleData.type === 'sunset'  ? sunsetTime
+                 : null;
+    if (!target || target === '--:--') return `Waiting for ${scheduleData.type} data`;
+
+    const parsed = parseTimeStrTo24h(target);
+    if (!parsed) return 'Invalid time';
+
+    const execDate = new Date();
+    execDate.setHours(parsed.hours, parsed.minutes + (scheduleData.offset || 0), 0, 0);
+
+    const baseDate = new Date();
+    baseDate.setHours(parsed.hours, parsed.minutes, 0, 0);
+
+    const base12 = convertTo12Hour(formatTime(baseDate));
+    const exec12 = convertTo12Hour(formatTime(execDate));
+    const sign   = (scheduleData.offset || 0) >= 0 ? '+' : '';
+    const label  = scheduleData.type === 'sunrise' ? 'Sunrise' : 'Sunset';
+
+    return `${label} at ${base12} ${sign}${scheduleData.offset || 0} min → ${exec12}`;
 }
 
 function formatTime(date) {
@@ -4532,6 +4548,13 @@ async function loadSchedules() {
     }
 }
 
+    
+    
+    
+    
+    
+    
+    
 async function displaySchedules(schedules) {
     schedulesList.innerHTML = '';
     if (schedules.length === 0) {
@@ -4549,20 +4572,97 @@ async function displaySchedules(schedules) {
     schedules.forEach(schedule => {
         const relayName = relayNamesList[schedule.relay - 1] || `Relay ${schedule.relay}`;
         const actionText = schedule.action ? 'ON' : 'OFF';
+
+        // Show calculated execution time in 12-hour format for ALL schedule types
         let triggerText = '';
-        switch(schedule.type) {
+        let executionTimeText = '';
+
+        switch (schedule.type) {
             case 'daily':
                 triggerText = `Daily: ON at ${convertTo12Hour(schedule.onTime)}, OFF at ${convertTo12Hour(schedule.offTime)}`;
+                if (schedule.enabled) {
+                    const now = new Date();
+                    const [onH, onM] = (schedule.onTime || '00:00').split(':').map(Number);
+                    const [offH, offM] = (schedule.offTime || '00:00').split(':').map(Number);
+                    const onDate = new Date(); onDate.setHours(onH, onM, 0, 0);
+                    const offDate = new Date(); offDate.setHours(offH, offM, 0, 0);
+                    let nextDate, nextLabel;
+                    if (now < onDate) { nextDate = onDate; nextLabel = 'ON'; }
+                    else if (now < offDate) { nextDate = offDate; nextLabel = 'OFF'; }
+                    else { nextDate = new Date(onDate.getTime() + 86400000); nextLabel = 'ON (tomorrow)'; }
+                    executionTimeText = `Next: ${nextLabel} at ${convertTo12Hour(formatTime(nextDate))}`;
+                }
                 break;
+
             case 'weekly':
                 triggerText = `Weekly: ON at ${convertTo12Hour(schedule.onTime)}, OFF at ${convertTo12Hour(schedule.offTime)} on days ${schedule.days}`;
+                if (schedule.enabled && schedule.days) {
+                    const allowedDays = schedule.days.split(',').map(d => parseInt(d.trim())).filter(d => !isNaN(d));
+                    const now = new Date();
+                    const [onH, onM] = (schedule.onTime || '00:00').split(':').map(Number);
+                    const [offH, offM] = (schedule.offTime || '00:00').split(':').map(Number);
+                    let found = null;
+                    for (let offset = 0; offset <= 7; offset++) {
+                        const checkDate = new Date(now.getTime() + offset * 86400000);
+                        if (!allowedDays.includes(checkDate.getDay())) continue;
+                        const onDate = new Date(checkDate); onDate.setHours(onH, onM, 0, 0);
+                        const offDate = new Date(checkDate); offDate.setHours(offH, offM, 0, 0);
+                        if (offset === 0 && now >= offDate) continue;
+                        if (offset === 0 && now >= onDate) {
+                            found = { date: offDate, label: 'OFF' };
+                        } else {
+                            found = { date: onDate, label: 'ON' };
+                        }
+                        break;
+                    }
+                    if (found) {
+                        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                        executionTimeText = `Next: ${found.label} at ${convertTo12Hour(formatTime(found.date))} (${dayNames[found.date.getDay()]})`;
+                    }
+                }
                 break;
+
             case 'sunrise':
-                triggerText = `Sunrise ${schedule.offset >= 0 ? '+' : ''}${schedule.offset} minutes: ${schedule.action ? 'ON' : 'OFF'}`;
+            case 'sunset': {
+                const rawTime = schedule.type === 'sunrise'
+                    ? (deviceStates[currentDevice]?.sunrise || '--:--')
+                    : (deviceStates[currentDevice]?.sunset || '--:--');
+
+                let baseHours = null, baseMinutes = 0;
+                const match12 = rawTime.match(/(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)/i);
+                const match24 = rawTime.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+
+                if (match12) {
+                    baseHours = parseInt(match12[1]);
+                    baseMinutes = parseInt(match12[2]);
+                    const ampm = match12[4].toUpperCase();
+                    if (ampm === 'PM' && baseHours !== 12) baseHours += 12;
+                    if (ampm === 'AM' && baseHours === 12) baseHours = 0;
+                } else if (match24) {
+                    baseHours = parseInt(match24[1]);
+                    baseMinutes = parseInt(match24[2]);
+                }
+
+                let baseTime12 = '--:--';
+                let execTime12 = '--:--';
+
+                if (baseHours !== null) {
+                    const baseDate = new Date();
+                    baseDate.setHours(baseHours, baseMinutes, 0, 0);
+                    baseTime12 = convertTo12Hour(formatTime(baseDate));
+
+                    const execDate = new Date();
+                    execDate.setHours(baseHours, baseMinutes + (schedule.offset || 0), 0, 0);
+                    execTime12 = convertTo12Hour(formatTime(execDate));
+                }
+
+                const sign = (schedule.offset || 0) >= 0 ? '+' : '';
+                const baseLabel = schedule.type === 'sunrise' ? 'Sunrise' : 'Sunset';
+                triggerText = `${baseLabel} ${sign}${schedule.offset || 0} min → ${schedule.action ? 'ON' : 'OFF'}`;
+                executionTimeText = `Exec Time: ${execTime12} (${baseLabel}: ${baseTime12} ${sign}${schedule.offset || 0} min)`;
                 break;
-            case 'sunset':
-                triggerText = `Sunset ${schedule.offset >= 0 ? '+' : ''}${schedule.offset} minutes: ${schedule.action ? 'ON' : 'OFF'}`;
-                break;
+            }
+
             case 'temperature':
                 triggerText = `Temperature ${schedule.condition} ${schedule.value}°C: ${schedule.action ? 'ON' : 'OFF'}`;
                 break;
@@ -4572,6 +4672,7 @@ async function displaySchedules(schedules) {
             default:
                 triggerText = schedule.type;
         }
+
         const card = document.createElement('div');
         card.className = `schedule-card ${schedule.enabled ? 'enabled' : 'disabled'}`;
         card.setAttribute('data-schedule-id', schedule.id);
@@ -4592,12 +4693,14 @@ async function displaySchedules(schedules) {
             </div>
             <div class="schedule-details">
                 <div class="schedule-trigger"><strong>Trigger:</strong> ${triggerText}</div>
+                ${executionTimeText ? `<div class="schedule-trigger" style="color: #10b981;"><strong><i class="fas fa-clock"></i> Execution:</strong> ${executionTimeText}</div>` : ''}
                 <div class="schedule-action"><strong>Action:</strong> ${relayName} ${actionText}</div>
                 <div class="schedule-status"><strong>Status:</strong> ${schedule.enabled ? 'Enabled ✅' : 'Disabled ⛔'}</div>
             </div>
         `;
         schedulesList.appendChild(card);
     });
+
     document.querySelectorAll('.toggle-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -4620,7 +4723,9 @@ async function displaySchedules(schedules) {
             deleteSchedule(scheduleId);
         });
     });
-}
+} 
+
+
 
 async function editSchedule(scheduleId) {
     try {
